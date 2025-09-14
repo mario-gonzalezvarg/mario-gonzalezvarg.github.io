@@ -29,174 +29,246 @@
     <div class="container">
       <h2 class="section-title">Abstract</h2>
       <p>
-        The scope of this project is to reconstruct color photographs from the Prokudin-Gorskii glass plates by aligning three
-        vertically stacked grayscale exposures captured through blue, green, and red filters.
+        This project reconstructs color photographs from Prokudin-Gorskii’s glass plates by extracting the three
+        vertically stacked grayscale exposures and aligning them under a pure translation model. The physical plate
+        encodes the same scene through blue, green, and red filters ordered from top to bottom as B, G, and R. The
+        computational task is to place the green and red images on top of the blue reference at sub-image accuracy and
+        then compose an RGB image in the order [R, G, B]. For small JPGs the alignment can be found by an exhaustive
+        search over a modest displacement window. For the full-resolution TIFFs, the method is accelerated by a
+        coarse-to-fine image pyramid that estimates large motions at reduced scale and refines them as the resolution
+        increases. The final outputs minimize color fringes and preserve fine geometric detail, while edge overlays are
+        presented to visually verify the quality of the registration.
       </p>
 
-      <!-- Quick before/after -->
       <div class="gallery-2">
         <figure class="card media">
-          <img src="single_rgb/icon_B.png" alt="Icon plate: blue channel" />
-          <figcaption>Blue channel (B)</figcaption>
+          <img src="single_rgb/icon_B.png" alt="Icon plate: Blue channel extracted from the glass plate." />
+          <figcaption>One plate split into thirds. Top band is the blue exposure, shown here after cropping to a common width.</figcaption>
         </figure>
-
         <figure class="card media">
-          <img src="out_tif/icon_rgb.jpg" alt="Icon plate: reconstructed RGB" />
-          <figcaption>Reconstructed RGB</figcaption>
+          <img src="out_tif/icon_rgb.jpg" alt="Icon plate: final reconstructed RGB image after alignment." />
+          <figcaption>Final RGB composition after aligning G and R to B with a pyramid search and composing [R, G, B].</figcaption>
         </figure>
       </div>
 
-      <!-- Three channels aligned (side-by-side) -->
       <div class="gallery-3-1" style="margin-top:16px">
         <figure class="card media">
-          <img src="single_rgb/icon_B.png" alt="Icon: B channel" />
-          <figcaption>B channel</figcaption>
+          <img src="single_rgb/icon_B.png" alt="Icon: blue reference channel." />
+          <figcaption>Reference B channel used for scoring.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="single_rgb/icon_G_aligned.png" alt="Icon: G aligned to B" />
-          <figcaption>G aligned → B</figcaption>
+          <img src="single_rgb/icon_G_aligned.png" alt="Icon: green channel aligned to blue." />
+          <figcaption>G shifted into the B coordinate frame.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="single_rgb/icon_R_aligned.png" alt="Icon: R aligned to B" />
-          <figcaption>R aligned → B</figcaption>
+          <img src="single_rgb/icon_R_aligned.png" alt="Icon: red channel aligned to blue." />
+          <figcaption>R shifted into the B coordinate frame.</figcaption>
         </figure>
       </div>
 
-      <!-- Edge overlays to show alignment -->
       <div class="gallery-2" style="margin-top:16px">
         <figure class="card media">
-          <img src="out_tif/icon_overlay_g.png" alt="Overlay: B vs aligned G (edges)" />
-          <figcaption>Overlay: B (red edges) vs G (green)</figcaption>
+          <img src="out_tif/icon_overlay_g.png" alt="Edge overlay of B (red) and aligned G (green)." />
+          <figcaption>Edge overlay B (red) vs aligned G (green). Coincident edges appear yellow and indicate good alignment.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="out_tif/icon_overlay_r.png" alt="Overlay: B vs aligned R (edges)" />
-          <figcaption>Overlay: B (red edges) vs R (green)</figcaption>
+          <img src="out_tif/icon_overlay_r.png" alt="Edge overlay of B (red) and aligned R (green)." />
+          <figcaption>Edge overlay B (red) vs aligned R (green). Residual color fringes expose any mis-registration.</figcaption>
         </figure>
       </div>
-
-      <p>
-        We formulate alignment as a two-dimensional translational registration problem and solve it with a coarse-to-fine
-        pyramid search evaluated by either the sum of squared differences (SSD) or normalized cross-correlation (NCC).
-        To mitigate border artifacts and illumination inconsistencies, scoring is restricted to an interior region,
-        using Sobel edge magnitude as a feature. The resulting RGB images are produced by shifting the
-        G and R channels with the estimated displacements, intersecting the valid overlap with B, and composing
-        in <code>[R, G, B]</code> order.
-      </p>
     </div>
   </section>
 
-  <!-- 1. Introduction -->
+  <!-- Introduction -->
   <section id="introduction" class="section section--slant">
     <div class="container">
       <h2 class="section-title">Introduction</h2>
       <p>
-        Each digitized glass plate contains three exposures stacked along the vertical axis (top to bottom:
-        blue, green, red). The goal is to realign the exposures and reconstruct a single color image that matches
-        modern RGB photographs in appearance. Following the project specification, we (i) read and normalize the plate,
-        (ii) separate the channels, (iii) estimate translational shifts aligning G and R to B, and (iv) compose a final
-        RGB image.
+        The digitized plates contain three exposures stacked vertically. After reading the plate, the algorithm converts
+        pixel values to a common floating-point scale and divides the image into three equal bands of height ⌊H/3⌋. The
+        top band is the blue channel, the middle band is the green channel, and the bottom band is the red channel. All
+        bands are cropped to the minimum common width to remove scanner padding. The alignment problem is then posed as
+        a two-dimensional translation that maps the green and red images into the coordinate frame of the blue image.
+        Once the best shifts are found, the three channels are cropped to their mutual intersection to avoid tinted
+        borders and are finally stacked in [R, G, B] order to produce a color photograph.
       </p>
     </div>
   </section>
 
-  <!-- 2. Methodology -->
+  <!-- Methodology -->
   <section id="method" class="section">
     <div class="container">
       <h2 class="section-title">Methodology</h2>
 
-      <h3>A. Preprocessing and Channel Extraction</h3>
+      <h3>Single-Scale Alignment on Small Images</h3>
       <p>
-        The input plate is converted to <code>float32</code> in the unit interval. Let <code>H</code> denote the plate height.
-        We partition the image into three equal bands of height <code>⌊H/3⌋</code>, yielding B, G, and R.
+        For JPG-resolution inputs the search for the displacement is performed directly at the native scale. The method
+        evaluates a grid of integer shifts within a fixed window, typically on the order of ±15 pixels horizontally and
+        vertically. For each candidate shift, the moving image is translated using a zero-padded roll so that pixels do
+        not wrap around the opposing edge and create artificial matches. Because the borders of the bands often contain
+        strong frames or vignetting that do not correspond across channels, the score is computed only on an interior
+        window that discards a small fraction of pixels on each side. This interior mask substantially reduces the
+        influence of non-overlapping borders and makes the similarity measure responsive to the true scene content.
       </p>
 
-      <h3>B. Scoring Region and Border Suppression</h3>
+      <h3>Similarity Metrics</h3>
       <p>
-        Border frames, vignetting, and digitization seams can dominate naive metrics. The matching
-        score is evaluated only on an interior crop that discards a fixed fraction of pixels on every side (≈10%).
+        Two standard measures are used to decide which displacement best aligns the images. The first is the sum of
+        squared differences, which chooses the shift that minimizes the squared pixel-wise error between the reference
+        blue channel and a shifted candidate channel. This metric is simple and effective when the three exposures have
+        comparable brightness and contrast. The second measure is normalized cross-correlation, which first subtracts
+        the mean and rescales both patches to unit norm and then selects the shift that maximizes their dot product. By
+        comparing relative patterns rather than absolute intensities, normalized cross-correlation is less sensitive to
+        radiometric differences between channels. In practice, images such as the Emir of Bukhara benefit from using the
+        edge magnitude or normalized cross-correlation, while scenes with stable exposure are well handled by the
+        squared-difference objective.
       </p>
 
-      <h3>C. Alignment Objective</h3>
+      <h3>Coarse-to-Fine Image Pyramid for Full-Resolution TIFFs</h3>
       <p>
-        SSD minimizes <code>∑(A−B)^2</code>; NCC maximizes the dot product of mean-zero, unit-norm patches.
+        The full glass plate scans can exhibit displacements far larger than the practical range of an exhaustive
+        single-scale search. To address this, the algorithm constructs an image pyramid that represents each channel at
+        a sequence of progressively reduced scales, usually halving the size at each level until the minimum image side
+        is a few hundred pixels. Alignment begins at the coarsest level, where a wide search window is computationally
+        cheap and the global motion can be recovered reliably. The displacement estimate from this level is then scaled
+        by the downsampling factor and used to initialize the search at the next finer level, where only a small local
+        neighborhood around the predicted shift needs to be explored. Repeating this process to the finest scale yields
+        accurate integer shifts at full resolution while keeping runtime modest. The pyramid is applied independently to
+        register green to blue and red to blue, and the final color image is composed after intersecting the valid
+        overlap across the three aligned channels.
       </p>
 
-      <h3>D. Search Strategy</h3>
+      <h3>Features, Robustness, and Post-Processing</h3>
       <p>
-        A coarse-to-fine pyramid recovers large motions efficiently; estimates are refined at higher resolutions.
-      </p>
-
-      <h3>E. Composition and Valid Overlap</h3>
-      <p>
-        Shift G and R by the recovered displacements, intersect the common region with B, then compose <code>[R,G,B]</code>.
+        While raw intensities are sufficient for many plates, some scenes exhibit channel-dependent exposure differences
+        that complicate direct comparisons. In such cases, the method evaluates similarity on Sobel edge magnitude
+        images, which emphasize structural content that is more stable across filters. After alignment, the channels are
+        trimmed to their common intersection region so that misaligned borders do not introduce colored frames. When
+        minor color disagreement persists along the very outer edges, an optional automatic crop removes a small rim
+        until the edge statistics become consistent with the interior. The composition step then stacks the registered
+        red, green, and blue arrays to form the final color photograph.
       </p>
     </div>
   </section>
 
-  <!-- 4. Results -->
+  <!-- Results -->
   <section id="results" class="section">
     <div class="container">
       <h2 class="section-title">Results</h2>
 
-      <h3>A. Single-Scale (Low-Resolution JPEGs)</h3>
+      <h3>Qualitative Reconstructions and Overlays</h3>
+      <p>
+        The visual examples below illustrate both the reconstructed color images and edge overlays that confirm the
+        alignment quality. When the registration is accurate, strong edges from the three channels coincide and appear
+        neutral or yellow in the overlay visualization. Any residual misalignment reveals itself as colored halos near
+        high-contrast boundaries and can be diagnosed by comparing the relative displacement between the red and green
+        overlays.
+      </p>
+
       <div class="gallery-2">
         <figure class="card media">
-          <img src="out_tif/church_rgb.jpg" alt="Church final RGB" />
-          <figcaption>Church — reconstructed RGB.</figcaption>
+          <img src="out_tif/church_rgb.jpg" alt="Church: final color reconstruction." />
+          <figcaption>Church — final color reconstruction obtained with single-scale search and interior masking.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="out_tif/church_overlay_g.png" alt="Church: B vs G overlay" />
-          <figcaption>B (red edges) vs aligned G (green).</figcaption>
+          <img src="out_tif/church_overlay_g.png" alt="Church: overlay of B vs aligned G." />
+          <figcaption>Church — overlay of B (red edges) and aligned G (green). Edge agreement indicates precise alignment.</figcaption>
         </figure>
       </div>
 
-      <h3>B. Pyramid (High-Resolution TIFFs)</h3>
-      <div class="gallery-2">
+      <div class="gallery-2" style="margin-top:16px">
         <figure class="card media">
-          <img src="out_tif/emir_overlay_r.png" alt="Emir: B vs R overlay" />
-          <figcaption>Emir — B (red) vs aligned R (green).</figcaption>
+          <img src="out_tif/emir_overlay_r.png" alt="Emir: overlay of B vs aligned R." />
+          <figcaption>Emir — B (red) vs aligned R (green) overlay. The radiometric mismatch motivates NCC and edge features.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="out_tif/emir_rgb.jpg" alt="Emir final RGB" />
-          <figcaption>Emir — reconstructed RGB.</figcaption>
+          <img src="out_tif/emir_rgb.jpg" alt="Emir: final color reconstruction." />
+          <figcaption>Emir — final color reconstruction from the pyramid search with NCC on edge magnitude.</figcaption>
         </figure>
       </div>
 
-      <!-- Another triptych example -->
+      <p style="margin-top:16px">
+        Larger plates benefit from presenting the progression from raw bands to the final color image. The triptychs
+        below show the blue reference, the green channel after registration, and the completed RGB for two additional
+        scenes. This format makes it easy to see the geometric consistency introduced by alignment and the difference
+        between the raw band appearance and the color composite.
+      </p>
+
+      <div class="gallery-3-1" style="margin-top:4px">
+        <figure class="card media">
+          <img src="single_rgb/harvesters_B.png" alt="Harvesters: blue channel." />
+          <figcaption>Harvesters — B reference band used for scoring.</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="single_rgb/harvesters_G_aligned.png" alt="Harvesters: green aligned to blue." />
+          <figcaption>Harvesters — G aligned to the B frame using the pyramid.</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="out_tif/harvesters_rgb.jpg" alt="Harvesters: final RGB." />
+          <figcaption>Harvesters — final RGB composition after intersection cropping.</figcaption>
+        </figure>
+      </div>
+
       <div class="gallery-3-1" style="margin-top:16px">
         <figure class="card media">
-          <img src="single_rgb/harvesters_B.png" alt="Harvesters: B channel" />
-          <figcaption>Harvesters — B</N>
+          <img src="single_rgb/self_portrait_B.png" alt="Self portrait: blue channel." />
+          <figcaption>Self Portrait — B reference.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="single_rgb/harvesters_G_aligned.png" alt="Harvesters: G aligned" />
-          <figcaption>Harvesters — G aligned → B</figcaption>
+          <img src="single_rgb/self_portrait_G_aligned.png" alt="Self portrait: green aligned to blue." />
+          <figcaption>Self Portrait — G registered to B with NCC on edges.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="out_tif/harvesters_rgb.jpg" alt="Harvesters: RGB" />
-          <figcaption>Harvesters — RGB result</figcaption>
+          <img src="out_tif/self_portrait_rgb.jpg" alt="Self portrait: final RGB." />
+          <figcaption>Self Portrait — final RGB composition.</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
-  <!-- 5. Discussion -->
-  <!-- <section id="discussion" class="section section--slant">
+  <!-- Discussion -->
+  <section id="discussion" class="section section--slant">
     <div class="container">
       <h2 class="section-title">Discussion</h2>
       <p>
-        Key choices: (i) interior scoring window, (ii) no wraparound during shifts, (iii) edges/NCC when radiometry differs.
+        Three design choices have the largest practical impact on quality. First, computing scores on an interior window
+        avoids the strongly colored frames that would otherwise dominate the similarity metric and lead to poor shifts.
+        Second, disabling wraparound when applying translations prevents pixels from re-appearing on the opposite side
+        of the image and spuriously improving the score. Third, using either normalized cross-correlation or edge
+        magnitude for the similarity evaluation provides the necessary robustness when the three exposures have
+        different brightness or contrast. In cases with repetitive texture or very large motions, the pyramid’s coarse
+        level must search a wider window; once the global displacement is captured, subsequent refinements converge
+        quickly. The approach keeps parameters fixed across images for reproducibility.
       </p>
     </div>
-  </section> -->
+  </section>
+
+
+  <!-- Reproducibility -->
+  <section id="repro" class="section section--slant">
+    <div class="container">
+      <h2 class="section-title">Reproducibility</h2>
+      <p>
+        The results shown here can be reproduced with a single-scale script for JPGs and a pyramid-enabled script for
+        TIFFs. The pipeline reads a plate, splits it into B, G, and R bands, evaluates either squared differences or
+        normalized cross-correlation within an interior mask, searches shifts using an exhaustive window at the current
+        scale, and refines those estimates across pyramid levels until the finest resolution is reached. The recovered
+        integer displacements for green-to-blue and red-to-blue are recorded alongside the figures, and the final color
+        images are saved as compressed JPGs to keep disk usage modest and webpage load times fast.
+      </p>
+    </div>
+  </section>
 
   <!-- References -->
-  <section id="references" class="section section--slant">
+  <section id="references" class="section">
     <div class="container">
       <h2 class="section-title">References</h2>
-      <p>[1] R. Szeliski, <em>Computer Vision: Algorithms and Applications</em>, 2nd ed., Springer, 2022.</p>
-      <p>[2] Library of Congress, “Prokudin-Gorskii Collection.”</p>
-      <p>[3] A. K. Jain, <em>Fundamentals of Digital Image Processing</em>, 1989.</p>
+      <p>
+        R. Szeliski, <em>Computer Vision: Algorithms and Applications</em>, 2nd ed., Springer, 2022 — chapters on image
+        alignment and similarity measures. Library of Congress, Prokudin-Gorskii Collection — digitized plates and
+        background notes. A. K. Jain, <em>Fundamentals of Digital Image Processing</em>, Prentice Hall, 1989 — discussion
+        of correlation and least-squares matching.
+      </p>
     </div>
   </section>
 
