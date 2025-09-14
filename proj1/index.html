@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS180 – Project 1 | Images of the Russian Empire</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="nav-band">
+    <nav class="nav container" aria-label="Primary">
+      <a href="../index.html">Home</a>
+      <a href="index.html" aria-current="page" class="active">Project 1</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero hero--fixed">
+    <div class="container">
+      <h1>Project 1: The Prokudin-Gorskii Collection</h1>
+      <p class="part-note">CS180 • Fall 2025</p>
+      <a class="btn" href="../index.html">Back to Home <span class="chev">›</span></a>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section id="overview" class="section">
+    <div class="container">
+      <h2 class="section-title">Abstract</h2>
+      <p>
+        The scope of this project is to reconstruct color photographs from the Prokudin-Gorskii glass plates by aligning three
+        vertically stacked grayscale exposures captured through blue, green, and red filters.
+      </p>
+
+      <!-- Quick before/after -->
+      <div class="gallery-2">
+        <figure class="card media">
+          <img src="single_rgb/icon_B.png" alt="Icon plate: blue channel" />
+          <figcaption>Blue channel (B)</figcaption>
+        </figure>
+
+        <figure class="card media">
+          <img src="out_tif/icon_rgb.jpg" alt="Icon plate: reconstructed RGB" />
+          <figcaption>Reconstructed RGB</figcaption>
+        </figure>
+      </div>
+
+      <!-- Three channels aligned (side-by-side) -->
+      <div class="gallery-3-1" style="margin-top:16px">
+        <figure class="card media">
+          <img src="single_rgb/icon_B.png" alt="Icon: B channel" />
+          <figcaption>B channel</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="single_rgb/icon_G_aligned.png" alt="Icon: G aligned to B" />
+          <figcaption>G aligned → B</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="single_rgb/icon_R_aligned.png" alt="Icon: R aligned to B" />
+          <figcaption>R aligned → B</figcaption>
+        </figure>
+      </div>
+
+      <!-- Edge overlays to show alignment -->
+      <div class="gallery-2" style="margin-top:16px">
+        <figure class="card media">
+          <img src="out_tif/icon_overlay_g.png" alt="Overlay: B vs aligned G (edges)" />
+          <figcaption>Overlay: B (red edges) vs G (green)</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="out_tif/icon_overlay_r.png" alt="Overlay: B vs aligned R (edges)" />
+          <figcaption>Overlay: B (red edges) vs R (green)</figcaption>
+        </figure>
+      </div>
+
+      <p>
+        We formulate alignment as a two-dimensional translational registration problem and solve it with a coarse-to-fine
+        pyramid search evaluated by either the sum of squared differences (SSD) or normalized cross-correlation (NCC).
+        To mitigate border artifacts and illumination inconsistencies, scoring is restricted to an interior region,
+        using Sobel edge magnitude as a feature. The resulting RGB images are produced by shifting the
+        G and R channels with the estimated displacements, intersecting the valid overlap with B, and composing
+        in <code>[R, G, B]</code> order.
+      </p>
+    </div>
+  </section>
+
+  <!-- 1. Introduction -->
+  <section id="introduction" class="section section--slant">
+    <div class="container">
+      <h2 class="section-title">Introduction</h2>
+      <p>
+        Each digitized glass plate contains three exposures stacked along the vertical axis (top to bottom:
+        blue, green, red). The goal is to realign the exposures and reconstruct a single color image that matches
+        modern RGB photographs in appearance. Following the project specification, we (i) read and normalize the plate,
+        (ii) separate the channels, (iii) estimate translational shifts aligning G and R to B, and (iv) compose a final
+        RGB image.
+      </p>
+    </div>
+  </section>
+
+  <!-- 2. Methodology -->
+  <section id="method" class="section">
+    <div class="container">
+      <h2 class="section-title">Methodology</h2>
+
+      <h3>A. Preprocessing and Channel Extraction</h3>
+      <p>
+        The input plate is converted to <code>float32</code> in the unit interval. Let <code>H</code> denote the plate height.
+        We partition the image into three equal bands of height <code>⌊H/3⌋</code>, yielding B, G, and R.
+      </p>
+
+      <h3>B. Scoring Region and Border Suppression</h3>
+      <p>
+        Border frames, vignetting, and digitization seams can dominate naive metrics. The matching
+        score is evaluated only on an interior crop that discards a fixed fraction of pixels on every side (≈10%).
+      </p>
+
+      <h3>C. Alignment Objective</h3>
+      <p>
+        SSD minimizes <code>∑(A−B)^2</code>; NCC maximizes the dot product of mean-zero, unit-norm patches.
+      </p>
+
+      <h3>D. Search Strategy</h3>
+      <p>
+        A coarse-to-fine pyramid recovers large motions efficiently; estimates are refined at higher resolutions.
+      </p>
+
+      <h3>E. Composition and Valid Overlap</h3>
+      <p>
+        Shift G and R by the recovered displacements, intersect the common region with B, then compose <code>[R,G,B]</code>.
+      </p>
+    </div>
+  </section>
+
+  <!-- 4. Results -->
+  <section id="results" class="section">
+    <div class="container">
+      <h2 class="section-title">Results</h2>
+
+      <h3>A. Single-Scale (Low-Resolution JPEGs)</h3>
+      <div class="gallery-2">
+        <figure class="card media">
+          <img src="out_tif/church_rgb.jpg" alt="Church final RGB" />
+          <figcaption>Church — reconstructed RGB.</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="out_tif/church_overlay_g.png" alt="Church: B vs G overlay" />
+          <figcaption>B (red edges) vs aligned G (green).</figcaption>
+        </figure>
+      </div>
+
+      <h3>B. Pyramid (High-Resolution TIFFs)</h3>
+      <div class="gallery-2">
+        <figure class="card media">
+          <img src="out_tif/emir_overlay_r.png" alt="Emir: B vs R overlay" />
+          <figcaption>Emir — B (red) vs aligned R (green).</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="out_tif/emir_rgb.jpg" alt="Emir final RGB" />
+          <figcaption>Emir — reconstructed RGB.</figcaption>
+        </figure>
+      </div>
+
+      <!-- Another triptych example -->
+      <div class="gallery-3-1" style="margin-top:16px">
+        <figure class="card media">
+          <img src="single_rgb/harvesters_B.png" alt="Harvesters: B channel" />
+          <figcaption>Harvesters — B</N>
+        </figure>
+        <figure class="card media">
+          <img src="single_rgb/harvesters_G_aligned.png" alt="Harvesters: G aligned" />
+          <figcaption>Harvesters — G aligned → B</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="out_tif/harvesters_rgb.jpg" alt="Harvesters: RGB" />
+          <figcaption>Harvesters — RGB result</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Discussion -->
+  <!-- <section id="discussion" class="section section--slant">
+    <div class="container">
+      <h2 class="section-title">Discussion</h2>
+      <p>
+        Key choices: (i) interior scoring window, (ii) no wraparound during shifts, (iii) edges/NCC when radiometry differs.
+      </p>
+    </div>
+  </section> -->
+
+  <!-- References -->
+  <section id="references" class="section section--slant">
+    <div class="container">
+      <h2 class="section-title">References</h2>
+      <p>[1] R. Szeliski, <em>Computer Vision: Algorithms and Applications</em>, 2nd ed., Springer, 2022.</p>
+      <p>[2] Library of Congress, “Prokudin-Gorskii Collection.”</p>
+      <p>[3] A. K. Jain, <em>Fundamentals of Digital Image Processing</em>, 1989.</p>
+    </div>
+  </section>
+
+  <!-- Footer wave -->
+  <footer class="footer-wave"></footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>
