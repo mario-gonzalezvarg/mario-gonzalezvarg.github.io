@@ -6,21 +6,20 @@
   <title>CS180 – Project 1 | Images of the Russian Empire</title>
   <link rel="stylesheet" href="../styles.css" />
 </head>
+
 <body>
-  <!-- Navbar -->
   <header class="nav-band">
     <nav class="nav container" aria-label="Primary">
       <a href="../index.html">Home</a>
-      <a href="index.html" aria-current="page" class="active">Project 1</a>
+      <a href="index.html" class="active" aria-current="page">Project 1</a>
     </nav>
   </header>
 
-  <!-- Hero -->
-  <section class="hero hero--fixed">
+  <section class="hero">
     <div class="container">
       <h1>Project 1: The Prokudin-Gorskii Collection</h1>
       <p class="part-note">CS180 • Fall 2025</p>
-      <a class="btn" href="../index.html">Back to Home <span class="chev">›</span></a>
+      <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
     </div>
   </section>
 
@@ -40,18 +39,18 @@
         presented to visually verify the quality of the registration.
       </p>
 
-      <div class="gallery-2">
-        <figure class="card media">
-          <img src="single_rgb/icon_B.png" alt="Icon plate: Blue channel extracted from the glass plate." />
-          <figcaption>One plate split into thirds. Top band is the blue exposure, shown here after cropping to a common width.</figcaption>
+      <div class="grid">
+         <figure class="card media">
+          <img src="out_tif/icon_overlay_g.png" alt="Edge overlay of B (red) and aligned G (green)." />
+          <figcaption>Edge overlay B (red) vs aligned G (green). Coincident edges appear yellow and indicate good alignment.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="out_tif/icon_rgb.jpg" alt="Icon plate: final reconstructed RGB image after alignment." />
-          <figcaption>Final RGB composition after aligning G and R to B with a pyramid search and composing [R, G, B].</figcaption>
+          <img src="out_tif/icon_overlay_r.png" alt="Edge overlay of B (red) and aligned R (green)." />
+          <figcaption>Edge overlay B (red) vs aligned R (green). Residual color fringes expose any mis-registration.</figcaption>
         </figure>
       </div>
 
-      <div class="gallery-3-1" style="margin-top:16px">
+      <div class="grid" style="margin-top:16px">
         <figure class="card media">
           <img src="single_rgb/icon_B.png" alt="Icon: blue reference channel." />
           <figcaption>Reference B channel used for scoring.</figcaption>
@@ -66,21 +65,21 @@
         </figure>
       </div>
 
-      <div class="gallery-2" style="margin-top:16px">
-        <figure class="card media">
-          <img src="out_tif/icon_overlay_g.png" alt="Edge overlay of B (red) and aligned G (green)." />
-          <figcaption>Edge overlay B (red) vs aligned G (green). Coincident edges appear yellow and indicate good alignment.</figcaption>
+      <div class="grid" style="margin-top:16px">
+         <figure class="card media">
+          <img src="single_rgb/icon_B.png" alt="Icon plate: Blue channel extracted from the glass plate." />
+          <figcaption>One plate split into thirds. Top band is the blue exposure, shown here after cropping to a common width.</figcaption>
         </figure>
         <figure class="card media">
-          <img src="out_tif/icon_overlay_r.png" alt="Edge overlay of B (red) and aligned R (green)." />
-          <figcaption>Edge overlay B (red) vs aligned R (green). Residual color fringes expose any mis-registration.</figcaption>
+          <img src="out_tif/icon_rgb.jpg" alt="Icon plate: final reconstructed RGB image after alignment." />
+          <figcaption>Final RGB composition after aligning G and R to B with a pyramid search and composing [R, G, B].</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
   <!-- Introduction -->
-  <section id="introduction" class="section section--slant">
+  <section id="introduction" class="section">
     <div class="container">
       <h2 class="section-title">Introduction</h2>
       <p>
@@ -165,7 +164,7 @@
         overlays.
       </p>
 
-      <div class="gallery-2">
+      <div class="grid">
         <figure class="card media">
           <img src="out_tif/church_rgb.jpg" alt="Church: final color reconstruction." />
           <figcaption>Church — final color reconstruction obtained with single-scale search and interior masking.</figcaption>
@@ -176,7 +175,7 @@
         </figure>
       </div>
 
-      <div class="gallery-2" style="margin-top:16px">
+      <div class="grid" style="margin-top:16px">
         <figure class="card media">
           <img src="out_tif/emir_overlay_r.png" alt="Emir: overlay of B vs aligned R." />
           <figcaption>Emir — B (red) vs aligned R (green) overlay. The radiometric mismatch motivates NCC and edge features.</figcaption>
@@ -194,7 +193,7 @@
         between the raw band appearance and the color composite.
       </p>
 
-      <div class="gallery-3-1" style="margin-top:4px">
+      <div class="grid" style="margin-top:4px">
         <figure class="card media">
           <img src="single_rgb/harvesters_B.png" alt="Harvesters: blue channel." />
           <figcaption>Harvesters — B reference band used for scoring.</figcaption>
@@ -203,13 +202,13 @@
           <img src="single_rgb/harvesters_G_aligned.png" alt="Harvesters: green aligned to blue." />
           <figcaption>Harvesters — G aligned to the B frame using the pyramid.</figcaption>
         </figure>
-        <figure class="card media">
+      </div>
+       <figure class="card media">
           <img src="out_tif/harvesters_rgb.jpg" alt="Harvesters: final RGB." />
           <figcaption>Harvesters — final RGB composition after intersection cropping.</figcaption>
         </figure>
-      </div>
 
-      <div class="gallery-3-1" style="margin-top:16px">
+      <div class="grid" style="margin-top:16px">
         <figure class="card media">
           <img src="single_rgb/self_portrait_B.png" alt="Self portrait: blue channel." />
           <figcaption>Self Portrait — B reference.</figcaption>
@@ -218,16 +217,13 @@
           <img src="single_rgb/self_portrait_G_aligned.png" alt="Self portrait: green aligned to blue." />
           <figcaption>Self Portrait — G registered to B with NCC on edges.</figcaption>
         </figure>
-        <figure class="card media">
-          <img src="out_tif/self_portrait_rgb.jpg" alt="Self portrait: final RGB." />
-          <figcaption>Self Portrait — final RGB composition.</figcaption>
-        </figure>
+
       </div>
     </div>
   </section>
 
   <!-- Discussion -->
-  <section id="discussion" class="section section--slant">
+  <section id="discussion" class="section section--accent">
     <div class="container">
       <h2 class="section-title">Discussion</h2>
       <p>
@@ -245,7 +241,7 @@
 
 
   <!-- Reproducibility -->
-  <section id="repro" class="section section--slant">
+  <section id="repro" class="section">
     <div class="container">
       <h2 class="section-title">Reproducibility</h2>
       <p>
@@ -274,7 +270,5 @@
 
   <!-- Footer wave -->
   <footer class="footer-wave"></footer>
-
-  <script src="../script.js"></script>
 </body>
 </html>

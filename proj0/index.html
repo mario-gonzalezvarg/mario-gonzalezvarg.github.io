@@ -9,67 +9,58 @@
 <body>
   <header class="nav-band">
     <nav class="nav container" aria-label="Primary">
-      <a href="../index.html">Home</a>
+      <a href="../index.html" class="active">Home</a>
     </nav>
   </header>
 
-  <section class="hero container">
-    <h1>Project 0: Becoming Friends with Your Camera</h1>
-    <p class="part-note">CS180 • Fall 2025</p>
-    <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
+  <section class="hero hero--fixed">
+    <div class="container">
+      <h1>Project 0: Becoming Friends with Your Camera</h1>
+      <p class="part-note">CS180 • Fall 2025</p>
+      <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
+    </div>
   </section>
 
-  <!-- part 1 -->
-  <section id="part1" class="section">
+  <section class="section">
     <div class="container">
       <h2 class="section-title">Part 1: The Right Way vs. The Wrong Way</h2>
-      <div class="gallery-2">
+      <div class="grid">
         <figure class="card media">
           <img src="media/wrong_way.jpg" alt="Selfie taken the wrong way" />
           <figcaption>Wrong Way</figcaption>
         </figure>
-
         <figure class="card media">
           <img src="media/right_way.jpg" alt="Selfie taken the right way" />
           <figcaption>Right Way</figcaption>
         </figure>
-
       </div>
     </div>
   </section>
 
-  <!-- part 2 -->
-<section id="part2" class="section">
-  <div class="container">
-    <h2 class="section-title">Part 2: Architectural Perspective Compression</h2>
-    <div class="gallery-2">
-      <figure class="card media">
-        <img src="media/arch_tele.jpg" alt="Architecture — telephoto shot (farther, long focal length)" />
-        <figcaption>Telephoto shot</figcaption>
-      </figure>
-
-      <figure class="card media">
-        <img src="media/arch_wide.jpg" alt="Architecture — wide shot (close, short focal length)" />
-        <figcaption>Wide shot</figcaption>
-      </figure>
-
-    </div>
-  </div>
-</section>
-
-  <!-- part 3 -->
-  <section id="part3" class="section section--slant">
+  <section class="section section--accent">
     <div class="container">
-      <h2 class="section-title">Part 3: The Dolly Zoom</h2>
-      <figure class="card media"
-        style="padding:8px; display:block; width:max-content; max-width:100%; margin-inline:auto;">
-      <img src="media/vertigo_effect.gif" alt="Dolly zoom GIF"
-          style="width:420px; height:auto; display:block; margin:0 auto; border-radius:12px;">
-      <figcaption style="margin-top:6px; text-align:center;">Dolly Zoom</figcaption>
-    </figure>
+      <h2 class="section-title">Part 2: Architectural Perspective Compression</h2>
+      <div class="grid">
+        <figure class="card media">
+          <img src="media/arch_tele.jpg" alt="Architecture — telephoto shot" />
+          <figcaption>Telephoto shot</figcaption>
+        </figure>
+        <figure class="card media">
+          <img src="media/arch_wide.jpg" alt="Architecture — wide shot" />
+          <figcaption>Wide shot</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
-  <script src="../script.js"></script>
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Part 3: The Dolly Zoom</h2>
+      <figure class="card media media--narrow">
+        <img src="media/vertigo_effect.gif" alt="Dolly zoom GIF">
+        <figcaption>Dolly Zoom</figcaption>
+      </figure>
+    </div>
+  </section>
 </body>
 </html>
