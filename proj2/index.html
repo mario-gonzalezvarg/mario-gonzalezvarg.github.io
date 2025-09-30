@@ -6,7 +6,6 @@
   <title>CS180 – Project 2 | Mario Gonzalez</title>
   <link rel="stylesheet" href="../styles.css" />
 </head>
-
 <body>
   <!-- Navbar -->
   <header class="nav-band">
@@ -19,118 +18,231 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h1>Fun with Filters and Frequencies</h1>
+      <h1>Project 2: Convolution and Filtering</h1>
       <p class="part-note">CS180 • Fall 2025</p>
       <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
     </div>
   </section>
 
-  <!-- Overview -->
-  <section id="overview" class="section">
+
+<section id="part1a" class="section">
+  <div class="container">
+    <h2 class="section-title">1A – Convolution Filters</h2>
+
+    <div class="card" style="padding:16px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+        <label><strong>Dataset:</strong> <select id="a-dataset"></select></label>
+
+        <strong>k = <span id="a-kval">3</span></strong>
+        <input id="a-kIdx" type="range" min="0" max="0" step="1" value="0" style="width:240px" aria-label="kernel size">
+
+        <label><input type="radio" name="a-impl" value="fourloops" checked> From scratch</label>
+        <label><input type="radio" name="a-impl" value="scipy"> SciPy</label>
+      </div>
+
+      <figure class="media media--narrow" style="margin:0 auto">
+        <img id="a-img" alt="1A result">
+        <figcaption id="a-cap" style="text-align:center; margin-top:8px"></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 1B — Finite Difference Operator -->
+<section id="part1b" class="section">
+  <div class="container">
+    <h2 class="section-title">1B – Finite Difference Operator</h2>
+
+    <div class="card" style="padding:16px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+        <label><input type="radio" name="b-mode" value="Ix" checked> Ix</label>
+        <label><input type="radio" name="b-mode" value="Iy"> Iy</label>
+        <label><input type="radio" name="b-mode" value="gradmag"> |∇I|</label>
+        <label><input type="radio" name="b-mode" value="edges"> Edges</label>
+
+        <span id="b-thr-wrap" style="display:none; gap:10px; align-items:center;">
+          <strong>t = <span id="b-tval">10</span></strong>
+          <input id="b-tIdx" type="range" min="0" max="4" step="1" value="0" style="width:220px" aria-label="edge threshold">
+        </span>
+      </div>
+
+      <figure class="media media--narrow" style="margin:0 auto">
+        <img id="b-img" alt="1B result">
+        <figcaption id="b-cap" style="text-align:center; margin-top:8px"></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+
+<!-- 1C — Derivative of Gaussian vs Smooth→Diff -->
+<section id="part1c" class="section">
+  <div class="container">
+    <h2 class="section-title">1C – Derivative of Gaussian (DoG)</h2>
+
+    <div class="card" style="padding:16px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+        <label><input type="radio" name="c-impl" value="smoothdiff" checked> Smooth → Diff</label>
+        <label><input type="radio" name="c-impl" value="DoG"> DoG (∂G ⊗ I)</label>
+
+        <span style="margin-left:12px"></span>
+
+        <label><input type="radio" name="c-mode" value="Ix" checked> Ix</label>
+        <label><input type="radio" name="c-mode" value="Iy"> Iy</label>
+        <label><input type="radio" name="c-mode" value="gradmag"> |∇I|</label>
+      </div>
+
+      <figure class="media media--narrow" style="margin:0 auto">
+        <img id="c-img" alt="1C result">
+        <figcaption id="c-cap" style="text-align:center; margin-top:8px"></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+  <!-- Methodology (brief) -->
+  <section id="method" class="section">
     <div class="container">
       <h2 class="section-title">Methodology</h2>
       <p>
+        The box filter averages over a \(k \times k\) window. Larger \(k\) increases blur and reduces noise while
+        removing detail. The from-scratch version uses explicit convolution loops; the SciPy version uses
+        library primitives for speed.
       </p>
-    </div>
-  </section>
-
-  <!-- Method -->
-  <section id="method" class="section section--accent">
-    <div class="container">
-      <h2 class="section-title">Fun with Filters</h2>
-      <!-- <p> hi</p> -->
-       </div>
-       </section>
-  <section id="part 1" class="section">
-    <div class="container">
-
-      <h2> Convolutions From Scratch</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure>
-
-
-      <h2> Finite difference operator</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure>
-
-      <h2>Derivative of Gaussian (DoG) Filter</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-    <!-- Method -->
-  <section id="method" class="section section--accent">
-    <div class="container">
-      <h2 class="section-title">Fun with Frequencies</h2>
-      <!-- <p> hi</p> -->
-
-      <!-- <h2> Image "Sharpening"</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure>
-
-
-      <h2> Hybrid Images</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure> -->
-    </div>
-  </section>
-  <section id="Sharpening" class="section">
-    <div class="container">
-      <h2> Image "Sharpening"</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure>
-
-
-      <h2> Hybrid Images</h2>
-      <figure class="card media">
-        <img src="media/example_1.jpg" alt="pic result1" />
-        <figcaption>pic 1 — caption.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- Results -->
-  <section id="Multi-Resolution" class="section section--accent">
-    <div class="container">
-      <h2 class="section-title">Multi-Resolution Blending and the Oraople Journey</h2>
-    </div>
-  </section>
-  
-   <section id="result" class="section">
-    <div class="container">
-      <h2>Gaussian and Laplacian Stacks</h2>
     </div>
   </section>
 
   <!-- Discussion -->
-  <!-- <section id="discussion" class="section section--accent">
+  <section id="discussion" class="section section--accent">
     <div class="container">
       <h2 class="section-title">Discussion</h2>
       <p>
+        Compare edge sharpness and texture as \(k\) varies. Implementation differences should be negligible aside from
+        runtime; outputs are numerically close for the same padding and normalization.
       </p>
     </div>
-  </section> -->
+  </section>
 
-  <!-- Reproducibility
-  <section id="repro" class="section">
-    <div class="container">
-      <h2 class="section-title">Reproducibility</h2>
-      <p>
-      </p>
-    </div>
-  </section> -->
+<script>
+/* -------- 1A viewer (generalized) -------- */
+(function () {
+  const CONFIG = {
+    base: 'media/part1',
+    datasets: [
+      { id: 'box', label: 'Box Filter', ks: [3,5,9,15] }
+      // add more sets later, same naming: <id>_<impl>_k<k>.png/jpg
+    ],
+    methods: ['fourloops','scipy'],
+    exts: ['png','jpg','jpeg']
+  };
+
+  const $ = s => document.querySelector(s);
+  const dsSel = $('#a-dataset'), kIdx = $('#a-kIdx'), kval = $('#a-kval'),
+        img = $('#a-img'), cap = $('#a-cap');
+
+  CONFIG.datasets.forEach(d => {
+    const o = document.createElement('option'); o.value = d.id; o.textContent = d.label;
+    dsSel.appendChild(o);
+  });
+
+  const curDS = () => CONFIG.datasets.find(d => d.id === dsSel.value);
+  const curImpl = () => document.querySelector('input[name="a-impl"]:checked').value;
+
+  function setSlider(ds){ kIdx.min=0; kIdx.max=ds.ks.length-1; if(+kIdx.value>+kIdx.max) kIdx.value=0; }
+
+  function tryLoad(paths,i=0){ if(i>=paths.length){ img.removeAttribute('src'); return; }
+    img.onerror=()=>tryLoad(paths,i+1); img.src=paths[i]; }
+
+  function update(){
+    const ds=curDS(), k=ds.ks[+kIdx.value], impl=curImpl();
+    kval.textContent=k;
+    cap.textContent = `${ds.label} — ${impl==='fourloops'?'From scratch':'SciPy'} (k=${k})`;
+    const paths = CONFIG.exts.map(ext=>`${CONFIG.base}/${ds.id}/${ds.id}_${impl}_k${k}.${ext}`);
+    tryLoad(paths);
+  }
+
+  dsSel.addEventListener('change', ()=>{ setSlider(curDS()); update(); });
+  kIdx.addEventListener('input', update);
+  document.querySelectorAll('input[name="a-impl"]').forEach(r=>r.addEventListener('change', update));
+
+  setSlider(curDS()); update();
+})();
+
+/* -------- 1B viewer (finite differences) -------- */
+(function () {
+  // Files expected under media/part1_2/:
+  // p1_2_Ix.png, p1_2_Iy.png, p1_2_gradmag.png, p1_2_edges_t{10,15,20,25,30}.png (png/jpg ok)
+  const BASE = 'media/part1_2';
+  const THRESH = [10,15,20,25,30];
+  const EXTS = ['png','jpg','jpeg'];
+  const $ = s => document.querySelector(s);
+
+  const mode = ()=>document.querySelector('input[name="b-mode"]:checked').value;
+  const tIdx = $('#b-tIdx'), tVal = $('#b-tval'), thrWrap = $('#b-thr-wrap'),
+        img = $('#b-img'), cap = $('#b-cap');
+
+  function candidates(){
+    const m = mode();
+    if(m==='edges'){
+      const t = THRESH[+tIdx.value];
+      tVal.textContent = t;
+      return EXTS.map(ext => `${BASE}/p1_2_edges_t${t}.${ext}`);
+    }
+    const file = m==='Ix' ? 'p1_2_Ix'
+               : m==='Iy' ? 'p1_2_Iy'
+               :              'p1_2_gradmag';
+    return EXTS.map(ext => `${BASE}/${file}.${ext}`);
+  }
+
+  function tryLoad(paths,i=0){ if(i>=paths.length){ img.removeAttribute('src'); return; }
+    img.onerror=()=>tryLoad(paths,i+1); img.src=paths[i]; }
+
+  function update(){
+    thrWrap.style.display = (mode()==='edges') ? 'inline-flex' : 'none';
+    const label = (mode()==='gradmag') ? '|∇I|' : mode();
+    cap.textContent = `Finite difference — ${label}` + (mode()==='edges' ? ` (t=${THRESH[+tIdx.value]})` : '');
+    tryLoad(candidates());
+  }
+
+  document.querySelectorAll('input[name="b-mode"]').forEach(r=>r.addEventListener('change', update));
+  tIdx.addEventListener('input', update);
+  update();
+})();
+</script>
+<script>
+/* -------- 1C viewer (DoG vs Smooth→Diff) -------- */
+(function () {
+  const BASE = 'media/part1_3';
+  const EXTS = ['png','jpg','jpeg'];
+  const $ = s => document.querySelector(s);
+
+  const impl = () => document.querySelector('input[name="c-impl"]:checked').value;   // smoothdiff | DoG
+  const mode = () => document.querySelector('input[name="c-mode"]:checked').value;   // Ix | Iy | gradmag
+  const img  = $('#c-img'), cap = $('#c-cap');
+
+  function candidates() {
+    // p1_3_<Ix|Iy|gradmag>_<smoothdiff|DoG>.<ext>
+    const file = `p1_3_${mode()}_${impl()}`;
+    return EXTS.map(ext => `${BASE}/${file}.${ext}`);
+  }
+
+  function tryLoad(paths, i=0) {
+    if (i >= paths.length) { img.removeAttribute('src'); return; }
+    img.onerror = () => tryLoad(paths, i+1);
+    img.src = paths[i];
+  }
+
+  function update() {
+    const m = mode();
+    const i = impl() === 'smoothdiff' ? 'Smooth → Diff' : 'DoG';
+    cap.textContent = `1C — ${i}, ${m === 'gradmag' ? '|∇I|' : m}`;
+    tryLoad(candidates());
+  }
+
+  document.querySelectorAll('input[name="c-impl"]').forEach(r => r.addEventListener('change', update));
+  document.querySelectorAll('input[name="c-mode"]').forEach(r => r.addEventListener('change', update));
+  update();
+})();
+</script>
 </body>
 </html>
