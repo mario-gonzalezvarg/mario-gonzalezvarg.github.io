@@ -582,7 +582,7 @@ JS: 2B viewer
   }
   function label(){
     const m=selMask.value==='vertical'?'Vertical':'Circular';
-    const v={result:'Result (Oraple)', mask_stack:'Mask stack', lap_blended:'Laplacian blended stack'}[view()];
+    const v={result:'Result', mask_stack:'Mask stack', lap_blended:'Laplacian blended stack'}[view()];
     return `2D — ${v} • ${m} mask`;
   }
   function tryLoad(ps,i=0){ if(i>=ps.length){ img.removeAttribute('src'); return; } img.onerror=()=>tryLoad(ps,i+1); img.src=ps[i]; }
