@@ -196,24 +196,25 @@
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Set:</strong>
             <select id="hy-set">
-              <option value="example" selected>Example (A+B)</option>
-              <option value="custom1">Custom 1</option>
-              <option value="custom2">Custom 2</option>
+              <option value="example" selected>Derek and Nutmeg</option>
+              <!-- <option value="custom1">Custom 1</option>
+              <option value="custom2">Custom 2</option> -->
             </select>
           </label>
 
-          <label><input type="radio" name="hy-view" value="A" checked> A (low-freq carrier)</label>
-          <label><input type="radio" name="hy-view" value="B"> B (high-freq detail)</label>
-          <label><input type="radio" name="hy-view" value="low"> Low-pass(A)</label>
+          <label><input type="radio" name="hy-view" value="A" checked>Image A</label>
+          <label><input type="radio" name="hy-view" value="low"> A: Low-Pass</label>
+          <label><input type="radio" name="hy-view" value="B"> Image B</label>
+          <!-- <label><input type="radio" name="hy-view" value="low"> Low-pass(A)</label> -->
           <label><input type="radio" name="hy-view" value="high"> High-pass(B)</label>
           <label><input type="radio" name="hy-view" value="hybrid"> Hybrid</label>
-
+<!-- 
           <span style="margin-left:12px"></span>
           <label><input type="radio" name="hy-view" value="fft_A"> FFT(A)</label>
           <label><input type="radio" name="hy-view" value="fft_B"> FFT(B)</label>
           <label><input type="radio" name="hy-view" value="fft_low"> FFT(Low)</label>
           <label><input type="radio" name="hy-view" value="fft_high"> FFT(High)</label>
-          <label><input type="radio" name="hy-view" value="fft_hybrid"> FFT(Hybrid)</label>
+          <label><input type="radio" name="hy-view" value="fft_hybrid"> FFT(Hybrid)</label> -->
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -520,8 +521,8 @@ JS: 2B viewer
   function label(set, v){
     const names = {
       A:'A (low-freq carrier)', B:'B (high-freq detail)',
-      low:'Low-pass(A)', high:'High-pass(B)', hybrid:'Hybrid',
-      fft_A:'FFT(A)', fft_B:'FFT(B)', fft_low:'FFT(Low)', fft_high:'FFT(High)', fft_hybrid:'FFT(Hybrid)'
+     high:'High-pass(B)', hybrid:'Hybrid',
+      // fft_A:'FFT(A)', fft_B:'FFT(B)', fft_low:'FFT(Low)', fft_high:'FFT(High)', fft_hybrid:'FFT(Hybrid)'
     };
     const setName = set==='example' ? 'Example' : (set==='custom1'?'Custom 1':'Custom 2');
     return `2B — ${setName} • ${names[v] || v}`;
