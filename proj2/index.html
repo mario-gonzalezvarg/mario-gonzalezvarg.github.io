@@ -29,14 +29,15 @@
     <div class="container">
       <h2 class="section-title">1A – Convolution Filters</h2>
 
-        <p>
+      <p>
         This project studies linear filtering and multi-scale image representations through a sequence of controlled
         experiments. In Part 1, an implemention of a 2-D convolution from first principles is constructed and used to estimate spatial derivatives via
         finite differences, and replace naive differencing with derivative-of-Gaussian (DoG) filters to suppress noise.
         In Part 2, we use filtering as a tool for manipulating frequency content: unsharp masking increases the energy
         of high spatial frequencies to “sharpen” imagery; hybrid images juxtapose low-frequency content from one image
         with high-frequency content from another; and Gaussian/Laplacian stacks enable multi-resolution blending that
-        hides seams across scales.  </p>
+        hides seams across scales.
+      </p>
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -68,8 +69,6 @@
         that both custom implementations match SciPy up to floating-point tolerance, while the two-loop version is
         substantially faster than four loops for moderate kernel sizes.
       </p>
-
-     
     </div>
   </section>
 
@@ -83,10 +82,8 @@
         <code>Dx = [-1, 1]</code> and <code>Dy = Dx<sup>T</sup></code> using <code>conv2d_scipy</code>.
         The partials <code>Ix</code> and <code>Iy</code> are then combined into a gradient magnitude image
         <code>|∇I| = sqrt(Ix² + Iy²)</code> (implemented in <code>proj2/edges.py</code>). Binarized “edge maps” are
-        obtained by thresholding <code>|∇I|</code> at a fraction of its maximum. 
+        obtained by thresholding <code>|∇I|</code> at a fraction of its maximum.
       </p>
-
-      
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -134,15 +131,13 @@
 
       <p>
         I ended up replacing the raw differences with derivatives of a Gaussian. A normalized Gaussian kernel
-        <code>G<sub>σ</sub></code> is constructed  using
+        <code>G<sub>σ</sub></code> is constructed using
         <code>ksize ≈ 6σ + 1</code> to capture sufficient support. Two pipelines are compared: (i) smoothing the image
         with <code>G<sub>σ</sub></code> and then applying <code>Dx</code>/<code>Dy</code>; and (ii) forming the DoG
         filters <code>∂G/∂x</code>, <code>∂G/∂y</code> (by convolving <code>G</code> with the difference stencils) and
         applying a single convolution per axis. Both methods yield near-identical <code>Ix</code>, <code>Iy</code>, and
         <code>|∇I|</code> when σ and support are matched, but the DoG route is computationally attractive and conceptually
-        cleaner. For the bells-and-whistles visualization, I compute orientations <code>θ = atan2(Iy, Ix)</code> and map
-        them to hue in HSV, with value proportional to <code>|∇I|</code>; this exposes coherent edge directions across
-        the scene.
+        cleaner.
       </p>
     </div>
   </section>
@@ -174,16 +169,8 @@
       </div>
 
       <p>
-        Unsharp masking is implemented in <code>proj2/sharpen.py</code>. A Gaussian blur
-        <code>blur = G<sub>σ</sub> ⊗ I</code> is subtracted from the input to isolate high frequencies
-        <code>high = I − blur</code>; the sharpened output is <code>I′ = clip(I + α·high, 0, 1)</code>. Parameters
-        <code>σ</code> and <code>α</code> govern the spatial scale and strength of the enhancement: increasing
-        <code>σ</code> shifts the emphasis to broader features, whereas large <code>α</code> may introduce halos near
-        strong edges. I also demonstrate reversal by first blurring a sharp image (setting <code>α = −1</code> to
-        visualize the low-pass) and then attempting to re-sharpen it; the comparison clarifies that sharpening restores
-        local contrast but cannot recreate frequencies that have been eliminated by the blur.
+        Unsharp masking: <code>blur = G<sub>σ</sub> ⊗ I</code>, <code>high = I − blur</code>, <code>I′ = clip(I + α·high)</code>.
       </p>
-
     </div>
   </section>
 
@@ -197,24 +184,14 @@
           <label><strong>Set:</strong>
             <select id="hy-set">
               <option value="example" selected>Derek and Nutmeg</option>
-              <!-- <option value="custom1">Custom 1</option>
-              <option value="custom2">Custom 2</option> -->
             </select>
           </label>
 
-          <label><input type="radio" name="hy-view" value="A" checked>Image A</label>
+          <label><input type="radio" name="hy-view" value="A" checked> Image A</label>
           <label><input type="radio" name="hy-view" value="low"> A: Low-Pass</label>
           <label><input type="radio" name="hy-view" value="B"> Image B</label>
-          <!-- <label><input type="radio" name="hy-view" value="low"> Low-pass(A)</label> -->
           <label><input type="radio" name="hy-view" value="high"> High-pass(B)</label>
           <label><input type="radio" name="hy-view" value="hybrid"> Hybrid</label>
-<!-- 
-          <span style="margin-left:12px"></span>
-          <label><input type="radio" name="hy-view" value="fft_A"> FFT(A)</label>
-          <label><input type="radio" name="hy-view" value="fft_B"> FFT(B)</label>
-          <label><input type="radio" name="hy-view" value="fft_low"> FFT(Low)</label>
-          <label><input type="radio" name="hy-view" value="fft_high"> FFT(High)</label>
-          <label><input type="radio" name="hy-view" value="fft_hybrid"> FFT(Hybrid)</label> -->
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -222,20 +199,6 @@
           <figcaption id="hy-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
       </div>
-
-       <p>
-        The hybrid construction in <code>proj2/hybrid.py</code> forms
-        <code>H = LP<sub>σL</sub>(A) + HP<sub>σH</sub>(B)</code>, where
-        <code>HP(B) = B − LP<sub>σH</sub>(B)</code>. The function
-        <code>hybrid_image(A,B, low_ksize, σL, high_ksize, σH)</code> returns the low-pass of <code>A</code>, the
-        high-pass of <code>B</code>, their clipped sum, and a log-magnitude FFT for analysis (<code>log_fft</code>).
-        Images are pre-aligned and resized via <code>proj2/io_utils.match_size</code> so that semantic structures are
-        co-located. Successful hybrids rely on three controls: accurate geometric alignment (to avoid double features),
-        a sufficiently large <code>σL</code> that removes mid-frequencies from the carrier, and a moderate
-        <code>σH</code> that preserves crisp detail without injecting noise. I tune cutoffs by inspecting the FFTs and
-        by checking whether the interpretation of <code>H</code> flips with viewing distance as intended.
-      </p>
-    
     </div>
   </section>
 
@@ -262,13 +225,6 @@
           <figcaption id="st-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
       </div>
-
-       <p>
-        In stacks.py</code>, <code>gaussian_stack(img, L, k, σ)</code> generates a stack of <code>L</code>
-        images at full resolution by repeated blurring with the same σ; <code>laplacian_stack. Unlike pyramids, stacks avoid down-sampling and simplify subsequent
-        per-pixel operations (e.g., stack-wise masking) at the expense of memory. The Laplacian representation is a
-        band-pass decomposition of the image and is a natural basis for frequency-aware blending.
-      </p>
     </div>
   </section>
 
@@ -281,15 +237,14 @@
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Mask:</strong>
             <select id="blend-mask">
-              <option value="vertical" selected>Vertical Oraple</option>
-              <option value="irregular">Irregular Oraple</option>
+              <option value="vertical" selected>Vertical</option>
+              <option value="irregular">Irregular</option>
             </select>
           </label>
 
           <label><input type="radio" name="blend-view" value="result" checked> Result</label>
           <label><input type="radio" name="blend-view" value="mask_stack"> Mask Stack</label>
           <label><input type="radio" name="blend-view" value="lap_blended"> Laplacian Blended Stack</label>
-          <label><input type="radio" name="blend-view" value="fourier series"></label>
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -297,306 +252,303 @@
           <figcaption id="blend-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
       </div>
-       <p>
-        We implement blending using the Burt–Adelson recipe using stacks. Given two color
-        images <code>A</code>, <code>B</code> and a mask <code>M∈[0,1]</code>, Laplacian stacks
-        <code>LA</code>, <code>LB</code> and a Gaussian stack of the mask <code>GM</code>. At each level
-        <code>i</code>, we compute <code>L<sub>blend</sub>[i] = GM[i]·LA[i] + (1−GM[i])·LB[i]</code>, then collapse the
-        blended Laplacian stack to reconstruct the output. A hard vertical step mask reproduces the classic “oraple”
-        result; an irregular, feathered mask demonstrates that spatially varying, scale-appropriate smoothing of the
-        seam yields perceptually (ALMOST) seamless composites even across textured regions.
-      </p>
-    </div>
-  </section>
-
- 
 
   
 
-<script>
-/* -------- 1A viewer (generalized) -------- */
-(function () {
-  const CONFIG = {
-    base: 'media/part1',
-    datasets: [
-      { id: 'box', label: 'Box Filter', ks: [3,5,9,15] }
-      // add more sets later, same naming: <id>_<impl>_k<k>.png/jpg
-    ],
-    methods: ['fourloops','scipy'],
-    exts: ['png','jpg','jpeg']
-  };
+  <!-- ====================== Shared JS helpers ====================== -->
+  <script>
+  (function(){
+    const EXTS = ['png','jpg','jpeg'];
+    const $ = s => document.querySelector(s);
 
-  const $ = s => document.querySelector(s);
-  const dsSel = $('#a-dataset'), kIdx = $('#a-kIdx'), kval = $('#a-kval'),
-        img = $('#a-img'), cap = $('#a-cap');
-
-  CONFIG.datasets.forEach(d => {
-    const o = document.createElement('option'); o.value = d.id; o.textContent = d.label;
-    dsSel.appendChild(o);
-  });
-
-  const curDS = () => CONFIG.datasets.find(d => d.id === dsSel.value);
-  const curImpl = () => document.querySelector('input[name="a-impl"]:checked').value;
-
-  function setSlider(ds){ kIdx.min=0; kIdx.max=ds.ks.length-1; if(+kIdx.value>+kIdx.max) kIdx.value=0; }
-
-  function tryLoad(paths,i=0){ if(i>=paths.length){ img.removeAttribute('src'); return; }
-    img.onerror=()=>tryLoad(paths,i+1); img.src=paths[i]; }
-
-  function update(){
-    const ds=curDS(), k=ds.ks[+kIdx.value], impl=curImpl();
-    kval.textContent=k;
-    cap.textContent = `${ds.label} — ${impl==='fourloops'?'From scratch':'SciPy'} (k=${k})`;
-    const paths = CONFIG.exts.map(ext=>`${CONFIG.base}/${ds.id}/${ds.id}_${impl}_k${k}.${ext}`);
-    tryLoad(paths);
-  }
-
-  dsSel.addEventListener('change', ()=>{ setSlider(curDS()); update(); });
-  kIdx.addEventListener('input', update);
-  document.querySelectorAll('input[name="a-impl"]').forEach(r=>r.addEventListener('change', update));
-
-  setSlider(curDS()); update();
-})();
-
-/* -------- 1B viewer (finite differences) -------- */
-(function () {
-  // Files expected under media/part1_2/:
-  // p1_2_Ix.png, p1_2_Iy.png, p1_2_gradmag.png, p1_2_edges_t{10,15,20,25,30}.png (png/jpg ok)
-  const BASE = 'media/part1_2';
-  const THRESH = [10,15,20,25,30];
-  const EXTS = ['png','jpg','jpeg'];
-  const $ = s => document.querySelector(s);
-
-  const mode = ()=>document.querySelector('input[name="b-mode"]:checked').value;
-  const tIdx = $('#b-tIdx'), tVal = $('#b-tval'), thrWrap = $('#b-thr-wrap'),
-        img = $('#b-img'), cap = $('#b-cap');
-
-  function candidates(){
-    const m = mode();
-    if(m==='edges'){
-      const t = THRESH[+tIdx.value];
-      tVal.textContent = t;
-      return EXTS.map(ext => `${BASE}/p1_2_edges_t${t}.${ext}`);
+    function tryLoad(imgEl, paths, i=0){
+      if(i >= paths.length){ imgEl.removeAttribute('src'); return; }
+      imgEl.onerror = () => tryLoad(imgEl, paths, i+1);
+      imgEl.src = paths[i];
     }
-    const file = m==='Ix' ? 'p1_2_Ix'
-               : m==='Iy' ? 'p1_2_Iy'
-               :              'p1_2_gradmag';
-    return EXTS.map(ext => `${BASE}/${file}.${ext}`);
-  }
-
-  function tryLoad(paths,i=0){ if(i>=paths.length){ img.removeAttribute('src'); return; }
-    img.onerror=()=>tryLoad(paths,i+1); img.src=paths[i]; }
-
-  function update(){
-    thrWrap.style.display = (mode()==='edges') ? 'inline-flex' : 'none';
-    const label = (mode()==='gradmag') ? '|∇I|' : mode();
-    cap.textContent = `Finite difference — ${label}` + (mode()==='edges' ? ` (t=${THRESH[+tIdx.value]})` : '');
-    tryLoad(candidates());
-  }
-
-  document.querySelectorAll('input[name="b-mode"]').forEach(r=>r.addEventListener('change', update));
-  tIdx.addEventListener('input', update);
-  update();
-})();
-
-
-
-</script>
-<script>
-/* -------- 1C viewer (DoG vs Smooth→Diff) -------- */
-(function () {
-  const BASE = 'media/part1_3';
-  const EXTS = ['png','jpg','jpeg'];
-  const $ = s => document.querySelector(s);
-
-  const impl = () => document.querySelector('input[name="c-impl"]:checked').value;   // smoothdiff | DoG
-  const mode = () => document.querySelector('input[name="c-mode"]:checked').value;   // Ix | Iy | gradmag
-  const img  = $('#c-img'), cap = $('#c-cap');
-
-  function candidates() {
-    // p1_3_<Ix|Iy|gradmag>_<smoothdiff|DoG>.<ext>
-    const file = `p1_3_${mode()}_${impl()}`;
-    return EXTS.map(ext => `${BASE}/${file}.${ext}`);
-  }
-
-  function tryLoad(paths, i=0) {
-    if (i >= paths.length) { img.removeAttribute('src'); return; }
-    img.onerror = () => tryLoad(paths, i+1);
-    img.src = paths[i];
-  }
-
-  function update() {
-    const m = mode();
-    const i = impl() === 'smoothdiff' ? 'Smooth → Diff' : 'DoG';
-    cap.textContent = `1C — ${i}, ${m === 'gradmag' ? '|∇I|' : m}`;
-    tryLoad(candidates());
-  }
-
-  document.querySelectorAll('input[name="c-impl"]').forEach(r => r.addEventListener('change', update));
-  document.querySelectorAll('input[name="c-mode"]').forEach(r => r.addEventListener('change', update));
-  update();
-})();
-</script>
-
-<script>
-/* -------- 2A — Unsharp viewer -------- */
-(function(){
-  // Files live in media/part2_1/
-  // taj:   taj_blur.png, taj_high.png, taj_sharp.png
-  // demo:  demo_src.png, demo_src_blurred.png, demo_src_resharp.png
-  const BASE = 'media/part2_1';
-  const EXTS = ['png','jpg','jpeg'];
-  const $ = s => document.querySelector(s);
-
-  const dsSel = $('#ua-dataset');
-  const img   = $('#ua-img');
-  const cap   = $('#ua-cap');
-
-  function view(){ return document.querySelector('input[name="ua-view"]:checked').value; }
-
-  // map (dataset, view) -> filename stem
-  function stem(ds, v){
-    if(ds==='taj'){
-      if(v==='src')  return 'taj';         // fall back to blur if no raw src provided
-      if(v==='blur') return 'taj_blur';
-      if(v==='high') return 'taj_high';
-      if(v==='sharp')return 'taj_sharp';
-    } else { // demo
-      if(v==='src')  return 'demo_src';
-      if(v==='blur') return 'demo_src_blurred';
-      if(v==='high') return 'taj_high'; // not produced for demo; no-op -> will hide if missing
-      if(v==='sharp')return 'demo_src_resharp';
+    function onRadios(name, cb){
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', cb));
     }
-    return null;
-  }
+    window.UI = {EXTS, $, tryLoad, onRadios};
+  })();
+  </script>
 
-  function tryLoad(paths,i=0){ if(i>=paths.length){ img.removeAttribute('src'); return; }
-    img.onerror = () => tryLoad(paths,i+1); img.src = paths[i]; }
-
-  function update(){
-    const ds = dsSel.value, v = view();
-    const s = stem(ds, v);
-    const nice = {src:'Source', blur:'Blurred (LPF)', high:'High-pass', sharp:'Sharpened'}[v] || v;
-    cap.textContent = `2A — ${ds==='taj'?'Taj':'Demo'} • ${nice}`;
-
-    if(!s){ img.removeAttribute('src'); return; }
-    const paths = EXTS.map(ext => `${BASE}/${s}.${ext}`);
-    tryLoad(paths);
-  }
-
-  dsSel.addEventListener('change', update);
-  document.querySelectorAll('input[name="ua-view"]').forEach(r=>r.addEventListener('change', update));
-  update();
-})();
-</script>
-
-JS: 2B viewer
-
-<script>
-/* -------- 2B — Hybrid viewer -------- */
-(function(){
-  // Files live in media/part2_2/
-  // Example set: A.png, B.png, low.png, high.png, hybrid.png, fft_*.png
-  // Custom sets (if present): hybrid_custom1.png, hybrid_custom2.png
-  const BASE = 'media/part2_2';
-  const EXTS = ['png','jpg','jpeg'];
-  const $ = s => document.querySelector(s);
-
-  const setSel = $('#hy-set');
-  const img    = $('#hy-img');
-  const cap    = $('#hy-cap');
-
-  function view(){ return document.querySelector('input[name="hy-view"]:checked').value; }
-
-  function filename(set, v){
-    if(set === 'example'){
-      // direct mapping for example set
-      return (v.startsWith('fft_')) ? v : v;  // names are identical: A.png, low.png, fft_low.png, etc.
-    }
-    // custom sets typically only provide the final hybrid; map everything to that result
-    if(set === 'custom1') return (v.startsWith('fft_')) ? 'fft_hybrid' : 'hybrid_custom1';
-    if(set === 'custom2') return (v.startsWith('fft_')) ? 'fft_hybrid' : 'hybrid_custom2';
-    return null;
-  }
-
-  function label(set, v){
-    const names = {
-      A:'A (low-freq carrier)', B:'B (high-freq detail)',
-     high:'High-pass(B)', hybrid:'Hybrid',
-      // fft_A:'FFT(A)', fft_B:'FFT(B)', fft_low:'FFT(Low)', fft_high:'FFT(High)', fft_hybrid:'FFT(Hybrid)'
+  <!-- ====================== 1A viewer ====================== -->
+  <script>
+  (function () {
+    const {EXTS, $, tryLoad, onRadios} = UI;
+    const CONFIG = {
+      base: 'media/part1',
+      datasets: [{ id: 'box', label: 'Box Filter', ks: [3,5,9,15] }]
     };
-    const setName = set==='example' ? 'Example' : (set==='custom1'?'Custom 1':'Custom 2');
-    return `2B — ${setName} • ${names[v] || v}`;
+
+    const dsSel = $('#a-dataset'), kIdx = $('#a-kIdx'), kval = $('#a-kval'),
+          img = $('#a-img'), cap = $('#a-cap');
+
+    CONFIG.datasets.forEach(d => {
+      const o = document.createElement('option'); o.value = d.id; o.textContent = d.label;
+      dsSel.appendChild(o);
+    });
+
+    const curDS = () => CONFIG.datasets.find(d => d.id === dsSel.value);
+    const curImpl = () => document.querySelector('input[name="a-impl"]:checked').value;
+
+    function setSlider(ds){
+      kIdx.min = 0; kIdx.max = ds.ks.length - 1;
+      if(+kIdx.value > +kIdx.max) kIdx.value = 0;
+    }
+
+    function update(){
+      const ds = curDS(), k = ds.ks[+kIdx.value], impl = curImpl();
+      kval.textContent = k;
+      cap.textContent = `${ds.label} — ${impl==='fourloops'?'From scratch':'SciPy'} (k=${k})`;
+      const paths = EXTS.map(ext => `${CONFIG.base}/${ds.id}/${ds.id}_${impl}_k${k}.${ext}`);
+      tryLoad(img, paths);
+    }
+
+    dsSel.addEventListener('change', () => { setSlider(curDS()); update(); });
+    kIdx.addEventListener('input', update);
+    onRadios('a-impl', update);
+
+    setSlider(curDS()); update();
+  })();
+  </script>
+
+  <!-- ====================== 1B viewer ====================== -->
+  <script>
+  (function () {
+    const {EXTS, $, tryLoad, onRadios} = UI;
+    const BASE = 'media/part1_2';
+    const THRESH = [10,15,20,25,30];
+
+    const mode = () => document.querySelector('input[name="b-mode"]:checked').value;
+    const tIdx = $('#b-tIdx'), tVal = $('#b-tval'), thrWrap = $('#b-thr-wrap'),
+          img = $('#b-img'), cap = $('#b-cap');
+
+    function candidates(){
+      const m = mode();
+      if(m==='edges'){
+        const t = THRESH[+tIdx.value];
+        tVal.textContent = t;
+        return EXTS.map(ext => `${BASE}/p1_2_edges_t${t}.${ext}`);
+      }
+      const file = m==='Ix' ? 'p1_2_Ix' : m==='Iy' ? 'p1_2_Iy' : 'p1_2_gradmag';
+      return EXTS.map(ext => `${BASE}/${file}.${ext}`);
+    }
+
+    function update(){
+      thrWrap.style.display = (mode()==='edges') ? 'inline-flex' : 'none';
+      const label = (mode()==='gradmag') ? '|∇I|' : mode();
+      cap.textContent = `Finite difference — ${label}` + (mode()==='edges' ? ` (t=${THRESH[+tIdx.value]})` : '');
+      tryLoad(img, candidates());
+    }
+
+    onRadios('b-mode', update);
+    tIdx.addEventListener('input', update);
+    update();
+  })();
+  </script>
+
+  <!-- ====================== 1C viewer ====================== -->
+  <script>
+  (function () {
+    const {EXTS, $, tryLoad, onRadios} = UI;
+    const BASE = 'media/part1_3';
+
+    const impl = () => document.querySelector('input[name="c-impl"]:checked').value;
+    const mode = () => document.querySelector('input[name="c-mode"]:checked').value;
+    const img  = $('#c-img'), cap = $('#c-cap');
+
+    function update() {
+      const m = mode();
+      const i = impl() === 'smoothdiff' ? 'Smooth → Diff' : 'DoG';
+      cap.textContent = `1C — ${i}, ${m === 'gradmag' ? '|∇I|' : m}`;
+      const file = `p1_3_${m}_${impl()}`;
+      tryLoad(img, EXTS.map(ext => `${BASE}/${file}.${ext}`));
+    }
+
+    onRadios('c-impl', update);
+    onRadios('c-mode', update);
+    update();
+  })();
+  </script>
+
+  <!-- ====================== Config for Part 2D datasets ====================== -->
+  <script id="blend-config" type="application/json">
+  {
+    "base": "media/part2_4",
+    "exts": ["png","jpg","jpeg"],
+    "datasets": [
+      {
+        "id": "oraple",
+        "label": "Oraple ",
+        "stems": {
+          "result": "{id}_{mask}",
+          "mask_stack": "mask_stack_{mask}",
+          "lap_blended": "lap_blended_{mask}"
+        }
+      },
+      {
+        "id": "rainer_sb",
+        "label": "Santa Barbara ⊕ Rainer (irregular mask)",
+        "stems": {
+          "result": "sbrainer",
+          "mask_stack": "stacks_rainer_sb_rainer_mask_L10_k17_s8.0_f65_lin_Gmask_grid",
+          "lap_blended": "stacks_rainer_sb_rainer_mask_L10_k17_s8.0_f65_lin_Ls_grid"
+        }
+      }
+    ]
   }
+  </script>
 
-  function tryLoad(paths,i=0){ if(i>=paths.length){ img.removeAttribute('src'); return; }
-    img.onerror=()=>tryLoad(paths,i+1); img.src=paths[i]; }
+  <!-- === Single driver for ALL Part 2 viewers (2A/2B/2C/2D) === -->
+  <script>
+  (function(){
+    const EXTS = (window.UI && UI.EXTS) || ['png','jpg','jpeg'];
+    const $    = (window.UI && UI.$)    || (s => document.querySelector(s));
+    const tryLoad = (window.UI && UI.tryLoad) || function(imgEl, paths, i=0){
+      if(i>=paths.length){ imgEl.removeAttribute('src'); return; }
+      imgEl.onerror = () => tryLoad(imgEl, paths, i+1);
+      imgEl.src = paths[i];
+    };
 
-  function update(){
-    const s = setSel.value, v = view();
-    cap.textContent = label(s, v);
-    const stem = filename(s, v);
-    if(!stem){ img.removeAttribute('src'); return; }
-    const paths = EXTS.map(ext => `${BASE}/${stem}.${ext}`);
-    tryLoad(paths);
-  }
+    function makePart2Viewer({base, imgSel, capSel, watch, resolve, exts=EXTS}) {
+      const img = $(imgSel), cap = $(capSel);
 
-  setSel.addEventListener('change', update);
-  document.querySelectorAll('input[name="hy-view"]').forEach(r=>r.addEventListener('change', update));
-  update();
-})();
-</script>
+      function readState() {
+        const s = {};
+        for (const w of watch) {
+          if (w.kind === 'radio') {
+            const el = document.querySelector(`input[name="${w.name}"]:checked`);
+            s[w.as] = el ? el.value : undefined;
+          } else if (w.kind === 'select') {
+            const el = document.getElementById(w.id);
+            s[w.as] = el ? el.value : undefined;
+          }
+        }
+        return s;
+      }
 
-<script>
-/* -------- 2C — Stacks viewer -------- */
-(function(){
-  // Files in media/part2_3/: gauss_apple.png, lap_apple.png, gauss_orange.png, lap_orange.png
-  const BASE='media/part2_3', EXTS=['png','jpg','jpeg'], $=s=>document.querySelector(s);
-  const selImg=$('#st-img'), img=$('#st-view'), cap=$('#st-cap');
-  const type=()=>document.querySelector('input[name="st-type"]:checked').value; // gauss|lap
+      function update() {
+        const state = readState();
+        const { stem, stems, label } = resolve(state) || {};
+        const list = stems || (stem ? [stem] : []);
+        if (label) cap.textContent = label;
+        if (!list.length) { img.removeAttribute('src'); return; }
+        const paths = [];
+        for (const s of list) for (const ext of exts) paths.push(`${base}/${s}.${ext}`);
+        tryLoad(img, paths);
+      }
 
-  function path(){ const stem=`${type()}_${selImg.value}`; return EXTS.map(e=>`${BASE}/${stem}.${e}`); }
-  function tryLoad(ps,i=0){ if(i>=ps.length){ img.removeAttribute('src'); return; } img.onerror=()=>tryLoad(ps,i+1); img.src=ps[i]; }
-  function update(){
-    const t=type(), name=selImg.value==='apple'?'Apple':'Orange';
-    cap.textContent=`2C — ${t==='gauss'?'Gaussian':'Laplacian'} stack • ${name}`;
-    tryLoad(path());
-  }
-  selImg.addEventListener('change',update);
-  document.querySelectorAll('input[name="st-type"]').forEach(r=>r.addEventListener('change',update));
-  update();
-})();
-</script>
+      for (const w of watch) {
+        if (w.kind === 'radio') {
+          document.querySelectorAll(`input[name="${w.name}"]`).forEach(r => r.addEventListener('change', update));
+        } else if (w.kind === 'select') {
+          const el = document.getElementById(w.id);
+          if (el) el.addEventListener('change', update);
+        }
+      }
+      update();
+      return update;
+    }
 
-<script>
-/* -------- 2D — Blending viewer -------- */
-(function(){
-  // Files in media/part2_4/
-  const BASE='media/part2_4', EXTS=['png','jpg','jpeg'], $=s=>document.querySelector(s);
-  const selMask=$('#blend-mask'), img=$('#blend-img'), cap=$('#blend-cap');
-  const view=()=>document.querySelector('input[name="blend-view"]:checked').value; // result|mask_stack|lap_blended
+    // ---------- 2A ----------
+    makePart2Viewer({
+      base: 'media/part2_1',
+      imgSel: '#ua-img',
+      capSel: '#ua-cap',
+      watch: [
+        {kind:'select', id:'ua-dataset', as:'ds'},
+        {kind:'radio',  name:'ua-view',  as:'view'}
+      ],
+      resolve: ({ds, view}) => {
+        const nice = {src:'Source', blur:'Blurred (LPF)', high:'High-pass', sharp:'Sharpened'}[view] || view;
+        const stemBy = {
+          taj:  {src:'taj', blur:'taj_blur', high:'taj_high', sharp:'taj_sharp'},
+          demo: {src:'demo_src', blur:'demo_src_blurred', high:'taj_high', sharp:'demo_src_resharp'}
+        };
+        const stem = stemBy[ds]?.[view] || null;
+        return { stem, label: `2A — ${ds==='taj'?'Taj':'Demo'} • ${nice}` };
+      }
+    });
 
-  function stem(){
-    const m=selMask.value;
-    if(view()==='result') return `oraple_${m}`;
-    if(view()==='mask_stack') return `mask_stack_${m}`;
-    return `lap_blended_${m}`;
-  }
-  function label(){
-    const m=selMask.value==='vertical'?'Vertical':'Circular';
-    const v={result:'Result', mask_stack:'Mask stack', lap_blended:'Laplacian blended stack'}[view()];
-    return `2D — ${v} • ${m} mask`;
-  }
-  function tryLoad(ps,i=0){ if(i>=ps.length){ img.removeAttribute('src'); return; } img.onerror=()=>tryLoad(ps,i+1); img.src=ps[i]; }
-  function update(){
-    cap.textContent=label();
-    const paths=EXTS.map(e=>`${BASE}/${stem()}.${e}`);
-    tryLoad(paths);
-  }
-  selMask.addEventListener('change',update);
-  document.querySelectorAll('input[name="blend-view"]').forEach(r=>r.addEventListener('change',update));
-  update();
-})();
-</script>
+    // ---------- 2B ----------
+    makePart2Viewer({
+      base: 'media/part2_2',
+      imgSel: '#hy-img',
+      capSel: '#hy-cap',
+      watch: [
+        {kind:'select', id:'hy-set',   as:'set'},
+        {kind:'radio',  name:'hy-view',as:'view'}
+      ],
+      resolve: ({set, view}) => {
+        const names = {A:'A (low-freq carrier)', low:'Low-pass(A)', B:'B (high-freq detail)', high:'High-pass(B)', hybrid:'Hybrid'};
+        return { stem: view, label: `2B — ${set==='example'?'Example':set} • ${names[view]||view}` };
+      }
+    });
+
+    // ---------- 2C ----------
+    makePart2Viewer({
+      base: 'media/part2_3',
+      imgSel: '#st-view',
+      capSel: '#st-cap',
+      watch: [
+        {kind:'select', id:'st-img',    as:'img'},
+        {kind:'radio',  name:'st-type', as:'type'}
+      ],
+      resolve: ({img, type}) => {
+        const name = img==='apple' ? 'Apple' : 'Orange';
+        return { stem: `${type}_${img}`, label: `2C — ${type==='gauss'?'Gaussian':'Laplacian'} stack • ${name}` };
+      }
+    });
+
+    // ---------- 2D ----------
+    makePart2Viewer({
+      base: (function(){
+        const el = document.querySelector('#blend-config');
+        if (!el) return 'media/part2_4';
+        try { return JSON.parse(el.textContent).base || 'media/part2_4'; }
+        catch (_) { return 'media/part2_4'; }
+      })(),
+      imgSel: '#blend-img',
+      capSel: '#blend-cap',
+      watch: [
+        {kind:'select', id:'blend-ds',  as:'ds'},
+        {kind:'select', id:'blend-mask',as:'mask'},
+        {kind:'radio',  name:'blend-view', as:'view'}
+      ],
+      resolve: ({ds, mask, view}) => {
+        const el = document.querySelector('#blend-config');
+        let CFG = null;
+        if (el) { try { CFG = JSON.parse(el.textContent); } catch(_){} }
+        const datasets = CFG?.datasets || [{id:'oraple', label:'Oraple', stems:{
+          result:'{id}_{mask}', mask_stack:'mask_stack_{mask}', lap_blended:'lap_blended_{mask}'
+        }}];
+
+        // Ensure a dataset selector exists; create if missing
+        let dsSel = document.querySelector('#blend-ds');
+        if (!dsSel) {
+          const controls = document.querySelector('#blend-mask').closest('div');
+          const lab = document.createElement('label');
+          lab.innerHTML = '<strong>Pair:</strong> <select id="blend-ds"></select>';
+          controls.insertBefore(lab, controls.firstChild);
+          dsSel = lab.querySelector('select');
+          dsSel.innerHTML = datasets.map(d=>`<option value="${d.id}">${d.label||d.id}</option>`).join('');
+          dsSel.addEventListener('change', () => document.querySelector('input[name="blend-view"]:checked').dispatchEvent(new Event('change')));
+        }
+
+        const active = datasets.find(d => d.id === (ds || dsSel.value)) || datasets[0];
+        if (dsSel && dsSel.value !== active.id) dsSel.value = active.id;
+
+        const tpl = active.stems?.[view];
+        const rel = tpl ? tpl.replace(/\{(\w+)\}/g, (_,k)=>({id:active.id,mask}[k]??'')) : `${active.id}_${mask}`;
+        const vname = view==='result' ? 'Result' : (view==='mask_stack' ? 'Mask stack' : 'Laplacian blended stack');
+        const mname = mask==='vertical' ? 'vertical' : 'Irregular';
+        return { stem: rel, label: `${active.label||active.id}` };
+      }
+    });
+
+  })();
+  </script>
 </body>
 </html>
