@@ -38,6 +38,10 @@
     <div class="container">
       <h2 class="section-title">A1 Set of Images to Manipulate </h2>
       <!-- <p>Clickable keypoints, average shape, and triangulation overlays.</p> -->
+       <p>
+Photographs were captured under a fixed center of projection while the camera was rotated about its optical center, producing pairs related predominantly by projective transformations. Frames were taken within a short time window to minimize illumination and scene changes, and with 40–70% field-of-view overlap to ensure sufficient common texture. This setup yields image pairs suitable for estimating a single planar homography between views and for constructing wide-field mosaics.
+</p>
+
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -65,7 +69,13 @@
   <section id="p3-2" class="section">
     <div class="container">
       <h2 class="section-title">A2 Recovering Homographies</h2>
-      <!-- <p>Per-triangle affine warp to a target mesh.</p> -->
+      <p>
+Point correspondences were manually annotated between each source–target pair and used to estimate a 3×3 homography <code>H</code> that maps homogeneous coordinates <code>x = (x, y, 1)&nbsp;ᵀ</code> to <code>x′ ∼ Hx</code>. With the scale fixed by <code>H(3,3)=1</code>, the remaining eight unknowns were recovered by stacking two linear equations per correspondence into an overdetermined system <code>A h = b</code> and solving in the least-squares sense. Concretely, each match <code>(x, y) → (u, v)</code> contributes
+<code>[x&nbsp;y&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;−u x&nbsp;−u y] h = u</code> and
+<code>[0&nbsp;0&nbsp;0&nbsp;x&nbsp;y&nbsp;1&nbsp;−v x&nbsp;−v y] h = v</code>.
+Using more than four correspondences improves numerical stability and reduces sensitivity to localization error. Visual overlays of the clicked pairs and the resulting warp provide qualitative validation; the recovered matrix <code>H</code> is additionally reported for quantitative inspection.
+</p>
+
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -93,6 +103,10 @@
   <section id="p3-3" class="section">
     <div class="container">
       <h2 class="section-title">A3 Warping of Images</h2> 
+      <p>
+Images were resampled by <em>inverse warping</em>: for each pixel on the output canvas, the pre-image was obtained via <code>x = H⁻¹ p</code> and sampled in the source at <code>(x/w, y/w)</code>. Output bounds were predicted by projecting the four source corners through <code>H</code> to allocate a tight canvas. Two interpolation schemes were implemented from first principles. Nearest-neighbor (NN) rounds to the closest integer coordinate and is computationally efficient but introduces blocky edges and aliasing. Bilinear interpolation computes a convex combination of the four neighboring pixels, yielding smoother edges and fewer stair-step artifacts at a modest increase in cost. Rectification was demonstrated by mapping a planar quadrilateral (e.g., a poster or tile) to a canonical rectangle, verifying that the estimated homography correctly removes perspective distortion.
+</p>
+
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -120,13 +134,18 @@
   <section id="p3-4" class="section">
     <div class="container">
       <h2 class="section-title">A4 Mosaic Blending</h2>
-      <p>Average geometry + texture; warp individual to mean and mean to individual.</p>
+      <p>
+To compose a panorama, all images were mapped into a common coordinate system (reference frame chosen near the middle of the sequence). For each warped image, a binary validity mask was generated and then smoothed using a box filter implemented via an integral-image prefix sum. The final mosaic was produced by feathered averaging,
+<code>I(out) = (∑<sub>k</sub> w<sub>k</sub>(out) · I<sub>k</sub>(out)) / (∑<sub>k</sub> w<sub>k</sub>(out))</code>,
+which attenuates seam visibility in overlaps while preserving detail away from boundaries. This weighted scheme mitigates hard transitions without invoking high-level libraries. Residual ghosting may persist where parallax or motion violates the single-homography assumption; nevertheless, the approach yields clean results on scenes consistent with planar or rotational camera motion.
+</p>
+
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Dataset:</strong>
             <select id="avg-ds">
-              <option value="danes" selected>Danes</option>
+              <option value="danes" selected>Sequia National Park</option>
               <option value="custom">Custom Cohort</option>
             </select>
           </label>
@@ -337,12 +356,38 @@
 })();
 
 
-    // Mosaic Blending
-    makeViewer({
-      base:'media/part3_4', imgSel:'#avg-img', capSel:'#avg-cap',
-      watch:[{kind:'select', id:'avg-ds', as:'ds'}, {kind:'radio', name:'avg-view', as:'view'}],
-      stem: ({ds,view}) => `${ds}_${view}`
-    });
+// A4 — map radios to images in media/a4
+(function(){
+  const {EXTS, $, tryLoad, onRadios} = UI;
+  const img = $('#avg-img'), cap = $('#avg-cap');
+
+  // Radio values in your HTML:
+  //   avg-view="mean_face"        → Mosaic without weighted average
+  //   avg-view="subject_to_mean"  → Mosaic with weighted average
+  const STEM_BY_VIEW = {
+    'mean_face':       'mosaic_no_weight',
+    'subject_to_mean': 'mosaic_weighted'
+  };
+
+  function update(){
+    const view = (document.querySelector('input[name="avg-view"]:checked')||{}).value;
+    const stem = STEM_BY_VIEW[view];
+    if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
+
+    cap.textContent = (view==='mean_face')
+      ? 'Mosaic without Weighted Average'
+      : 'Mosaic with Weighted Average';
+
+    const paths = EXTS.map(ext => `media/a4/${stem}.${ext}`);
+    tryLoad(img, paths);
+  }
+
+  // The dataset select exists but is unused here; keep listener for symmetry
+  document.getElementById('avg-ds').addEventListener('change', update);
+  onRadios('avg-view', update);
+  update();
+})();
+
 
 
     // BW
