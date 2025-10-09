@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS180 – Project 3 | Mario Gonzalez</title>
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .media { display:block; max-width:100%; }
+    .media--narrow { max-width:860px; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.05); }
+    .section { padding:40px 0; }
+    .section-title { margin-bottom:8px; }
+    .part-note { opacity:.8; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="nav-band">
+    <nav class="nav container" aria-label="Primary">
+      <a href="../index.html">Home</a>
+      <a href="../proj2/index.html">Project 2</a>
+      <a href="index.html" class="active" aria-current="page">Project 3</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Image Warping and Mosacing</h1>
+      <p class="part-note">CS180 • Fall 2025</p>
+      <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
+    </div>
+  </section>
+
+  <!-- ========== 1. Correspondences & Triangulation ========== -->
+  <section id="a1" class="section">
+    <div class="container">
+      <h2 class="section-title">A1 Set of Images to Manipulate </h2>
+      <!-- <p>Clickable keypoints, average shape, and triangulation overlays.</p> -->
+
+      <div class="card" style="padding:16px">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+          <label><strong>Pair:</strong>
+            <select id="c-pair">
+              <option value="Sequia National Park" selected>Sequia National Park</option>
+              <option value="pair2">Pair 2</option>
+            </select>
+          </label>
+          <label><input type="radio" name="c-view" value="a_points" checked> Fixed Center of Projection</label>
+          <label><input type="radio" name="c-view" value="b_points"> Rotation of Camera</label>
+          <!-- <label><input type="radio" name="c-view" value="avg_points"> Avg points</label>
+          <label><input type="radio" name="c-view" value="tri_overlay"> Triangulation overlay</label>
+        </div> -->
+
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="c-img" alt="correspondence">
+          <figcaption id="c-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2. Piecewise-Affine Warp ========== -->
+  <section id="p3-2" class="section">
+    <div class="container">
+      <h2 class="section-title">A2 Recover Homographies</h2>
+      <!-- <p>Per-triangle affine warp to a target mesh.</p> -->
+
+      <div class="card" style="padding:16px">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+          <label><strong>Pair:</strong>
+            <select id="w-pair">
+              <option value="mario_demo" selected>Mario ↔ Demo</option>
+              <option value="pair2">Pair 2</option>
+            </select>
+          </label>
+          <label><input type="radio" name="w-view" value="a_to_mean" checked> Correspondences</label>
+          <!-- <label><input type="radio" name="w-view" value="b_to_mean"> B → mean shape</label>
+          <label><input type="radio" name="w-view" value="mesh_overlay"> Mesh overlay</label> -->
+        </div>
+
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="w-img" alt="warp viewer">
+          <figcaption id="w-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+
+      <p>Files in <code>media/part3_2/</code>: <code>mario_demo_a_to_mean.png</code>, <code>mario_demo_b_to_mean.png</code>, <code>mario_demo_mesh_overlay.png</code>.</p>
+    </div>
+  </section>
+
+  <!-- ========== A3: Warp the Images ========== -->
+  <section id="p3-3" class="section">
+    <div class="container">
+      <h2 class="section-title">A3 Warping of Images</h2> 
+
+      <div class="card" style="padding:16px">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+          <label><strong>Pair:</strong>
+            <select id="m-pair">
+              <option value="mario_demo" selected>Mario ↔ Demo</option>
+              <option value="pair2">Pair 2</option>
+            </select>
+          </label>
+
+          <label><input type="radio" name="m-view" value="mid" checked> Mid-morph</label>
+          <label><input type="radio" name="m-view" value="seq"> Sequence (grid)</label>
+          <label><input type="radio" name="m-view" value="gif"> Animated GIF</label>
+        </div>
+
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="m-img" alt="morph viewer">
+          <figcaption id="m-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+
+      <p>Files in <code>media/part3_3/</code>: <code>mario_demo_mid.png</code>, <code>mario_demo_seq.png</code>, <code>mario_demo.gif</code>.</p>
+    </div>
+  </section>
+
+  <!-- ========== A4. Blend the Images into a Mosaic ========== -->
+  <section id="p3-4" class="section">
+    <div class="container">
+      <h2 class="section-title">A4 Mosaic Blending</h2>
+      <p>Average geometry + texture; warp individual to mean and mean to individual.</p>
+
+      <div class="card" style="padding:16px">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+          <label><strong>Dataset:</strong>
+            <select id="avg-ds">
+              <option value="danes" selected>Danes</option>
+              <option value="custom">Custom Cohort</option>
+            </select>
+          </label>
+
+          <label><input type="radio" name="avg-view" value="mean_face" checked> Mean face</label>
+          <label><input type="radio" name="avg-view" value="subject_to_mean"> Subject → mean</label>
+          <label><input type="radio" name="avg-view" value="mean_to_subject"> Mean → subject</label>
+          <label><input type="radio" name="avg-view" value="tri_overlay"> Tri overlay</label>
+        </div>
+
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="avg-img" alt="mean face viewer">
+          <figcaption id="avg-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+
+      <p>Files in <code>media/part3_4/</code> (example): <code>danes_mean_face.png</code>, <code>danes_subject01_to_mean.png</code>, <code>danes_mean_to_subject01.png</code>, <code>danes_tri_overlay.png</code>.</p>
+    </div>
+  </section>
+
+  <!-- ========== 5. Caricatures / Extrapolation ========== -->
+  <!-- <section id="p3-5" class="section">
+    <div class="container">
+      <h2 class="section-title">5 — Caricatures via Shape Extrapolation</h2>
+      <p>Extrapolate along PCA/mean-offset: <code>shape = mean + k·(subject − mean)</code>.</p>
+
+      <div class="card" style="padding:16px">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+          <label><strong>Subject:</strong>
+            <select id="car-subj">
+              <option value="mario" selected>Mario</option>
+              <option value="subject2">Subject 2</option>
+            </select>
+          </label>
+          <label><input type="radio" name="car-view" value="k-1.0" checked> k = −1.0</label>
+          <label><input type="radio" name="car-view" value="k0.0"> k = 0.0</label>
+          <label><input type="radio" name="car-view" value="k1.0"> k = +1.0</label>
+          <label><input type="radio" name="car-view" value="grid"> Grid</label>
+        </div>
+
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="car-img" alt="caricature viewer">
+          <figcaption id="car-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+
+      <p>Files in <code>media/part3_5/</code>: <code>mario_k-1.0.png</code>, <code>mario_k0.0.png</code>, <code>mario_k1.0.png</code>, <code>mario_grid.png</code>.</p>
+    </div>
+  </section> -->
+
+  <!-- ========== Bells & Whistles ========== -->
+  <!-- <section id="p3-bw" class="section">
+    <div class="container">
+      <h2 class="section-title">Bells & Whistles</h2>
+      <p>Any extras (color transfer, Poisson/gradient-domain, gender/age morphs, etc.).</p>
+
+      <div class="card" style="padding:16px">
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="bw-img" alt="bells & whistles">
+          <figcaption id="bw-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+
+      <p>Files in <code>media/part3_bw/</code>: e.g., <code>poisson_compare.png</code>, <code>color_transfer.png</code>, etc.</p>
+    </div>
+  </section> -->
+
+  <!-- ========== Shared JS helpers ========== -->
+  <script>
+  (function(){
+    const EXTS = ['png','jpg','jpeg','gif'];
+    const $ = s => document.querySelector(s);
+    function tryLoad(imgEl, paths, i=0){
+      if(i >= paths.length){ imgEl.removeAttribute('src'); return; }
+      imgEl.onerror = () => tryLoad(imgEl, paths, i+1);
+      imgEl.src = paths[i];
+    }
+    function onRadios(name, cb){
+      document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', cb));
+    }
+    window.UI = {EXTS, $, tryLoad, onRadios};
+  })();
+  </script>
+
+  <!-- ========== Viewers ========== -->
+  <script>
+  (function(){
+    const {EXTS, $, tryLoad, onRadios} = UI;
+
+    function makeViewer({base, imgSel, capSel, watch, stem}){
+      const img = $(imgSel), cap = $(capSel);
+      function state(){
+        const s = {};
+        for(const w of watch){
+          if(w.kind==='select'){ s[w.as] = document.getElementById(w.id).value; }
+          else if(w.kind==='radio'){ s[w.as] = (document.querySelector(`input[name="${w.name}"]:checked`)||{}).value; }
+        }
+        return s;
+      }
+      function update(){
+        const st = state();
+        const label = st.label || '';
+        const fileStem = stem(st);
+        cap.textContent = label || fileStem;
+        tryLoad(img, EXTS.map(ext => `${base}/${fileStem}.${ext}`));
+      }
+      for(const w of watch){
+        if(w.kind==='select') document.getElementById(w.id).addEventListener('change', update);
+        if(w.kind==='radio') onRadios(w.name, update);
+      }
+      update();
+    }
+
+  // A1 — explicit filename mapping
+(function(){
+  const {EXTS, $, tryLoad, onRadios} = UI;
+  const img = $('#c-img'), cap = $('#c-cap');
+
+  // Map the UI selections to your actual basenames (no extension)
+  const FILES = {
+    'Sequia National Park': {
+      'a_points': 'DSCF4645',
+      'b_points': 'DSCF4652'
+    }
+  };
+
+  function update(){
+    const pair = document.getElementById('c-pair').value;
+    const view = (document.querySelector('input[name="c-view"]:checked')||{}).value;
+    const stem = FILES[pair] && FILES[pair][view];
+    if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
+
+    cap.textContent = `${pair} — ${view==='a_points' ? 'Fixed Center of Projection' : 'Rotation of Camera'}`;
+    const paths = EXTS.map(ext => `media/a1/${stem}.${ext}`);
+    tryLoad(img, paths);
+  }
+
+  document.getElementById('c-pair').addEventListener('change', update);
+  onRadios('c-view', update);
+  update();
+})();
+
+
+    // 2 — warp
+    makeViewer({
+      base:'media/part3_2', imgSel:'#w-img', capSel:'#w-cap',
+      watch:[{kind:'select', id:'w-pair', as:'pair'}, {kind:'radio', name:'w-view', as:'view'}],
+      stem: ({pair,view}) => `${pair}_${view}`
+    });
+
+    // 3 — morph sequence
+    makeViewer({
+      base:'media/part3_3', imgSel:'#m-img', capSel:'#m-cap',
+      watch:[{kind:'select', id:'m-pair', as:'pair'}, {kind:'radio', name:'m-view', as:'view'}],
+      stem: ({pair,view}) => `${pair}_${view}`
+    });
+
+    // 4 — mean face
+    makeViewer({
+      base:'media/part3_4', imgSel:'#avg-img', capSel:'#avg-cap',
+      watch:[{kind:'select', id:'avg-ds', as:'ds'}, {kind:'radio', name:'avg-view', as:'view'}],
+      stem: ({ds,view}) => `${ds}_${view}`
+    });
+
+    // 5 — caricatures
+    makeViewer({
+      base:'media/part3_5', imgSel:'#car-img', capSel:'#car-cap',
+      watch:[{kind:'select', id:'car-subj', as:'subj'}, {kind:'radio', name:'car-view', as:'view'}],
+      stem: ({subj,view}) => `${subj}_${view}`
+    });
+
+    // BW
+    (function(){
+      const img = document.querySelector('#bw-img');
+      const cap = document.querySelector('#bw-cap');
+      const base = 'media/part3_bw';
+      const stems = ['poisson_compare','color_transfer','extra1'];
+      const paths = [];
+      stems.forEach(s => EXTS.forEach(ext => paths.push(`${base}/${s}.${ext}`)));
+      cap.textContent = 'Bells & Whistles examples';
+      tryLoad(img, paths);
+    })();
+
+  })();
+  </script>
+</body>
+</html>
