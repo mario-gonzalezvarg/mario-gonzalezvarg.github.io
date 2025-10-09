@@ -64,20 +64,20 @@
   <!-- ========== 2. Piecewise-Affine Warp ========== -->
   <section id="p3-2" class="section">
     <div class="container">
-      <h2 class="section-title">A2 Recover Homographies</h2>
+      <h2 class="section-title">A2 Recovering Homographies</h2>
       <!-- <p>Per-triangle affine warp to a target mesh.</p> -->
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Pair:</strong>
             <select id="w-pair">
-              <option value="mario_demo" selected>Mario ↔ Demo</option>
+              <option value="mario_demo" selected>Sequia National Park</option>
               <option value="pair2">Pair 2</option>
             </select>
           </label>
-          <label><input type="radio" name="w-view" value="a_to_mean" checked> Correspondences</label>
-          <!-- <label><input type="radio" name="w-view" value="b_to_mean"> B → mean shape</label>
-          <label><input type="radio" name="w-view" value="mesh_overlay"> Mesh overlay</label> -->
+          <label><input type="radio" name="w-view" value="a_to_mean" checked> Feature Points</label>
+          <label><input type="radio" name="w-view" value="b_to_mean">Correspondences</label>
+          <!-- <label><input type="radio" name="w-view" value="mesh_overlay"> Mesh overlay</label> -->
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -86,7 +86,6 @@
         </figure>
       </div>
 
-      <p>Files in <code>media/part3_2/</code>: <code>mario_demo_a_to_mean.png</code>, <code>mario_demo_b_to_mean.png</code>, <code>mario_demo_mesh_overlay.png</code>.</p>
     </div>
   </section>
 
@@ -99,14 +98,14 @@
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Pair:</strong>
             <select id="m-pair">
-              <option value="mario_demo" selected>Mario ↔ Demo</option>
+              <option value="mario_demo" selected>Sequia National Park</option>
               <option value="pair2">Pair 2</option>
             </select>
           </label>
 
-          <label><input type="radio" name="m-view" value="mid" checked> Mid-morph</label>
-          <label><input type="radio" name="m-view" value="seq"> Sequence (grid)</label>
-          <label><input type="radio" name="m-view" value="gif"> Animated GIF</label>
+          <label><input type="radio" name="m-view" value="mid" checked> Nearest Neighbor Interpolation</label>
+          <label><input type="radio" name="m-view" value="seq"> Bilinear Interpolation</label>
+          <!-- <label><input type="radio" name="m-view" value="gif"> Animated GIF</label> -->
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -114,8 +113,6 @@
           <figcaption id="m-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
       </div>
-
-      <p>Files in <code>media/part3_3/</code>: <code>mario_demo_mid.png</code>, <code>mario_demo_seq.png</code>, <code>mario_demo.gif</code>.</p>
     </div>
   </section>
 
@@ -134,10 +131,10 @@
             </select>
           </label>
 
-          <label><input type="radio" name="avg-view" value="mean_face" checked> Mean face</label>
-          <label><input type="radio" name="avg-view" value="subject_to_mean"> Subject → mean</label>
-          <label><input type="radio" name="avg-view" value="mean_to_subject"> Mean → subject</label>
-          <label><input type="radio" name="avg-view" value="tri_overlay"> Tri overlay</label>
+          <label><input type="radio" name="avg-view" value="mean_face" checked> Mosaic wihout Weighted Avergae</label>
+          <label><input type="radio" name="avg-view" value="subject_to_mean"> Mosaic with Weighted Average</label>
+          <!-- <label><input type="radio" name="avg-view" value="mean_to_subject"> Mean → subject</label>
+          <label><input type="radio" name="avg-view" value="tri_overlay"> Tri overlay</label> -->
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -146,7 +143,6 @@
         </figure>
       </div>
 
-      <p>Files in <code>media/part3_4/</code> (example): <code>danes_mean_face.png</code>, <code>danes_subject01_to_mean.png</code>, <code>danes_mean_to_subject01.png</code>, <code>danes_tri_overlay.png</code>.</p>
     </div>
   </section>
 
@@ -273,33 +269,81 @@
 })();
 
 
-    // 2 — warp
-    makeViewer({
-      base:'media/part3_2', imgSel:'#w-img', capSel:'#w-cap',
-      watch:[{kind:'select', id:'w-pair', as:'pair'}, {kind:'radio', name:'w-view', as:'view'}],
-      stem: ({pair,view}) => `${pair}_${view}`
-    });
+// A2 — map radios to your two images in media/a2
+(function(){
+  const {EXTS, $, tryLoad, onRadios} = UI;
+  const img = $('#w-img'), cap = $('#w-cap');
 
-    // 3 — morph sequence
-    makeViewer({
-      base:'media/part3_3', imgSel:'#m-img', capSel:'#m-cap',
-      watch:[{kind:'select', id:'m-pair', as:'pair'}, {kind:'radio', name:'m-view', as:'view'}],
-      stem: ({pair,view}) => `${pair}_${view}`
-    });
+  // Radio values in your HTML:
+  //   w-view="a_to_mean" → Feature Points
+  //   w-view="b_to_mean" → Correspondences
+  const STEM_BY_VIEW = {
+    'a_to_mean': 'seq_corr', // Feature Points
+    'b_to_mean': 'seq_homo'  // Correspondences
+  };
 
-    // 4 — mean face
+  function update(){
+    const view = (document.querySelector('input[name="w-view"]:checked')||{}).value;
+    const stem = STEM_BY_VIEW[view];
+    if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
+
+    cap.textContent = (view==='a_to_mean') ? 'Feature Points' : 'Correspondences';
+    const paths = EXTS.map(ext => `media/a2/${stem}.${ext}`);
+    tryLoad(img, paths);
+  }
+
+  // Listen to both radios and the (currently unused) pair select for consistency
+  document.getElementById('w-pair').addEventListener('change', update);
+  onRadios('w-view', update);
+  update();
+})();
+
+
+// A3 — map radios to images in media/a3
+(function(){
+  const {EXTS, $, tryLoad, onRadios} = UI;
+  const img = $('#m-img'), cap = $('#m-cap');
+
+  // Map HTML radios → basenames (no extension)
+  // Provide a second file later as `sequoia_panorama_bl.jpg` (or change the mapping).
+  const STEM_BY_VIEW = {
+    'mid': 'sequoia_panorama_nn', // Nearest Neighbor
+    'seq': 'sequoia_panorama_bl'  // Bilinear (add this file when ready)
+  };
+
+  function update(){
+    const view = (document.querySelector('input[name="m-view"]:checked')||{}).value;
+    let stem = STEM_BY_VIEW[view];
+
+    // Fallback: if bilinear file is missing, show the NN image
+    if(view === 'seq') {
+      const testPaths = EXTS.map(ext => `media/a3/${stem}.${ext}`);
+      // quick optimistic load: try bilinear first; if it 404s, try NN next
+      const paths = testPaths.concat(EXTS.map(ext => `media/a3/${STEM_BY_VIEW['mid']}.${ext}`));
+      cap.textContent = 'Bilinear Interpolation (falls back to NN if missing)';
+      tryLoad(img, paths);
+      return;
+    }
+
+    cap.textContent = 'Nearest Neighbor Interpolation';
+    const paths = EXTS.map(ext => `media/a3/${stem}.${ext}`);
+    tryLoad(img, paths);
+  }
+
+  // Keep the existing select for symmetry; it doesn't affect the mapping
+  document.getElementById('m-pair').addEventListener('change', update);
+  onRadios('m-view', update);
+  update();
+})();
+
+
+    // Mosaic Blending
     makeViewer({
       base:'media/part3_4', imgSel:'#avg-img', capSel:'#avg-cap',
       watch:[{kind:'select', id:'avg-ds', as:'ds'}, {kind:'radio', name:'avg-view', as:'view'}],
       stem: ({ds,view}) => `${ds}_${view}`
     });
 
-    // 5 — caricatures
-    makeViewer({
-      base:'media/part3_5', imgSel:'#car-img', capSel:'#car-cap',
-      watch:[{kind:'select', id:'car-subj', as:'subj'}, {kind:'radio', name:'car-view', as:'view'}],
-      stem: ({subj,view}) => `${subj}_${view}`
-    });
 
     // BW
     (function(){
