@@ -150,14 +150,12 @@ which attenuates seam visibility in overlaps while preserving detail away from b
             </select>
           </label>
 
-          <label><input type="radio" name="avg-view" value="mean_face" checked> Mosaic wihout Weighted Avergae</label>
+          <label><input type="radio" name="avg-view" value="no_avg_weight" checked> Mosaic wihout Weighted Avergae</label>
           <label><input type="radio" name="avg-view" value="subject_to_mean"> Mosaic with Weighted Average</label>
-          <!-- <label><input type="radio" name="avg-view" value="mean_to_subject"> Mean → subject</label>
-          <label><input type="radio" name="avg-view" value="tri_overlay"> Tri overlay</label> -->
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
-          <img id="avg-img" alt="mean face viewer">
+          <img id="avg-img" alt="no_avg_weight">
           <figcaption id="avg-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
       </div>
@@ -361,11 +359,8 @@ which attenuates seam visibility in overlaps while preserving detail away from b
   const {EXTS, $, tryLoad, onRadios} = UI;
   const img = $('#avg-img'), cap = $('#avg-cap');
 
-  // Radio values in your HTML:
-  //   avg-view="mean_face"        → Mosaic without weighted average
-  //   avg-view="subject_to_mean"  → Mosaic with weighted average
   const STEM_BY_VIEW = {
-    'mean_face':       'mosaic_no_weight',
+    'no_avg_weight':       'mosaic_no_weight',
     'subject_to_mean': 'mosaic_weighted'
   };
 
@@ -374,7 +369,7 @@ which attenuates seam visibility in overlaps while preserving detail away from b
     const stem = STEM_BY_VIEW[view];
     if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
 
-    cap.textContent = (view==='mean_face')
+    cap.textContent = (view==='')
       ? 'Mosaic without Weighted Average'
       : 'Mosaic with Weighted Average';
 
