@@ -57,18 +57,19 @@
       </div>
 
       <p>
-        The pedagogical baseline,
-        <code>conv2d_four_loops</code>, explicitly flips the kernel and accumulates the product over a zero-padded
-        neighborhood using four for loops (two for spatial coordinates and two for kernel indices). The optimized
-        variant, <code>conv2d_two_loops</code>, maintains identical semantics but reduces interpreter overhead by
-        vectorizing the inner multiply–accumulate across complete row (or column) slices, leaving only two loops
-        over output coordinates. For validation and runtime comparison I used <code>conv2d_scipy</code>, a thin wrapper
-        around <code>scipy.signal.convolve2d</code> with <em>same</em> output size and <em>fill</em> (zero) boundary
-        conditions. The box filter used in this section is created by <code>proj2/filters.box_filter(k)</code>, which
-        returns a constant kernel whose entries sum to one, preserving DC gain. Visual and numerical comparisons confirm
-        that both custom implementations match SciPy up to floating-point tolerance, while the two-loop version is
-        substantially faster than four loops for moderate kernel sizes.
-      </p>
+  Convolution is the workhorse that lets us aggregate local evidence while preserving spatial correspondence.
+  Given an image <em>I</em> and a filter <em>K</em>, 2-D convolution computes
+  <em>(I ∗ K)(x,y) = Σ<sub>u,v</sub> I(x−u, y−v)K(u,v)</em>, i.e., a flipped, weighted
+  sum over a neighborhood. I implement three variants to make the cost/benefit concrete:
+  a pedagogical “four-loops” version that explicitly flips <em>K</em> and iterates over pixels and kernel
+  indices; a “two-loops” version that vectorizes the inner multiply–accumulate across rows/columns; and a
+  reference wrapper around SciPy with identical padding (<code>fill</code>, zeros) and output size (<code>same</code>).
+  Box filters produced by <code>box_filter(k)</code> are DC-preserving (weights sum to one), so they average without
+  shifting brightness. Matching numerical outputs across implementations verifies correctness; the two-loop
+  formulation yields the same result as SciPy with far less Python overhead than four loops.
+</p>
+
+
     </div>
   </section>
 
