@@ -152,7 +152,7 @@
           <label><strong>Dataset:</strong>
             <select id="ua-dataset">
               <option value="taj" selected>Taj</option>
-              <option value="demo">Demo Portrait</option>
+              <option value="Grandpa">Grandpa</option>
             </select>
           </label>
 
@@ -476,10 +476,10 @@
         const nice = {src:'Source', blur:'Blurred (LPF)', high:'High-pass', sharp:'Sharpened'}[view] || view;
         const stemBy = {
           taj:  {src:'taj', blur:'taj_blur', high:'taj_high', sharp:'taj_sharp'},
-          demo: {src:'demo_src', blur:'demo_src_blurred', high:'taj_high', sharp:'demo_src_resharp'}
+          Grandpa: {src:'gp', blur:'gp_blurred', high:'gp_high', sharp:'gp_sharp'}
         };
         const stem = stemBy[ds]?.[view] || null;
-        return { stem, label: `2A — ${ds==='taj'?'Taj':'Demo'} • ${nice}` };
+        return { stem, label: `${ds==='taj'?'Taj':'Grandpa'} • ${nice}` };
       }
     });
 
