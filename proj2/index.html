@@ -476,7 +476,7 @@
         const nice = {src:'Source', blur:'Blurred (LPF)', high:'High-pass', sharp:'Sharpened'}[view] || view;
         const stemBy = {
           taj:  {src:'taj', blur:'taj_blur', high:'taj_high', sharp:'taj_sharp'},
-          Grandpa: {src:'gp', blur:'gp_blurred', high:'gp_high', sharp:'gp_sharp'}
+          Grandpa: {src:'gp', blur:'gp_blurred', high:'gp_high', sharp:'gp_4_final'}
         };
         const stem = stemBy[ds]?.[view] || null;
         return { stem, label: `${ds==='taj'?'Taj':'Grandpa'} • ${nice}` };
