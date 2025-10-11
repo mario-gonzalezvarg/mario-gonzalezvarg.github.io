@@ -184,6 +184,7 @@
           <label><strong>Set:</strong>
             <select id="hy-set">
               <option value="example" selected>Derek and Nutmeg</option>
+              <option value="maga" selected>Jump Scare (Current Administration)</option>
             </select>
           </label>
 
@@ -492,8 +493,17 @@
         {kind:'radio',  name:'hy-view',as:'view'}
       ],
       resolve: ({set, view}) => {
-        const names = {A:'A (low-freq carrier)', low:'Low-pass(A)', B:'B (high-freq detail)', high:'High-pass(B)', hybrid:'Hybrid'};
-        return { stem: view, label: `2B — ${set==='example'?'Example':set} • ${names[view]||view}` };
+        // Map stems per dataset
+        const stemsBySet = {
+          example: { A:'A', low:'low', B:'B', high:'high', hybrid:'hybrid' },
+          maga:    { A:'vance', low:'low_vance', B:'trump', high:'high_trump', hybrid:'tj_hybrid' }
+        };
+        const names = {
+          A:'(low-freq detial)', low:'Low-pass',
+          B:'(high-freq detail)', high:'High-pass(B)', hybrid:'Hybrid'
+        };
+        const stem = (stemsBySet[set] || stemsBySet.example)[view] || null;
+        return { stem, label: `${set==='example'?'Example':'Jump Scare'} • ${names[view]||view}` };
       }
     });
 
