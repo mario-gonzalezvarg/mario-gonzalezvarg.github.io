@@ -21,7 +21,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <style>
-    /* Small, page-local niceties */
+    /* Page-local niceties */
     .hero h1 { margin-bottom: .25rem; }
     .hero p.part-note { opacity:.8 }
     figure.media { margin: 1rem auto; }
@@ -34,6 +34,7 @@
     .small { font-size: .92rem; }
     .callout { background: var(--card); border-left: 4px solid var(--accent); padding:.9rem 1rem; border-radius:8px; }
     .refs li { margin-bottom: .4rem; }
+    .deliverables li { margin-bottom:.35rem; }
   </style>
 </head>
 
@@ -60,18 +61,20 @@
     <div class="container">
       <h2 class="section-title">Abstract</h2>
       <p>
-        This project investigates core linear operators for image processing and their role in multi-scale analysis.
-        Beginning with discrete two-dimensional convolution and finite differences, the report transitions to derivatives
-        of a Gaussian to control noise amplification. Frequency manipulation is then explored through unsharp masking,
-        hybrid images, and Gaussian/Laplacian stacks culminating in multi-resolution blending. Across sections, equations
-        are given in LaTeX and experiments are documented with fixed seeds, kernel sizes, and sigmas to ensure
-        reproducibility.
+        This project examines linear filtering as a unifying language for edge detection, detail manipulation, and
+        seamless compositing. The study begins with a faithful implementation of discrete two-dimensional convolution
+        and finite differences, then replaces raw differences by derivatives of a Gaussian to reduce noise sensitivity.
+        Frequency manipulation is explored through unsharp masking (high-frequency amplification), hybrid images
+        (low–high spectral fusion following Oliva–Torralba), and Gaussian/Laplacian stacks (multi-scale analysis and
+        reconstruction). Multi-resolution blending (Burt–Adelson compositing) is used to synthesize visually coherent
+        composites while suppressing seams. Methodological choices are motivated, validated with Fourier diagnostics and
+        reconstruction checks, and tied directly to the coolest class on campus, CS180!!
       </p>
       <div class="kpi">
         <div><strong>Language & libs</strong><br><span class="small mono">Python · NumPy · SciPy · scikit-image</span></div>
-        <div><strong>Convolution</strong><br><span class="small">from-scratch (4-loop / 2-loop) and reference (SciPy)</span></div>
-        <div><strong>Stacks</strong><br><span class="small">Gaussian and Laplacian at fixed resolution (no downsample)</span></div>
-        <div><strong>Blending</strong><br><span class="small">Burt–Adelson multi-resolution compositing</span></div>
+        <div><strong>Convolution</strong><br><span class="small">from-scratch (4-loop / 2-loop) + SciPy parity</span></div>
+        <div><strong>Stacks</strong><br><span class="small">Gaussian & Laplacian at fixed resolution</span></div>
+        <div><strong>Blending</strong><br><span class="small">Burt–Adelson with linear-RGB compositing</span></div>
       </div>
     </div>
   </section>
@@ -81,22 +84,37 @@
     <div class="container">
       <h2 class="section-title">1A · Discrete Convolution</h2>
 
-      <p>
-        Let \(I \in \mathbb{R}^{H\times W}\) and a filter \(K \in \mathbb{R}^{(2r+1)\times(2c+1)}\). The discrete
-        convolution is
+       <p>
+        Let \(I \in \mathbb{R}^{H\times W}\) and \(K \in \mathbb{R}^{(2r+1)\times(2c+1)}\). The discrete convolution
+        is
         \[
           (I * K)[x,y] \;=\; \sum_{u=-r}^{r}\sum_{v=-c}^{c} I[x-u,\,y-v]\;K[u,v],
         \]
-        implemented with zero padding and kernel flipping. Two custom implementations are provided: a pedagogical
-        <span class="mono">conv2d_four_loops</span> (explicit loops over spatial and kernel indices) and an optimized
-        <span class="mono">conv2d_two_loops</span> (only loops over spatial indices; inner products vectorized). Results
-        are verified against <span class="mono">scipy.signal.convolve2d</span> in “same” mode with fill boundary
-        conditions. Box kernels are DC-normalized to preserve average intensity.
+        computed with zero padding and kernel flipping. Two CPU implementations are supplied. The didactic version
+        (<span class="mono">conv2d_four_loops</span>) mirrors the summation and boundary handling; the optimized version
+        (<span class="mono">conv2d_two_loops</span>) collapses the inner multiply–accumulate into vectorized row/column
+        slices, reducing Python overhead while preserving exact semantics.
+      </p>
+
+      <h3>Procedure</h3>
+      <p>
+        Kernels are centered and forced to odd sizes to avoid half-pixel ambiguity. DC-preserving filters (e.g., box
+        filters) are normalized to unit sum. Boundary conditions match the course reference: zero padding with
+        output size equal to the input size (“same”). Parity is verified against
+        <span class="mono">scipy.signal.convolve2d</span> with absolute and relative error checks to floating precision.
+      </p>
+
+      <h3>Design Rationale</h3>
+      <p>
+        Maintaining identical semantics across the custom and SciPy paths allows subsequent sections to attribute any
+        visual differences to algorithmic changes rather than to implementation details. Using “same + zero” also
+        simplifies comparisons with derivative filters introduced later.
       </p>
 
       <div class="card" style="padding:16px"> <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px"> <label><strong>Dataset:</strong> <select id="a-dataset"></select></label> <strong>k = <span id="a-kval">3</span></strong> <input id="a-kIdx" type="range" min="0" max="0" step="1" value="0" style="width:240px" aria-label="kernel size"> <label><input type="radio" name="a-impl" value="fourloops" checked> From scratch</label> <label><input type="radio" name="a-impl" value="scipy"> SciPy</label> </div>
 
       <figure class="media media--narrow" style="margin:0 auto"> <img id="a-img" alt="1A result"> <figcaption id="a-cap" style="text-align:center; margin-top:8px"></figcaption> </figure> </div>
+      </div>
   </section>
 
   <!-- ====================== PART 1B ====================== -->
@@ -105,17 +123,28 @@
       <h2 class="section-title">1B – Finite Difference Operator</h2>
 
       <p>
-        Spatial derivatives are estimated with forward-difference stencils \(D_x = [-1,\,1]\) and \(D_y = D_x^\top\).
-        Convolving a grayscale image \(I\) yields
+        Forward-difference stencils \(D_x = [-1,\,1]\) and \(D_y = D_x^\top\) approximate spatial derivatives via
         \[
-          I_x = I * D_x,\qquad I_y = I * D_y,
-        \]
-        and the gradient magnitude
-        \[
+          I_x = I * D_x,\qquad I_y = I * D_y,\qquad
           \|\nabla I\| = \sqrt{I_x^2 + I_y^2}.
         \]
-        Thresholding \(\|\nabla I\|\) produces edge maps. While straightforward, raw differencing is sensitive to noise,
-        motivating derivative-of-Gaussian filters in the next section.
+        Thresholding \(\|\nabla I\|\) produces edge maps; an orientation visualization maps
+        \(\theta = \operatorname{atan2}(I_y, I_x)\) to hue, exposing local geometry beyond magnitude alone.
+      </p>
+
+      <h3>Procedure</h3>
+      <p>
+        Images are converted to grayscale in linear intensity before filtering to avoid gamma-induced biases.
+        Derivatives are computed with the same “same + zero” boundary mode used in 1A to ensure consistent support at
+        borders. Thresholds are chosen by percentile heuristics (e.g., 85–95th percentile of \(\|\nabla I\|\)) to avoid
+        dependence on absolute intensity scaling.
+      </p>
+
+      <h3>Limitations and Motivation for DoG</h3>
+      <p>
+        The finite-difference operator is high-pass and therefore amplifies noise and compression artifacts. Spurious
+        responses proliferate at low thresholds and thin edges fragment at high thresholds. These issues motivate
+        smoothing prior to differencing, formalized next via the derivative of a Gaussian.
       </p>
 
       <div class="card" style="padding:16px">
@@ -145,7 +174,7 @@
       <h2 class="section-title">1C – Derivative of Gaussian (DoG)</h2>
 
       <p>
-        Noise amplification from plain differences is mitigated by smoothing with a Gaussian \(G_\sigma\).
+        Noise amplification from plain differencing is mitigated by smoothing with a Gaussian \(G_\sigma\).
         Two equivalent pipelines are compared:
       </p>
       <div class="callout small">
@@ -154,10 +183,20 @@
         (ii) <em>Derivative of Gaussian</em>:
         \(\;I_x = I * \tfrac{\partial G_\sigma}{\partial x},\; I_y = I * \tfrac{\partial G_\sigma}{\partial y}.\)
       </div>
+
+      <h3>Procedure</h3>
       <p>
-        With matched \(\sigma\) and support (\(k \approx 6\sigma + 1\)), both pipelines yield nearly identical
-        \(\{I_x, I_y, \|\nabla I\|\)\) while the DoG route consolidates operations and is simpler to reason about in
-        the Fourier domain.
+        The Gaussian kernel uses support \(k = 2\lfloor 3\sigma \rfloor + 1\), capturing over 99% of the mass and
+        minimizing truncation bias. For the DoG path, \(\partial_x G_\sigma\) and \(\partial_y G_\sigma\) are formed by
+        convolving the Gaussian with the difference stencils and used directly as filters. With matched \(\sigma\) and
+        support, \(\{I_x, I_y, \|\nabla I\|\}\) from both paths agree numerically and visually.
+      </p>
+
+      <h3>Fourier Perspective</h3>
+      <p>
+        The Gaussian acts as a low-pass with transfer \(\hat G(\omega)=e^{-\sigma^2\|\omega\|^2/2}\).
+        Differencing corresponds to multiplication by \(j\omega\) in the frequency domain. Hence DoG yields
+        \(j\omega\,\hat G(\omega)\), attenuating high-frequency noise while preserving edge localization.
       </p>
 
       <div class="card" style="padding:16px">
@@ -197,16 +236,31 @@
       <h2 class="section-title">2A – Unsharp Masking / Sharpening</h2>
 
       <p>
-        Unsharp masking enhances high spatial frequencies by subtracting a Gaussian-blurred version from the original:
+        Unsharp masking increases perceived sharpness by adding a scaled high-frequency residue:
         \[
-          \text{blur} = I * G_\sigma,\qquad
-          \text{high} = I - \text{blur},\qquad
-          I'=\operatorname{clip}\!\big(I + \alpha\cdot \text{high}\big).
+          \text{blur} = I * G_\sigma,\quad
+          \text{high} = I - \text{blur},\quad
+          I'=\operatorname{clip}\big(I + \alpha\,\text{high}\big).
         \]
-        The parameter \(\sigma\) controls the <em>radius</em> of detail considered “high”; \(\alpha\) scales contrast of
-        those details. A small \(\sigma\) with larger \(\alpha\) sharpens fine texture; a larger \(\sigma\) with modest
-        \(\alpha\) improves mid-scale edge crispness. To prevent boosting sensor noise and scratches in archival
-        photographs, an optional soft threshold \(\tau\) suppresses \(|\text{high}| \le \tau\).
+        Parameter \(\sigma\) controls the radius of frequencies considered “high”; \(\alpha\) sets contrast gain in
+        that band. A soft threshold \(\tau\) optionally suppresses amplification of small fluctuations (sensor noise,
+        film grain).
+      </p>
+
+      <h3>Procedure</h3>
+      <p>
+        All operations are performed in linear intensity; sRGB gamma is applied only for display. A two-pass schedule is
+        effective for historic/low-contrast photographs: a fine pass \((\sigma\!\approx\!1\!-\!1.5,\;\alpha\!\approx\!1.2\!-\!1.6)\)
+        to restore micro-contrast, followed by a gentle mid-radius pass
+        \((\sigma\!\approx\!3\!-\!4,\;\alpha\!\approx\!0.2\!-\!0.4)\) to crispen contours while avoiding halos.
+        Clamping is applied last to maintain valid display range.
+      </p>
+
+      <h3>Artifacts and Controls</h3>
+      <p>
+        Halos arise when \(\alpha\) is large at broad \(\sigma\); reducing \(\alpha\) or moving energy to the fine pass
+        mitigates the effect. Banding is avoided by using sufficiently wide kernels (\(k=2\lfloor 3\sigma\rfloor+1\))
+        and by operating in linear space, which prevents disproportionate boosts in dark regions.
       </p>
 
       <div class="card" style="padding:16px">
@@ -242,16 +296,31 @@
       <h2 class="section-title">2B – Hybrid Images</h2>
 
       <p>
-        Hybrid images juxtapose low-frequency structure from one source with high-frequency detail from another so that
-        perception depends on viewing distance. Given images \(A\) and \(B\),
+        Hybrid images juxtapose low-frequency structure from one source with high-frequency detail from another:
         \[
-          A_{\text{low}} = A * G_{\sigma_\ell}, \qquad
-          B_{\text{high}} = B - (B * G_{\sigma_h}), \qquad
-          H = A_{\text{low}} + \beta\cdot B_{\text{high}}.
+          A_{\text{low}} = A * G_{\sigma_\ell},\qquad
+          B_{\text{high}} = B - (B * G_{\sigma_h}),\qquad
+          H = A_{\text{low}} + \beta\,B_{\text{high}}.
         \]
-        Following Oliva–Torralba, color generally derives from the low-pass term while the high-pass is injected in
-        luminance to avoid chroma halos. Energy balancing (\(\beta\)) is chosen so that
-        \(\operatorname{std}(A_{\text{low}}) \approx \operatorname{std}(\beta\cdot B_{\text{high}})\) in a central window.
+        Perception depends on viewing distance: close inspection reveals the high-frequency subject; at a distance, the
+        low-frequency subject dominates.
+      </p>
+
+      <h3>Procedure</h3>
+      <p>
+        Spatial alignment is performed with the provided click-based utility (two corresponding points per image) that
+        recenters, rescales, and rotates one image to match the other, then crops to a shared field of view.
+        High-frequency content is injected in luminance to prevent chromatic fringes; the gray high-band is replicated
+        across RGB. Energy is balanced by setting \(\beta\) so that \(\operatorname{std}(\beta B_{\text{high}})\) equals
+        a conservative fraction of \(\operatorname{std}(A_{\text{low}})\) measured within a central window to avoid
+        border bias.
+      </p>
+
+      <h3>Diagnostics</h3>
+      <p>
+        Log-magnitude Fourier spectra confirm spectral separation: \(A_{\text{low}}\) concentrates energy near the DC
+        lobe; \(B_{\text{high}}\) has attenuated DC with bright mid-to-high frequencies. The hybrid spectrum combines
+        these patterns without introducing aliasing or band gaps.
       </p>
 
       <div class="card" style="padding:16px">
@@ -259,12 +328,12 @@
           <label><strong>Set:</strong>
             <select id="hy-set">
               <option value="example" selected>Derek and Nutmeg</option>
-              <option value="maga" selected>Jump Scare (Current Administration)</option>
+              <option value="maga">Jump Scare</option>
             </select>
           </label>
 
           <label><input type="radio" name="hy-view" value="A" checked> Image A</label>
-          <label><input type="radio" name="hy-view" value="low"> A: Low-Pass</label>
+          <label><input type="radio" name="hy-view" value="low"> Low-Pass (A)</label>
           <label><input type="radio" name="hy-view" value="B"> Image B</label>
           <label><input type="radio" name="hy-view" value="high"> High-pass(B)</label>
           <label><input type="radio" name="hy-view" value="hybrid"> Hybrid</label>
@@ -283,14 +352,31 @@
     <div class="container">
       <h2 class="section-title">2C – Gaussian & Laplacian Stacks</h2>
       <p>
-        A Gaussian stack \(\{G^0, \dots, G^{L-1}\}\) is formed by repeated convolution of the image with \(G_\sigma\)
-        at a fixed resolution. The corresponding Laplacian stack isolates band-pass information:
+        A fixed-resolution Gaussian stack \(\{G^0,\ldots,G^{L-1}\}\) is constructed by repeated convolution with a
+        Gaussian kernel; the Laplacian stack isolates band-pass structure:
         \[
-          L^i \;=\; G^i - (G^i * G_\sigma), \quad i=0,\dots,L-2, \qquad
-          L^{L-1} \;=\; G^{L-1}.
+          L^i = G^i - (G^i * G_\sigma),\quad i=0,\ldots,L-2,\qquad
+          L^{L-1}=G^{L-1}.
         \]
-        Visualizing \(\{L^i\}\) with symmetric normalization makes positive/negative lobes visible while preserving
-        relative band energy.
+        Reconstruction verifies correctness:
+        \[
+          G^0 \;\approx\; \sum_{i=0}^{L-1} L^i.
+        \]
+      </p>
+
+      <h3>Procedure</h3>
+      <p>
+        Kernels follow \(k=2\lfloor 3\sigma\rfloor+1\) per level. To visualize signed band responses, each \(L^i\) is
+        mapped to \(V^i = 0.5 + 0.5\,(L^i/m_i)\) with \(m_i = \operatorname{percentile}_{99}(|L^i|)\), ensuring that
+        both positive and negative lobes remain visible without saturation. Grids show progressive attenuation of detail
+        as the level index increases.
+      </p>
+
+      <h3>Use in Later Sections</h3>
+      <p>
+        The Laplacian stack provides a natural handle for frequency-aware operations: blending becomes a convex
+        combination of band-limited coefficients (2D), and sharpening can be interpreted as a gain change on low-index
+        bands (2A).
       </p>
 
       <div class="card" style="padding:16px">
@@ -321,19 +407,33 @@
 
 
       <p>
-        Multi-resolution blending follows Burt–Adelson. Given images \(A,B\) and a soft mask \(M\in[0,1]\), construct
-        Gaussian stacks of the mask \(\{M^i\}\) and Laplacian stacks \(\{L_A^i\},\{L_B^i\}\). Blend per level,
+        Burt–Adelson compositing blends images \(A,B\) under a soft mask \(M\in[0,1]\) by mixing their Laplacian stacks
+        with a Gaussianized mask stack:
         \[
-          \tilde{L}^i \;=\; M^i \odot L_A^i \;+\; (1-M^i)\odot L_B^i,
+          \tilde{L}^i = M^i \odot L_A^i + (1-M^i)\odot L_B^i,\qquad
+          R = \sum_{i=0}^{L-1} \tilde{L}^i.
         \]
-        then reconstruct by summation,
-        \[
-          R \;=\; \sum_{i=0}^{L-1} \tilde{L}^i.
-        \]
-        A sufficiently wide feather on \(M\) removes seams at fine scales while Gaussianized \(M^i\) ensures the blend
-        respects both broad illumination and local texture. All blending is performed in linear-RGB; results are finally
-        mapped back to sRGB for display.
+        A wide pre-feather on \(M\) removes seams at level \(i=0\); deeper levels allow global color and illumination to
+        interpolate smoothly.
       </p>
+
+      <h3>Procedure</h3>
+      <p>
+        The workflow is: (1) prepare \(A\) and \(B\) to a common resolution, (2) obtain a user mask (vertical or freehand),
+        (3) pre-feather \(M\) by convolving with a broad Gaussian (tens of pixels) and normalize to \([0,1]\),
+        (4) build \(\{L_A^i\}, \{L_B^i\}, \{M^i\}\) with shared \(\sigma\) and depth \(L\), (5) blend per level and
+        reconstruct. All operations occur in linear-RGB to preserve energy relationships across bands; conversion to sRGB
+        is applied for display assets.
+      </p>
+
+      <h3>Design Choices and Failure Modes</h3>
+      <p>
+        Depth \(L\in[6,10]\) balances runtime and coverage of coarse structures; insufficient depth leaves illumination
+        mismatches. A narrow feather on \(M\) causes stair-step artifacts at level 0; a very broad feather may erase
+        intended boundaries. Artifacts are reduced by increasing \(L\), aligning photometric statistics, and verifying
+        that mask stacks are monotone across scales.
+      </p>
+
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -348,6 +448,7 @@
           <label><input type="radio" name="blend-view" value="mask_stack"> Mask Stack</label>
           <label><input type="radio" name="blend-view" value="lap_blended"> Laplacian Blended Stack</label>
         </div>
+      </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
           <img id="blend-img" alt="2D result">
@@ -355,11 +456,11 @@
         </figure>
         <div class="callout small">
         <strong>Implementation notes.</strong> Gaussian stack kernel sizes follow \(k=2\lfloor 3\sigma\rfloor+1\).
-        Stack depth \(L\in[6,10]\) balances runtime and low-frequency coverage. The mask is pre-feathered by
-        \(\sigma_M \approx \tfrac{\text{feather px}}{6}\) to suppress ringing in \(\tilde{L}^0\).
+        Depth \(L\) is increased when large-scale replacement (e.g., sky/landmark) is required. Mask feather
+        \(\sigma_M \approx \tfrac{\text{feather px}}{6}\) is a reliable heuristic.
       </div>
-      </div>
-
+    </div>
+  </section>
   
 
   <!-- ====================== Shared JS helpers ====================== -->
