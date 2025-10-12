@@ -94,11 +94,9 @@
         conditions. Box kernels are DC-normalized to preserve average intensity.
       </p>
 
-      <figure class="media media--narrow">
-        <img src="media/part1/box/box_scipy_k9.png" alt="Box-filtered result (k=9) with SciPy reference">
-        <figcaption>Box filter, \(k=9\). The two-loop implementation matches SciPy up to floating-point tolerance.</figcaption>
-      </figure>
-    </div>
+      <div class="card" style="padding:16px"> <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px"> <label><strong>Dataset:</strong> <select id="a-dataset"></select></label> <strong>k = <span id="a-kval">3</span></strong> <input id="a-kIdx" type="range" min="0" max="0" step="1" value="0" style="width:240px" aria-label="kernel size"> <label><input type="radio" name="a-impl" value="fourloops" checked> From scratch</label> <label><input type="radio" name="a-impl" value="scipy"> SciPy</label> </div>
+
+      <figure class="media media--narrow" style="margin:0 auto"> <img id="a-img" alt="1A result"> <figcaption id="a-cap" style="text-align:center; margin-top:8px"></figcaption> </figure> </div>
   </section>
 
   <!-- ====================== PART 1B ====================== -->
