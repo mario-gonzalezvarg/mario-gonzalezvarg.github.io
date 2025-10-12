@@ -3,9 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS180 – Project 2 | Mario Gonzalez</title>
+  <title>CS180 – Project 2 · Convolution and Filtering · Mario Gonzalez</title>
+
+  <!-- Site styles (already in your repo root) -->
   <link rel="stylesheet" href="../styles.css" />
+
+  <!-- MathJax for LaTeX rendering -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    /* Small, page-local niceties */
+    .hero h1 { margin-bottom: .25rem; }
+    .hero p.part-note { opacity:.8 }
+    figure.media { margin: 1rem auto; }
+    figure.media img { width: 100%; height: auto; display:block; }
+    figure.media figcaption { text-align:center; font-size:.95rem; opacity:.85; margin-top:.5rem }
+    .kpi { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin:.5rem 0 1.25rem; }
+    .kpi div { background: var(--card); padding:.75rem 1rem; border-radius:10px; }
+    .section h3 { margin-top: 1.25rem; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .small { font-size: .92rem; }
+    .callout { background: var(--card); border-left: 4px solid var(--accent); padding:.9rem 1rem; border-radius:8px; }
+    .refs li { margin-bottom: .4rem; }
+  </style>
 </head>
+
 <body>
   <!-- Navbar -->
   <header class="nav-band">
@@ -19,57 +50,54 @@
   <section class="hero">
     <div class="container">
       <h1>Convolution and Filtering</h1>
-      <p class="part-note">CS180 • Fall 2025</p>
+      <p class="part-note">CS180 · Fall 2025 · Mario Gonzalez</p>
       <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
     </div>
   </section>
 
-  <!-- ====================== PART 1A ====================== -->
+  <!-- Abstract -->
+  <section class="section" id="abstract">
+    <div class="container">
+      <h2 class="section-title">Abstract</h2>
+      <p>
+        This project investigates core linear operators for image processing and their role in multi-scale analysis.
+        Beginning with discrete two-dimensional convolution and finite differences, the report transitions to derivatives
+        of a Gaussian to control noise amplification. Frequency manipulation is then explored through unsharp masking,
+        hybrid images, and Gaussian/Laplacian stacks culminating in multi-resolution blending. Across sections, equations
+        are given in LaTeX and experiments are documented with fixed seeds, kernel sizes, and sigmas to ensure
+        reproducibility.
+      </p>
+      <div class="kpi">
+        <div><strong>Language & libs</strong><br><span class="small mono">Python · NumPy · SciPy · scikit-image</span></div>
+        <div><strong>Convolution</strong><br><span class="small">from-scratch (4-loop / 2-loop) and reference (SciPy)</span></div>
+        <div><strong>Stacks</strong><br><span class="small">Gaussian and Laplacian at fixed resolution (no downsample)</span></div>
+        <div><strong>Blending</strong><br><span class="small">Burt–Adelson multi-resolution compositing</span></div>
+      </div>
+    </div>
+  </section>
+
+   <!-- ====================== PART 1A ====================== -->
   <section id="part1a" class="section">
     <div class="container">
-      <h2 class="section-title">1A – Convolution Filters</h2>
+      <h2 class="section-title">1A · Discrete Convolution</h2>
 
       <p>
-        This project studies linear filtering and multi-scale image representations through a sequence of controlled
-        experiments. In Part 1, an implemention of a 2-D convolution from first principles is constructed and used to estimate spatial derivatives via
-        finite differences, and replace naive differencing with derivative-of-Gaussian (DoG) filters to suppress noise.
-        In Part 2, we use filtering as a tool for manipulating frequency content: unsharp masking increases the energy
-        of high spatial frequencies to “sharpen” imagery; hybrid images juxtapose low-frequency content from one image
-        with high-frequency content from another; and Gaussian/Laplacian stacks enable multi-resolution blending that
-        hides seams across scales.
+        Let \(I \in \mathbb{R}^{H\times W}\) and a filter \(K \in \mathbb{R}^{(2r+1)\times(2c+1)}\). The discrete
+        convolution is
+        \[
+          (I * K)[x,y] \;=\; \sum_{u=-r}^{r}\sum_{v=-c}^{c} I[x-u,\,y-v]\;K[u,v],
+        \]
+        implemented with zero padding and kernel flipping. Two custom implementations are provided: a pedagogical
+        <span class="mono">conv2d_four_loops</span> (explicit loops over spatial and kernel indices) and an optimized
+        <span class="mono">conv2d_two_loops</span> (only loops over spatial indices; inner products vectorized). Results
+        are verified against <span class="mono">scipy.signal.convolve2d</span> in “same” mode with fill boundary
+        conditions. Box kernels are DC-normalized to preserve average intensity.
       </p>
 
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><strong>Dataset:</strong> <select id="a-dataset"></select></label>
-
-          <strong>k = <span id="a-kval">3</span></strong>
-          <input id="a-kIdx" type="range" min="0" max="0" step="1" value="0" style="width:240px" aria-label="kernel size">
-
-          <label><input type="radio" name="a-impl" value="fourloops" checked> From scratch</label>
-          <label><input type="radio" name="a-impl" value="scipy"> SciPy</label>
-        </div>
-
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="a-img" alt="1A result">
-          <figcaption id="a-cap" style="text-align:center; margin-top:8px"></figcaption>
-        </figure>
-      </div>
-
-      <p>
-  Convolution is the workhorse that lets us aggregate local evidence while preserving spatial correspondence.
-  Given an image <em>I</em> and a filter <em>K</em>, 2-D convolution computes
-  <em>(I ∗ K)(x,y) = Σ<sub>u,v</sub> I(x−u, y−v)K(u,v)</em>, i.e., a flipped, weighted
-  sum over a neighborhood. I implement three variants to make the cost/benefit concrete:
-  a pedagogical “four-loops” version that explicitly flips <em>K</em> and iterates over pixels and kernel
-  indices; a “two-loops” version that vectorizes the inner multiply–accumulate across rows/columns; and a
-  reference wrapper around SciPy with identical padding (<code>fill</code>, zeros) and output size (<code>same</code>).
-  Box filters produced by <code>box_filter(k)</code> are DC-preserving (weights sum to one), so they average without
-  shifting brightness. Matching numerical outputs across implementations verifies correctness; the two-loop
-  formulation yields the same result as SciPy with far less Python overhead than four loops.
-</p>
-
-
+      <figure class="media media--narrow">
+        <img src="media/part1/box/box_scipy_k9.png" alt="Box-filtered result (k=9) with SciPy reference">
+        <figcaption>Box filter, \(k=9\). The two-loop implementation matches SciPy up to floating-point tolerance.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -79,11 +107,17 @@
       <h2 class="section-title">1B – Finite Difference Operator</h2>
 
       <p>
-        To estimate spatial derivatives, I convolve a grayscale image with the forward-difference stencils
-        <code>Dx = [-1, 1]</code> and <code>Dy = Dx<sup>T</sup></code> using <code>conv2d_scipy</code>.
-        The partials <code>Ix</code> and <code>Iy</code> are then combined into a gradient magnitude image
-        <code>|∇I| = sqrt(Ix² + Iy²)</code> (implemented in <code>proj2/edges.py</code>). Binarized “edge maps” are
-        obtained by thresholding <code>|∇I|</code> at a fraction of its maximum.
+        Spatial derivatives are estimated with forward-difference stencils \(D_x = [-1,\,1]\) and \(D_y = D_x^\top\).
+        Convolving a grayscale image \(I\) yields
+        \[
+          I_x = I * D_x,\qquad I_y = I * D_y,
+        \]
+        and the gradient magnitude
+        \[
+          \|\nabla I\| = \sqrt{I_x^2 + I_y^2}.
+        \]
+        Thresholding \(\|\nabla I\|\) produces edge maps. While straightforward, raw differencing is sensitive to noise,
+        motivating derivative-of-Gaussian filters in the next section.
       </p>
 
       <div class="card" style="padding:16px">
@@ -111,6 +145,22 @@
   <section id="part1c" class="section">
     <div class="container">
       <h2 class="section-title">1C – Derivative of Gaussian (DoG)</h2>
+
+      <p>
+        Noise amplification from plain differences is mitigated by smoothing with a Gaussian \(G_\sigma\).
+        Two equivalent pipelines are compared:
+      </p>
+      <div class="callout small">
+        (i) <em>Smooth–then–difference</em>:
+        \(\;I_x = (I * G_\sigma) * D_x,\; I_y = (I * G_\sigma) * D_y.\)<br/>
+        (ii) <em>Derivative of Gaussian</em>:
+        \(\;I_x = I * \tfrac{\partial G_\sigma}{\partial x},\; I_y = I * \tfrac{\partial G_\sigma}{\partial y}.\)
+      </div>
+      <p>
+        With matched \(\sigma\) and support (\(k \approx 6\sigma + 1\)), both pipelines yield nearly identical
+        \(\{I_x, I_y, \|\nabla I\|\)\) while the DoG route consolidates operations and is simpler to reason about in
+        the Fourier domain.
+      </p>
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -148,6 +198,19 @@
     <div class="container">
       <h2 class="section-title">2A – Unsharp Masking / Sharpening</h2>
 
+      <p>
+        Unsharp masking enhances high spatial frequencies by subtracting a Gaussian-blurred version from the original:
+        \[
+          \text{blur} = I * G_\sigma,\qquad
+          \text{high} = I - \text{blur},\qquad
+          I'=\operatorname{clip}\!\big(I + \alpha\cdot \text{high}\big).
+        \]
+        The parameter \(\sigma\) controls the <em>radius</em> of detail considered “high”; \(\alpha\) scales contrast of
+        those details. A small \(\sigma\) with larger \(\alpha\) sharpens fine texture; a larger \(\sigma\) with modest
+        \(\alpha\) improves mid-scale edge crispness. To prevent boosting sensor noise and scratches in archival
+        photographs, an optional soft threshold \(\tau\) suppresses \(|\text{high}| \le \tau\).
+      </p>
+
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Dataset:</strong>
@@ -180,6 +243,19 @@
     <div class="container">
       <h2 class="section-title">2B – Hybrid Images</h2>
 
+      <p>
+        Hybrid images juxtapose low-frequency structure from one source with high-frequency detail from another so that
+        perception depends on viewing distance. Given images \(A\) and \(B\),
+        \[
+          A_{\text{low}} = A * G_{\sigma_\ell}, \qquad
+          B_{\text{high}} = B - (B * G_{\sigma_h}), \qquad
+          H = A_{\text{low}} + \beta\cdot B_{\text{high}}.
+        \]
+        Following Oliva–Torralba, color generally derives from the low-pass term while the high-pass is injected in
+        luminance to avoid chroma halos. Energy balancing (\(\beta\)) is chosen so that
+        \(\operatorname{std}(A_{\text{low}}) \approx \operatorname{std}(\beta\cdot B_{\text{high}})\) in a central window.
+      </p>
+
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Set:</strong>
@@ -208,6 +284,16 @@
   <section id="part2c" class="section">
     <div class="container">
       <h2 class="section-title">2C – Gaussian & Laplacian Stacks</h2>
+      <p>
+        A Gaussian stack \(\{G^0, \dots, G^{L-1}\}\) is formed by repeated convolution of the image with \(G_\sigma\)
+        at a fixed resolution. The corresponding Laplacian stack isolates band-pass information:
+        \[
+          L^i \;=\; G^i - (G^i * G_\sigma), \quad i=0,\dots,L-2, \qquad
+          L^{L-1} \;=\; G^{L-1}.
+        \]
+        Visualizing \(\{L^i\}\) with symmetric normalization makes positive/negative lobes visible while preserving
+        relative band energy.
+      </p>
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -235,6 +321,22 @@
     <div class="container">
       <h2 class="section-title">2D – Multiresolution Blending</h2>
 
+
+      <p>
+        Multi-resolution blending follows Burt–Adelson. Given images \(A,B\) and a soft mask \(M\in[0,1]\), construct
+        Gaussian stacks of the mask \(\{M^i\}\) and Laplacian stacks \(\{L_A^i\},\{L_B^i\}\). Blend per level,
+        \[
+          \tilde{L}^i \;=\; M^i \odot L_A^i \;+\; (1-M^i)\odot L_B^i,
+        \]
+        then reconstruct by summation,
+        \[
+          R \;=\; \sum_{i=0}^{L-1} \tilde{L}^i.
+        \]
+        A sufficiently wide feather on \(M\) removes seams at fine scales while Gaussianized \(M^i\) ensures the blend
+        respects both broad illumination and local texture. All blending is performed in linear-RGB; results are finally
+        mapped back to sRGB for display.
+      </p>
+
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
           <label><strong>Mask:</strong>
@@ -253,6 +355,11 @@
           <img id="blend-img" alt="2D result">
           <figcaption id="blend-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
+        <div class="callout small">
+        <strong>Implementation notes.</strong> Gaussian stack kernel sizes follow \(k=2\lfloor 3\sigma\rfloor+1\).
+        Stack depth \(L\in[6,10]\) balances runtime and low-frequency coverage. The mask is pre-feathered by
+        \(\sigma_M \approx \tfrac{\text{feather px}}{6}\) to suppress ringing in \(\tilde{L}^0\).
+      </div>
       </div>
 
   
