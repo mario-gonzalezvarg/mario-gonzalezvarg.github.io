@@ -73,6 +73,10 @@ img { max-width: 100%; height: auto; display: block; }
 /* ---------- Grid ---------- */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
 
+.viewer-field input[type="range"]{width:220px; vertical-align:middle}
+.viewer-field .viewer-out{margin-left:.5rem; font-variant-numeric:tabular-nums}
+
+
 /* ---------- Cards / Media ---------- */
 .card {
   background: #fff; color: var(--ink-dark);
