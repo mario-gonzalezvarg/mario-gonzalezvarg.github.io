@@ -338,8 +338,8 @@
           <label><input type="radio" name="hy-view" value="B"> Image B</label>
           <label><input type="radio" name="hy-view" value="high"> High-pass(B)</label>
           <label><input type="radio" name="hy-view" value="b_fourier"> Fourier Series (B)</label>
-          <label><input type="radio" name="hy-view" value="hybrid"> Hybrid</label>
           <label><input type="radio" name="hy-view" value="hybrid_fourier"> Hybrid Fourier</label>
+          <label><input type="radio" name="hy-view" value="hybrid"> Hybrid</label>
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -706,7 +706,7 @@
         // Map stems per dataset
         const stemsBySet = {
           example: { A:'A', low:'low', a_fourier:'fft_A',B:'B', high:'high', b_fourier: 'fft_B', hybrid_fourier: 'fft_hybrid', hybrid:'hybrid' },
-          maga:    { A:'vance', low:'low_vance', B:'trump', high:'high_trump', hybrid:'tj_hybrid' }
+          maga:    { A:'vance', low:'low_vance', a_fourier: 'fft_A_t', B:'trump', b_fourier: 'fft_B_t', high:'high_trump', hybrid_fourier: 'fft_hybrid_t',hybrid:'tj_hybrid' }
         };
         const names = {
           A:'(low-freq detial)', low:'Low-pass', fourier: 'Fourier',
