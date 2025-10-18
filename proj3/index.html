@@ -223,8 +223,8 @@
               <!-- <option value="anms">ANMS (filtered)</option> -->
             </select>
           </label>
-          <label><input type="radio" name="car-view" value="og_image">Image</label>
-          <label><input type="radio" name="car-view" value="s_scale" checked>Single Scale</label>
+          <label><input type="radio" name="car-view" value="og_image"checked>Image</label>
+          <label><input type="radio" name="car-view" value="s_scale">Single Scale</label>
           <label><input type="radio" name="car-view" value="ams">Adaptive Non-Maximal Suppresion</label>
         </div>
 
@@ -365,10 +365,6 @@
       (function () {
         const { EXTS, $, tryLoad, onRadios } = UI;
         const img = $('#w-img'), cap = $('#w-cap');
-
-        // Radio values in your HTML:
-        //   w-view="a_to_mean" → Feature Points
-        //   w-view="b_to_mean" → Correspondences
         const STEM_BY_VIEW = {
           'a_to_mean': 'seq_corr', // Feature Points
           'b_to_mean': 'seq_homo'  // Correspondences
@@ -396,8 +392,6 @@
         const { EXTS, $, tryLoad, onRadios } = UI;
         const img = $('#m-img'), cap = $('#m-cap');
 
-        // Map HTML radios → basenames (no extension)
-        // Provide a second file later as `sequoia_panorama_bl.jpg` (or change the mapping).
         const STEM_BY_VIEW = {
           'mid': 'sequoia_panorama_nn', // Nearest Neighbor
           'seq': 'sequoia_panorama_bl'  // Bilinear (add this file when ready)
@@ -464,10 +458,49 @@
   const img = $('#b1-img'), cap = $('#b1-cap');
 
   function update() {
-    const sel   = $('#b1').value; // 'all' | 'anms'
-    const radio = (document.querySelector('input[name="car-view"]:checked') || {}).value; // 's_scale' | 'm_scale' | 'ams'
+    const sel   = $('#b1').value; // currently only 'all'
+    const mode  = (document.querySelector('input[name="car-view"]:checked') || {}).value; // 'og_image' | 's_scale' | 'ams'
 
-    const wantAnms = (sel === 'anms') || (radio === 'ams');
+    if (mode === 'og_image') {
+      cap.textContent = 'Original image (no corners)';
+      // original lives at proj3/media/g4.jpg (not under /b1)
+      const ogPaths = ['media/g4.jpg','media/g4.png','media/g4.jpeg','media/g4.gif'];
+      tryLoad(img, ogPaths);
+      return;
+    }
+
+    const wantAnms = (sel === 'og_image') || (mode === 'ams') || (mode == 'anms');
+    const stem = wantAnms ? 'B1_harris_anms' : 'B1_harris_all';
+
+    cap.textContent = wantAnms
+      ? 'Harris corners after ANMS'
+      : 'Harris corners (all detections)';
+
+    tryLoad(img, EXTS.map(ext => `media/b1/${stem}.${ext}`));
+  }
+
+  document.getElementById('b1').addEventListener('change', update);
+  onRadios('car-view', update);
+  update();
+})();
+
+(function () {
+  const { EXTS, $, tryLoad, onRadios } = UI;
+  const img = $('#b1-img'), cap = $('#b1-cap');
+
+  function update() {
+    const sel  = $('#b1').value; // currently 'all'
+    const mode = (document.querySelector('input[name="car-view"]:checked') || {}).value; // 'og_image' | 's_scale' | 'ams'
+
+    if (mode === 'og_image') {
+      cap.textContent = 'Original image (no corners)';
+      // lives in proj3/media/b1/g4.jpg
+      const paths = EXTS.map(ext => `media/b1/g4.${ext}`);
+      tryLoad(img, paths);
+      return;
+    }
+
+    const wantAnms = (sel === 'anms') || (mode === 'ams');
     const stem = wantAnms ? 'B1_harris_anms' : 'B1_harris_all';
 
     cap.textContent = wantAnms
