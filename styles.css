@@ -92,4 +92,8 @@ img { max-width: 100%; height: auto; display: block; }
   .btn { transition: none; }
 }
 
+.pair { display:flex; gap:12px; }
+.pair img { flex:1 1 0; width:100%; height:auto; border-radius:8px; }
+
+
 

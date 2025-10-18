@@ -252,16 +252,24 @@
             <option value="mural2">Mural 2</option>
           </select>
         </label>
-        <label><input type="radio" name="b2-view" value="og_image"> Image</label>
-        <label><input type="radio" name="b2-view" value="feat" checked> Descriptors</label>
+        <label><input type="radio" name="b2-view" value="pair" checked> Image</label>
+        <label><input type="radio" name="b2-view" value="desc"> Descriptor Patches</label>
       </div>
+
       <figure class="media media--narrow" style="margin:0 auto">
-        <img id="b2-img" alt="B2 viewer">
+        <!-- side-by-side -->
+        <div id="b2-pair" class="pair">
+          <img id="b2-left"  alt="original">
+          <img id="b2-right" alt="descriptor patches">
+        </div>
+        <!-- single patches image -->
+        <img id="b2-desc" alt="descriptor patches" style="display:none">
         <figcaption id="b2-cap" style="text-align:center; margin-top:8px"></figcaption>
       </figure>
     </div>
   </div>
 </section>
+
 
 
 <!-- ========== B3: Feature Matching ========== -->
@@ -487,34 +495,61 @@
   document.getElementById('b1').addEventListener('change', update);
   update();
 })();
-// B2 viewer
+
 (function () {
   const { EXTS, $, tryLoad, onRadios } = UI;
-  const img = $('#b2-img'), cap = $('#b2-cap');
+
+  // originals live with B3 assets
+  const ORIGINAL = {
+    mural1: 'media/b3/mural1',
+    mural2: 'media/b3/mural2'
+  };
+
+  // try subject-specific patches first, then generic
+  function patchPaths(subj) {
+    const bases = [
+      `media/b2/b2_${subj}_features`,
+      `media/b2/${subj}_features`,
+      `media/b2/b2_mural_features`
+    ];
+    const out = [];
+    bases.forEach(b => EXTS.forEach(ext => out.push(`${b}.${ext}`)));
+    return out;
+  }
+  const pairWrap = $('#b2-pair');
+  const leftImg  = $('#b2-left');
+  const rightImg = $('#b2-right');
+  const descImg  = $('#b2-desc');
+  const cap      = $('#b2-cap');
+
   const subjSel = document.getElementById('b2-subj');
 
-  function showOriginal(which) {
-    const base = `media/b3/${which}`; // originals live in /b3
-    tryLoad(img, EXTS.map(ext => `${base}.${ext}`));
-  }
+  function extPaths(base){ return EXTS.map(ext => `${base}.${ext}`); }
 
   function update() {
     const subj = subjSel.value; // mural1 | mural2
     const view = (document.querySelector('input[name="b2-view"]:checked') || {}).value;
 
-    if (view === 'og_image') {
-      cap.textContent = (subj === 'mural1') ? 'Mural 1 (original)' : 'Mural 2 (original)';
-      showOriginal(subj);
+    if (view === 'pair') {
+      pairWrap.style.display = 'flex';
+      descImg.style.display = 'none';
+      tryLoad(leftImg,  extPaths(ORIGINAL[subj]));
+      tryLoad(rightImg, patchPaths(subj));
+      cap.textContent = 'Original (left) and descriptor patches (right)';
       return;
     }
-    cap.textContent = 'Feature descriptors';
-    tryLoad(img, ['media/b2/b2_mural_features.png', 'media/b2/b2_mural_features.jpg']);
+    // patches only
+    pairWrap.style.display = 'none';
+    descImg.style.display = '';
+    tryLoad(descImg, patchPaths(subj));
+    cap.textContent = 'Descriptor patches';
   }
 
   subjSel.addEventListener('change', update);
   onRadios('b2-view', update);
   update();
 })();
+
 
 (function () {
   const { EXTS, $, tryLoad, onRadios } = UI;
