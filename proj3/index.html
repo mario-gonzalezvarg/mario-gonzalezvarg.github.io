@@ -33,6 +33,10 @@
     .part-note {
       opacity: .8;
     }
+
+    .pair { display:flex; gap:12px; }
+    .pair img { flex:1 1 0; width:100%; height:auto; border-radius:8px; }
+
   </style>
 </head>
 
@@ -236,59 +240,66 @@
     </div>
   </section>
 
+<!-- ========== B2: Feature Descriptor Extraction ========== -->
+<section id="p3-b2" class="section">
+  <div class="container">
+    <h2 class="section-title">B2 Feature Descriptor Extraction</h2>
+    <div class="card" style="padding:16px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+        <label><strong>Subject:</strong>
+          <select id="b2-subj">
+            <option value="mural1" selected>Mural 1</option>
+            <option value="mural2">Mural 2</option>
+          </select>
+        </label>
+        <label><input type="radio" name="b2-view" value="og_image"> Image</label>
+        <label><input type="radio" name="b2-view" value="feat" checked> Descriptors</label>
+      </div>
+      <figure class="media media--narrow" style="margin:0 auto">
+        <img id="b2-img" alt="B2 viewer">
+        <figcaption id="b2-cap" style="text-align:center; margin-top:8px"></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
 
+<!-- ========== B3: Feature Matching ========== -->
+<section id="p3-b3" class="section">
+  <div class="container">
+    <h2 class="section-title">B3 Feature Matching</h2>
+    <div class="card" style="padding:16px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+        <label><strong>Subject:</strong>
+          <select id="b3-subj">
+            <option value="mural_pair" selected>Mural 1 ↔ Mural 2</option>
+            <!-- add more pairs later -->
+          </select>
+        </label>
+        <label><input type="radio" name="b3-view" value="pair" checked> Image</label>
+        <label><input type="radio" name="b3-view" value="matches"> Feature Matches</label>
+      </div>
 
-  <!-- ========== B.2: Extracting a Feature Descriptor for each feature poin  ========== -->
-  <!-- <section id="p3-5" class="section">
-    <div class="container">
-      <h2 class="section-title">B2 Harris Corner Detection</h2>
-      <p>Extrapolate along PCA/mean-offset: <code>shape = mean + k·(subject − mean)</code>.</p>
-
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><strong>Subject:</strong>
-            <select id="car-subj">
-              <option value="mario" selected>Mario</option>
-              <option value="subject2">Subject 2</option>
-            </select>
-          </label>
-          <label><input type="radio" name="car-view" value="k-1.0" checked>Single Scale</label>
-          <label><input type="radio" name="car-view" value="k0.0"> Multi-scale</label>
-          <label><input type="radio" name="car-view" value="k1.0">Adaptive Non-Maximal Suppresion</label>
+      <figure class="media media--narrow" style="margin:0 auto">
+        <!-- side-by-side originals -->
+        <div id="b3-pair" class="pair">
+          <img id="b3-left"  alt="left image">
+          <img id="b3-right" alt="right image">
         </div>
-
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="car-img" alt="caricature viewer">
-          <figcaption id="car-cap" style="text-align:center; margin-top:8px"></figcaption>
-        </figure>
-      </div>
+        <!-- single matches image -->
+        <img id="b3-matches" alt="feature matches" style="display:none">
+        <figcaption id="b3-cap" style="text-align:center; margin-top:8px"></figcaption>
+      </figure>
     </div>
-  </section>  -->
+  </div>
+</section>
 
 
 
-  <!-- ========== Bells & Whistles ========== -->
-  <!-- <section id="p3-bw" class="section">
-    <div class="container">
-      <h2 class="section-title">Bells & Whistles</h2>
-      <p>Any extras (color transfer, Poisson/gradient-domain, gender/age morphs, etc.).</p>
-
-      <div class="card" style="padding:16px">
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="bw-img" alt="bells & whistles">
-          <figcaption id="bw-cap" style="text-align:center; margin-top:8px"></figcaption>
-        </figure>
-      </div>
-
-      <p>Files in <code>media/part3_bw/</code>: e.g., <code>poisson_compare.png</code>, <code>color_transfer.png</code>, etc.</p>
-    </div>
-  </section>
-
-  <-- ========== Shared JS helpers ========== -->
+  <!--========== Shared JS helpers ========== -->
   <script>
     (function () {
-      const EXTS = ['png', 'jpg', 'jpeg', 'gif'];
+      const EXTS = ['png', 'jpg', 'jpeg', 'gif', 'JPG'];  // added 'JPG'
       const $ = s => document.querySelector(s);
       function tryLoad(imgEl, paths, i = 0) {
         if (i >= paths.length) { imgEl.removeAttribute('src'); return; }
@@ -301,6 +312,7 @@
       window.UI = { EXTS, $, tryLoad, onRadios };
     })();
   </script>
+
 
   <!-- ========== Viewers ========== -->
   <script>
@@ -473,6 +485,81 @@
 
   onRadios('car-view', update);
   document.getElementById('b1').addEventListener('change', update);
+  update();
+})();
+// B2 viewer
+(function () {
+  const { EXTS, $, tryLoad, onRadios } = UI;
+  const img = $('#b2-img'), cap = $('#b2-cap');
+  const subjSel = document.getElementById('b2-subj');
+
+  function showOriginal(which) {
+    const base = `media/b3/${which}`; // originals live in /b3
+    tryLoad(img, EXTS.map(ext => `${base}.${ext}`));
+  }
+
+  function update() {
+    const subj = subjSel.value; // mural1 | mural2
+    const view = (document.querySelector('input[name="b2-view"]:checked') || {}).value;
+
+    if (view === 'og_image') {
+      cap.textContent = (subj === 'mural1') ? 'Mural 1 (original)' : 'Mural 2 (original)';
+      showOriginal(subj);
+      return;
+    }
+    cap.textContent = 'Feature descriptors';
+    tryLoad(img, ['media/b2/b2_mural_features.png', 'media/b2/b2_mural_features.jpg']);
+  }
+
+  subjSel.addEventListener('change', update);
+  onRadios('b2-view', update);
+  update();
+})();
+
+(function () {
+  const { EXTS, $, tryLoad, onRadios } = UI;
+
+  // Map a "pair" to its left/right originals and matches image (no extension)
+  const PAIRS = {
+    mural_pair: {
+      left:   'media/b3/mural1',
+      right:  'media/b3/mural2',
+      matches:'media/b3/matches'
+    }
+  };
+
+  const pairWrap = $('#b3-pair');
+  const leftImg  = $('#b3-left');
+  const rightImg = $('#b3-right');
+  const matchImg = $('#b3-matches');
+  const cap      = $('#b3-cap');
+
+  function extPaths(base) { return EXTS.map(ext => `${base}.${ext}`); }
+
+  function update() {
+    const key  = document.getElementById('b3-subj').value;     // e.g., 'mural_pair'
+    const view = (document.querySelector('input[name="b3-view"]:checked') || {}).value; // 'pair'|'matches'
+    const p = PAIRS[key];
+
+    if (view === 'pair') {
+      // show originals side-by-side
+      pairWrap.style.display = 'flex';
+      matchImg.style.display = 'none';
+      tryLoad(leftImg,  extPaths(p.left));
+      tryLoad(rightImg, extPaths(p.right));
+      cap.textContent = 'Original pair (left / right)';
+      return;
+    }
+
+    // show single matches image
+    pairWrap.style.display = 'none';
+    matchImg.style.display = '';
+    tryLoad(matchImg, extPaths(p.matches));
+    cap.textContent = 'Feature matches between the pair';
+  }
+
+  document.getElementById('b3-subj').addEventListener('change', update);
+  onRadios('b3-view', update);
   update();
 })();
 
