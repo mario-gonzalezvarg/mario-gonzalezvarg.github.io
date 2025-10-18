@@ -1,19 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CS180 – Project 3 | Mario Gonzalez</title>
   <link rel="stylesheet" href="../styles.css" />
   <style>
-    .media { display:block; max-width:100%; }
-    .media--narrow { max-width:860px; }
-    .card { border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.05); }
-    .section { padding:40px 0; }
-    .section-title { margin-bottom:8px; }
-    .part-note { opacity:.8; }
+    .media {
+      display: block;
+      max-width: 100%;
+    }
+
+    .media--narrow {
+      max-width: 860px;
+    }
+
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    }
+
+    .section {
+      padding: 40px 0;
+    }
+
+    .section-title {
+      margin-bottom: 8px;
+    }
+
+    .part-note {
+      opacity: .8;
+    }
   </style>
 </head>
+
 <body>
   <!-- Navbar -->
   <header class="nav-band">
@@ -38,9 +60,13 @@
     <div class="container">
       <h2 class="section-title">A1 Set of Images to Manipulate </h2>
       <!-- <p>Clickable keypoints, average shape, and triangulation overlays.</p> -->
-       <p>
-Photographs were captured under a fixed center of projection while the camera was rotated about its optical center, producing pairs related predominantly by projective transformations. Frames were taken within a short time window to minimize illumination and scene changes, and with 40–70% field-of-view overlap to ensure sufficient common texture. This setup yields image pairs suitable for estimating a single planar homography between views and for constructing wide-field mosaics.
-</p>
+      <p>
+        Photographs were captured under a fixed center of projection while the camera was rotated about its optical
+        center, producing pairs related predominantly by projective transformations. Frames were taken within a short
+        time window to minimize illumination and scene changes, and with 40–70% field-of-view overlap to ensure
+        sufficient common texture. This setup yields image pairs suitable for estimating a single planar homography
+        between views and for constructing wide-field mosaics.
+      </p>
 
 
       <div class="card" style="padding:16px">
@@ -53,7 +79,7 @@ Photographs were captured under a fixed center of projection while the camera wa
           </label>
           <label><input type="radio" name="c-view" value="a_points" checked> Fixed Center of Projection</label>
           <label><input type="radio" name="c-view" value="b_points"> Rotation of Camera</label>
-        </div> 
+        </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
           <img id="c-img" alt="correspondence">
@@ -68,11 +94,17 @@ Photographs were captured under a fixed center of projection while the camera wa
     <div class="container">
       <h2 class="section-title">A2 Recovering Homographies</h2>
       <p>
-Point correspondences were manually annotated between each source–target pair and used to estimate a 3×3 homography <code>H</code> that maps homogeneous coordinates <code>x = (x, y, 1)&nbsp;ᵀ</code> to <code>x′ ∼ Hx</code>. With the scale fixed by <code>H(3,3)=1</code>, the remaining eight unknowns were recovered by stacking two linear equations per correspondence into an overdetermined system <code>A h = b</code> and solving in the least-squares sense. Concretely, each match <code>(x, y) → (u, v)</code> contributes
-<code>[x&nbsp;y&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;−u x&nbsp;−u y] h = u</code> and
-<code>[0&nbsp;0&nbsp;0&nbsp;x&nbsp;y&nbsp;1&nbsp;−v x&nbsp;−v y] h = v</code>.
-Using more than four correspondences improves numerical stability and reduces sensitivity to localization error. Visual overlays of the clicked pairs and the resulting warp provide qualitative validation; the recovered matrix <code>H</code> is additionally reported for quantitative inspection.
-</p>
+        Point correspondences were manually annotated between each source–target pair and used to estimate a 3×3
+        homography <code>H</code> that maps homogeneous coordinates <code>x = (x, y, 1)&nbsp;ᵀ</code> to
+        <code>x′ ∼ Hx</code>. With the scale fixed by <code>H(3,3)=1</code>, the remaining eight unknowns were recovered
+        by stacking two linear equations per correspondence into an overdetermined system <code>A h = b</code> and
+        solving in the least-squares sense. Concretely, each match <code>(x, y) → (u, v)</code> contributes
+        <code>[x&nbsp;y&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;−u x&nbsp;−u y] h = u</code> and
+        <code>[0&nbsp;0&nbsp;0&nbsp;x&nbsp;y&nbsp;1&nbsp;−v x&nbsp;−v y] h = v</code>.
+        Using more than four correspondences improves numerical stability and reduces sensitivity to localization error.
+        Visual overlays of the clicked pairs and the resulting warp provide qualitative validation; the recovered matrix
+        <code>H</code> is additionally reported for quantitative inspection.
+      </p>
 
 
       <div class="card" style="padding:16px">
@@ -85,9 +117,8 @@ Using more than four correspondences improves numerical stability and reduces se
           </label>
           <label><input type="radio" name="w-view" value="a_to_mean" checked> Feature Points</label>
           <label><input type="radio" name="w-view" value="b_to_mean">Correspondences</label>
-          <!-- <label><input type="radio" name="w-view" value="mesh_overlay"> Mesh overlay</label> -->
         </div>
-        
+
 
         <figure class="media media--narrow" style="margin:0 auto">
           <img id="w-img" alt="warp viewer">
@@ -95,7 +126,7 @@ Using more than four correspondences improves numerical stability and reduces se
         </figure>
       </div>
 
-      
+
 
     </div>
   </section>
@@ -103,10 +134,18 @@ Using more than four correspondences improves numerical stability and reduces se
   <!-- ========== A3: Warp the Images ========== -->
   <section id="p3-3" class="section">
     <div class="container">
-      <h2 class="section-title">A3 Warping of Images</h2> 
+      <h2 class="section-title">A3 Warping of Images</h2>
       <p>
-Images were resampled by <em>inverse warping</em>: for each pixel on the output canvas, the pre-image was obtained via <code>x = H⁻¹ p</code> and sampled in the source at <code>(x/w, y/w)</code>. Output bounds were predicted by projecting the four source corners through <code>H</code> to allocate a tight canvas. Two interpolation schemes were implemented from first principles. Nearest-neighbor (NN) rounds to the closest integer coordinate and is computationally efficient but introduces blocky edges and aliasing. Bilinear interpolation computes a convex combination of the four neighboring pixels, yielding smoother edges and fewer stair-step artifacts at a modest increase in cost. Rectification was demonstrated by mapping a planar quadrilateral (e.g., a poster or tile) to a canonical rectangle, verifying that the estimated homography correctly removes perspective distortion.
-</p>
+        Images were resampled by <em>inverse warping</em>: for each pixel on the output canvas, the pre-image was
+        obtained via <code>x = H⁻¹ p</code> and sampled in the source at <code>(x/w, y/w)</code>. Output bounds were
+        predicted by projecting the four source corners through <code>H</code> to allocate a tight canvas. Two
+        interpolation schemes were implemented from first principles. Nearest-neighbor (NN) rounds to the closest
+        integer coordinate and is computationally efficient but introduces blocky edges and aliasing. Bilinear
+        interpolation computes a convex combination of the four neighboring pixels, yielding smoother edges and fewer
+        stair-step artifacts at a modest increase in cost. Rectification was demonstrated by mapping a planar
+        quadrilateral (e.g., a poster or tile) to a canonical rectangle, verifying that the estimated homography
+        correctly removes perspective distortion.
+      </p>
 
 
       <div class="card" style="padding:16px">
@@ -136,10 +175,15 @@ Images were resampled by <em>inverse warping</em>: for each pixel on the output 
     <div class="container">
       <h2 class="section-title">A4 Mosaic Blending</h2>
       <p>
-To compose a panorama, all images were mapped into a common coordinate system (reference frame chosen near the middle of the sequence). For each warped image, a binary validity mask was generated and then smoothed using a box filter implemented via an integral-image prefix sum. The final mosaic was produced by feathered averaging,
-<code>I(out) = (∑<sub>k</sub> w<sub>k</sub>(out) · I<sub>k</sub>(out)) / (∑<sub>k</sub> w<sub>k</sub>(out))</code>,
-which attenuates seam visibility in overlaps while preserving detail away from boundaries. This weighted scheme mitigates hard transitions without invoking high-level libraries. Residual ghosting may persist where parallax or motion violates the single-homography assumption; nevertheless, the approach yields clean results on scenes consistent with planar or rotational camera motion.
-</p>
+        To compose a panorama, all images were mapped into a common coordinate system (reference frame chosen near the
+        middle of the sequence). For each warped image, a binary validity mask was generated and then smoothed using a
+        box filter implemented via an integral-image prefix sum. The final mosaic was produced by feathered averaging,
+        <code>I(out) = (∑<sub>k</sub> w<sub>k</sub>(out) · I<sub>k</sub>(out)) / (∑<sub>k</sub> w<sub>k</sub>(out))</code>,
+        which attenuates seam visibility in overlaps while preserving detail away from boundaries. This weighted scheme
+        mitigates hard transitions without invoking high-level libraries. Residual ghosting may persist where parallax
+        or motion violates the single-homography assumption; nevertheless, the approach yields clean results on scenes
+        consistent with planar or rotational camera motion.
+      </p>
 
 
       <div class="card" style="padding:16px">
@@ -151,7 +195,8 @@ which attenuates seam visibility in overlaps while preserving detail away from b
             </select>
           </label>
 
-          <label><input type="radio" name="avg-view" value="no_avg_weight" checked> Mosaic wihout Weighted Avergae</label>
+          <label><input type="radio" name="avg-view" value="no_avg_weight" checked> Mosaic wihout Weighted
+            Avergae</label>
           <label><input type="radio" name="avg-view" value="subject_to_mean"> Mosaic with Weighted Average</label>
         </div>
 
@@ -164,10 +209,40 @@ which attenuates seam visibility in overlaps while preserving detail away from b
     </div>
   </section>
 
-  <!-- ========== 5. Caricatures / Extrapolation ========== -->
+
+  <!-- ========== B.1: Detecting corner features in an image  ========== -->
+  <section id="p3-5" class="section">
+    <div class="container">
+      <h2 class="section-title">B1 Harris Corner Detection</h2>
+
+      <div class="card" style="padding:16px">
+        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+          <label><strong>Subject:</strong>
+            <select id="b1">
+              <option value="all" selected>Glass Art Sculpture</option>
+              <!-- <option value="anms">ANMS (filtered)</option> -->
+            </select>
+          </label>
+          <label><input type="radio" name="car-view" value="og_image">Image</label>
+          <label><input type="radio" name="car-view" value="s_scale" checked>Single Scale</label>
+          <label><input type="radio" name="car-view" value="ams">Adaptive Non-Maximal Suppresion</label>
+        </div>
+
+        <figure class="media media--narrow" style="margin:0 auto">
+          <img id="b1-img" alt="caricature viewer">
+          <figcaption id="b1-cap" style="text-align:center; margin-top:8px"></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- ========== B.2: Extracting a Feature Descriptor for each feature poin  ========== -->
   <!-- <section id="p3-5" class="section">
     <div class="container">
-      <h2 class="section-title">5 — Caricatures via Shape Extrapolation</h2>
+      <h2 class="section-title">B2 Harris Corner Detection</h2>
       <p>Extrapolate along PCA/mean-offset: <code>shape = mean + k·(subject − mean)</code>.</p>
 
       <div class="card" style="padding:16px">
@@ -178,10 +253,9 @@ which attenuates seam visibility in overlaps while preserving detail away from b
               <option value="subject2">Subject 2</option>
             </select>
           </label>
-          <label><input type="radio" name="car-view" value="k-1.0" checked> k = −1.0</label>
-          <label><input type="radio" name="car-view" value="k0.0"> k = 0.0</label>
-          <label><input type="radio" name="car-view" value="k1.0"> k = +1.0</label>
-          <label><input type="radio" name="car-view" value="grid"> Grid</label>
+          <label><input type="radio" name="car-view" value="k-1.0" checked>Single Scale</label>
+          <label><input type="radio" name="car-view" value="k0.0"> Multi-scale</label>
+          <label><input type="radio" name="car-view" value="k1.0">Adaptive Non-Maximal Suppresion</label>
         </div>
 
         <figure class="media media--narrow" style="margin:0 auto">
@@ -189,10 +263,10 @@ which attenuates seam visibility in overlaps while preserving detail away from b
           <figcaption id="car-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
       </div>
-
-      <p>Files in <code>media/part3_5/</code>: <code>mario_k-1.0.png</code>, <code>mario_k0.0.png</code>, <code>mario_k1.0.png</code>, <code>mario_grid.png</code>.</p>
     </div>
-  </section> -->
+  </section>  -->
+
+
 
   <!-- ========== Bells & Whistles ========== -->
   <!-- <section id="p3-bw" class="section">
@@ -209,196 +283,207 @@ which attenuates seam visibility in overlaps while preserving detail away from b
 
       <p>Files in <code>media/part3_bw/</code>: e.g., <code>poisson_compare.png</code>, <code>color_transfer.png</code>, etc.</p>
     </div>
-  </section> -->
+  </section>
 
-  <!-- ========== Shared JS helpers ========== -->
+  <-- ========== Shared JS helpers ========== -->
   <script>
-  (function(){
-    const EXTS = ['png','jpg','jpeg','gif'];
-    const $ = s => document.querySelector(s);
-    function tryLoad(imgEl, paths, i=0){
-      if(i >= paths.length){ imgEl.removeAttribute('src'); return; }
-      imgEl.onerror = () => tryLoad(imgEl, paths, i+1);
-      imgEl.src = paths[i];
-    }
-    function onRadios(name, cb){
-      document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', cb));
-    }
-    window.UI = {EXTS, $, tryLoad, onRadios};
-  })();
+    (function () {
+      const EXTS = ['png', 'jpg', 'jpeg', 'gif'];
+      const $ = s => document.querySelector(s);
+      function tryLoad(imgEl, paths, i = 0) {
+        if (i >= paths.length) { imgEl.removeAttribute('src'); return; }
+        imgEl.onerror = () => tryLoad(imgEl, paths, i + 1);
+        imgEl.src = paths[i];
+      }
+      function onRadios(name, cb) {
+        document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', cb));
+      }
+      window.UI = { EXTS, $, tryLoad, onRadios };
+    })();
   </script>
 
   <!-- ========== Viewers ========== -->
   <script>
-  (function(){
-    const {EXTS, $, tryLoad, onRadios} = UI;
+    (function () {
+      const { EXTS, $, tryLoad, onRadios } = UI;
 
-    function makeViewer({base, imgSel, capSel, watch, stem}){
-      const img = $(imgSel), cap = $(capSel);
-      function state(){
-        const s = {};
-        for(const w of watch){
-          if(w.kind==='select'){ s[w.as] = document.getElementById(w.id).value; }
-          else if(w.kind==='radio'){ s[w.as] = (document.querySelector(`input[name="${w.name}"]:checked`)||{}).value; }
+      function makeViewer({ base, imgSel, capSel, watch, stem }) {
+        const img = $(imgSel), cap = $(capSel);
+        function state() {
+          const s = {};
+          for (const w of watch) {
+            if (w.kind === 'select') { s[w.as] = document.getElementById(w.id).value; }
+            else if (w.kind === 'radio') { s[w.as] = (document.querySelector(`input[name="${w.name}"]:checked`) || {}).value; }
+          }
+          return s;
         }
-        return s;
+        function update() {
+          const st = state();
+          const label = st.label || '';
+          const fileStem = stem(st);
+          cap.textContent = label || fileStem;
+          tryLoad(img, EXTS.map(ext => `${base}/${fileStem}.${ext}`));
+        }
+        for (const w of watch) {
+          if (w.kind === 'select') document.getElementById(w.id).addEventListener('change', update);
+          if (w.kind === 'radio') onRadios(w.name, update);
+        }
+        update();
       }
-      function update(){
-        const st = state();
-        const label = st.label || '';
-        const fileStem = stem(st);
-        cap.textContent = label || fileStem;
-        tryLoad(img, EXTS.map(ext => `${base}/${fileStem}.${ext}`));
-      }
-      for(const w of watch){
-        if(w.kind==='select') document.getElementById(w.id).addEventListener('change', update);
-        if(w.kind==='radio') onRadios(w.name, update);
-      }
-      update();
-    }
 
-  // A1 — explicit filename mapping
-(function(){
-  const {EXTS, $, tryLoad, onRadios} = UI;
-  const img = $('#c-img'), cap = $('#c-cap');
+      // A1 — explicit filename mapping
+      (function () {
+        const { EXTS, $, tryLoad, onRadios } = UI;
+        const img = $('#c-img'), cap = $('#c-cap');
 
-  // Map the UI selections to your actual basenames (no extension)
-  const FILES = {
-    'Sequia National Park': {
-      'a_points': 'DSCF4641',
-      'b_points': 'DSCF4652'
-    }
-  };
+        // Map the UI selections to your actual basenames (no extension)
+        const FILES = {
+          'Sequia National Park': {
+            'a_points': 'DSCF4641',
+            'b_points': 'DSCF4652'
+          }
+        };
 
-  function update(){
-    const pair = document.getElementById('c-pair').value;
-    const view = (document.querySelector('input[name="c-view"]:checked')||{}).value;
-    const stem = FILES[pair] && FILES[pair][view];
-    if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
+        function update() {
+          const pair = document.getElementById('c-pair').value;
+          const view = (document.querySelector('input[name="c-view"]:checked') || {}).value;
+          const stem = FILES[pair] && FILES[pair][view];
+          if (!stem) { img.removeAttribute('src'); cap.textContent = ''; return; }
 
-    cap.textContent = `${pair} — ${view==='a_points' ? 'Fixed Center of Projection' : 'Rotation of Camera'}`;
-    const paths = EXTS.map(ext => `media/a1/${stem}.${ext}`);
-    tryLoad(img, paths);
+          cap.textContent = `${pair} — ${view === 'a_points' ? 'Fixed Center of Projection' : 'Rotation of Camera'}`;
+          const paths = EXTS.map(ext => `media/a1/${stem}.${ext}`);
+          tryLoad(img, paths);
+        }
+
+        document.getElementById('c-pair').addEventListener('change', update);
+        onRadios('c-view', update);
+        update();
+      })();
+
+
+      // A2 — map radios to your two images in media/a2
+      (function () {
+        const { EXTS, $, tryLoad, onRadios } = UI;
+        const img = $('#w-img'), cap = $('#w-cap');
+
+        // Radio values in your HTML:
+        //   w-view="a_to_mean" → Feature Points
+        //   w-view="b_to_mean" → Correspondences
+        const STEM_BY_VIEW = {
+          'a_to_mean': 'seq_corr', // Feature Points
+          'b_to_mean': 'seq_homo'  // Correspondences
+        };
+
+        function update() {
+          const view = (document.querySelector('input[name="w-view"]:checked') || {}).value;
+          const stem = STEM_BY_VIEW[view];
+          if (!stem) { img.removeAttribute('src'); cap.textContent = ''; return; }
+
+          cap.textContent = (view === 'a_to_mean') ? 'Feature Points' : 'Correspondences';
+          const paths = EXTS.map(ext => `media/a2/${stem}.${ext}`);
+          tryLoad(img, paths);
+        }
+
+        // Listen to both radios and the (currently unused) pair select for consistency
+        document.getElementById('w-pair').addEventListener('change', update);
+        onRadios('w-view', update);
+        update();
+      })();
+
+
+      // A3 — map radios to images in media/a3
+      (function () {
+        const { EXTS, $, tryLoad, onRadios } = UI;
+        const img = $('#m-img'), cap = $('#m-cap');
+
+        // Map HTML radios → basenames (no extension)
+        // Provide a second file later as `sequoia_panorama_bl.jpg` (or change the mapping).
+        const STEM_BY_VIEW = {
+          'mid': 'sequoia_panorama_nn', // Nearest Neighbor
+          'seq': 'sequoia_panorama_bl'  // Bilinear (add this file when ready)
+        };
+
+        function update() {
+          const view = (document.querySelector('input[name="m-view"]:checked') || {}).value;
+          let stem = STEM_BY_VIEW[view];
+
+          // Fallback: if bilinear file is missing, show the NN image
+          if (view === 'seq') {
+            const testPaths = EXTS.map(ext => `media/a3/${stem}.${ext}`);
+            // quick optimistic load: try bilinear first; if it 404s, try NN next
+            const paths = testPaths.concat(EXTS.map(ext => `media/a3/${STEM_BY_VIEW['mid']}.${ext}`));
+            cap.textContent = 'Bilinear Interpolation (falls back to NN if missing)';
+            tryLoad(img, paths);
+            return;
+          }
+
+          cap.textContent = 'Nearest Neighbor Interpolation';
+          const paths = EXTS.map(ext => `media/a3/${stem}.${ext}`);
+          tryLoad(img, paths);
+        }
+
+        // Keep the existing select for symmetry; it doesn't affect the mapping
+        document.getElementById('m-pair').addEventListener('change', update);
+        onRadios('m-view', update);
+        update();
+      })();
+
+
+      // A4 — map radios to images in media/a4
+      (function () {
+        const { EXTS, $, tryLoad, onRadios } = UI;
+        const img = $('#avg-img'), cap = $('#avg-cap');
+
+        const STEM_BY_VIEW = {
+          'no_avg_weight': 'mosaic_no_weight',
+          'subject_to_mean': 'mosaic_weighted'
+        };
+
+        function update() {
+          const view = (document.querySelector('input[name="avg-view"]:checked') || {}).value;
+          const stem = STEM_BY_VIEW[view];
+          if (!stem) { img.removeAttribute('src'); cap.textContent = ''; return; }
+
+          cap.textContent = (view === '')
+            ? 'Mosaic without Weighted Average'
+            : 'Mosaic with Weighted Average';
+
+          const paths = EXTS.map(ext => `media/a4/${stem}.${ext}`);
+          tryLoad(img, paths);
+        }
+
+        // The dataset select exists but is unused here; keep listener for symmetry
+        document.getElementById('avg-ds').addEventListener('change', update);
+        onRadios('avg-view', update);
+        update();
+      })();
+
+
+      (function () {
+  const { EXTS, $, tryLoad, onRadios } = UI;
+  const img = $('#b1-img'), cap = $('#b1-cap');
+
+  function update() {
+    const sel   = $('#b1').value; // 'all' | 'anms'
+    const radio = (document.querySelector('input[name="car-view"]:checked') || {}).value; // 's_scale' | 'm_scale' | 'ams'
+
+    const wantAnms = (sel === 'anms') || (radio === 'ams');
+    const stem = wantAnms ? 'B1_harris_anms' : 'B1_harris_all';
+
+    cap.textContent = wantAnms
+      ? 'Harris corners after ANMS'
+      : 'Harris corners (all detections)';
+
+    tryLoad(img, EXTS.map(ext => `media/b1/${stem}.${ext}`));
   }
 
-  document.getElementById('c-pair').addEventListener('change', update);
-  onRadios('c-view', update);
+  document.getElementById('b1').addEventListener('change', update);
+  onRadios('car-view', update);
   update();
 })();
 
-
-// A2 — map radios to your two images in media/a2
-(function(){
-  const {EXTS, $, tryLoad, onRadios} = UI;
-  const img = $('#w-img'), cap = $('#w-cap');
-
-  // Radio values in your HTML:
-  //   w-view="a_to_mean" → Feature Points
-  //   w-view="b_to_mean" → Correspondences
-  const STEM_BY_VIEW = {
-    'a_to_mean': 'seq_corr', // Feature Points
-    'b_to_mean': 'seq_homo'  // Correspondences
-  };
-
-  function update(){
-    const view = (document.querySelector('input[name="w-view"]:checked')||{}).value;
-    const stem = STEM_BY_VIEW[view];
-    if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
-
-    cap.textContent = (view==='a_to_mean') ? 'Feature Points' : 'Correspondences';
-    const paths = EXTS.map(ext => `media/a2/${stem}.${ext}`);
-    tryLoad(img, paths);
-  }
-
-  // Listen to both radios and the (currently unused) pair select for consistency
-  document.getElementById('w-pair').addEventListener('change', update);
-  onRadios('w-view', update);
-  update();
-})();
-
-
-// A3 — map radios to images in media/a3
-(function(){
-  const {EXTS, $, tryLoad, onRadios} = UI;
-  const img = $('#m-img'), cap = $('#m-cap');
-
-  // Map HTML radios → basenames (no extension)
-  // Provide a second file later as `sequoia_panorama_bl.jpg` (or change the mapping).
-  const STEM_BY_VIEW = {
-    'mid': 'sequoia_panorama_nn', // Nearest Neighbor
-    'seq': 'sequoia_panorama_bl'  // Bilinear (add this file when ready)
-  };
-
-  function update(){
-    const view = (document.querySelector('input[name="m-view"]:checked')||{}).value;
-    let stem = STEM_BY_VIEW[view];
-
-    // Fallback: if bilinear file is missing, show the NN image
-    if(view === 'seq') {
-      const testPaths = EXTS.map(ext => `media/a3/${stem}.${ext}`);
-      // quick optimistic load: try bilinear first; if it 404s, try NN next
-      const paths = testPaths.concat(EXTS.map(ext => `media/a3/${STEM_BY_VIEW['mid']}.${ext}`));
-      cap.textContent = 'Bilinear Interpolation (falls back to NN if missing)';
-      tryLoad(img, paths);
-      return;
-    }
-
-    cap.textContent = 'Nearest Neighbor Interpolation';
-    const paths = EXTS.map(ext => `media/a3/${stem}.${ext}`);
-    tryLoad(img, paths);
-  }
-
-  // Keep the existing select for symmetry; it doesn't affect the mapping
-  document.getElementById('m-pair').addEventListener('change', update);
-  onRadios('m-view', update);
-  update();
-})();
-
-
-// A4 — map radios to images in media/a4
-(function(){
-  const {EXTS, $, tryLoad, onRadios} = UI;
-  const img = $('#avg-img'), cap = $('#avg-cap');
-
-  const STEM_BY_VIEW = {
-    'no_avg_weight':       'mosaic_no_weight',
-    'subject_to_mean': 'mosaic_weighted'
-  };
-
-  function update(){
-    const view = (document.querySelector('input[name="avg-view"]:checked')||{}).value;
-    const stem = STEM_BY_VIEW[view];
-    if(!stem){ img.removeAttribute('src'); cap.textContent = ''; return; }
-
-    cap.textContent = (view==='')
-      ? 'Mosaic without Weighted Average'
-      : 'Mosaic with Weighted Average';
-
-    const paths = EXTS.map(ext => `media/a4/${stem}.${ext}`);
-    tryLoad(img, paths);
-  }
-
-  // The dataset select exists but is unused here; keep listener for symmetry
-  document.getElementById('avg-ds').addEventListener('change', update);
-  onRadios('avg-view', update);
-  update();
-})();
-
-
-
-    // BW
-    (function(){
-      const img = document.querySelector('#bw-img');
-      const cap = document.querySelector('#bw-cap');
-      const base = 'media/part3_bw';
-      const stems = ['poisson_compare','color_transfer','extra1'];
-      const paths = [];
-      stems.forEach(s => EXTS.forEach(ext => paths.push(`${base}/${s}.${ext}`)));
-      cap.textContent = 'Bells & Whistles examples';
-      tryLoad(img, paths);
     })();
-
-  })();
   </script>
 </body>
+
 </html>
