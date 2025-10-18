@@ -438,9 +438,10 @@
           const stem = STEM_BY_VIEW[view];
           if (!stem) { img.removeAttribute('src'); cap.textContent = ''; return; }
 
-          cap.textContent = (view === '')
-            ? 'Mosaic without Weighted Average'
-            : 'Mosaic with Weighted Average';
+          cap.textContent = (view === 'no_avg_weight')
+  ? 'Mosaic without Weighted Average'
+  : 'Mosaic with Weighted Average';
+
 
           const paths = EXTS.map(ext => `media/a4/${stem}.${ext}`);
           tryLoad(img, paths);
@@ -452,66 +453,26 @@
         update();
       })();
 
-
-      (function () {
-  const { EXTS, $, tryLoad, onRadios } = UI;
-  const img = $('#b1-img'), cap = $('#b1-cap');
-
-  function update() {
-    const sel   = $('#b1').value; // currently only 'all'
-    const mode  = (document.querySelector('input[name="car-view"]:checked') || {}).value; // 'og_image' | 's_scale' | 'ams'
-
-    if (mode === 'og_image') {
-      cap.textContent = 'Original image (no corners)';
-      // original lives at proj3/media/g4.jpg (not under /b1)
-      const ogPaths = ['media/g4.jpg','media/g4.png','media/g4.jpeg','media/g4.gif'];
-      tryLoad(img, ogPaths);
-      return;
-    }
-
-    const wantAnms = (sel === 'og_image') || (mode === 'ams') || (mode == 'anms');
-    const stem = wantAnms ? 'B1_harris_anms' : 'B1_harris_all';
-
-    cap.textContent = wantAnms
-      ? 'Harris corners after ANMS'
-      : 'Harris corners (all detections)';
-
-    tryLoad(img, EXTS.map(ext => `media/b1/${stem}.${ext}`));
-  }
-
-  document.getElementById('b1').addEventListener('change', update);
-  onRadios('car-view', update);
-  update();
-})();
-
 (function () {
   const { EXTS, $, tryLoad, onRadios } = UI;
   const img = $('#b1-img'), cap = $('#b1-cap');
 
   function update() {
-    const sel  = $('#b1').value; // currently 'all'
-    const mode = (document.querySelector('input[name="car-view"]:checked') || {}).value; // 'og_image' | 's_scale' | 'ams'
-
+    const mode = (document.querySelector('input[name="car-view"]:checked') || {}).value;
     if (mode === 'og_image') {
       cap.textContent = 'Original image (no corners)';
-      // lives in proj3/media/b1/g4.jpg
-      const paths = EXTS.map(ext => `media/b1/g4.${ext}`);
-      tryLoad(img, paths);
+      tryLoad(img, EXTS.map(ext => `media/b1/g4.${ext}`));
       return;
     }
-
-    const wantAnms = (sel === 'anms') || (mode === 'ams');
-    const stem = wantAnms ? 'B1_harris_anms' : 'B1_harris_all';
-
-    cap.textContent = wantAnms
+    const stem = (mode === 'ams') ? 'B1_harris_anms' : 'B1_harris_all';
+    cap.textContent = (mode === 'ams')
       ? 'Harris corners after ANMS'
       : 'Harris corners (all detections)';
-
     tryLoad(img, EXTS.map(ext => `media/b1/${stem}.${ext}`));
   }
 
-  document.getElementById('b1').addEventListener('change', update);
   onRadios('car-view', update);
+  document.getElementById('b1').addEventListener('change', update);
   update();
 })();
 
