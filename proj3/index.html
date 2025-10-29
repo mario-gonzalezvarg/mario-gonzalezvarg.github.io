@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CS180 – Project 3 | Mario Gonzalez</title>
   <link rel="stylesheet" href="../styles.css" />
+  <!-- LaTeX rendering -->
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
   <style>
     .media {
       display: block;
@@ -236,6 +241,58 @@
           <img id="b1-img" alt="caricature viewer">
           <figcaption id="b1-cap" style="text-align:center; margin-top:8px"></figcaption>
         </figure>
+
+        <div class="card" style="padding:16px">
+  <h3>Implementation Details</h3>
+
+  <p><strong>Corner response.</strong>
+    For a grayscale image \(I\), we evaluate the structure tensor
+    \(\mathbf{H}(x,y) = g_{\sigma_i} * \big[\nabla_{\sigma_d}I \,\nabla_{\sigma_d}I^{\!\top}\big]\),
+    with derivative scale \(\sigma_d{=}1.0\) and integration scale \(\sigma_i{=}1.5\).
+    The score is the harmonic-mean formulation used in MOPS,
+    \[
+      f_{\mathrm{HM}}(x,y) \;=\; \frac{\det \mathbf{H}(x,y)}{\operatorname{tr}\mathbf{H}(x,y)} \;=\; \frac{\lambda_1\lambda_2}{\lambda_1+\lambda_2}.
+    \]
+    In code (<code>_harris_response_and_orientation</code>) we compute \(I_x,I_y\) using
+    Gaussian derivatives and form \(A{=}I_x^2,\ B{=}I_y^2,\ C{=}I_x I_y\), so that
+    \(\det \mathbf{H}{=}AB{-}C^2\) and \(\operatorname{tr}\mathbf{H}{=}A{+}B\). A small \(\epsilon\) avoids division by zero.
+    We keep 3×3 local maxima above a threshold \(t\).
+    Because our images are normalized to \([0,1]\) but MOPS uses \(t{=}10\) on 8‑bit
+    intensities, we scale the threshold to \(t'=10/255^2\approx 1.54\times 10^{-4}\).
+    MOPS §2 motivates this formulation and the single‑scale setting.
+  </p>
+
+  <p><strong>Orientation field.</strong>
+    We optionally compute an orientation \(\theta\) from a heavily smoothed gradient
+    \(\nabla_{\sigma_o}I\) with \(\sigma_o{=}4.5\) (code: <code>theta = arctan2(G_y,G_x)</code>).
+    Although B2 uses axis‑aligned patches, this field is useful for diagnostics and
+    matches the paper’s oriented‑patch design. (See p.2 for the orientation definition.) 
+  </p>
+
+  <p><strong>Non‑maximum suppression & edges.</strong>
+    <code>_local_maxima</code> performs 3×3 NMS. We then discard detections within an
+    <em>edge guard</em> so B2’s \(40{\times}40\) footprint fits:
+    with an \(8{\times}8\) descriptor sampled at spacing \(s{=}5\), the half‑extent is
+    \(\big\lceil \tfrac{8-1}{2}\,s\big\rceil{=}18\) px; points closer than 18 px to any border are removed.
+  </p>
+
+  <p><strong>Adaptive Non‑Maximal Suppression (ANMS).</strong>
+    To obtain a spatially uniform set, we implement the paper’s ANMS criterion
+    (code: <code>_anms_select</code>). For each candidate \(i\) with strength \(f_i\),
+    we define its suppression radius
+    \[
+      r_i = \min_{j:\, f_i < c_{\text{robust}}\,f_j} \|x_i - x_j\|_2,\quad c_{\text{robust}}{=}0.9.
+    \]
+    We keep the \(n\) points with largest \(r_i\).
+    This reproduces the ordered list interpretation in §3 and yields better spatial coverage
+    than ranking by corner strength alone (cf. Fig. 2). Our reference implementation is
+    \(O(N^2)\); for very large \(N\), a KD‑tree over “stronger” points gives sub‑quadratic
+    behavior.
+  </p>
+</div>
+
+
+        
       </div>
     </div>
   </section>
@@ -266,6 +323,40 @@
         <img id="b2-desc" alt="descriptor patches" style="display:none">
         <figcaption id="b2-cap" style="text-align:center; margin-top:8px"></figcaption>
       </figure>
+
+      <div class="card" style="padding:16px">
+  <h3>Implementation Details</h3>
+
+  <p><strong>Sampling geometry.</strong>
+    Around each ANMS keypoint \((y,x)\) we sample an \(8{\times}8\) grid at spacing \(s{=}5\) px,
+    i.e., from a \(40{\times}40\) window. The grid abscissae are
+    \(o_k = \big(k - \tfrac{7}{2}\big)s,\ k=0,\ldots,7\), so the sample coordinates are
+    \((y+o_i,\ x+o_j)\). MOPS recommends low‑frequency sampling—effectively blurring and
+    subsampling—so that small localization errors do not cause large descriptor changes
+    (see Fig. 4–5; performance saturates near \(s=5\)).
+  </p>
+
+  <p><strong>Bilinear interpolation.</strong>
+    We resample with first‑order interpolation (<code>map_coordinates(..., order=1)</code>).
+    This avoids aliasing and stair‑steps from nearest‑neighbor while keeping the descriptor
+    linear in the input pixels (useful for analysis and stable differentiation).
+  </p>
+
+  <p><strong>Bias/gain normalization.</strong>
+    Each \(8{\times}8\) patch \(P\) is standardized to \( \hat{P} = (P-\mu)/\sigma \)
+    to remove affine intensity changes (exposure/contrast). Patches with
+    \(\sigma<10^{-6}\) are dropped as near‑constant and thus uninformative. The standardized
+    patch is flattened to a 64‑D vector. This is the “bias/gain normalized intensity values”
+    descriptor in §4.
+  </p>
+
+  <p><strong>Border handling.</strong>
+    We pre‑filter keypoints with an 18 px guard band so the \(40{\times}40\) window
+    lies completely inside the image, preventing extrapolation artifacts.
+  </p>
+
+</div>
+
     </div>
   </div>
 </section>
@@ -298,9 +389,122 @@
         <img id="b3-matches" alt="feature matches" style="display:none">
         <figcaption id="b3-cap" style="text-align:center; margin-top:8px"></figcaption>
       </figure>
+
+      <div class="card" style="padding:16px">
+  <h3>Implementation Details</h3>
+
+  <p><strong>Distance metric.</strong>
+    Given standardized descriptors \(D_1\in\mathbb{R}^{N_1\times 64}\) and
+    \(D_2\in\mathbb{R}^{N_2\times 64}\), we compute all pairwise squared Euclidean
+    distances \( \|d_i - e_j\|_2^2 \) without square roots (code: a matrix product identity).
+    Squared distances preserve order and are numerically stable.
+  </p>
+
+  <p><strong>Lowe’s ratio test.</strong>
+    For each \(d_i\) we find its closest and second‑closest matches in \(D_2\),
+    with errors \(e_{1\mathrm{NN}}\) and \(e_{2\mathrm{NN}}\).
+    We accept if
+    \[
+      \frac{e_{1\mathrm{NN}}}{e_{2\mathrm{NN}}} < \tau,\qquad \tau\in[0.70,0.85].
+    \]
+    MOPS (§5, Fig. 6) shows that absolute nearest‑neighbor error is a poor discriminator,
+    but the 1‑NN/2‑NN ratio separates correct and incorrect matches well; the rationale
+    uses the “shell property” in high dimensions and the fact that feature‑dependent
+    scales vary widely. Our implementation optionally enforces mutual consistency
+    (cross‑check) by requiring each image‑2 feature to choose the same partner back.
+  </p>
+
+  <p><strong>Complexity and tuning.</strong>
+    The all‑pairs distance computation is \(O(N_1N_2)\).
+    With ANMS‑thinned keypoints (\(\le\) 500–800) this is tractable and simpler than approximate
+    search. Increasing \(\tau\) trades higher recall for more outliers; we rely on B4’s RANSAC
+    to remove remaining geometric inconsistencies, as recommended in the paper (§5). 
+
+</div>
+
     </div>
   </div>
 </section>
+
+<!-- ========== B4: RANSAC + Auto Mosaicing ========== -->
+<section id="p3-b4" class="section">
+  <div class="container">
+    <h2 class="section-title">B4 RANSAC & Auto Mosaicing</h2>
+    <div class="card" style="padding:16px">
+      <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+        <label><strong>Subject:</strong>
+          <select id="b4-subj">
+            <option value="mural_pair" selected>Hawaii Mountains</option>
+          </select>
+        </label>
+        <label><input type="radio" name="b4-view" value="pair" checked> Image</label>
+        <label><input type="radio" name="b4-view" value="inliers"> Inliers / Outliers</label>
+        <label><input type="radio" name="b4-view" value="mosaic"> Mosaic</label>
+      </div>
+
+      <figure class="media media--narrow" style="margin:0 auto">
+        <!-- side-by-side originals -->
+        <div id="b4-pair" class="pair">
+          <img id="b4-left"  alt="left input">
+          <img id="b4-right" alt="right input">
+        </div>
+        <!-- single image (inliers or mosaic) -->
+        <img id="b4-single" alt="b4 single" style="display:none">
+        <figcaption id="b4-cap" style="text-align:center; margin-top:8px"></figcaption>
+      </figure>
+      <div class="card" style="padding:16px">
+  <h3>Implementation Details</h3>
+
+  <p><strong>Homography model and normalized DLT.</strong>
+    We estimate a planar projective map \(\mathbf{x}' \sim \mathbf{H}\mathbf{x}\) from
+    correspondences \((x,y)\leftrightarrow(u,v)\).
+    To stabilize the linear system, we use similarity normalization
+    \(T_1,T_2\) that center and scale points so their mean distance is \(\sqrt{2}\);
+    we then solve the homogeneous system \(\mathbf{A}\mathbf{h}=0\) via SVD at the
+    normalized scale (\(\mathbf{H}_n\)), and denormalize
+    \(\mathbf{H} = T_2^{-1}\mathbf{H}_n T_1\) (code: <code>_normalize_points</code>, <code>_dlt_homography</code>).
+    This is the standard normalized DLT; it reduces conditioning issues and improves accuracy.
+  </p>
+
+  <p><strong>Consensus via 4‑point RANSAC.</strong>
+    At each iteration we randomly sample 4 matches, estimate \(\mathbf{H}\), and score all
+    correspondences using the <em>symmetric transfer error</em>,
+    \[
+      \varepsilon_i \;=\; \big\|\pi(\mathbf{H}\mathbf{x}_i)-\mathbf{x}'_i\big\|_2^2
+      \;+\; \big\|\pi(\mathbf{H}^{-1}\mathbf{x}'_i)-\mathbf{x}_i\big\|_2^2,
+      \quad \pi([x,y,w]^{\top})=(x/w,y/w).
+    \]
+    Points with \(\varepsilon_i < \tau^2\) (we use \(\tau\approx 2\!-\!4\) px) are inliers.
+    We update the iteration budget using the standard success‑probability formula
+    \(N = \lceil \log(1-p)/\log(1-w^4)\rceil\) with \(p{=}0.99\) and current inlier rate \(w\).
+    After RANSAC we refit \(\mathbf{H}\) to all inliers (code: <code>ransac_homography_4pt</code>).
+  </p>
+
+  <p><strong>Warping and feathered blending.</strong>
+    Given \(\mathbf{H}_{1\to2}\), we map image‑1 corners through \(\mathbf{H}\) to compute a tight
+    output canvas and a translation \(\mathbf{T}\) that makes all coordinates positive;
+    we then warp with <code>cv2.warpPerspective</code> using \(\mathbf{T}\mathbf{H}_{1\to2}\).
+    To suppress seams we build soft masks \(w_k\) by Gaussian‑smoothing the binary
+    validity maps and compute a weighted average
+    \(I_{\text{mosaic}}(p)=\frac{\sum_k w_k(p)I_k(p)}{\sum_k w_k(p)}\).
+    For multi‑image panoramas, we chain pairwise homographies to a central reference
+    frame before accumulation. (See <code>warp_and_mosaic</code> and sequence code.)
+  </p>
+
+  <p><strong>Failure modes and mitigation.</strong>
+    Degenerate 4‑tuples (near‑collinear points) can yield unstable \(\mathbf{H}\); we reject
+    samples with poor conditioning or non‑finite estimates.
+    Failure to cover the overlap causes extrapolation gaps; ANMS (B1) alleviates this by
+    distributing features across the field of view. Residual ghosting is expected when the
+    single‑homography assumption is violated (parallax/motion), consistent with the discussion
+    in the MOPS paper’s panorama experiments.
+  </p>
+</div>
+
+    </div>
+  </div>
+</section>
+
 
 
 
@@ -595,6 +799,61 @@
 
   document.getElementById('b3-subj').addEventListener('change', update);
   onRadios('b3-view', update);
+  update();
+})();
+
+(function () {
+  const { EXTS, $, tryLoad, onRadios } = UI;
+
+  // Pair config: originals first looked up in /media/b4, then /media/b3
+  const B4 = {
+    mural_pair: {
+      leftBases:  ['media/b4/hm2'],
+      rightBases: ['media/b4/hm3'],
+      inliers:    'media/b4/B4_matches_inliers',
+      mosaic:     'media/b4/B4_mosaic_auto'
+      // (optional) pre-matches: 'media/b4/B4_matches_pre'
+    }
+  };
+
+  const pairWrap = $('#b4-pair');
+  const leftImg  = $('#b4-left');
+  const rightImg = $('#b4-right');
+  const single   = $('#b4-single');
+  const cap      = $('#b4-cap');
+
+  function pathsForBases(bases){
+    const out = [];
+    bases.forEach(b => EXTS.forEach(ext => out.push(`${b}.${ext}`)));
+    return out;
+  }
+  function extPaths(base){ return EXTS.map(ext => `${base}.${ext}`); }
+
+  function update() {
+    const key  = document.getElementById('b4-subj').value;
+    const view = (document.querySelector('input[name="b4-view"]:checked') || {}).value;
+    const p = B4[key];
+
+    if (view === 'pair') {
+      pairWrap.style.display = 'flex';
+      single.style.display   = 'none';
+      tryLoad(leftImg,  pathsForBases(p.leftBases));
+      tryLoad(rightImg, pathsForBases(p.rightBases));
+      cap.textContent = 'Input pair for mosaicing (left / right)';
+      return;
+    }
+
+    pairWrap.style.display = 'none';
+    single.style.display   = '';
+    const base = (view === 'inliers') ? p.inliers : p.mosaic;
+    tryLoad(single, extPaths(base));
+    cap.textContent = (view === 'inliers')
+      ? 'RANSAC inliers (green) and outliers (red)'
+      : 'Final mosaic (automatic)';
+  }
+
+  document.getElementById('b4-subj').addEventListener('change', update);
+  onRadios('b4-view', update);
   update();
 })();
 
