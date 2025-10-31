@@ -61,21 +61,20 @@
     <div class="container">
       <h2 class="section-title">Abstract</h2>
       <p>
-        This project examines linear filtering as a unifying language for edge detection, detail manipulation, and
-        seamless compositing. The study begins with a faithful implementation of discrete two-dimensional convolution
-        and finite differences, then replaces raw differences by derivatives of a Gaussian to reduce noise sensitivity.
-        Frequency manipulation is explored through unsharp masking (high-frequency amplification), hybrid images
-        (low–high spectral fusion following Oliva–Torralba), and Gaussian/Laplacian stacks (multi-scale analysis and
-        reconstruction). Multi-resolution blending (Burt–Adelson compositing) is used to synthesize visually coherent
-        composites while suppressing seams. Methodological choices are motivated, validated with Fourier diagnostics and
-        reconstruction checks, and tied directly to the coolest class on campus, CS180!!
+      This project investigates linear, shift‑invariant filtering as a common substrate for edge detection, detail
+      manipulation, and seamless compositing. I implement discrete two‑dimensional convolution from first principles
+      (four‑loop and two‑loop variants) and validate functional parity with <code>scipy.signal.convolve2d</code> under
+      matched padding semantics. 
+      
+      Building on finite differences, I examine the derivative‑of‑Gaussian (DoG) formulation to
+      suppress noise amplification, contrast its behavior with raw differencing, and verify the expected frequency response.
+      I then apply frequency‑selective processing to three applications: unsharp masking (high‑frequency gain), hybrid
+      images (low/high spectral fusion following Oliva–Torralba), and multi‑resolution analysis via Gaussian/Laplacian
+      stacks, culminating in Burt–Adelson blending for artifact‑reduced compositing. Across parts, I justify design choices,
+      report qualitative outcomes with diagnostics (Fourier magnitude and reconstruction checks), and discuss limitations and
+      failure modes.
       </p>
-      <div class="kpi">
-        <div><strong>Language & libs</strong><br><span class="small mono">Python · NumPy · SciPy · scikit-image</span></div>
-        <div><strong>Convolution</strong><br><span class="small">from-scratch (4-loop / 2-loop) + SciPy parity</span></div>
-        <div><strong>Stacks</strong><br><span class="small">Gaussian & Laplacian at fixed resolution</span></div>
-        <div><strong>Blending</strong><br><span class="small">Burt–Adelson with linear-RGB compositing</span></div>
-      </div>
+    
     </div>
   </section>
 
@@ -85,67 +84,64 @@
       <h2 class="section-title">1A · Discrete Convolution</h2>
 
        <p>
-        Let \(I \in \mathbb{R}^{H\times W}\) and \(K \in \mathbb{R}^{(2r+1)\times(2c+1)}\). The discrete convolution
-        is
-        \[
-          (I * K)[x,y] \;=\; \sum_{u=-r}^{r}\sum_{v=-c}^{c} I[x-u,\,y-v]\;K[u,v],
-        \]
-        computed with zero padding and kernel flipping. Two CPU implementations are supplied. The didactic version
-        (<span class="mono">conv2d_four_loops</span>) mirrors the summation and boundary handling; the optimized version
-        (<span class="mono">conv2d_two_loops</span>) collapses the inner multiply–accumulate into vectorized row/column
-        slices, reducing Python overhead while preserving exact semantics.
-      </p>
+  Let \(I\in\mathbb{R}^{H\times W}\) and \(K\in\mathbb{R}^{(2r+1)\times(2c+1)}\). I implement the discrete convolution
+  \((I*K)[x,y]=\sum_{u=-r}^{r}\sum_{v=-c}^{c}I[x-u,y-v]\,K[u,v]\) with kernel flipping and “same” zero padding to match
+  the course reference implementation. A didactic four‑loop version mirrors the mathematical summation and boundary
+  handling exactly; an optimized two‑loop version collapses the inner multiply–accumulate into vectorized row/column
+  slices to reduce Python overhead while preserving identical semantics.
+</p>
 
-      <h3>Procedure</h3>
-      <p>
-        Kernels are centered and forced to odd sizes to avoid half-pixel ambiguity. DC-preserving filters (e.g., box
-        filters) are normalized to unit sum. Boundary conditions match the course reference: zero padding with
-        output size equal to the input size (“same”). Parity is verified against
-        <span class="mono">scipy.signal.convolve2d</span> with absolute and relative error checks to floating precision.
-      </p>
+<h3>Validation</h3>
+<p>
+  I verify numerical equivalence against <code>scipy.signal.convolve2d</code> using absolute/relative tolerances at
+  float precision and by spot‑checking DC‑preserving kernels (e.g., normalized box filters). Boundary conditions are
+  held fixed (“same + zero”) so that downstream differences can be attributed to algorithmic choices rather than padding
+  artifacts. I also include the 9×9 box‑filter result on a self portrait, as required, alongside finite‑difference
+  responses for comparison.
+</p>
 
-      <h3>Design Rationale</h3>
-      <p>
-        Maintaining identical semantics across the custom and SciPy paths allows subsequent sections to attribute any
-        visual differences to algorithmic changes rather than to implementation details. Using “same + zero” also
-        simplifies comparisons with derivative filters introduced later.
-      </p>
+<h3>Notes on efficiency</h3>
+<p>
+  The two‑loop variant is measurably faster on megapixel inputs due to vectorized inner products, while producing the
+  same output as both the four‑loop and SciPy baselines. I report qualitative runtime observations and keep the
+  four‑loop reference for correctness regression tests.
+</p>
+
 
       <div class="card" style="padding:16px"> <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px"> <label><strong>Dataset:</strong> <select id="a-dataset"></select></label> <strong>k = <span id="a-kval">3</span></strong> <input id="a-kIdx" type="range" min="0" max="0" step="1" value="0" style="width:240px" aria-label="kernel size"> <label><input type="radio" name="a-impl" value="fourloops" checked> From scratch</label> <label><input type="radio" name="a-impl" value="scipy"> SciPy</label> </div>
 
       <figure class="media media--narrow" style="margin:0 auto"> <img id="a-img" alt="1A result"> <figcaption id="a-cap" style="text-align:center; margin-top:8px"></figcaption> </figure> </div>
-      </div>
+              <figure class="media">
+  <img src="media/part1/box/11_dx.png">
+  <figcaption>dx </figcaption>
+</figure>
+
+<figure class="media">
+  <img src="media/part1/box/11_dy.png">
+  <figcaption>dy</figcaption>
+</figure>  
+    </div>
   </section>
 
   <!-- ====================== PART 1B ====================== -->
   <section id="part1b" class="section">
     <div class="container">
       <h2 class="section-title">1B – Finite Difference Operator</h2>
+<p>
+  I estimate first‑order derivatives with forward‑difference stencils \(D_x=[-1,1]\) and \(D_y=D_x^\top\),
+  computing \(I_x=I*D_x\), \(I_y=I*D_y\), and the gradient magnitude \(\|\nabla I\|=\sqrt{I_x^2+I_y^2}\).
+  Thresholding \(\|\nabla I\|\) yields a binarized edge map. All processing occurs on linear‑intensity grayscale to
+  avoid gamma bias, and uses the same “same + zero” padding adopted in 1A for consistent border support.
+</p>
 
-      <p>
-        Forward-difference stencils \(D_x = [-1,\,1]\) and \(D_y = D_x^\top\) approximate spatial derivatives via
-        \[
-          I_x = I * D_x,\qquad I_y = I * D_y,\qquad
-          \|\nabla I\| = \sqrt{I_x^2 + I_y^2}.
-        \]
-        Thresholding \(\|\nabla I\|\) produces edge maps; an orientation visualization maps
-        \(\theta = \operatorname{atan2}(I_y, I_x)\) to hue, exposing local geometry beyond magnitude alone.
-      </p>
+<h3>Threshold selection</h3>
+<p>
+  To trade off noise rejection and edge completeness, I select thresholds by percentile heuristics (≈85–95th percentile
+  of \(\|\nabla I\|\)) and report the resulting qualitative differences. This makes the decision scale‑free with respect
+  to global intensity while remaining faithful to fine structure in the <em>cameraman</em> image.
+</p>
 
-      <h3>Procedure</h3>
-      <p>
-        Images are converted to grayscale in linear intensity before filtering to avoid gamma-induced biases.
-        Derivatives are computed with the same “same + zero” boundary mode used in 1A to ensure consistent support at
-        borders. Thresholds are chosen by percentile heuristics (e.g., 85–95th percentile of \(\|\nabla I\|\)) to avoid
-        dependence on absolute intensity scaling.
-      </p>
 
-      <h3>Limitations and Motivation for DoG</h3>
-      <p>
-        The finite-difference operator is high-pass and therefore amplifies noise and compression artifacts. Spurious
-        responses proliferate at low thresholds and thin edges fragment at high thresholds. These issues motivate
-        smoothing prior to differencing, formalized next via the derivative of a Gaussian.
-      </p>
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
@@ -236,16 +232,14 @@
       <h2 class="section-title">2A – Unsharp Masking / Sharpening</h2>
 
       <p>
-        Unsharp masking increases perceived sharpness by adding a scaled high-frequency residue:
-        \[
-          \text{blur} = I * G_\sigma,\quad
-          \text{high} = I - \text{blur},\quad
-          I'=\operatorname{clip}\big(I + \alpha\,\text{high}\big).
-        \]
-        Parameter \(\sigma\) controls the radius of frequencies considered “high”; \(\alpha\) sets contrast gain in
-        that band. A soft threshold \(\tau\) optionally suppresses amplification of small fluctuations (sensor noise,
-        film grain).
-      </p>
+  I implement unsharp masking by adding a scaled high‑frequency residue to the input:
+  \[\text{blur}=I*G_\sigma,\;\text{high}=I-\text{blur},\;I'=\operatorname{clip}(I+\alpha\,\text{high})\]
+  The parameter \(\sigma\) sets the transition between “detail” and “structure,” while \(\alpha\) controls contrast gain
+  within that band. A soft threshold on <code>high</code> optionally suppresses sensor noise.
+</p>
+
+
+  
 
       <h3>Procedure</h3>
       <p>
@@ -254,14 +248,24 @@
         to restore micro-contrast, followed by a gentle mid-radius pass
         \((\sigma\!\approx\!3\!-\!4,\;\alpha\!\approx\!0.2\!-\!0.4)\) to crispen contours while avoiding halos.
         Clamping is applied last to maintain valid display range.
-      </p>
+    </p>
+    <p>
+  For the Taj Mahal and the additional image of my granpda, I show the blurred, high‑pass, and sharpened results, and vary \(\alpha\)
+  to illustrate the sharpening–halo trade‑off. I also blur a sharp image and attempt to restore it, comparing the
+  restored image to the original to highlight the information loss incurred by low‑pass filtering.
+</p>
 
-      <h3>Artifacts and Controls</h3>
-      <p>
-        Halos arise when \(\alpha\) is large at broad \(\sigma\); reducing \(\alpha\) or moving energy to the fine pass
-        mitigates the effect. Banding is avoided by using sufficiently wide kernels (\(k=2\lfloor 3\sigma\rfloor+1\))
-        and by operating in linear space, which prevents disproportionate boosts in dark regions.
-      </p>
+      <h3>Observations</h3>
+<p>
+  Fine‑scale sharpening (\(\sigma\approx 1\!-\!1.5\)) restores micro‑contrast effectively. Larger \(\sigma\) values can
+  introduce halos near strong edges; this is mitigated by reducing \(\alpha\), operating in linear intensity, and
+  applying clamping only at the end of the pipeline.
+</p>
+
+<p>
+  <em>Summary:</em> <code>blur = G<sub>σ</sub> ⊗ I</code>, <code>high = I − blur</code>,
+  <code>I′ = clip(I + α·high)</code>.
+</p>
 
       <div class="card" style="padding:16px">
         <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
