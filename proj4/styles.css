@@ -141,3 +141,49 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   .reveal-wipe::before{transition:none;transform:none}
   [data-reveal]{transition:none;opacity:1;transform:none}
 }
+
+/* 1) Translucent glass card (keeps the background visible, but text readable) */
+.glass {
+  background: rgba(8, 12, 20, 0.45);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* Fallback if backdrop-filter isn’t supported */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: rgba(8, 12, 20, 0.78); }
+}
+
+/* 2) Outline/glow around headings for readability without a box */
+.text-outline {
+  /* stroke for WebKit */
+  -webkit-text-stroke: 0.6px rgba(0,0,0,0.55);
+  /* soft halo for all browsers */
+  text-shadow:
+    0 0 6px rgba(0,0,0,0.65),
+    0 2px 12px rgba(0,0,0,0.45);
+}
+
+/* 3) Mobile typography & layout tweaks */
+@media (max-width: 768px) {
+  :root {
+    --body-size: 16.5px;
+    --line: 1.6;
+  }
+  body { font-size: var(--body-size); line-height: var(--line); }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  .section { padding: 1.25rem; }
+  .card { padding: 1rem; border-radius: 12px; }
+  img, video, canvas { max-width: 100%; height: auto; }
+}
+
+/* Optional: add a subtle dark edge behind ALL running text without boxes */
+.readable {
+  text-shadow:
+    0 0 3px rgba(0,0,0,0.55),
+    0 0 12px rgba(0,0,0,0.35);
+}
+
