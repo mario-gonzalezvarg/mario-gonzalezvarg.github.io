@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Neural Fields</title>
+  <meta name="description" content="CS180 Project 4 report with calibration, neural fields, NeRF training, results, analysis, and extras."/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <!-- fixed starfield backdrop -->
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="progress" aria-hidden="true"><span class="bar"></span></div>
+    <a class="brand" href="#">CS180 • Project 4</a>
+
+    <button id="menu-btn" class="chip" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav id="nav" class="nav" aria-label="Primary">
+      <a href="#overview">Overview</a>
+      <a href="#calibration">Calibration</a>
+      <!-- <a href="#nf2d">Neural Field (2D)</a>
+      <a href="#nerf">NeRF</a>
+      <a href="#results">Results</a>
+      <a href="#bells">Bells & Whistles</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#appendix">Appendix</a> -->
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="serif title" data-split="chars">Neural Fields </h1>
+      <p class="lead">UC&nbsp;Berkeley • CS180 Computational Photography</p>
+      <!-- <p class="muted small">Name: <strong>Mar</strong> • Email: <strong>you@berkeley.edu</strong> • Date: <strong><span id="last-updated"></span></strong></p> -->
+      <div class="cta"><a class="btn" href="#overview">Start</a></div>
+    </section>
+
+    <!-- Overview / Abstract -->
+    <section id="overview" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Overview</h2>
+      </header>
+      <p data-reveal>
+        Short abstract of the project: objectives, datasets, key methods (Charuco/Aruco calibration, MLP neural field for 2D, NeRF for 3D), and main findings.
+      </p>
+      <ul class="list" data-reveal>
+        <li><strong>Code:</strong> <a href="https://github.com/yourrepo" target="_blank" rel="noopener">GitHub repository</a></li>
+        <li><strong>Environment:</strong> Python, PyTorch/JAX (as applicable), CUDA</li>
+      </ul>
+    </section>
+
+    <!-- Camera Calibration & Pose Estimation -->
+    <section id="calibration" class="section">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Part 1 — Camera Calibration &amp; Pose Estimation</h2>
+        <p class="muted" data-reveal>Board setup, intrinsics/ distortion, reprojection error, and sample poses.</p>
+      </header>
+
+      <article class="card" data-reveal>
+        <h3>Board &amp; Printing Specs</h3>
+        <ul class="list">
+          <li>Board type: <em>Charuco/Aruco</em> (size, square length, marker length, DPI, paper size)</li>
+          <li>Capture protocol: angles, distances, lighting</li>
+        </ul>
+      </article>
+
+      <div class="grid grid-3">
+        <figure class="figure reveal-wipe">
+          <img src="media/calib/board_print.jpg" alt="Printed board"/>
+          <figcaption>Printed board</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/calib/detections.jpg" alt="Detected corners/IDs"/>
+          <figcaption>Detections &amp; IDs</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/calib/pose_axes.jpg" alt="Estimated camera pose axes"/>
+          <figcaption>Pose axes overlay</figcaption>
+        </figure>
+      </div>
+
+      <article class="card" data-reveal>
+        <h3>Intrinsics &amp; Error</h3>
+        <pre><code>K =
+[ fx   0  cx ]
+[  0  fy  cy ]
+[  0   0   1 ]</code></pre>
+        <p>Distortion (k1,k2,p1,p2[,k3]): <code>[...]</code></p>
+        <p>Mean reprojection error (pixels): <strong>…</strong></p>
+      </article>
+    </section>
+
+    <!-- Neural Field for 2D -->
+    <section id="nf2d" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Part 2 — Neural Field (2D)</h2>
+        <p class="muted" data-reveal>Coordinate-based MLP fitting a single image; show training curve and reconstructions.</p>
+      </header>
+
+      <div class="grid grid-3">
+        <figure class="figure reveal-wipe">
+          <img src="media/nf2d/target.png" alt="Target image"/>
+          <figcaption>Target image</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/nf2d/recon_iter.png" alt="Reconstructions across iterations"/>
+          <figcaption>Recon at iterations</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/nf2d/loss_curve.png" alt="Training loss curve"/>
+          <figcaption>Loss curve</figcaption>
+        </figure>
+      </div>
+
+      <article class="card" data-reveal>
+        <h3>Model &amp; Training</h3>
+        <ul class="list">
+          <li>Input: (x,y) in [−1,1], with/without positional encoding</li>
+          <li>MLP architecture: layers/width/activation</li>
+          <li>Loss: L2 / PSNR; Optimizer &amp; LR schedule</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- NeRF from Multi-view Images -->
+    <section id="nerf" class="section">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Part 3 — NeRF from Multi-view Images</h2>
+        <p class="muted" data-reveal>Dataset, ray sampling, MLP radiance field, volume rendering, and training details.</p>
+      </header>
+
+      <article class="card" data-reveal>
+        <h3>Dataset &amp; Cameras</h3>
+        <ul class="list">
+          <li>Scene: <em>Lego</em> (200×200), train/val/test split</li>
+          <li>Provided/preprocessed camera poses; sample frustums</li>
+        </ul>
+      </article>
+
+      <div class="grid grid-3">
+        <figure class="figure reveal-wipe">
+          <img src="media/nerf/rays.png" alt="Ray sampling diagram"/>
+          <figcaption>Ray sampling</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/nerf/network.png" alt="NeRF MLP diagram"/>
+          <figcaption>NeRF MLP</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/nerf/volume_render.png" alt="Volume rendering schematic"/>
+          <figcaption>Volume rendering</figcaption>
+        </figure>
+      </div>
+
+      <article class="card" data-reveal>
+        <h3>Training Hyperparameters</h3>
+        <ul class="list">
+          <li>Positional encoding: L<sub>xyz</sub>, L<sub>dir</sub></li>
+          <li>Samples per ray (coarse/fine), batch size</li>
+          <li>Optimizer, initial LR, epochs/steps, LR decay</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Quantitative & Qualitative Results -->
+    <section id="results" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Results</h2>
+      </header>
+
+      <article class="card" data-reveal>
+        <h3>Metrics</h3>
+        <table>
+          <thead>
+            <tr><th>Split</th><th>PSNR (↑)</th><th>SSIM (↑)</th><th>LPIPS (↓)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Train</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Val</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Test</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <div class="grid grid-3">
+        <figure class="figure reveal-wipe">
+          <img src="media/nerf/novel_views.gif" alt="Novel view flythrough"/>
+          <figcaption>Novel views (GIF/video)</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/nerf/depth.png" alt="Depth or disparity map"/>
+          <figcaption>Depth / sigma visualization</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/nerf/comparison.png" alt="Ground truth vs reconstruction"/>
+          <figcaption>GT vs reconstruction</figcaption>
+        </figure>
+      </div>
+
+      <article class="card" data-reveal>
+        <h3>Failure Cases</h3>
+        <p>Describe challenging viewpoints, glossy surfaces, or floaters; include visual examples.</p>
+      </article>
+    </section>
+
+    <!-- Bells & Whistles -->
+    <section id="bells" class="section">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Bells &amp; Whistles</h2>
+        <p class="muted" data-reveal>Optional improvements and ablations.</p>
+      </header>
+      <ul class="list" data-reveal>
+        <li>Hierarchical sampling tweaks / importance resampling</li>
+        <li>Alternate encodings or activation functions</li>
+        <li>Depth supervision / regularization, occupancy grid, etc.</li>
+      </ul>
+      <div class="grid grid-3">
+        <figure class="figure reveal-wipe">
+          <img src="media/bw/ablation1.png" alt="Ablation figure 1"/>
+          <figcaption>Ablation A → effect on PSNR</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/bw/ablation2.png" alt="Ablation figure 2"/>
+          <figcaption>Ablation B → training speed</figcaption>
+        </figure>
+        <figure class="figure reveal-wipe">
+          <img src="media/bw/ablation3.png" alt="Ablation figure 3"/>
+          <figcaption>Ablation C → visual artifacts</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Analysis / Reflection -->
+    <section id="analysis" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Discussion &amp; Reflection</h2>
+      </header>
+      <article class="card" data-reveal>
+        <h3>What Worked / What Didn’t</h3>
+        <p>Summarize key lessons, trade-offs, and future work.</p>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Compute &amp; Runtime</h3>
+        <ul class="list">
+          <li>Hardware (GPU/VRAM), training time</li>
+          <li>Peak memory, batch sizes</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- Appendix, Citations -->
+    <section id="appendix" class="section">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Appendix</h2>
+      </header>
+
+      <article class="card" data-reveal>
+        <h3>Implementation Notes</h3>
+        <ul class="list">
+          <li>Directory structure, data loaders</li>
+          <li>Repro steps: commands to train/eval/export</li>
+        </ul>
+      </article>
+
+      <article class="card" data-reveal>
+        <h3>Acknowledgments</h3>
+        <p>Credit collaborators, datasets, and references.</p>
+      </article>
+
+      <article class="card" data-reveal>
+        <h3>References</h3>
+        <ol>
+          <li>Mildenhall et al., NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis.</li>
+          <li>Mueller et al., Instant-NGP (if used), etc.</li>
+        </ol>
+      </article>
+    </section>
+  </main>
+  
+  <!-- subtle horizon decoration -->
+  <!-- <svg class="horizon" viewBox="0 0 1000 140" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="hillGrad" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="#0b1222"/><stop offset="100%" stop-color="#060a14"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#hillGrad)" d="M0,100 C120,120 200,60 320,80 C460,102 540,70 680,94 C820,120 900,88 1000,104 L1000,140 L0,140 Z"/>
+    <path opacity="0.55" fill="#0a0f1f" d="M0,112 C130,132 200,76 340,96 C480,118 560,86 700,110 C840,136 920,100 1000,116 L1000,140 L0,140 Z"/>
+  </svg> -->
+</body>
+</html>
