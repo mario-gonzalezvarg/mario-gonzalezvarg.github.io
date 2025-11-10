@@ -1,72 +1,80 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Neural Fields</title>
-  <meta name="description" content="CS180 Project 4 report with calibration, neural fields, NeRF training, results, analysis, and extras."/>
+  <meta name="description"
+    content="CS180 Project 4 report with calibration, neural fields, NeRF training, results, analysis, and extras." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cormorant+Garamond:wght@400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
   <script defer src="script.js"></script>
 </head>
+
 <body>
   <!-- fixed starfield backdrop -->
   <canvas id="sky" aria-hidden="true"></canvas>
 
-  <a class="skip" href="#main">Skip to content</a>
-
   <header class="site-header" role="banner">
     <div class="progress" aria-hidden="true"><span class="bar"></span></div>
     <a class="brand" href="#">CS180 • Project 4</a>
-<!-- 
-    <button id="menu-btn" class="chip" aria-expanded="false" aria-controls="nav">Menu</button>
-    <nav id="nav" class="nav" aria-label="Primary">
-      <a href="#overview">Overview</a>
-    </nav> -->
   </header>
 
+  <!----------------------------------------------------- Title ----------------------------------------------------->
   <main id="main">
-    <!-- Hero -->
     <section class="hero">
       <h1 class="serif title" data-split="chars">Neural Fields </h1>
       <p class="lead">UC&nbsp;Berkeley • CS180 Computational Photography</p>
     </section>
 
-    <!-- Overview / Abstract -->
+
+    <!----------------------------------------------- Part 0 Camera Calibration and 3D Scanning ------------------------------------------------->
     <section id="3D Scan" class="section alt">
       <header class="section-header">
         <h1 class="serif" data-reveal-line>Camera Calibration and 3D Scanning</h1>
       </header>
 
       <div class="grid-2">
-    <figure class="figure">
-      <img src="media/viser/frustums_view1.png" alt="Viser frustums view 1">
-      <figcaption>View 1 — global layout of camera poses.</figcaption>
-    </figure>
+        <figure class="figure">
+          <img src="media/viser/frustums_view1.png" alt="Viser frustums view 1">
+          <figcaption>View 1 — global layout of camera poses.</figcaption>
+        </figure>
 
-    <figure class="figure">
-      <img src="media/viser/frustums_view2.png" alt="Viser frustums view 2">
-      <figcaption>View 2 — closer look at pose cluster and field of view.</figcaption>
-    </figure>
-  </div>
+        <figure class="figure">
+          <img src="media/viser/frustums_view2.png" alt="Viser frustums view 2">
+          <figcaption>View 2 — closer look at pose cluster and field of view.</figcaption>
+        </figure>
+      </div>
     </section>
 
-</section>
+
+    <!------------------------------------------------ Part 1 Fit a Neural Field to a 2D Image ---------------------------------------------------->
+    <section id="2D Neural" class="section alt">
+      <header class="section-header">
+        <h1 class="serif" data-reveal-line>Fitting a Neural Field to a 2D Image</h1>
+      </header>
+
+      <p1>
+        Model architecture report (number of layers, width, learning rate, and other important details)
+        Training progression visualization on both the provided test image and one of your own images
+        Final results for 2 choices of max positional encoding frequency and 2 choices of width (2x2 grid)
+        PSNR curve for training on one image of your choice
+      </p1>
+    </section>
+
+    <!---------------------------------------- Part 2 Fit a Neural Radiance Field from Multi-view Images ----------------------------------------->
+    <!-- <section id="nrl" class="section-alt">
+      <header class="section-header">
+        <h1 class="serif" data-reveal-line> Fitting Neural Radiance Field from Multi-view Images</h1>
+      </header>
+    </section> -->
 
 
-
- 
-  
-  <!-- subtle horizon decoration -->
-  <!-- <svg class="horizon" viewBox="0 0 1000 140" preserveAspectRatio="none" aria-hidden="true">
-    <defs>
-      <linearGradient id="hillGrad" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0%" stop-color="#0b1222"/><stop offset="100%" stop-color="#060a14"/>
-      </linearGradient>
-    </defs>
-    <path fill="url(#hillGrad)" d="M0,100 C120,120 200,60 320,80 C460,102 540,70 680,94 C820,120 900,88 1000,104 L1000,140 L0,140 Z"/>
-    <path opacity="0.55" fill="#0a0f1f" d="M0,112 C130,132 200,76 340,96 C480,118 560,86 700,110 C840,136 920,100 1000,116 L1000,140 L0,140 Z"/>
-  </svg> -->
+    <!-- END OF HTML -->
 </body>
+
 </html>
