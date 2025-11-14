@@ -213,3 +213,73 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   color: var(--muted, #9aa3b2);
 }
 
+
+/* base tabs (if not already added) */
+.pe-tabs{display:grid;gap:12px;justify-items:center;margin-top:10px}
+.pe-tabs input[type="radio"]{
+  position:absolute;inline-size:1px;block-size:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;
+}
+.pe-tabbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pe-tabbar label{
+  padding:6px 10px;font-size:14px;cursor:pointer;user-select:none;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  transition:transform .12s ease,border-color .12s ease;
+}
+.pe-tabbar label:hover{transform:translateY(-1px)}
+#L1:checked  ~ .pe-tabbar label[for="L1"],
+#L2:checked  ~ .pe-tabbar label[for="L2"],
+#L3:checked  ~ .pe-tabbar label[for="L3"],
+#L4:checked  ~ .pe-tabbar label[for="L4"],
+#L5:checked ~ .pe-tabbar label[for="L5"]
+/* #L6:checked ~ .pe-tabbar label[for="L6"],
+#L7:checked ~ .pe-tabbar label[for="L7"] */
+{
+  border-color:var(--accent);
+  background:linear-gradient(180deg,#f6e9bf,#e8d79d);
+  color:#1a2133;
+}
+
+/* three‑up panels */
+.pe-panels{width:min(92vw,1280px)}
+.pe-panels .panel{
+  display:none;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(10px,1.6vw,16px);
+}
+.pe-card{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.pe-card img{width:100%;height:auto;object-fit:contain;aspect-ratio:1}
+.pe-card figcaption{padding:8px 10px;font-size:.92rem;color:var(--muted);text-align:center}
+
+/* show the matching panel */
+#L1:checked  ~ .pe-panels [data-l="L1"],
+#L2:checked  ~ .pe-panels [data-l="L2"],
+#L3:checked  ~ .pe-panels [data-l="L3"],
+#L4:checked  ~ .pe-panels [data-l="L4"],
+#L5:checked ~ .pe-panels [data-l="L5"]{ display:grid }
+
+/* responsive */
+@media (max-width:900px){ .pe-panels .panel{ grid-template-columns:1fr 1fr } }
+@media (max-width:620px){ .pe-panels .panel{ grid-template-columns:1fr } }
+
+/* infinite conveyor */
+.graph-belt{ overflow:hidden; }
+.graph-belt .belt{
+  display:flex;
+  gap: clamp(12px, 1.8vw, 20px);
+  width:max-content;
+  animation: belt-scroll 28s linear infinite;
+}
+.graph-belt:hover .belt{ animation-play-state: paused; }
+@keyframes belt-scroll{ from{ transform: translateX(0); } to{ transform: translateX(-20%); } }
+.graph-belt img{
+  width: clamp(120px, 16vw, 220px);
+  border-radius:10px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+}
+
+/* make the belt span underneath the 3-up grid */
+.pe-panels .panel .graph-belt{
+  grid-column: 1 / -1;
+  margin-top: clamp(8px, 1.2vw, 14px);
+}

@@ -53,24 +53,168 @@
 
 
     <!------------------------------------------------ Part 1 Fit a Neural Field to a 2D Image ---------------------------------------------------->
-    <section id="2D Neural" class="section alt">
+    <section id="part1" class="section alt">
       <header class="section-header">
         <h1 class="serif" data-reveal-line>Fitting a Neural Field to a 2D Image</h1>
       </header>
 
-      <p1>
-        Model architecture report (number of layers, width, learning rate, and other important details)
-        Training progression visualization on both the provided test image and one of your own images
-        Final results for 2 choices of max positional encoding frequency and 2 choices of width (2x2 grid)
-        PSNR curve for training on one image of your choice
-      </p1>
+      <article class="glass readable">
+        <p><strong>Model architecture report</strong> (layers, width, lr, etc.).</p>
+      </article>
     </section>
+
+    <div class="pe-tabs">
+      <!-- radios -->
+      <input type="radio" name="L" id="L1" checked>
+      <input type="radio" name="L" id="L2">
+      <input type="radio" name="L" id="L3">
+      <input type="radio" name="L" id="L4">
+      <input type="radio" name="L" id="L5">
+      <input type="radio" name="L" id="L6">
+
+      <!-- panels (three images per L) -->
+      <div class="pe-panels" aria-live="polite">
+        <div class="panel" data-l="L1">
+          <figure class="pe-card"><img src="media/pe/L1_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
+            <figcaption>PE • RGB</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L1_uv.png" alt="L1 – PCA of PE features (colored by UV)">
+            <figcaption>PE • UV</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L1_penult_pca3_rgb.png"
+              alt="L1 – PCA of penultimate features (RGB)">
+            <figcaption>Penultimate • RGB</figcaption>
+          </figure>
+        </div>
+
+        <!-- Rendering belt for L1 -->
+        <div class="graph-belt" aria-label="Renderings for L1">
+          <div class="belt">
+            <!-- replace with your filenames/paths -->
+            <img src="media/render/freq/L1/render_00000.png" alt="L1 render 1">
+            <img src="media/render/freq/L1/render_00500.png" alt="L1 render 2">
+            <img src="media/render/freq/L1/render_01000.png" alt="L1 render 3">
+            <img src="media/render/freq/L1/render_01500.png" alt="L1 render 4">
+            <img src="media/render/freq/L1/render_02000.png" alt="L1 render 5">
+            <img src="media/render/freq/L1/render_02500.png" alt="L1 render 6">
+            <!-- duplicate for seamless loop -->
+            <img src="media/render/freq/L1/render_00000.png" alt="" aria-hidden="true">
+            <img src="media/render/freq/L1/render_00500.png" alt="" aria-hidden="true">
+            <img src="media/render/freq/L1/render_01500.png" alt="" aria-hidden="true">
+            <img src="media/render/freq/L1/render_02000.png" alt="" aria-hidden="true">
+            <img src="media/render/freq/L1/render_02500.png" alt="" aria-hidden="true">
+          </div>
+        </div>
+
+
+
+        <div class="panel" data-l="L2">
+          <figure class="pe-card"><img src="media/pe/L2_rgb.png" alt="L2 – PCA of PE features (colored by RGB)">
+            <figcaption>PE • RGB</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L2_uv.png" alt="L2 – PCA of PE features (colored by UV)">
+            <figcaption>PE • UV</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L2_penult_pca3_rgb.png"
+              alt="L2 – PCA of penultimate features (RGB)">
+            <figcaption>Penultimate • RGB</figcaption>
+          </figure>
+        </div>
+
+        <div class="panel" data-l="L3">
+          <figure class="pe-card"><img src="media/pe/L3_rgb.png" alt="L3 – PCA of PE features (colored by RGB)">
+            <figcaption>PE • RGB</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L3_uv.png" alt="L3 – PCA of PE features (colored by UV)">
+            <figcaption>PE • UV</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L3_penult_pca3_rgb.png"
+              alt="L3 – PCA of penultimate features (RGB)">
+            <figcaption>Penultimate • RGB</figcaption>
+          </figure>
+        </div>
+
+        <div class="panel" data-l="L4">
+          <figure class="pe-card"><img src="media/pe/L4_rgb.png" alt="L4 – PCA of PE features (colored by RGB)">
+            <figcaption>PE • RGB</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L4_uv.png" alt="L4 – PCA of PE features (colored by UV)">
+            <figcaption>PE • UV</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L4_penult_pca3_rgb.png"
+              alt="L4 – PCA of penultimate features (RGB)">
+            <figcaption>Penultimate • RGB</figcaption>
+          </figure>
+        </div>
+
+        <div class="panel" data-l="L5">
+          <figure class="pe-card"><img src="media/pe/L5_rgb.png" alt="L5 – PCA of PE features (colored by RGB)">
+            <figcaption>PE • RGB</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L5_uv.png" alt="L5 – PCA of PE features (colored by UV)">
+            <figcaption>PE • UV</figcaption>
+          </figure>
+          <figure class="pe-card"><img src="media/pe/L5_penult_pca3_rgb.png"
+              alt="L5 – PCA of penultimate features (RGB)">
+            <figcaption>Penultimate • RGB</figcaption>
+          </figure>
+        </div>
+
+        <!-- <div class="panel" data-l="L6">
+      <figure class="pe-card"><img src="media/pe/L6_rgb.png"              alt="L6 – PCA of PE features (colored by RGB)"><figcaption>PE • RGB</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L6_uv.png"               alt="L6 – PCA of PE features (colored by UV)"><figcaption>PE • UV</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L6_penult_pca3_rgb.png" alt="L6 – PCA of penultimate features (RGB)"><figcaption>Penultimate • RGB</figcaption></figure>
+    </div>
+
+
+    <div class="panel" data-l="L7">
+      <figure class="pe-card"><img src="media/pe/L7_rgb.png"              alt="L7 – PCA of PE features (colored by RGB)"><figcaption>PE • RGB</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L7_uv.png"               alt="L7 – PCA of PE features (colored by UV)"><figcaption>PE • UV</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L7_penult_pca3_rgb.png" alt="L7 – PCA of penultimate features (RGB)"><figcaption>Penultimate • RGB</figcaption></figure>
+    </div>
+
+    <div class="panel" data-l="L">
+      <figure class="pe-card"><img src="media/pe/L_rgb.png"              alt="L – PCA of PE features (colored by RGB)"><figcaption>PE • RGB</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L_uv.png"               alt="L – PCA of PE features (colored by UV)"><figcaption>PE • UV</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L_penult_pca3_rgb.png" alt="L – PCA of penultimate features (RGB)"><figcaption>Penultimate • RGB</figcaption></figure>
+    </div>
+
+    <div class="panel" data-l="L">
+      <figure class="pe-card"><img src="media/pe/L_rgb.png"              alt="L – PCA of PE features (colored by RGB)"><figcaption>PE • RGB</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L_uv.png"               alt="L – PCA of PE features (colored by UV)"><figcaption>PE • UV</figcaption></figure>
+      <figure class="pe-card"><img src="media/pe/L_penult_pca3_rgb.png" alt="L – PCA of penultimate features (RGB)"><figcaption>Penultimate • RGB</figcaption></figure>
+    </div> -->
+      </div>
+
+      <!-- tabbar -->
+      <div class="pe-tabbar" role="tablist" aria-label="L">
+        <label for="L1" role="tab">L1</label>
+        <label for="L2" role="tab">L2</label>
+        <label for="L3" role="tab">L3</label>
+        <label for="L4" role="tab">L4</label>
+        <label for="L5" role="tab">L5</label>
+        <!-- <label for="L14" role="tab">L14</label> -->
+      </div>
+    </div>
+
+
 
     <!---------------------------------------- Part 2 Fit a Neural Radiance Field from Multi-view Images ----------------------------------------->
     <!-- <section id="nrl" class="section-alt">
       <header class="section-header">
         <h1 class="serif" data-reveal-line> Fitting Neural Radiance Field from Multi-view Images</h1>
       </header>
+      <article glass data-reveal>
+        <h2>
+          Report your model architecture including number of layers, width, and learning rate. Feel free to add other
+          details you think are important.
+          Show training progression (images at different iterations, similar to the above reference) on both the
+          provided test image and one of your own images.
+          Show final results for 2 choices of max positional encoding frequency and 2 choices of width (a 2x2 grid of
+          results). Try very low values for these hyperparameters to see how it affects the outputs.
+          Show the PSNR curve for training on one image of your choice.
+        </h2>
+      </article>
     </section> -->
 
 
