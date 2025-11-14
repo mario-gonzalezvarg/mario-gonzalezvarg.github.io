@@ -228,10 +228,11 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 }
 .pe-tabbar label:hover{transform:translateY(-1px)}
 #L1:checked  ~ .pe-tabbar label[for="L1"],
-#L2:checked  ~ .pe-tabbar label[for="L2"],
-#L3:checked  ~ .pe-tabbar label[for="L3"],
 #L4:checked  ~ .pe-tabbar label[for="L4"],
-#L5:checked ~ .pe-tabbar label[for="L5"]
+#L8:checked  ~ .pe-tabbar label[for="L8"],
+#L12:checked  ~ .pe-tabbar label[for="L12"],
+#L16:checked ~ .pe-tabbar label[for="L16"],
+#L24:checked ~ .pe-tabbar label[for="L24"]
 /* #L6:checked ~ .pe-tabbar label[for="L6"],
 #L7:checked ~ .pe-tabbar label[for="L7"] */
 {
@@ -253,10 +254,11 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 
 /* show the matching panel */
 #L1:checked  ~ .pe-panels [data-l="L1"],
-#L2:checked  ~ .pe-panels [data-l="L2"],
-#L3:checked  ~ .pe-panels [data-l="L3"],
 #L4:checked  ~ .pe-panels [data-l="L4"],
-#L5:checked ~ .pe-panels [data-l="L5"]{ display:grid }
+#L8:checked  ~ .pe-panels [data-l="L8"],
+#L12:checked  ~ .pe-panels [data-l="L12"],
+#L16:checked ~ .pe-panels [data-l="L16"],
+#L24:checked ~ .pe-panels [data-l="L24"]{ display:grid }
 
 /* responsive */
 @media (max-width:900px){ .pe-panels .panel{ grid-template-columns:1fr 1fr } }
