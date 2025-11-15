@@ -318,104 +318,126 @@
       </article>
     </section>
 
-   <section id="varying_width" class="section alt">
-  <header class="section-header">
-    <h1 class="serif" data-reveal-line>Varying Widths</h1>
-  </header>
+    <section id="varying_width" class="section alt">
+      <header class="section-header">
+        <h1 class="serif" data-reveal-line>Varying Widths</h1>
+      </header>
 
-  <article class="glass readable">
-    Different hidden widths use the same positional encoding (L = 64) but allocate more or fewer channels per layer. 
-    The panels below mirror the encoding sweep: each tab shows the PCA of PE(u,v) colored by RGB, the same PCA colored by UV, 
-    the PCA of the penultimate layer features, and a strip of renderings across training iterations for that width.
-  </article>
 
-  <div class="pe-tabs">
-    <!-- independent radio group for width -->
-    <input type="radio" name="W" id="W64" checked>
-    <input type="radio" name="W" id="W256">
+    <article class="glass readable">
+      Varying the hidden width changes the geometry of the learned feature space much more than it changes the raw
+      positional-encoding manifold.
+      The PCA plots of PE(u,v) look essentially identical for the narrow and wide models, since both networks receive
+      the same sinusoidal expansion of the input image coordinates; the cloud of PE features remains a dense, roughly
+      cubic volume whose principal components are strongly aligned with u and v and only weakly correlated with color.
 
-    <div class="pe-panels" aria-live="polite">
-      <!-- Width = 64 panel -->
-      <div class="panel" data-w="W64">
-        <figure class="pe-card">
-          <img src="media/fox/L64_rgb.png" alt="L=64, width=64 – PCA of PE features (colored by RGB)">
-          <figcaption>PE • RGB (width = 64)</figcaption>
-        </figure>
-        <figure class="pe-card">
-          <img src="media/fox/L64_uv.png" alt="L=64, width=64 – PCA of PE features (colored by UV)">
-          <figcaption>PE • UV (width = 64)</figcaption>
-        </figure>
-        <figure class="pe-card">
-          <img src="media/fox/L64_penult_pca3_rgb.png" alt="L=64, width=64 – PCA of penultimate features (RGB)">
-          <figcaption>Penultimate • RGB (width = 64)</figcaption>
-        </figure>
+      The difference emerges at the penultimate layer.
+      With a smaller width, the PCA of the penultimate activations forms a relatively thick, fan-shaped cloud: the first
+      principal component correlates strongly with luminance, but a large fraction of variance is still carried by the
+      second component, and colors and spatial regions remain partially entangled. :contentReference[oaicite:1]{index=1}
+      In contrast, increasing the width leads to a much more anisotropic embedding in feature space.
+      The penultimate PCA collapses into a dominant one-dimensional arc that explains the majority of the variance, with
+      most points lying along a smooth trajectory in PC1 while PC2 and PC3 only modulate local deviations.
 
-        <div class="graph-belt" aria-label="Renderings for L=64, width=64">
-          <div class="belt">
-            <img src="media/fox/width/64/render_00000.png"  alt="W=64, iter 0">
-            <img src="media/fox/width/64/render_00500.png"  alt="W=64, iter 500">
-            <img src="media/fox/width/64/render_01000.png"  alt="W=64, iter 1000">
-            <img src="media/fox/width/64/render_01500.png"  alt="W=64, iter 1500">
-            <img src="media/fox/width/64/render_02000.png"  alt="W=64, iter 2000">
-            <img src="media/fox/width/64/render_02500.png"  alt="W=64, iter 2500">
-            <!-- loop for smooth belt -->
-            <img src="media/fox/width/64/render_00000.png"  alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_00500.png"  alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_01500.png"  alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_02000.png"  alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_02500.png"  alt="" aria-hidden="true">
+
+    </article>
+
+      <div class="pe-tabs">
+        <!-- independent radio group for width -->
+        <input type="radio" name="W" id="W64" checked>
+        <input type="radio" name="W" id="W256">
+
+        <div class="pe-panels" aria-live="polite">
+          <!-- Width = 64 panel -->
+          <div class="panel" data-w="W64">
+            <figure class="pe-card">
+              <img src="media/fox/L64_rgb.png" alt="L = 64, width = 64 – PCA of PE features (RGB)">
+              <figcaption>PE • RGB (lr = 1e-2)</figcaption>
+            </figure>
+            <figure class="pe-card">
+              <img src="media/fox/L64_uv.png" alt="L = 64, width = 64 – PCA of PE features (UV)">
+              <figcaption>PE • UV (layer depth = 8)</figcaption>
+            </figure>
+            <figure class="pe-card">
+              <img src="media/fox/L64_penult_pca3_rgb.png" alt="L = 64, width = 64 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB (iterations = 256)</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L = 64, width = 64">
+              <div class="belt">
+                <img src="media/fox/width/64/render_00000.png" alt="W = 64, iter 0">
+                <img src="media/fox/width/64/render_00500.png" alt="W = 64, iter 500">
+                <img src="media/fox/width/64/render_01000.png" alt="W = 64, iter 1000">
+                <img src="media/fox/width/64/render_01500.png" alt="W = 64, iter 1500">
+                <img src="media/fox/width/64/render_02000.png" alt="W = 64, iter 2000">
+                <img src="media/fox/width/64/render_02500.png" alt="W = 64, iter 2500">
+                <!-- loop for smooth belt -->
+                <img src="media/fox/width/64/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/64/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/64/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/64/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/64/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
           </div>
+
+          <!-- Width = 256 panel -->
+          <div class="panel" data-w="W256">
+            <figure class="pe-card">
+              <img src="media/fox/L64_rgb.png" alt="L = 64, width = 256 – PCA of PE features (RGB)">
+              <figcaption>PE • RGB (width = 256)</figcaption>
+            </figure>
+            <figure class="pe-card">
+              <img src="media/fox/L64_uv.png" alt="L = 64, width = 256 – PCA of PE features (UV)">
+              <figcaption>PE • UV (width = 256)</figcaption>
+            </figure>
+            <figure class="pe-card">
+              <img src="media/fox/L256_penult_pca3_rgb.png"
+                alt="L = 64, width = 256 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB (width = 256)</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L = 64, width = 256">
+              <div class="belt">
+                <img src="media/fox/width/256/render_00000.png" alt="W = 256, iter 0">
+                <img src="media/fox/width/256/render_00500.png" alt="W = 256, iter 500">
+                <img src="media/fox/width/256/render_01000.png" alt="W = 256, iter 1000">
+                <img src="media/fox/width/256/render_01500.png" alt="W = 256, iter 1500">
+                <img src="media/fox/width/256/render_02000.png" alt="W = 256, iter 2000">
+                <img src="media/fox/width/256/render_02500.png" alt="W = 256, iter 2500">
+                <!-- loop -->
+                <img src="media/fox/width/256/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/256/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/256/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/256/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/fox/width/256/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="pe-tabbar" role="tablist" aria-label="Width">
+          <label for="W64" role="tab">W = 64</label>
+          <label for="W256" role="tab">W = 256</label>
         </div>
       </div>
 
-      <!-- Width = 256 panel -->
-      <div class="panel" data-w="64">
-        <figure class="pe-card">
-          <img src="media/fox/L64_256_rgb.png" alt="L=64, width=256 – PCA of PE features (colored by RGB)">
-          <figcaption>PE • RGB (width = 256)</figcaption>
-        </figure>
-        <figure class="pe-card">
-          <img src="media/fox/L64_256_uv.png" alt="L=64, width=256 – PCA of PE features (colored by UV)">
-          <figcaption>PE • UV (width = 256)</figcaption>
-        </figure>
-        <figure class="pe-card">
-          <img src="media/fox/L64_256_penult_pca3_rgb.png" alt="L=64, width=256 – PCA of penultimate features (RGB)">
-          <figcaption>Penultimate • RGB (width = 256)</figcaption>
-        </figure>
-
-        <div class="graph-belt" aria-label="Renderings for L=64, width=256">
-          <div class="belt">
-            <img src="media/fox/width/64/render_00000.png" alt="W=64, iter 0">
-            <img src="media/fox/width/64/render_01000.png" alt="W=64, iter 500">
-            <img src="media/fox/width/64/render_02000.png" alt="W=64, iter 1000">
-            <img src="media/fox/width/64/render_03000.png" alt="W=64, iter 1500">
-            <img src="media/fox/width/64/render_04000.png" alt="W=64, iter 2000">
-            <img src="media/fox/width/64/render_05000.png" alt="W=64, iter 2500">
-            <!-- loop -->
-            <img src="media/fox/width/64/render_00000.png" alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_01000.png" alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_02000.png" alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_03000.png" alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_04000.png" alt="" aria-hidden="true">
-            <img src="media/fox/width/64/render_05000.png" alt="W=256, iter 2500">
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="pe-tabbar" role="tablist" aria-label="Width">
-      <label for="W64" role="tab">W = 64</label>
-      <label for="W256" role="tab">W = 256</label>
-    </div>
-  </div>
-</section>
-
-
-
-
-
+      <article class="glass readable">
+        Visually, this appears as a compact, curved sheet that peels away from the origin and then fades into a long,
+      low-density tail.
+      Pixels on the object and its immediate surroundings cluster tightly along one end of this arc, while background
+      pixels and saturated regions occupy the extended tail, indicating that the wider network has learned a more
+      organized representation where luminance and large-scale structure are encoded by a single dominant direction and
+      finer variations are relegated to orthogonal subspaces.
+      The PSNR curves reflect this difference: both widths reach similar overall reconstruction quality, but the wider
+      model converges to slightly higher PSNR and exhibits a smoother, more monotonic improvement over training,
+      consistent with its more structured internal feature manifold.
+      </article>
     </section>
+
+
 
 
 
