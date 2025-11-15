@@ -74,7 +74,7 @@
       </article>
 
       <article class="glass readable">
-               At mid-range frequencies (L = 8 and L = 12), the PCA manifolds begin to exhibit clear multi-layered structure.
+        At mid-range frequencies (L = 8 and L = 12), the PCA manifolds begin to exhibit clear multi-layered structure.
         The surfaces no longer form a single simple bowl but instead resemble sheets that have been folded or partially
         rolled, with regions of the grid mapped to different heights in PC3 even when their PC1 and PC2 coordinates
         almost overlap.
@@ -297,68 +297,123 @@
 
 
       <article class="glass readable">
-        
- At high frequency (L = 16 and especially L = 24), the PCA geometry becomes highly oscillatory. 
-  Instead of a single surface or a gently folded ribbon, the points fill a dense volume made up of overlapping bands and sheets that weave through one another. 
-  The color pattern, which encodes the original UV coordinates, makes this structure easier to interpret: blocks of similar color form thin, separated strands in PC space, indicating that many disjoint regions of the original image are now mapped to very different directions in the encoded feature space. 
-  In other words, small changes in u or v trigger large swings in the sinusoids at high L, so nearby pixels oscillate through many nearly orthogonal basis vectors. 
-  This is precisely the effect positional encoding is designed to achieve: it gives the MLP access to very fine spatial detail by decorrelating local neighborhoods, at the expense of producing a tangled, highly folded manifold that is more challenging to visualize. 
-  Across the sweep, the PCA plots therefore illustrate a clear progression: low L preserves a simple, almost planar embedding; mid-range L produces a structured but still readable ribbon; and high L yields a volumetric, multi-sheet structure where the encoding has effectively sprinkled the image plane across a high-dimensional torus in feature space.
-</article>
-        
+
+        At high frequency (L = 16 and especially L = 24), the PCA geometry becomes highly oscillatory.
+        Instead of a single surface or a gently folded ribbon, the points fill a dense volume made up of overlapping
+        bands and sheets that weave through one another.
+        The color pattern, which encodes the original UV coordinates, makes this structure easier to interpret: blocks
+        of similar color form thin, separated strands in PC space, indicating that many disjoint regions of the original
+        image are now mapped to very different directions in the encoded feature space.
+        In other words, small changes in u or v trigger large swings in the sinusoids at high L, so nearby pixels
+        oscillate through many nearly orthogonal basis vectors.
+        This is precisely the effect positional encoding is designed to achieve: it gives the MLP access to very fine
+        spatial detail by decorrelating local neighborhoods, at the expense of producing a tangled, highly folded
+        manifold that is more challenging to visualize.
+        Across the sweep, the PCA plots therefore illustrate a clear progression: low L preserves a simple, almost
+        planar embedding; mid-range L produces a structured but still readable ribbon; and high L yields a volumetric,
+        multi-sheet structure where the encoding has effectively sprinkled the image plane across a high-dimensional
+        torus in feature space.
+      </article>
+
       </article>
     </section>
 
-    <!-- <section id="varying_width" class="section alt">
-      <header class="section-header">
-        <h1 class="serif" data-reveal-line>Varying Widths</h1>
-      </header>
+   <section id="varying_width" class="section alt">
+  <header class="section-header">
+    <h1 class="serif" data-reveal-line>Varying Widths</h1>
+  </header>
 
-      <article class="glass readable">
-        <p><strong>Model architecture report</strong> (layers, width, lr, etc.).</p>
-      </article>
+  <article class="glass readable">
+    Different hidden widths use the same positional encoding (L = 64) but allocate more or fewer channels per layer. 
+    The panels below mirror the encoding sweep: each tab shows the PCA of PE(u,v) colored by RGB, the same PCA colored by UV, 
+    the PCA of the penultimate layer features, and a strip of renderings across training iterations for that width.
+  </article>
 
-      <div class="pe-tabs">
-        <input type="radio" name="L" id="L1" checked>
-        <input type="radio" name="L" id="L4">
-        <input type="radio" name="L" id="L8">
-        <input type="radio" name="L" id="L12">
-        <input type="radio" name="L" id="L16">
-        <input type="radio" name="L" id="L24">
+  <div class="pe-tabs">
+    <!-- independent radio group for width -->
+    <input type="radio" name="W" id="W64" checked>
+    <input type="radio" name="W" id="W256">
 
+    <div class="pe-panels" aria-live="polite">
+      <!-- Width = 64 panel -->
+      <div class="panel" data-w="W64">
+        <figure class="pe-card">
+          <img src="media/fox/L64_rgb.png" alt="L=64, width=64 – PCA of PE features (colored by RGB)">
+          <figcaption>PE • RGB (width = 64)</figcaption>
+        </figure>
+        <figure class="pe-card">
+          <img src="media/fox/L64_uv.png" alt="L=64, width=64 – PCA of PE features (colored by UV)">
+          <figcaption>PE • UV (width = 64)</figcaption>
+        </figure>
+        <figure class="pe-card">
+          <img src="media/fox/L64_penult_pca3_rgb.png" alt="L=64, width=64 – PCA of penultimate features (RGB)">
+          <figcaption>Penultimate • RGB (width = 64)</figcaption>
+        </figure>
 
-        <div class="pe-panels" aria-live="polite">
-  
-          <div class="panel" data-l="L64">
-            <figure class="pe-card"><img src="media/fox/L64_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
-              <figcaption>PE • RGB</figcaption>
-            </figure>
-            <figure class="pe-card"><img src="media/fox/L64_uv.png" alt="L1 – PCA of PE features (colored by UV)">
-              <figcaption>PE • UV</figcaption>
-            </figure>
-            <figure class="pe-card"><img src="media/fox/L64_penult_pca3_rgb.png"
-                alt="L1 – PCA of penultimate features (RGB)">
-              <figcaption>Penultimate • RGB</figcaption>
-            </figure>
+        <div class="graph-belt" aria-label="Renderings for L=64, width=64">
+          <div class="belt">
+            <img src="media/fox/width/64/render_00000.png"  alt="W=64, iter 0">
+            <img src="media/fox/width/64/render_00500.png"  alt="W=64, iter 500">
+            <img src="media/fox/width/64/render_01000.png"  alt="W=64, iter 1000">
+            <img src="media/fox/width/64/render_01500.png"  alt="W=64, iter 1500">
+            <img src="media/fox/width/64/render_02000.png"  alt="W=64, iter 2000">
+            <img src="media/fox/width/64/render_02500.png"  alt="W=64, iter 2500">
+            <!-- loop for smooth belt -->
+            <img src="media/fox/width/64/render_00000.png"  alt="" aria-hidden="true">
+            <img src="media/fox/width/64/render_00500.png"  alt="" aria-hidden="true">
+            <img src="media/fox/width/64/render_01500.png"  alt="" aria-hidden="true">
+            <img src="media/fox/width/64/render_02000.png"  alt="" aria-hidden="true">
+            <img src="media/fox/width/64/render_02500.png"  alt="" aria-hidden="true">
+          </div>
+        </div>
+      </div>
 
-            <div class="graph-belt" aria-label="Renderings for L64">
-  <div class="belt">
-    <img src="media/fox/width/256/render_00000.png" alt="L1 render 1">
-    <img src="media/fox/width/256/render_00500.png" alt="L1 render 2">
-    <img src="media/fox/width/256/render_01000.png" alt="L1 render 3">
-    <img src="media/fox/width/256/render_01500.png" alt="L1 render 4">
-    <img src="media/fox/width/256/render_02000.png" alt="L1 render 5">
-    <img src="media/fox/width/256/render_02500.png" alt="L1 render 6">
+      <!-- Width = 256 panel -->
+      <div class="panel" data-w="64">
+        <figure class="pe-card">
+          <img src="media/fox/L64_256_rgb.png" alt="L=64, width=256 – PCA of PE features (colored by RGB)">
+          <figcaption>PE • RGB (width = 256)</figcaption>
+        </figure>
+        <figure class="pe-card">
+          <img src="media/fox/L64_256_uv.png" alt="L=64, width=256 – PCA of PE features (colored by UV)">
+          <figcaption>PE • UV (width = 256)</figcaption>
+        </figure>
+        <figure class="pe-card">
+          <img src="media/fox/L64_256_penult_pca3_rgb.png" alt="L=64, width=256 – PCA of penultimate features (RGB)">
+          <figcaption>Penultimate • RGB (width = 256)</figcaption>
+        </figure>
 
-    <img src="media/fox/width/256/render_00000.png" alt="" aria-hidden="true">
-    <img src="media/fox/width/256/render_00500.png" alt="" aria-hidden="true">
-    <img src="media/fox/width/256/render_01500.png" alt="" aria-hidden="true">
-    <img src="media/fox/width/256/render_02000.png" alt="" aria-hidden="true">
-    <img src="media/fox/width/256/render_02500.png" alt="" aria-hidden="true">
+        <div class="graph-belt" aria-label="Renderings for L=64, width=256">
+          <div class="belt">
+            <img src="media/fox/width/64/render_00000.png" alt="W=256, iter 0">
+            <img src="media/fox/width/64/render_00500.png" alt="W=256, iter 500">
+            <img src="media/fox/width/64/render_01000.png" alt="W=256, iter 1000">
+            <img src="media/fox/width/256/render_01500.png" alt="W=256, iter 1500">
+            <img src="media/fox/width/256/render_02000.png" alt="W=256, iter 2000">
+            <img src="media/fox/width/256/render_02500.png" alt="W=256, iter 2500">
+            <!-- loop -->
+            <img src="media/fox/width/256/render_00000.png" alt="" aria-hidden="true">
+            <img src="media/fox/width/256/render_00500.png" alt="" aria-hidden="true">
+            <img src="media/fox/width/256/render_01500.png" alt="" aria-hidden="true">
+            <img src="media/fox/width/256/render_02000.png" alt="" aria-hidden="true">
+            <img src="media/fox/width/256/render_02500.png" alt="" aria-hidden="true">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pe-tabbar" role="tablist" aria-label="Width">
+      <label for="W64" role="tab">W = 64</label>
+      <label for="W256" role="tab">W = 256</label>
+    </div>
   </div>
-</div>
+</section>
 
-        </section> -->
+
+
+
+
+    </section>
 
 
 
