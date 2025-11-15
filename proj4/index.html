@@ -708,112 +708,103 @@
     </section>
 
     <section id="my_scene" class="section alt">
-  <header class="section-header">
-    <h1 class="serif" data-reveal-line>Training on My Own Dataset</h1>
-  </header>
+      <header class="section-header">
+        <h1 class="serif" style="margin-bottom:0" data-reveal-line>Training on My Own Dataset</h1>
+      </header>
 
-  <article class="glass readable">
-    This experiment applies the same NeRF pipeline to a custom capture of a single object.
-    The input consists of roughly 80 high-resolution RGB images taken on a hand-held camera, with the object placed on a
-    table and the camera moved along a semi-circular path.
-    The scene is calibrated once with a ChArUco board to recover a shared focal length and camera-to-world transforms,
-    and the images are then undistorted and downscaled to 200×200 before being packed into an NPZ in the same format as
-    the Lego example.
-    Compared to the baseline configuration, the main hyperparameter changes are a slightly larger near/far range to
-    cover the real-world scale of the object, a higher positional-encoding frequency (L = 16) to capture fine surface
-    detail, and a longer training schedule (10 000 iterations) with a cosine learning-rate schedule that warms up over
-    the first 500 steps and then decays from 5×10⁻⁴ to 5×10⁻⁶.
-  </article>
+      <article class="glass readable">
+        This experiment applies the NeRF pipeline to a custom object captured from multiple viewpoints.
+        The same calibration and packing steps as in the Lego example are reused, but the training schedule and sampling
+        parameters are tuned for this scene. The controls below let you flip between different training runs (e.g., 5k
+        vs
+        10k iterations) to compare how the reconstruction quality and optimization dynamics evolve.
+      </article>
 
-  <!-- Three-panel summary: loss/PSNR, final training view, final validation view -->
-  <div class="pe-panels pe-mydata" aria-live="polite">
-    <div class="panel">
-      <!-- Training loss / PSNR curve -->
-      <figure class="pe-card">
-        <img src="media/house/psnr_curve.png" alt="Custom scene: PSNR (or loss) curve over training iterations">
-        <figcaption>Training loss / PSNR over iterations for the custom scene.</figcaption>
-      </figure>
+      <!-- Tabs for different training runs (e.g. 5k vs 10k iterations) -->
+      <div class="pe-tabs">
+        <!-- independent radio group for runs -->
+        <input type="radio" name="S" id="S5k" checked>
+        <input type="radio" name="S" id="S10k">
 
-      <!-- Final training view -->
-      <figure class="pe-card">
-        <img src="media/house/train_05000.png" alt="Custom scene: final NeRF reconstruction from a training view">
-        <figcaption>Final NeRF reconstruction of a training view (iteration 10 000).</figcaption>
-      </figure>
+        <div class="pe-panels pe-mydata" aria-live="polite">
+          <!-- Run A: 5k iterations -->
+          <div class="panel" data-s="S5k">
+            <figure class="pe-card">
+              <img src="media/house/psnr_curve.png" alt="Custom scene – PSNR curve for 5k-iteration run">
+              <figcaption>PSNR / loss curve (5k iterations, lr = 5e-4, 64 samples/ray).</figcaption>
+            </figure>
+            <figure class="pe-card">
+              <img src="media/house/progression/train_05000.png" alt="Custom scene – training view at 5k iterations">
+              <figcaption>Training view reconstruction at 5k iterations.</figcaption>
+            </figure>
+            <figure class="pe-card">
+              <img src="media/house/progression/val_05000.png" alt="Custom scene – validation view at 5k iterations">
+              <figcaption>Held-out validation view at 5k iterations.</figcaption>
+            </figure>
 
-      <!-- Final validation / novel view -->
-      <figure class="pe-card">
-        <img src="media/house/val_05000.png" alt="Custom scene: final NeRF reconstruction from a novel view">
-        <figcaption>Final NeRF reconstruction of a held-out or novel view.</figcaption>
-      </figure>
-    </div>
-  </div>
+            <!-- Optional: belt of intermediate renders for this run -->
+            <div class="graph-belt" aria-label="Custom scene progression (5k run)">
+              <div class="belt">
+                <img src="media/house/progression/train_00500.png" alt="5k run – iter 0">
+                <img src="media/house/progression/train_01000.png" alt="5k run – iter 1k">
+                <img src="media/house/progression/train_02000.png" alt="5k run – iter 2k">
+                <img src="media/house/progression/train_03000.png" alt="5k run – iter 3k">
+                <img src="media/house/progression/train_04000.png" alt="5k run – iter 4k">
+                <img src="media/house/progression/train_05000.png" alt="5k run – iter 5k">
+                <!-- loop copies for smooth scroll -->
+                <img src="media/house/progression/val_00500.png" alt="" aria-hidden="true">
+                <img src="media/house/progression/val_01000.png" alt="" aria-hidden="true">
+                <img src="media/house/progression/val_02000.png" alt="" aria-hidden="true">
+                <img src="media/house/progression/val_03000.png" alt="" aria-hidden="true">
+                <img src="media/house/progression/val_04000.png" alt="" aria-hidden="true">
+                <img src="media/house/progression/val_05000.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
 
-  <article class="glass readable">
-    Several implementation details were adapted for this dataset.
-    The near and far bounds were tuned to approximately [0.2 m, 2.0 m] based on the spread of the calibrated camera
-    centers, which ensures that the sampling range fully covers the object and its supporting surface but does not waste
-    samples far behind the scene.
-    A cosine-annealed learning rate with a short warm-up improves stability compared to a fixed step size, especially
-    in the early stages where the network must quickly learn a reasonable coarse shape from noisy gradients.
-    In addition, a slightly longer training horizon (10 000 steps) and a moderate number of samples per ray (64) give
-    the network enough capacity to capture small geometric features without exploding the compute budget.
-  </article>
 
-  <!-- Stacked belts: training and validation progression -->
-  <div class="pe-panels pe-mydata" aria-live="polite">
-    <div class="panel">
-      <div class="graph-belt mydata-belt" aria-label="Custom scene reconstruction progression">
-        <!-- Training progression -->
-        <div class="belt">
-          <img src="media/house/train_01000.png" alt="Training view, iteration 2 000">
-          <img src="media/house/train_02000.png" alt="Training view, iteration 4 000">
-          <img src="media/house/train_03000.png" alt="Training view, iteration 6 000">
-          <img src="media/house/train_04000.png" alt="Training view, iteration 8 000">
-          <img src="media/house/train_05000.png" alt="Training view, iteration 10 000">
-          <!-- loop copies for smooth scroll -->
-          <img src="media/house/train_01000.png" alt="" aria-hidden="true">
-          <img src="media/house/train_02000.png" alt="" aria-hidden="true">
-          <img src="media/house/train_03000.png" alt="" aria-hidden="true">
-          <img src="media/house/train_04000.png" alt="" aria-hidden="true">
-          <img src="media/house/train_05000.png" alt="" aria-hidden="true">
+
+          <!-- Tab labels for runs -->
+          <div class="pe-tabbar" role="tablist" aria-label="Training run">
+            <label for="S5k" role="tab">5k iters</label>
+            <label for="S10k" role="tab">10k iters</label>
+          </div>
         </div>
 
-        <!-- Validation / novel-view progression -->
-        <div class="belt">
-          <img src="media/house/val_01000.png" alt="Validation view, iteration 2 000">
-          <img src="media/house/val_02000.png" alt="Validation view, iteration 4 000">
-          <img src="media/house/val_03000.png" alt="Validation view, iteration 6 000">
-          <img src="media/house/val_04000.png" alt="Validation view, iteration 8 000">
-          <img src="media/house/val_05000.png" alt="Validation view, iteration 10 000">
-          <!-- loop copies for smooth scroll -->
-          <img src="media/house/val_01000.png" alt="" aria-hidden="true">
-          <img src="media/house/val_02000.png" alt="" aria-hidden="true">
-          <img src="media/house/val_03000.png" alt="" aria-hidden="true">
-          <img src="media/house/val_04000.png" alt="" aria-hidden="true">
-          <img src="media/house/val_05000.png" alt="" aria-hidden="true">
+        <!-- Optional extra discussion after the tabs -->
+        <article class="glass readable">
+          The two training runs illustrate how additional optimization time mainly affects fine detail rather than the
+          overall layout of the scene.
+          In the 5k-iteration run, the batch PSNR curve rises rapidly over the first few hundred iterations, jumping
+          from roughly 10 dB into the mid-teens, and then increases more gradually as training proceeds.
+          The sequence of intermediate training renders reflects this shape: the image at iteration 0 is an amorphous
+          brown blur, by 1k iterations the triangular object and its supporting board begin to emerge, and by 5k
+          iterations the overall silhouette and shading are stable, with the checkerboard pattern on the board only
+          faintly visible.
+          The corresponding validation views show a similar progression: early frames barely distinguish foreground from
+          background, whereas the 5k snapshot already reconstructs the basic geometry and albedo from a held-out camera,
+          albeit with soft edges and residual mottling in the background.
+        </article>
+
+       
+
+        <!-- Orbit GIF / video stays at the end -->
+        <div class="center-media">
+          <figure>
+            <img src="media/house/house.gif" alt="NeRF orbit of the custom scene">
+            <figcaption>Orbit of the trained NeRF on the custom scene, showing novel synthesized views.</figcaption>
+          </figure>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <article class="glass readable">
-    The stacked progression belts show how the reconstruction quality evolves across training.
-    Early training outputs are heavily blurred and dominated by the global lighting and coarse silhouette of the object.
-    As iterations increase, both the training and validation rows sharpen: major planar faces and edges become well
-    aligned with the photographs, and the model begins to reproduce specular highlights and subtle shading variations.
-    By the final iterations, the training views match the ground truth closely, while the validation views remain only
-    slightly smoother, indicating that the network has learned a compact, generalizable representation of the scene
-    rather than merely memorizing each input image.
-  </article>
+         <article class="glass readable">
+        The  10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k steps, behaves differently after the midpoint. 
+        Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for several thousand more iterations, adding another one to two decibels of improvement before flattening. 
+        Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board becoming easier to discern. 
+        By iteration 10k, the training view has noticeably fewer low-frequency artifacts and less noise in the background, and the validation view reveals cleaner lines along the object’s silhouette while preserving the same global appearance as in the shorter run. 
+        Together, these comparisons indicate that five thousand iterations are sufficient to capture the overall shape and color of the scene, while a longer schedule primarily refines small-scale structure and reduces residual blur, yielding smoother textures and slightly higher PSNR at the cost of additional compute.
+      </article>
+    </section>
 
-  <!-- Orbit GIF / video of novel views -->
-  <div class="center-media">
-    <figure>
-      <img src="media/house/orbit.gif" alt="NeRF orbit of the custom scene">
-      <figcaption>NeRF orbit of the custom scene, showing novel views synthesized from the trained model.</figcaption>
-    </figure>
-  </div>
-</section>
 
 
 
