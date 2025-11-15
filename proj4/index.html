@@ -441,109 +441,120 @@
       </article>
     </section>
 
-    <section id="final_result" class="section alt">
-      <header class="section-header">
-        <h1 class="serif" data-reveal-line>Final Reconstruction on Chosen Scene</h1>
-      </header>
+   <section id="final_result" class="section alt">
+  <header class="section-header">
+    <h1 class="serif" data-reveal-line>Final Reconstruction on Chosen Scene</h1>
+  </header>
 
-      <article class="glass readable">
-        The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
-        The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
-        three-sheet manifold in the top three principal components.
-        The smooth transition from red to green across this structure indicates that the first principal components
-        remain strongly aligned with the underlying latitude and longitude on the sphere, so even at higher frequency
-        the encoding preserves a globally ordered map of spatial position.
-        When the same PE features are colored by RGB instead of UV, the color pattern spreads almost uniformly through
-        this volume, which confirms that the positional encoding itself does not yet reflect any semantic grouping by
-        appearance; the geometry at this stage is dominated by coordinate-based oscillations rather than by the planet’s
-        texture.
-      </article>
+  <article class="glass readable">
+    The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
+    The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
+    three-sheet manifold in the top three principal components.
+    The smooth transition from red to green across this structure indicates that the first principal components
+    remain strongly aligned with the underlying latitude and longitude on the sphere, so even at higher frequency
+    the encoding preserves a globally ordered map of spatial position.
+    When the same PE features are colored by RGB instead of UV, the color pattern spreads almost uniformly through
+    this volume, which confirms that the positional encoding itself does not yet reflect any semantic grouping by
+    appearance; the geometry at this stage is dominated by coordinate-based oscillations rather than by the planet’s
+    texture.
+  </article>
 
-      <!-- WANT 3 PANELS SHOWING UV, RGB, and penultimate features rgb without the belt here -->
+  <!-- Three static panels: UV, RGB, penultimate (no belt, always visible) -->
+  <div class="pe-panels pe-panels-final">
+    <div class="panel">
+      <figure class="pe-card">
+        <img src="media/jupiter/L16_rgb.png" alt="PCA of PE features colored by UV">
+        <figcaption>PE • UV (top three principal components)</figcaption>
+      </figure>
 
-      <article class="glass readable">
-        The PCA of the penultimate features tells a very different story.
-        After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
-        they collapse into a highly elongated plume concentrated near one side of PC space, with most variance lying
-        along a single direction.
-        Points corresponding to bright clouds, blue storms, and the dark background are separated along this main axis,
-        while the secondary axes make only small corrections.
-        This pattern indicates that the network has reorganized the high-dimensional PE basis into a much more compact,
-        appearance-aligned representation in which luminance and large-scale color structure are encoded by one dominant
-        feature dimension, and finer chromatic and textural differences are stored in orthogonal directions.
-        In other words, the penultimate layer behaves like a learned color-space tailored to the Jupiter image rather
-        than a direct reflection of the original (u,v) coordinates.
-      </article>
+      <figure class="pe-card">
+        <img src="media/jupiter/L16_uv.png" alt="PCA of PE features colored by RGB">
+        <figcaption>PE • RGB (top three principal components)</figcaption>
+      </figure>
 
-      <div class="pe-tabs">
-        <!-- single radio for the final result (to reuse the tab/panel pattern) -->
-        <input type="radio" name="R" id="RFINAL" checked>
+      <figure class="pe-card">
+        <img src="media/jupiter/L16_penult_pca3_rgb.png" alt="PCA of penultimate features colored by RGB">
+        <figcaption>Penultimate • RGB (learned feature geometry)</figcaption>
+      </figure>
+    </div>
+  </div>
 
-        <div class="pe-panels" aria-live="polite">
-          <div class="panel" data-r="RFINAL">
-            <!-- Ground truth image -->
-            <figure class="pe-card">
-              <img src="media/jupiter/ground_truth.jpg" alt="Ground-truth image of the chosen scene">
-              <figcaption>Ground-truth view (input photograph)</figcaption>
-            </figure>
+  <article class="glass readable">
+    The PCA of the penultimate features tells a very different story.
+    After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
+    they collapse into a highly elongated plume concentrated near one side of PC space, with most variance lying
+    along a single direction.
+    Points corresponding to bright clouds, blue storms, and the dark background are separated along this main axis,
+    while the secondary axes make only small corrections.
+    This pattern indicates that the network has reorganized the high-dimensional PE basis into a much more compact,
+    appearance-aligned representation in which luminance and large-scale color structure are encoded by one dominant
+    feature dimension, and finer chromatic and textural differences are stored in orthogonal directions.
+    In other words, the penultimate layer behaves like a learned color-space tailored to the Jupiter image rather
+    than a direct reflection of the original (u,v) coordinates.
+  </article>
 
-            <!-- Final NeRF render -->
-            <figure class="pe-card">
-              <img src="media/jupiter/psnr_curve_batch.png" alt="NeRF reconstruction of the chosen view">
-              <figcaption>PSNR curve over training iterations</figcaption>
-            </figure>
+  <!-- If you still want the final image + PSNR + belt, you can keep this or remove it -->
+  <div class="pe-tabs">
+    <input type="radio" name="R" id="RFINAL" checked>
 
-            <!-- PSNR curve -->
-            <figure class="pe-card">
-              <img src="media/jupiter/progression/render_05000.png"
-                alt="PSNR vs. training iteration for the chosen scene">
-              <figcaption>lr = 1e-2, width = 256, encoding = 16</figcaption>
-            </figure>
+    <div class="pe-panels" aria-live="polite">
+      <div class="panel" data-r="RFINAL">
+        <figure class="pe-card">
+          <img src="media/jupiter/ground_truth.jpg" alt="Ground-truth image of the chosen scene">
+          <figcaption>Ground-truth view (input photograph)</figcaption>
+        </figure>
 
-            <!-- Optional: belt of intermediate renders or novel views -->
-            <div class="graph-belt" aria-label="Training progression for the chosen scene">
-              <div class="belt">
-                <!-- Replace these sources with your own intermediate frames or orbit frames -->
-                <img src="media/jupiter/progression/render_00000.png" alt="Iteration 0">
-                <img src="media/jupiter/progression/render_01000.png" alt="Iteration 500">
-                <img src="media/jupiter/progression/render_02000.png" alt="Iteration 1000">
-                <img src="media/jupiter/progression/render_03000.png" alt="Iteration 2000">
-                <img src="media/jupiter/progression/render_04000.png" alt="Iteration 5000">
-                <img src="media/jupiter/progression/render_05000.png" alt="Iteration 10000">
-                <!-- loop copies for infinite scroll -->
-                <img src="media/jupiter/progression/render_00000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_01000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_02000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_03000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_04000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_05000.png" alt="" aria-hidden="true">
-              </div>
-            </div>
+        <figure class="pe-card">
+          <img src="media/jupiter/psnr_curve_batch.png" alt="PSNR curve over training iterations">
+          <figcaption>Batch PSNR over training iterations</figcaption>
+        </figure>
+
+        <figure class="pe-card">
+          <img src="media/jupiter/progression/render_05000.png" alt="Final NeRF reconstruction of the chosen view">
+          <figcaption>Final NeRF reconstruction (e.g., 5k iters, L = 16, width = 256)</figcaption>
+        </figure>
+
+        <div class="graph-belt" aria-label="Training progression for the chosen scene">
+          <div class="belt">
+            <img src="media/jupiter/progression/render_00000.png" alt="Iteration 0">
+            <img src="media/jupiter/progression/render_01000.png" alt="Iteration 1000">
+            <img src="media/jupiter/progression/render_02000.png" alt="Iteration 2000">
+            <img src="media/jupiter/progression/render_03000.png" alt="Iteration 3000">
+            <img src="media/jupiter/progression/render_04000.png" alt="Iteration 4000">
+            <img src="media/jupiter/progression/render_05000.png" alt="Iteration 5000">
+            <!-- loop copies for infinite scroll -->
+            <img src="media/jupiter/progression/render_00000.png" alt="" aria-hidden="true">
+            <img src="media/jupiter/progression/render_01000.png" alt="" aria-hidden="true">
+            <img src="media/jupiter/progression/render_02000.png" alt="" aria-hidden="true">
+            <img src="media/jupiter/progression/render_03000.png" alt="" aria-hidden="true">
+            <img src="media/jupiter/progression/render_04000.png" alt="" aria-hidden="true">
+            <img src="media/jupiter/progression/render_05000.png" alt="" aria-hidden="true">
           </div>
         </div>
-
-        <!-- simple "tab" label to match existing pattern (even though there is only one state) -->
-        <div class="pe-tabbar" role="tablist" aria-label="Final result">
-          <label for="RFINAL" role="tab">Final Result</label>
-        </div>
       </div>
+    </div>
 
+    <div class="pe-tabbar" role="tablist" aria-label="Final result">
+      <label for="RFINAL" role="tab">Final Result</label>
+    </div>
+  </div>
 
-      <article class="glass readable">
-        The PSNR curves quantify how quickly this representation emerges over training.
-        The batch PSNR rises steeply from single-digit values to around 20 dB within a few hundred iterations,
-        reflecting rapid fitting of the global brightness and broad banding patterns.
-        The full-image PSNR curve shows a large jump between the initial and first checkpoint renders, then a slower,
-        almost linear increase that asymptotically approaches about 22 dB by the end of training.
-        The corresponding renderings match this trajectory: the very first output is a flat purple field, the early
-        snapshots show only faint hints of the equatorial band and polar storms, and later snapshots progressively
-        sharpen the cloud belts, vortices, and color gradients until the final image clearly resembles the ground truth
-        while still smoothing out the finest turbulent eddies.
-        Taken together, the PCA plots and PSNR curves demonstrate that the model starts from a coordinate-driven
-        encoding, gradually learns an appearance-driven feature space, and uses that space to reconstruct both the
-        coarse spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
-      </article>
-    </section>
+  <article class="glass readable">
+    The PSNR curves quantify how quickly this representation emerges over training.
+    The batch PSNR rises from single-digit values to around 20 dB within a few hundred iterations, reflecting rapid
+    fitting of the global brightness and broad banding patterns.
+    The full-image PSNR curve shows a large jump between the initial and first checkpoint renders, then a slower,
+    almost linear increase that asymptotically approaches a mid-teens or low-twenties value by the end of training.
+    The corresponding renderings match this trajectory: the very first output is nearly uniform, early snapshots show
+    only faint hints of the dominant bands and storms, and later snapshots progressively sharpen the cloud belts,
+    vortices, and color gradients until the final image closely resembles the ground truth while still smoothing the
+    finest turbulent eddies.
+    Taken together, the PCA plots and PSNR curves demonstrate that the model begins from a purely coordinate-driven
+    encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
+    spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
+  </article>
+</section>
+
 
 
 
