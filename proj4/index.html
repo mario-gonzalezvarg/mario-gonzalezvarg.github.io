@@ -582,6 +582,27 @@
     lines will be probed in the volume.
   </article>
 
+        <!-- Rays: three-panel visualization (always visible, no belt) -->
+      <div class="pe-panels pe-rays" aria-live="polite">
+        <div class="panel">
+          <figure class="pe-card">
+            <img src="media/viser/all_rays.png" alt="All cameras in the scene with visualized frustums">
+            <figcaption>All calibrated camera frustums around the Lego scene.</figcaption>
+          </figure>
+
+          <figure class="pe-card">
+            <img src="media/viser/ray1.png" alt="Rays cast from a single training camera">
+            <figcaption>Random training rays emitted from one camera in world space.</figcaption>
+          </figure>
+
+          <figure class="pe-card">
+            <img src="media/viser/ray2.png" alt="Sample locations along each ray">
+            <figcaption>Stratified sample points along each ray, ready for NeRF evaluation.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+
   <article class="glass readable">
     Once the rays exist in world space, the next stage chooses where along each ray to query the neural field.
     The implementation uses a stratified scheme: it begins by placing a fixed number of sample depths between a near
