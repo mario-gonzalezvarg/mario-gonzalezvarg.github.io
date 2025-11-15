@@ -392,3 +392,26 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   color: var(--muted);
   text-align: center;
 }
+
+/* When multiple belts are stacked in one graph-belt (e.g., train + val), give them spacing */
+.graph-belt .belt + .belt {
+  margin-top: 0.75rem;
+}
+
+/* Always show the static Lego 3-up panel + belts */
+.pe-panels.pe-lego {
+  width: min(92vw, 1280px);   /* same width as other panels, slightly narrower if desired */
+  margin: 2rem auto;         /* center the whole block */
+}
+
+.pe-panels.pe-lego .panel {
+  display: grid; /* override the default display:none */
+}
+
+/* Add a bit of vertical spacing between stacked belts */
+.pe-lego .graph-belt .belt + .belt {
+  margin-top: 0.75rem;
+}
+
+
+

@@ -556,74 +556,140 @@
       </article>
     </section>
 
-    <section id="pipeline" class="section alt">
-      <header class="section-header">
-        <h1 class="serif" data-reveal-line>NeRF Pipeline</h1>
-      </header>
+   <section id="pipeline" class="section alt">
+  <header class="section-header">
+    <h1 class="serif" data-reveal line>NeRF Pipeline</h1>
+  </header>
 
+  <article class="glass readable">
+    The first stage of the pipeline translates image pixels into rays in 3D space.
+    For each training step, a batch of pixel locations is drawn from the current set of images.
+    Instead of treating each pixel in isolation, the implementation works entirely in batches so that thousands of
+    rays can be computed in one vectorized pass on the GPU.
+    For every pixel, its horizontal and vertical coordinates are first shifted so that they are measured relative to
+    the center of the image; this ensures that a pixel exactly in the middle of the frame produces a ray pointing
+    straight through the optical axis rather than being biased by the top-left origin of image coordinates.
+    These centered coordinates are then divided by the focal length to convert them into directions in the camera’s
+    local coordinate system, following the standard pinhole-camera model in which the focal length controls the
+    spread of rays.
+    Each camera in the training set is described by a rigid transform from camera space to world space; for every
+    ray in the batch, the implementation looks up the corresponding camera’s rotation and translation and uses them
+    to rotate the local direction into the global reference frame while placing the ray’s origin at the camera
+    center.
+    Finally, all directions are normalized to unit length so that subsequent sampling along the ray can be expressed
+    purely in terms of distances from the camera.
+    The result of this stage is a batch of ray origins and matching direction vectors that describe exactly which 3D
+    lines will be probed in the volume.
+  </article>
 
-      <article class="glass readable">
-        The first stage of the pipeline translates image pixels into rays in 3D space.
-        For each training step, a batch of pixel locations is drawn from the current set of images.
-        Instead of treating each pixel in isolation, the implementation works entirely in batches so that thousands of
-        rays can be computed in one vectorized pass on the GPU.
-        For every pixel, its horizontal and vertical coordinates are first shifted so that they are measured relative to
-        the center of the image; this ensures that a pixel exactly in the middle of the frame produces a ray pointing
-        straight through the optical axis rather than being biased by the top-left origin of image coordinates.
-        These centered coordinates are then divided by the focal length to convert them into directions in the camera’s
-        local coordinate system, following the standard pinhole-camera model in which the focal length controls the
-        spread of rays.
-        Each camera in the training set is described by a rigid transform from camera space to world space; for every
-        ray in the batch, the implementation looks up the corresponding camera’s rotation and translation and uses them
-        to rotate the local direction into the global reference frame while placing the ray’s origin at the camera
-        center.
-        Finally, all directions are normalized to unit length so that subsequent sampling along the ray can be expressed
-        purely in terms of distances from the camera.
-        The result of this stage is a batch of ray origins and matching direction vectors that describe exactly which 3D
-        lines will be probed in the volume.
-      </article>
+  <article class="glass readable">
+    Once the rays exist in world space, the next stage chooses where along each ray to query the neural field.
+    The implementation uses a stratified scheme: it begins by placing a fixed number of sample depths between a near
+    and a far bound that cover the region where the scene is expected to lie.
+    Instead of always using the same depth values, each interval between two neighboring depths is randomly jittered
+    on every training iteration.
+    This produces slightly different sampling positions from step to step, which reduces aliasing artifacts and
+    encourages the learned density field to be smooth rather than fitting to a rigid grid of points.
+    For each ray, these scalar depths are then converted into 3D sample locations by adding the origin plus the
+    direction vector scaled by each depth value.
+    The outcome of this stage is a dense batch of points in space, all organized per ray, ready to be evaluated by
+    the neural network.
+  </article>
 
-      <article class="glass readable">
-        Once the rays exist in world space, the next stage chooses where along each ray to query the neural field.
-        The implementation uses a stratified scheme: it begins by placing a fixed number of sample depths between a near
-        and a far bound that cover the region where the scene is expected to lie.
-        Instead of always using the same depth values, each interval between two neighboring depths is randomly jittered
-        on every training iteration.
-        This produces slightly different sampling positions from step to step, which reduces aliasing artifacts and
-        encourages the learned density field to be smooth rather than fitting to a rigid grid of points.
-        For each ray, these scalar depths are then converted into 3D sample locations by adding the origin plus the
-        direction vector scaled by each depth value.
-        The outcome of this stage is a dense batch of points in space, all organized per ray, ready to be evaluated by
-        the neural network.
-      </article>
+  <!-- Lego NeRF: three panels (PSNR + final train + final val) -->
+  <div class="pe-panels pe-lego" aria-live="polite">
+    <div class="panel">
+      <!-- PSNR curve over training -->
+      <figure class="pe-card">
+        <img src="media/lego_scan/psnr_curve.png" alt="Lego scene: PSNR curve over training iterations">
+        <figcaption>PSNR over training iterations (Lego 200×200)</figcaption>
+      </figure>
 
-      <article class="glass readable">
-        Feeding data into this process is handled by a streaming dataset tailored to NeRF’s requirements.
-        When training begins, the dataset loader reads a compact file that contains the entire scene: a stack of RGB
-        images, the corresponding camera-to-world transforms, and a shared focal length consistent with the resolution
-        of those images.
-        Rather than iterating over the images in a fixed order, the loader behaves like an infinite stream: each time
-        the trainer asks for a new batch, it randomly chooses image indices and pixel coordinates, effectively sampling
-        rays uniformly across all views and across the whole image plane.
-        For every sampled triplet of (image index, horizontal pixel, vertical pixel), the loader immediately retrieves
-        the true color at that pixel from the preloaded image tensor and retrieves the pose of the camera that observed
-        it.
-        It then passes these sampled image coordinates and camera transforms to the ray-generation stage, which produces
-        the matching ray origins and directions.
-        In this way, each training batch consists of a large set of randomly selected rays and their ground-truth RGB
-        values, allowing the network to gradually see all viewpoints and all parts of the scene over the course of
-        training without ever needing to materialize the entire ray bundle in memory at once.
-      </article>
+      <!-- Final training view -->
+      <figure class="pe-card">
+        <img src="media/lego_scan/train_10000.png" alt="Lego scene: final NeRF reconstruction (training view)">
+        <figcaption>Final NeRF reconstruction of a training view (iteration 10 000)</figcaption>
+      </figure>
 
-      <div class="center-media">
-        <figure>
-          <img src="media/lego_scan/lego.gif" alt="NeRF reconstruction orbit of the scene">
-          <figcaption>NeRF orbit of the reconstructed scene, illustrating the full pipeline in motion.</figcaption>
-        </figure>
+      <!-- Final validation view -->
+      <figure class="pe-card">
+        <img src="media/lego_scan/val_10000.png" alt="Lego scene: final NeRF reconstruction (validation view)">
+        <figcaption>Final NeRF reconstruction of a held-out validation view</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <article class="glass readable">
+    Feeding data into this process is handled by a streaming dataset tailored to NeRF’s requirements.
+    When training begins, the dataset loader reads a compact file that contains the entire scene: a stack of RGB
+    images, the corresponding camera-to-world transforms, and a shared focal length consistent with the resolution
+    of those images.
+    Rather than iterating over the images in a fixed order, the loader behaves like an infinite stream: each time
+    the trainer asks for a new batch, it randomly chooses image indices and pixel coordinates, effectively sampling
+    rays uniformly across all views and across the whole image plane.
+    For every sampled triplet of (image index, horizontal pixel, vertical pixel), the loader immediately retrieves
+    the true color at that pixel from the preloaded image tensor and retrieves the pose of the camera that observed
+    it.
+    It then passes these sampled image coordinates and camera transforms to the ray-generation stage, which produces
+    the matching ray origins and directions.
+    In this way, each training batch consists of a large set of randomly selected rays and their ground-truth RGB
+    values, allowing the network to gradually see all viewpoints and all parts of the scene over the course of
+    training without ever needing to materialize the entire ray bundle in memory at once.
+  </article>
+
+  <!-- Lego NeRF: stacked conveyor belts (train over validation) -->
+  <div class="pe-panels pe-lego" aria-live="polite">
+    <div class="panel">
+      <div class="graph-belt lego-belt" aria-label="Lego reconstruction progression">
+        <!-- Train progression -->
+        <div class="belt">
+          <img src="media/lego_scan/train_01000.png" alt="Training view, iteration 1 000">
+          <img src="media/lego_scan/train_03000.png" alt="Training view, iteration 3 000">
+          <img src="media/lego_scan/train_05000.png" alt="Training view, iteration 5 000">
+          <img src="media/lego_scan/train_07000.png" alt="Training view, iteration 7 000">
+          <img src="media/lego_scan/train_09000.png" alt="Training view, iteration 9 000">
+          <img src="media/lego_scan/train_10000.png" alt="Training view, iteration 10 000">
+          <!-- loop copies for continuous scroll -->
+          <img src="media/lego_scan/train_01000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/train_03000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/train_05000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/train_07000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/train_09000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/train_10000.png" alt="" aria-hidden="true">
+        </div>
+
+        <!-- Validation progression -->
+        <div class="belt">
+          <img src="media/lego_scan/val_01000.png" alt="Validation view, iteration 1 000">
+          <img src="media/lego_scan/val_03000.png" alt="Validation view, iteration 3 000">
+          <img src="media/lego_scan/val_05000.png" alt="Validation view, iteration 5 000">
+          <img src="media/lego_scan/val_07000.png" alt="Validation view, iteration 7 000">
+          <img src="media/lego_scan/val_09000.png" alt="Validation view, iteration 9 000">
+          <img src="media/lego_scan/val_10000.png" alt="Validation view, iteration 10 000">
+          <!-- loop copies for continuous scroll -->
+          <img src="media/lego_scan/val_01000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/val_03000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/val_05000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/val_07000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/val_09000.png" alt="" aria-hidden="true">
+          <img src="media/lego_scan/val_10000.png" alt="" aria-hidden="true">
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Orbit GIF at the end -->
+  <div class="center-media">
+    <figure>
+      <img src="media/lego_scan/lego.gif" alt="NeRF reconstruction orbit of the scene">
+      <figcaption>NeRF orbit of the reconstructed scene (10k iterations), illustrating the full pipeline in motion.</figcaption>
+    </figure>
+  </div>
+</section>
 
 
-      </article>
+
+    </article>
 
 
 
@@ -633,8 +699,8 @@
 
 
 
-      <!---------------------------------------- Part 2 Fit a Neural Radiance Field from Multi-view Images ----------------------------------------->
-      <!-- <section id="nrl" class="section-alt">
+    <!---------------------------------------- Part 2 Fit a Neural Radiance Field from Multi-view Images ----------------------------------------->
+    <!-- <section id="nrl" class="section-alt">
       <header class="section-header">
         <h1 class="serif" data-reveal-line> Fitting Neural Radiance Field from Multi-view Images</h1>
       </header>
@@ -652,7 +718,7 @@
     </section> -->
 
 
-      <!-- END OF HTML -->
+    <!-- END OF HTML -->
 </body>
 
 </html>
