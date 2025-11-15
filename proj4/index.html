@@ -11,8 +11,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cormorant+Garamond:wght@400;600&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="../proj4/styles.css" />
+  <script defer src="../proj4/script.js"></script>
 </head>
 
 <body>
@@ -28,7 +28,8 @@
   <main id="main">
     <section class="hero">
       <h1 class="serif title" data-split="chars">Neural Fields </h1>
-      <p class="lead">UC&nbsp;Berkeley • CS180 Computational Photography</p>
+      <p class="lead">UC&nbsp;Berkeley • CS180 Computational Photography. </p>
+
     </section>
 
 
@@ -55,7 +56,250 @@
     <!------------------------------------------------ Part 1 Fit a Neural Field to a 2D Image ---------------------------------------------------->
     <section id="max_encoding" class="section alt">
       <header class="section-header">
-        <h1 class="serif" data-reveal-line>Fitting a Neural Field to a 2D Image</h1>
+        <h1 class="serif" data-reveal-line>Varying Max Encoding Frequency</h1>
+      </header>
+
+      <article class="glass readable">
+        To visualize how positional encoding transforms image coordinates, each PE(u,v) vector is projected onto its top
+        three PCA components while the maximum encoding frequency L is varied.
+        The PCA plots reveal that positional encoding progressively twists the original two-dimensional coordinate grid
+        into a higher-dimensional manifold as L increases.
+        For very low frequency (L = 1), the encoded PE(u,v) vectors occupy a single smooth, bowl-shaped surface in the
+        top three principal components.
+        The gradient of colors from red to green along this surface indicates that the first two principal components
+        are almost linear functions of u and v, so the encoding behaves like a gently curved embedding of the image
+        plane with no folds: nearby pixels in image coordinates remain nearby in feature space.
+        This behavior is typical for low-frequency positional encodings, which tend to produce a smooth two-dimensional
+        sheet in feature space with only mild curvature from which the network can draw samples.
+      </article>
+
+
+      <div class="pe-tabs">
+        <!-- radios -->
+        <input type="radio" name="L" id="L1" checked>
+        <input type="radio" name="L" id="L4">
+        <input type="radio" name="L" id="L8">
+        <input type="radio" name="L" id="L12">
+        <input type="radio" name="L" id="L16">
+        <input type="radio" name="L" id="L24">
+
+
+        <div class="pe-panels" aria-live="polite">
+          <!---------------------------- L = 1 ------------------------------------>
+          <div class="panel" data-l="L1">
+            <figure class="pe-card"><img src="media/pe/L1_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
+              <figcaption>Layers: 256</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L1_uv.png" alt="L1 – PCA of PE features (colored by UV)">
+              <figcaption>lr: 1e-2</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L1_penult_pca3_rgb.png"
+                alt="L1 – PCA of penultimate features (RGB)">
+              <figcaption>2500 iterations</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L1">
+              <div class="belt">
+                <img src="media/render/freq/L1/render_00000.png" alt="L1 render 1">
+                <img src="media/render/freq/L1/render_00500.png" alt="L1 render 2">
+                <img src="media/render/freq/L1/render_01000.png" alt="L1 render 3">
+                <img src="media/render/freq/L1/render_01500.png" alt="L1 render 4">
+                <img src="media/render/freq/L1/render_02000.png" alt="L1 render 5">
+                <img src="media/render/freq/L1/render_02500.png" alt="L1 render 6">
+                <!-- loop -->
+                <img src="media/render/freq/L1/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+
+          <!---------------------------- L = 4 ------------------------------------>
+          <div class="panel" data-l="L4">
+            <figure class="pe-card"><img src="media/pe/L4_rgb.png" alt="L4 – PCA of PE features (colored by RGB)">
+              <figcaption>Layers: 256</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L4_uv.png" alt="L4 – PCA of PE features (colored by UV)">
+              <figcaption>lr: 1e-2</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L4_penult_pca3_rgb.png"
+                alt="L4 – PCA of penultimate features (RGB)">
+              <figcaption>2500 iterations</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L4">
+              <div class="belt">
+                <img src="media/render/freq/L4/render_00000.png" alt="L4 render 1">
+                <img src="media/render/freq/L4/render_00500.png" alt="L4 render 2">
+                <img src="media/render/freq/L4/render_01000.png" alt="L4 render 3">
+                <img src="media/render/freq/L4/render_01500.png" alt="L4 render 4">
+                <img src="media/render/freq/L4/render_02000.png" alt="L4 render 5">
+                <img src="media/render/freq/L4/render_02500.png" alt="L4 render 6">
+                <!-- loop -->
+                <img src="media/render/freq/L4/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L4/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L4/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L4/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L4/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+
+          <!---------------------------- L = 8 --------------------------------------->
+          <div class="panel" data-l="L8">
+            <figure class="pe-card"><img src="media/pe/L8_rgb.png" alt="L8 – PCA of PE features (colored by RGB)">
+              <figcaption>PE • RGB</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L8_uv.png" alt="L8 – PCA of PE features (colored by UV)">
+              <figcaption>PE • UV</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L8_penult_pca3_rgb.png"
+                alt="L8 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L8">
+              <div class="belt">
+                <img src="media/render/freq/L8/render_00000.png" alt="L8 render 1">
+                <img src="media/render/freq/L8/render_00500.png" alt="L8 render 2">
+                <img src="media/render/freq/L8/render_01000.png" alt="L8 render 3">
+                <img src="media/render/freq/L8/render_01500.png" alt="L8 render 4">
+                <img src="media/render/freq/L8/render_02000.png" alt="L8 render 5">
+                <img src="media/render/freq/L8/render_02500.png" alt="L8 render 6">
+                <!-- loop -->
+                <img src="media/render/freq/L8/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L8/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L8/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L8/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L8/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+
+          <!---------------------------- L = 12 --------------------------------------->
+
+          <div class="panel" data-l="L12">
+            <figure class="pe-card"><img src="media/pe/L12_rgb.png" alt="L12 – PCA of PE features (colored by RGB)">
+              <figcaption>PE • RGB</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L12_uv.png" alt="L12 – PCA of PE features (colored by UV)">
+              <figcaption>PE • UV</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L12_penult_pca3_rgb.png"
+                alt="L12 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L12">
+              <div class="belt">
+                <img src="media/render/freq/L12/render_00000.png" alt="L12 render 1">
+                <img src="media/render/freq/L12/render_00500.png" alt="L12 render 2">
+                <img src="media/render/freq/L12/render_01000.png" alt="L12 render 3">
+                <img src="media/render/freq/L12/render_01500.png" alt="L12 render 4">
+                <img src="media/render/freq/L12/render_02000.png" alt="L12 render 5">
+                <img src="media/render/freq/L12/render_02500.png" alt="L12 render 6">
+                <!-- loop -->
+                <img src="media/render/freq/L12/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L12/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L12/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L12/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L12/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+
+          <!---------------------------- L = 16 --------------------------------------->
+          <div class="panel" data-l="L16">
+            <figure class="pe-card"><img src="media/pe/L16_rgb.png" alt="L16 – PCA of PE features (colored by RGB)">
+              <figcaption>PE • RGB</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L16_uv.png" alt="L16 – PCA of PE features (colored by UV)">
+              <figcaption>PE • UV</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L16_penult_pca3_rgb.png"
+                alt="L16 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L16">
+              <div class="belt">
+                <img src="media/render/freq/L16/render_00000.png" alt="L16 render 1">
+                <img src="media/render/freq/L16/render_00500.png" alt="L16 render 2">
+                <img src="media/render/freq/L16/render_01000.png" alt="L16 render 3">
+                <img src="media/render/freq/L16/render_01500.png" alt="L16 render 4">
+                <img src="media/render/freq/L16/render_02000.png" alt="L16 render 5">
+                <img src="media/render/freq/L16/render_02500.png" alt="L16 render 6">
+                <!-- loop -->
+                <img src="media/render/freq/L16/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L16/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L16/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L16/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L16/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+
+          <!---------------------------- L = 24 --------------------------------------->
+          <div class="panel" data-l="L24">
+            <figure class="pe-card"><img src="media/pe/L24_rgb.png" alt="L24 – PCA of PE features (colored by RGB)">
+              <figcaption>PE • RGB</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L24_uv.png" alt="L24 – PCA of PE features (colored by UV)">
+              <figcaption>PE • UV</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L24_penult_pca3_rgb.png"
+                alt="L24 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB</figcaption>
+            </figure>
+
+            <div class="graph-belt" aria-label="Renderings for L24">
+              <div class="belt">
+                <img src="media/render/freq/L24/render_00000.png" alt="L24 render 1">
+                <img src="media/render/freq/L24/render_00500.png" alt="L24 render 2">
+                <img src="media/render/freq/L24/render_01000.png" alt="L24 render 3">
+                <img src="media/render/freq/L24/render_01500.png" alt="L24 render 4">
+                <img src="media/render/freq/L24/render_02000.png" alt="L24 render 5">
+                <img src="media/render/freq/L24/render_02500.png" alt="L24 render 6">
+                <!-- loop -->
+                <img src="media/render/freq/L24/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L24/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L24/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L24/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L24/render_02500.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pe-tabbar" role="tablist" aria-label="L">
+          <label for="L1" role="tab">L1</label>
+          <label for="L4" role="tab">L4</label>
+          <label for="L8" role="tab">L8</label>
+          <label for="L12" role="tab">L12</label>
+          <label for="L16" role="tab">L16</label>
+          <label for="L24" role="tab">L24</label>
+        </div>
+      </div>
+
+
+      <article class="glass readable">
+        At mid-range frequencies (L = 8 and L = 12), the PCA manifolds begin to exhibit clear multi-layered structure.
+        The surfaces no longer form a single simple bowl but instead resemble sheets that have been folded or partially
+        rolled, with regions of the grid mapped to different heights in PC3 even when their PC1 and PC2 coordinates
+        almost overlap.
+        The color gradients in these plots confirm that the embedding is still globally ordered by u and v, because red
+        and green bands do not intersect randomly; however, pixels that are adjacent along one coordinate can now be
+        separated along the third principal component whenever the corresponding sine and cosine terms switch phase.
+        This behavior shows that mid-frequency encodings preserve global continuity but already introduce local
+        non-linearity: the network receives a representation where local neighborhoods are stretched and sheared, making
+        it easier to represent edges and moderate-frequency texture with a finite number of ReLU layers.
+      </article>
+    </section>
+
+    <!-- <section id="varying_width" class="section alt">
+      <header class="section-header">
+        <h1 class="serif" data-reveal-line>Varying Widths</h1>
       </header>
 
       <article class="glass readable">
@@ -63,218 +307,46 @@
       </article>
 
       <div class="pe-tabs">
-      <!-- radios -->
-      <input type="radio" name="L" id="L1" checked>
-      <input type="radio" name="L" id="L4">
-      <input type="radio" name="L" id="L8">
-      <input type="radio" name="L" id="L12">
-      <input type="radio" name="L" id="L16">
-      <input type="radio" name="L" id="L24">
+        <input type="radio" name="L" id="L1" checked>
+        <input type="radio" name="L" id="L4">
+        <input type="radio" name="L" id="L8">
+        <input type="radio" name="L" id="L12">
+        <input type="radio" name="L" id="L16">
+        <input type="radio" name="L" id="L24">
 
 
-      <div class="pe-panels" aria-live="polite">
-        <!---------------------------- L = 1 ------------------------------------>
-        <div class="panel" data-l="L1">
-          <figure class="pe-card"><img src="media/pe/L1_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
-            <figcaption>PE • RGB</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L1_uv.png" alt="L1 – PCA of PE features (colored by UV)">
-            <figcaption>PE • UV</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L1_penult_pca3_rgb.png"
-              alt="L1 – PCA of penultimate features (RGB)">
-            <figcaption>Penultimate • RGB</figcaption>
-          </figure>
+        <div class="pe-panels" aria-live="polite">
+  
+          <div class="panel" data-l="L1">
+            <figure class="pe-card"><img src="media/pe/L1_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
+              <figcaption>PE • RGB</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L1_uv.png" alt="L1 – PCA of PE features (colored by UV)">
+              <figcaption>PE • UV</figcaption>
+            </figure>
+            <figure class="pe-card"><img src="media/pe/L1_penult_pca3_rgb.png"
+                alt="L1 – PCA of penultimate features (RGB)">
+              <figcaption>Penultimate • RGB</figcaption>
+            </figure>
 
-          <div class="graph-belt" aria-label="Renderings for L1">
-            <div class="belt">
-              <img src="media/render/freq/L1/render_00000.png" alt="L1 render 1">
-              <img src="media/render/freq/L1/render_00500.png" alt="L1 render 2">
-              <img src="media/render/freq/L1/render_01000.png" alt="L1 render 3">
-              <img src="media/render/freq/L1/render_01500.png" alt="L1 render 4">
-              <img src="media/render/freq/L1/render_02000.png" alt="L1 render 5">
-              <img src="media/render/freq/L1/render_02500.png" alt="L1 render 6">
-              <!-- loop -->
-              <img src="media/render/freq/L1/render_00000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L1/render_00500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L1/render_01500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L1/render_02000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L1/render_02500.png" alt="" aria-hidden="true">
+            <div class="graph-belt" aria-label="Renderings for L1">
+              <div class="belt">
+                <img src="media/render/freq/L1/render_00000.png" alt="L1 render 1">
+                <img src="media/render/freq/L1/render_00500.png" alt="L1 render 2">
+                <img src="media/render/freq/L1/render_01000.png" alt="L1 render 3">
+                <img src="media/render/freq/L1/render_01500.png" alt="L1 render 4">
+                <img src="media/render/freq/L1/render_02000.png" alt="L1 render 5">
+                <img src="media/render/freq/L1/render_02500.png" alt="L1 render 6">
+
+                <img src="media/render/freq/L1/render_00000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_00500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_01500.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_02000.png" alt="" aria-hidden="true">
+                <img src="media/render/freq/L1/render_02500.png" alt="" aria-hidden="true">
+              </div>
             </div>
           </div>
-        </div>
-
-        <!---------------------------- L = 4 ------------------------------------>
-        <div class="panel" data-l="L4">
-          <figure class="pe-card"><img src="media/pe/L4_rgb.png" alt="L4 – PCA of PE features (colored by RGB)">
-            <figcaption>PE • RGB</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L4_uv.png" alt="L4 – PCA of PE features (colored by UV)">
-            <figcaption>PE • UV</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L4_penult_pca3_rgb.png"
-              alt="L4 – PCA of penultimate features (RGB)">
-            <figcaption>Penultimate • RGB</figcaption>
-          </figure>
-
-          <div class="graph-belt" aria-label="Renderings for L4">
-            <div class="belt">
-              <img src="media/render/freq/L4/render_00000.png" alt="L4 render 1">
-              <img src="media/render/freq/L4/render_00500.png" alt="L4 render 2">
-              <img src="media/render/freq/L4/render_01000.png" alt="L4 render 3">
-              <img src="media/render/freq/L4/render_01500.png" alt="L4 render 4">
-              <img src="media/render/freq/L4/render_02000.png" alt="L4 render 5">
-              <img src="media/render/freq/L4/render_02500.png" alt="L4 render 6">
-              <!-- loop -->
-              <img src="media/render/freq/L4/render_00000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L4/render_00500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L4/render_01500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L4/render_02000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L4/render_02500.png" alt="" aria-hidden="true">
-            </div>
-          </div>
-        </div>
-
-        <!---------------------------- L = 8 --------------------------------------->
-        <div class="panel" data-l="L8">
-          <figure class="pe-card"><img src="media/pe/L8_rgb.png" alt="L8 – PCA of PE features (colored by RGB)">
-            <figcaption>PE • RGB</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L8_uv.png" alt="L8 – PCA of PE features (colored by UV)">
-            <figcaption>PE • UV</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L8_penult_pca3_rgb.png"
-              alt="L8 – PCA of penultimate features (RGB)">
-            <figcaption>Penultimate • RGB</figcaption>
-          </figure>
-
-          <div class="graph-belt" aria-label="Renderings for L8">
-            <div class="belt">
-              <img src="media/render/freq/L8/render_00000.png" alt="L8 render 1">
-              <img src="media/render/freq/L8/render_00500.png" alt="L8 render 2">
-              <img src="media/render/freq/L8/render_01000.png" alt="L8 render 3">
-              <img src="media/render/freq/L8/render_01500.png" alt="L8 render 4">
-              <img src="media/render/freq/L8/render_02000.png" alt="L8 render 5">
-              <img src="media/render/freq/L8/render_02500.png" alt="L8 render 6">
-              <!-- loop -->
-              <img src="media/render/freq/L8/render_00000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L8/render_00500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L8/render_01500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L8/render_02000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L8/render_02500.png" alt="" aria-hidden="true">
-            </div>
-          </div>
-        </div>
-
-        <!---------------------------- L = 12 --------------------------------------->
-
-        <div class="panel" data-l="L12">
-          <figure class="pe-card"><img src="media/pe/L12_rgb.png" alt="L12 – PCA of PE features (colored by RGB)">
-            <figcaption>PE • RGB</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L12_uv.png" alt="L12 – PCA of PE features (colored by UV)">
-            <figcaption>PE • UV</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L12_penult_pca3_rgb.png"
-              alt="L12 – PCA of penultimate features (RGB)">
-            <figcaption>Penultimate • RGB</figcaption>
-          </figure>
-
-          <div class="graph-belt" aria-label="Renderings for L12">
-            <div class="belt">
-              <img src="media/render/freq/L12/render_00000.png" alt="L12 render 1">
-              <img src="media/render/freq/L12/render_00500.png" alt="L12 render 2">
-              <img src="media/render/freq/L12/render_01000.png" alt="L12 render 3">
-              <img src="media/render/freq/L12/render_01500.png" alt="L12 render 4">
-              <img src="media/render/freq/L12/render_02000.png" alt="L12 render 5">
-              <img src="media/render/freq/L12/render_02500.png" alt="L12 render 6">
-              <!-- loop -->
-              <img src="media/render/freq/L12/render_00000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L12/render_00500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L12/render_01500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L12/render_02000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L12/render_02500.png" alt="" aria-hidden="true">
-            </div>
-          </div>
-        </div>
-
-        <!---------------------------- L = 16 --------------------------------------->
-        <div class="panel" data-l="L16">
-          <figure class="pe-card"><img src="media/pe/L16_rgb.png" alt="L16 – PCA of PE features (colored by RGB)">
-            <figcaption>PE • RGB</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L16_uv.png" alt="L16 – PCA of PE features (colored by UV)">
-            <figcaption>PE • UV</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L16_penult_pca3_rgb.png"
-              alt="L16 – PCA of penultimate features (RGB)">
-            <figcaption>Penultimate • RGB</figcaption>
-          </figure>
-
-          <div class="graph-belt" aria-label="Renderings for L16">
-            <div class="belt">
-              <img src="media/render/freq/L16/render_00000.png" alt="L16 render 1">
-              <img src="media/render/freq/L16/render_00500.png" alt="L16 render 2">
-              <img src="media/render/freq/L16/render_01000.png" alt="L16 render 3">
-              <img src="media/render/freq/L16/render_01500.png" alt="L16 render 4">
-              <img src="media/render/freq/L16/render_02000.png" alt="L16 render 5">
-              <img src="media/render/freq/L16/render_02500.png" alt="L16 render 6">
-              <!-- loop -->
-              <img src="media/render/freq/L16/render_00000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L16/render_00500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L16/render_01500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L16/render_02000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L16/render_02500.png" alt="" aria-hidden="true">
-            </div>
-          </div>
-        </div>
-
-        <!---------------------------- L = 24 --------------------------------------->
-        <div class="panel" data-l="L24">
-          <figure class="pe-card"><img src="media/pe/L24_rgb.png" alt="L24 – PCA of PE features (colored by RGB)">
-            <figcaption>PE • RGB</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L24_uv.png" alt="L24 – PCA of PE features (colored by UV)">
-            <figcaption>PE • UV</figcaption>
-          </figure>
-          <figure class="pe-card"><img src="media/pe/L24_penult_pca3_rgb.png"
-              alt="L24 – PCA of penultimate features (RGB)">
-            <figcaption>Penultimate • RGB</figcaption>
-          </figure>
-
-          <div class="graph-belt" aria-label="Renderings for L24">
-            <div class="belt">
-              <img src="media/render/freq/L24/render_00000.png" alt="L24 render 1">
-              <img src="media/render/freq/L24/render_00500.png" alt="L24 render 2">
-              <img src="media/render/freq/L24/render_01000.png" alt="L24 render 3">
-              <img src="media/render/freq/L24/render_01500.png" alt="L24 render 4">
-              <img src="media/render/freq/L24/render_02000.png" alt="L24 render 5">
-              <img src="media/render/freq/L24/render_02500.png" alt="L24 render 6">
-              <!-- loop -->
-              <img src="media/render/freq/L24/render_00000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L24/render_00500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L24/render_01500.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L24/render_02000.png" alt="" aria-hidden="true">
-              <img src="media/render/freq/L24/render_02500.png" alt="" aria-hidden="true">
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- tabbar MOVED INSIDE pe-tabs -->
-      <div class="pe-tabbar" role="tablist" aria-label="L">
-        <label for="L1" role="tab">L1</label>
-        <label for="L4" role="tab">L4</label>
-        <label for="L8" role="tab">L8</label>
-        <label for="L12" role="tab">L12</label>
-        <label for="L16" role="tab">L16</label>
-        <label for="L24" role="tab">L24</label>
-      </div>
-    </div>
-
-    
-    </section>
-
-
+        </section> -->
 
 
 
