@@ -142,15 +142,64 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   [data-reveal]{transition:none;opacity:1;transform:none}
 }
 
-/* 1) Translucent glass card (keeps the background visible, but text readable) */
+/* base glass card */
 .glass {
-  background: rgba(8, 12, 20, 0.45);
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(8px) saturate(1.1);
-  -webkit-backdrop-filter: blur(8px) saturate(1.1);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  background: rgba(10, 12, 30, 0.72);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  padding: 1.75rem 2.2rem;
+  margin: 2rem auto;
+  max-width: 250ch;
 }
+
+/* typography inside glass cards */
+.glass.readable {
+  font-family: "Cormorant Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.07rem;
+  line-height: 1.8;
+  color: rgba(245, 246, 255, 0.96);
+}
+
+/* subtle hierarchy and rhythm */
+.glass.readable strong {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.glass.readable em {
+  font-style: italic;
+  color: rgba(252, 214, 171, 0.95);
+}
+
+/* soften edges between paragraphs inside one card */
+.glass.readable p + p {
+  margin-top: 0.8rem;
+}
+
+/* first line styling for a more “editorial” feel */
+.glass.readable::first-line {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.08em;
+}
+
+/* hover accent to make the card feel interactive but not distracting */
+.glass.readable:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+  transition:
+    box-shadow 220ms ease-out,
+    border-color 220ms ease-out,
+    transform 220ms ease-out;
+}
+
 
 /* Fallback if backdrop-filter isn’t supported */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

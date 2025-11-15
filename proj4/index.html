@@ -73,6 +73,19 @@
         sheet in feature space with only mild curvature from which the network can draw samples.
       </article>
 
+      <article class="glass readable">
+               At mid-range frequencies (L = 8 and L = 12), the PCA manifolds begin to exhibit clear multi-layered structure.
+        The surfaces no longer form a single simple bowl but instead resemble sheets that have been folded or partially
+        rolled, with regions of the grid mapped to different heights in PC3 even when their PC1 and PC2 coordinates
+        almost overlap.
+        The color gradients in these plots confirm that the embedding is still globally ordered by u and v, because red
+        and green bands do not intersect randomly; however, pixels that are adjacent along one coordinate can now be
+        separated along the third principal component whenever the corresponding sine and cosine terms switch phase.
+        This behavior shows that mid-frequency encodings preserve global continuity but already introduce local
+        non-linearity: the network receives a representation where local neighborhoods are stretched and sheared, making
+        it easier to represent edges and moderate-frequency texture with a finite number of ReLU layers.
+      </article>
+
 
       <div class="pe-tabs">
         <!-- radios -->
@@ -284,16 +297,15 @@
 
 
       <article class="glass readable">
-        At mid-range frequencies (L = 8 and L = 12), the PCA manifolds begin to exhibit clear multi-layered structure.
-        The surfaces no longer form a single simple bowl but instead resemble sheets that have been folded or partially
-        rolled, with regions of the grid mapped to different heights in PC3 even when their PC1 and PC2 coordinates
-        almost overlap.
-        The color gradients in these plots confirm that the embedding is still globally ordered by u and v, because red
-        and green bands do not intersect randomly; however, pixels that are adjacent along one coordinate can now be
-        separated along the third principal component whenever the corresponding sine and cosine terms switch phase.
-        This behavior shows that mid-frequency encodings preserve global continuity but already introduce local
-        non-linearity: the network receives a representation where local neighborhoods are stretched and sheared, making
-        it easier to represent edges and moderate-frequency texture with a finite number of ReLU layers.
+        
+ At high frequency (L = 16 and especially L = 24), the PCA geometry becomes highly oscillatory. 
+  Instead of a single surface or a gently folded ribbon, the points fill a dense volume made up of overlapping bands and sheets that weave through one another. 
+  The color pattern, which encodes the original UV coordinates, makes this structure easier to interpret: blocks of similar color form thin, separated strands in PC space, indicating that many disjoint regions of the original image are now mapped to very different directions in the encoded feature space. 
+  In other words, small changes in u or v trigger large swings in the sinusoids at high L, so nearby pixels oscillate through many nearly orthogonal basis vectors. 
+  This is precisely the effect positional encoding is designed to achieve: it gives the MLP access to very fine spatial detail by decorrelating local neighborhoods, at the expense of producing a tangled, highly folded manifold that is more challenging to visualize. 
+  Across the sweep, the PCA plots therefore illustrate a clear progression: low L preserves a simple, almost planar embedding; mid-range L produces a structured but still readable ribbon; and high L yields a volumetric, multi-sheet structure where the encoding has effectively sprinkled the image plane across a high-dimensional torus in feature space.
+</article>
+        
       </article>
     </section>
 
@@ -317,35 +329,35 @@
 
         <div class="pe-panels" aria-live="polite">
   
-          <div class="panel" data-l="L1">
-            <figure class="pe-card"><img src="media/pe/L1_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
+          <div class="panel" data-l="L64">
+            <figure class="pe-card"><img src="media/fox/L64_rgb.png" alt="L1 – PCA of PE features (colored by RGB)">
               <figcaption>PE • RGB</figcaption>
             </figure>
-            <figure class="pe-card"><img src="media/pe/L1_uv.png" alt="L1 – PCA of PE features (colored by UV)">
+            <figure class="pe-card"><img src="media/fox/L64_uv.png" alt="L1 – PCA of PE features (colored by UV)">
               <figcaption>PE • UV</figcaption>
             </figure>
-            <figure class="pe-card"><img src="media/pe/L1_penult_pca3_rgb.png"
+            <figure class="pe-card"><img src="media/fox/L64_penult_pca3_rgb.png"
                 alt="L1 – PCA of penultimate features (RGB)">
               <figcaption>Penultimate • RGB</figcaption>
             </figure>
 
-            <div class="graph-belt" aria-label="Renderings for L1">
-              <div class="belt">
-                <img src="media/render/freq/L1/render_00000.png" alt="L1 render 1">
-                <img src="media/render/freq/L1/render_00500.png" alt="L1 render 2">
-                <img src="media/render/freq/L1/render_01000.png" alt="L1 render 3">
-                <img src="media/render/freq/L1/render_01500.png" alt="L1 render 4">
-                <img src="media/render/freq/L1/render_02000.png" alt="L1 render 5">
-                <img src="media/render/freq/L1/render_02500.png" alt="L1 render 6">
+            <div class="graph-belt" aria-label="Renderings for L64">
+  <div class="belt">
+    <img src="media/fox/width/256/render_00000.png" alt="L1 render 1">
+    <img src="media/fox/width/256/render_00500.png" alt="L1 render 2">
+    <img src="media/fox/width/256/render_01000.png" alt="L1 render 3">
+    <img src="media/fox/width/256/render_01500.png" alt="L1 render 4">
+    <img src="media/fox/width/256/render_02000.png" alt="L1 render 5">
+    <img src="media/fox/width/256/render_02500.png" alt="L1 render 6">
 
-                <img src="media/render/freq/L1/render_00000.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_00500.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_01500.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_02000.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_02500.png" alt="" aria-hidden="true">
-              </div>
-            </div>
-          </div>
+    <img src="media/fox/width/256/render_00000.png" alt="" aria-hidden="true">
+    <img src="media/fox/width/256/render_00500.png" alt="" aria-hidden="true">
+    <img src="media/fox/width/256/render_01500.png" alt="" aria-hidden="true">
+    <img src="media/fox/width/256/render_02000.png" alt="" aria-hidden="true">
+    <img src="media/fox/width/256/render_02500.png" alt="" aria-hidden="true">
+  </div>
+</div>
+
         </section> -->
 
 
