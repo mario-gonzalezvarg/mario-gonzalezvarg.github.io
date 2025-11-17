@@ -39,16 +39,25 @@
         <h1 class="serif" data-reveal-line>Camera Calibration and 3D Scanning</h1>
       </header>
 
-      <div class="grid-2">
-        <figure class="figure">
-          <img src="media/viser/frustums_view1.png" alt="Viser frustums view 1">
-          <figcaption>View 1 — global layout of camera poses.</figcaption>
-        </figure>
+      <div class="pe-panels pe-panels-final">
+        <div class="panel">
 
-        <figure class="figure">
-          <img src="media/viser/frustums_view2.png" alt="Viser frustums view 2">
-          <figcaption>View 2 — closer look at pose cluster and field of view.</figcaption>
-        </figure>
+
+          <figure class="pe-card">
+            <img src="media/viser/house_rays1.png" alt="View 1 — global layout of camera poses.">
+            <figcaption>View 1 — global layout of camera poses.</figcaption>
+          </figure>
+
+          <figure class="pe-card">
+            <img src="media/viser/house.jpg" alt="PCA of PE features colored by RGB">
+            <figcaption>Object Scanend</figcaption>
+          </figure>
+
+          <figure class="pe-card">
+            <img src="media/viser/house_rays2.png" alt="View 2 — looking up from z-axis.">
+            <figcaption>View 2 — looking up from z-axis.</figcaption>
+          </figure>
+        </div>
       </div>
     </section>
 
@@ -786,7 +795,7 @@
           albeit with soft edges and residual mottling in the background.
         </article>
 
-       
+
 
         <!-- Orbit GIF / video stays at the end -->
         <div class="center-media">
@@ -796,13 +805,21 @@
           </figure>
         </div>
 
-         <article class="glass readable">
-        The  10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k steps, behaves differently after the midpoint. 
-        Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for several thousand more iterations, adding another one to two decibels of improvement before flattening. 
-        Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board becoming easier to discern. 
-        By iteration 10k, the training view has noticeably fewer low-frequency artifacts and less noise in the background, and the validation view reveals cleaner lines along the object’s silhouette while preserving the same global appearance as in the shorter run. 
-        Together, these comparisons indicate that five thousand iterations are sufficient to capture the overall shape and color of the scene, while a longer schedule primarily refines small-scale structure and reduces residual blur, yielding smoother textures and slightly higher PSNR at the cost of additional compute.
-      </article>
+        <article class="glass readable">
+          The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
+          steps, behaves differently after the midpoint.
+          Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
+          several thousand more iterations, adding another one to two decibels of improvement before flattening.
+          Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the
+          edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board
+          becoming easier to discern.
+          By iteration 10k, the training view has noticeably fewer low-frequency artifacts and less noise in the
+          background, and the validation view reveals cleaner lines along the object’s silhouette while preserving the
+          same global appearance as in the shorter run.
+          Together, these comparisons indicate that five thousand iterations are sufficient to capture the overall shape
+          and color of the scene, while a longer schedule primarily refines small-scale structure and reduces residual
+          blur, yielding smoother textures and slightly higher PSNR at the cost of additional compute.
+        </article>
     </section>
 
 
