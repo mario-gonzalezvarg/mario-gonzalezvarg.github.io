@@ -718,15 +718,18 @@
 
     <section id="my_scene" class="section alt">
       <header class="section-header">
-        <h1 class="serif" style="margin-bottom:0" data-reveal-line>Training on My Own Dataset</h1>
+        <h1 class="serif" style="margin-bottom:0" data-reveal-line>
+          Training on a Real-World Scene
+        </h1>
       </header>
 
       <article class="glass readable">
-        This experiment applies the NeRF pipeline to a custom object captured from multiple viewpoints.
-        The same calibration and packing steps as in the Lego example are reused, but the training schedule and sampling
-        parameters are tuned for this scene. The controls below let you flip between different training runs (e.g., 5k
-        vs
-        10k iterations) to compare how the reconstruction quality and optimization dynamics evolve.
+        Wlth all said done, we finally arrive to applying the NeRF pipeline to a real-world tabletop scene. The object I
+        chose is a small ceramic christmas cabin placed on a printed ChArUco calibration board. Ninety-one handheld photographs are captured around the object. The same
+        calibration and packing procedure used for the Lego dataset is employed here: each image is undistorted using
+        the recovered intrinsics, aligned via OpenCv framework, then downsampled to 200×200 pixels to be stored as .npz file together with the corresponding camera-to-world transforms and a shared focal
+        length. During training, rays are sampled uniformly across all views with a near–far range of 0.35–1.0&nbsp;m
+        and 64 stratified samples per ray for the 5k itertation and 128 rays from 10k iteration.
       </article>
 
       <!-- Tabs for different training runs (e.g. 5k vs 10k iterations) -->
@@ -767,7 +770,7 @@
                 <img src="media/house/5k/train_05000.png" alt="" aria-hidden="true">
               </div>
 
-                <!-- Validation progression -->
+              <!-- Validation progression -->
               <div class="belt">
                 <img src="media/house/5k/val_01000.png" alt="10k run – val iter 1k">
                 <img src="media/house/5k/val_02000.png" alt="10k run – val iter 2k">
