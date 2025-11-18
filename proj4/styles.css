@@ -235,8 +235,11 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
     0 0 3px rgba(0,0,0,0.55),
     0 0 12px rgba(0,0,0,0.35);
 }
+/* =========================================
+   SHARED IMAGE / FIGURE LAYOUT
+   ========================================= */
 
-/* two-up image grid */
+/* two-up image grid (used in text sections) */
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -247,8 +250,14 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   .grid-2 { grid-template-columns: 1fr; }
 }
 
+/* generic figure block (non-PE cards) */
 .figure {
   margin: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
 }
 .figure img {
   width: 100%;
@@ -258,122 +267,20 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 }
 .figure figcaption {
   margin-top: 8px;
+  padding: 10px 12px;
   font-size: 0.95rem;
   color: var(--muted, #9aa3b2);
 }
 
-
-/* base tabs (if not already added) */
-.pe-tabs{display:grid;gap:12px;justify-items:center;margin-top:10px}
-.pe-tabs input[type="radio"]{
-  position:absolute;inline-size:1px;block-size:1px;overflow:hidden;
-  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;
-}
-.pe-tabbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.pe-tabbar label{
-  padding:6px 10px;font-size:14px;cursor:pointer;user-select:none;
-  border:1px solid var(--line);border-radius:999px;background:var(--panel);
-  transition:transform .12s ease,border-color .12s ease;
-}
-.pe-tabbar label:hover{transform:translateY(-1px)}
-#L1:checked  ~ .pe-tabbar label[for="L1"],
-#L4:checked  ~ .pe-tabbar label[for="L4"],
-#L8:checked  ~ .pe-tabbar label[for="L8"],
-#L12:checked  ~ .pe-tabbar label[for="L12"],
-#L16:checked ~ .pe-tabbar label[for="L16"],
-#L24:checked ~ .pe-tabbar label[for="L24"],
-#W64:checked  ~ .pe-tabbar label[for="W64"],
-#W256:checked ~ .pe-tabbar label[for="W256"],
-#RFINAL:checked ~ .pe-tabbar label[for="RFINAL"],
-#S5k:checked ~ .pe-tabbar label[for="S5k"] 
-{
-  border-color:var(--accent);
-  background:linear-gradient(180deg,#f6e9bf,#e8d79d);
-  color:#1a2133;
-}
-
-/* three‑up panels */
-.pe-panels{width:min(92vw,1460px)}
-.pe-panels .panel{
-  display:none;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:clamp(10px,1.6vw,16px);
-}
-.pe-card{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
-.pe-card img{width:100%;height:auto;object-fit:contain;aspect-ratio:1}
-.pe-card figcaption{padding:8px 10px;font-size:.92rem;color:var(--muted);text-align:center}
-
-/* show the matching panel */
-#L1:checked  ~ .pe-panels [data-l="L1"],
-#L4:checked  ~ .pe-panels [data-l="L4"],
-#L8:checked  ~ .pe-panels [data-l="L8"],
-#L12:checked  ~ .pe-panels [data-l="L12"],
-#L16:checked ~ .pe-panels [data-l="L16"],
-#L24:checked ~ .pe-panels [data-l="L24"]{ display:grid }
-
-/* show width panels when their radios are checked */
-#W64:checked  ~ .pe-panels [data-w="W64"],
-#W256:checked ~ .pe-panels [data-w="W256"],
-#S5k:checked  ~ .pe-panels [data-s="S5k"],
-#S10k:checked ~ .pe-panels [data-s="S10k"] {
-  display: grid;
-}
-/* show final-result panel when its radio is checked */
-#RFINAL:checked ~ .pe-panels [data-r="RFINAL"] {
-  display: grid;
-}
-
-
-
-/* responsive */
-@media (max-width:900px){ .pe-panels .panel{ grid-template-columns:1fr 1fr } }
-@media (max-width:620px){ .pe-panels .panel{ grid-template-columns:1fr } }
-
-/* infinite conveyor */
-.graph-belt{ overflow:hidden; }
-.graph-belt .belt{
-  display:flex;
-  gap: clamp(12px, 1.8vw, 20px);
-  width:max-content;
-  animation: belt-scroll 50s linear infinite;
-}
-.graph-belt:hover .belt{ animation-play-state: paused; }
-@keyframes belt-scroll{ from{ transform: translateX(0); } to{ transform: translateX(-20%); } }
-.graph-belt img{
-  width: clamp(120px, 16vw, 240px);
-  border-radius:10px;
-  box-shadow: 0 10px 26px rgba(0,0,0,.35);
-}
-
-/* make the belt span underneath the 3-up grid */
-.pe-panels .panel .graph-belt{
-  grid-column: 1 / -1;
-  margin-top: clamp(8px, 1.2vw, 14px);
-}
-
-/* Final-result (Jupiter) panels: always visible and centered */
-.pe-panels.pe-panels-final {
-  width: min(92vw, 1460);   /* optional: narrower than full page */
-  margin: 1.5rem auto;       /* center the whole 3-up block */
-}
-
-.pe-panels.pe-panels-final .panel {
-  display: grid;             /* override the default display:none */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(10px, 1.6vw, 16px);
-  justify-items: center;     /* center each card within its column */
-}
-
-/* Centered single media card (for a GIF or final render) */
+/* centered single media card (for GIFs / final renders) */
 .center-media {
   display: flex;
   justify-content: center;
   margin: 2rem auto;
 }
-
 .center-media figure {
   margin: 0;
-  max-width: 480px;                 /* adjust if a wider or narrower card is desired */
+  max-width: 480px;
   width: 100%;
   background: var(--panel);
   border-radius: 12px;
@@ -381,14 +288,12 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   box-shadow: 0 18px 40px rgba(0,0,0,0.55);
   overflow: hidden;
 }
-
 .center-media img {
   display: block;
   width: 100%;
   height: auto;
   object-fit: contain;
 }
-
 .center-media figcaption {
   padding: 0.6rem 0.9rem;
   font-size: 0.95rem;
@@ -396,53 +301,244 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   text-align: center;
 }
 
-/* When multiple belts are stacked in one graph-belt (e.g., train + val), give them spacing */
-.graph-belt .belt + .belt {
-  margin-top: 0.75rem;
+
+/* =========================================
+   PE TABS (L / W / RUN SWITCHERS)
+   ========================================= */
+
+/* tab container + hidden radios */
+.pe-tabs {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  margin-top: 10px;
+}
+.pe-tabs input[type="radio"] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* Always show the static Lego 3-up panel + belts */
-.pe-panels.pe-lego {
-  width: min(92vw, 1280px);   /* same width as other panels, slightly narrower if desired */
-  margin: 2rem auto;         /* center the whole block */
+/* tab strip */
+.pe-tabbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.pe-tabbar label {
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease;
+}
+.pe-tabbar label:hover {
+  transform: translateY(-1px);
 }
 
-.pe-panels.pe-lego .panel {
-  display: grid; /* override the default display:none */
+/* highlighted (checked) tabs */
+#L1:checked    ~ .pe-tabbar label[for="L1"],
+#L4:checked    ~ .pe-tabbar label[for="L4"],
+#L8:checked    ~ .pe-tabbar label[for="L8"],
+#L12:checked   ~ .pe-tabbar label[for="L12"],
+#L16:checked   ~ .pe-tabbar label[for="L16"],
+#L24:checked   ~ .pe-tabbar label[for="L24"],
+#W64:checked   ~ .pe-tabbar label[for="W64"],
+#W256:checked  ~ .pe-tabbar label[for="W256"],
+#RFINAL:checked ~ .pe-tabbar label[for="RFINAL"],
+#S5k:checked   ~ .pe-tabbar label[for="S5k"],
+#S10k:checked  ~ .pe-tabbar label[for="S10k"] {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, #f6e9bf, #e8d79d);
+  color: #1a2133;
 }
 
-/* Add a bit of vertical spacing between stacked belts */
-.pe-lego .graph-belt .belt + .belt {
-  margin-top: 0.75rem;
+
+/* =========================================
+   PE PANELS & CARDS (3-UP GRIDS)
+   ========================================= */
+
+/* generic panels wrapper for PE sections */
+.pe-panels {
+  width: min(92vw, 1460px);
 }
 
-/* Static rays three-panel block in the pipeline section */
-.pe-panels.pe-rays {
-  width: min(92vw, 1100px);   /* similar width to other 3-up panels */
-  margin: 2rem auto;          /* center in the content column */
-}
-
-.pe-panels.pe-rays .panel {
-  display: grid;              /* override default display:none */
+/* base panel layout: 3-up grid, hidden by default */
+.pe-panels .panel {
+  display: none;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(10px, 1.6vw, 16px);
 }
 
+/* card used inside panels */
+.pe-card {
+  margin: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.pe-card img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  aspect-ratio: 1;
+}
+.pe-card figcaption {
+  padding: 8px 10px;
+  font-size: 0.92rem;
+  color: var(--muted);
+  text-align: center;
+}
 
-/* Always show the custom-data 3-up panels and belts */
+/* which panel is visible? (L-frequency tabs) */
+#L1:checked   ~ .pe-panels [data-l="L1"],
+#L4:checked   ~ .pe-panels [data-l="L4"],
+#L8:checked   ~ .pe-panels [data-l="L8"],
+#L12:checked  ~ .pe-panels [data-l="L12"],
+#L16:checked  ~ .pe-panels [data-l="L16"],
+#L24:checked  ~ .pe-panels [data-l="L24"] {
+  display: grid;
+}
+
+/* width panels */
+#W64:checked   ~ .pe-panels [data-w="W64"],
+#W256:checked  ~ .pe-panels [data-w="W256"] {
+  display: grid;
+}
+
+/* run-selection panels (my dataset) */
+#S5k:checked   ~ .pe-panels [data-s="S5k"],
+#S10k:checked  ~ .pe-panels [data-s="S10k"] {
+  display: grid;
+}
+
+/* final-result panel */
+#RFINAL:checked ~ .pe-panels [data-r="RFINAL"] {
+  display: grid;
+}
+
+/* responsive panel grid */
+@media (max-width: 900px) {
+  .pe-panels .panel {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .pe-panels .panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* make any graph-belt inside a panel span full width under the 3-up grid */
+.pe-panels .panel .graph-belt {
+  grid-column: 1 / -1;
+  margin-top: clamp(8px, 1.2vw, 14px);
+}
+
+
+/* =========================================
+   SPECIALIZED PANEL GROUPS
+   ========================================= */
+
+/* final-result (Jupiter) panels: always on */
+.pe-panels.pe-panels-final {
+  width: min(92vw, 1460px);
+  margin: 1.5rem auto;
+}
+.pe-panels.pe-panels-final .panel {
+  display: grid;  /* override display:none */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.6vw, 16px);
+  justify-items: center;
+}
+
+/* static Lego 3-up + belts: always on */
+.pe-panels.pe-lego {
+  width: min(92vw, 1280px);
+  margin: 2rem auto;
+}
+.pe-panels.pe-lego .panel {
+  display: grid;  /* override display:none */
+}
+
+/* static rays three-panel block (pipeline section) */
+.pe-panels.pe-rays {
+  width: min(92vw, 1100px);
+  margin: 2rem auto;
+}
+.pe-panels.pe-rays .panel {
+  display: grid;  /* override display:none */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.6vw, 16px);
+}
+
+/* custom-data (house) 3-up + belts: always on */
 .pe-panels.pe-mydata {
   width: min(92vw, 1100px);
   margin: 2rem auto;
 }
 
-.pe-panels.pe-mydata .panel {
-  display: grid; /* override .pe-panels .panel { display:none; } */
-  /* grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(10px, 1.6vw, 16px); */
-}
-
-/* Optional: add spacing between the stacked belts in this section */
+/* optional: spacing between stacked belts in my-data section */
 .pe-panels.pe-mydata .graph-belt .belt + .belt {
   margin-top: 0.75rem;
 }
 
+
+/* =========================================
+   INFINITE CONVEYOR BELTS (PROGRESSION)
+   ========================================= */
+
+.graph-belt {
+  overflow: hidden;
+}
+
+/* smoothed belt animation */
+.graph-belt .belt {
+  display: flex;
+  gap: clamp(12px, 1.8vw, 20px);
+  width: max-content;
+
+  /* smoothness helpers */
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+
+  animation: belt-scroll 50s linear infinite;
+}
+.graph-belt:hover .belt {
+  animation-play-state: paused;
+}
+
+/* if multiple belts stacked (e.g., train + val), add spacing */
+.graph-belt .belt + .belt {
+  margin-top: 0.75rem;
+}
+
+/* belt item thumbnails */
+.graph-belt img {
+  width: clamp(120px, 16vw, 240px);
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+}
+
+/* keyframes for continuous scroll */
+@keyframes belt-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-20%, 0, 0); }
+}

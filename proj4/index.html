@@ -771,14 +771,75 @@
             </div>
           </div>
 
+                    <!-- Run B: 10k iterations -->
+          <div class="panel" data-s="S10k">
+            <figure class="pe-card">
+              <img src="media/house/10k/house_psnr_curve.png"
+                   alt="Custom scene – PSNR curve for 10k-iteration run">
+              <figcaption>PSNR curve (10k iterations, extended schedule on the same architecture).</figcaption>
+            </figure>
 
+            <figure class="pe-card">
+              <img src="media/house/10k/house_loss_curve.png"
+                   alt="Custom scene – loss curve for 10k-iteration run">
+              <figcaption>Loss curve for the 10k-iteration run.</figcaption>
+            </figure>
 
-          <!-- Tab labels for runs -->
+            <figure class="pe-card">
+              <img src="media/house/10k/val_10000.png"
+                   alt="Custom scene – validation view at 10k iterations">
+              <figcaption>Held-out validation view at 10k iterations.</figcaption>
+            </figure>
+
+            <!-- Stacked belts (train + val), every 1k, similar to Lego layout -->
+            <div class="graph-belt" aria-label="Custom scene progression (10k run)">
+              <!-- Training progression -->
+              <div class="belt">
+                <img src="media/house/10k/train_01000.png" alt="10k run – train iter 1k">
+                <img src="media/house/10k/train_02000.png" alt="10k run – train iter 2k">
+                <img src="media/house/10k/train_03000.png" alt="10k run – train iter 3k">
+                <img src="media/house/10k/train_04000.png" alt="10k run – train iter 4k">
+                <img src="media/house/10k/train_05000.png" alt="10k run – train iter 5k">
+                <img src="media/house/10k/train_06000.png" alt="10k run – train iter 6k">
+                <img src="media/house/10k/train_07000.png" alt="10k run – train iter 7k">
+                <img src="media/house/10k/train_08000.png" alt="10k run – train iter 8k">
+                <img src="media/house/10k/train_09000.png" alt="10k run – train iter 9k">
+                <img src="media/house/10k/train_10000.png" alt="10k run – train iter 10k">
+                <!-- loop copies for smooth scroll -->
+                <img src="media/house/10k/train_01000.png" alt="" aria-hidden="true">
+                <img src="media/house/10k/train_04000.png" alt="" aria-hidden="true">
+                <img src="media/house/10k/train_07000.png" alt="" aria-hidden="true">
+                <img src="media/house/10k/train_10000.png" alt="" aria-hidden="true">
+              </div>
+
+              <!-- Validation progression -->
+              <div class="belt">
+                <img src="media/house/10k/val_01000.png" alt="10k run – val iter 1k">
+                <img src="media/house/10k/val_02000.png" alt="10k run – val iter 2k">
+                <img src="media/house/10k/val_03000.png" alt="10k run – val iter 3k">
+                <img src="media/house/10k/val_04000.png" alt="10k run – val iter 4k">
+                <img src="media/house/10k/val_05000.png" alt="10k run – val iter 5k">
+                <img src="media/house/10k/val_06000.png" alt="10k run – val iter 6k">
+                <img src="media/house/10k/val_07000.png" alt="10k run – val iter 7k">
+                <img src="media/house/10k/val_08000.png" alt="10k run – val iter 8k">
+                <img src="media/house/10k/val_09000.png" alt="10k run – val iter 9k">
+                <img src="media/house/10k/val_10000.png" alt="10k run – val iter 10k">
+                <!-- loop copies for continuous scroll -->
+                <img src="media/house/10k/val_01000.png" alt="" aria-hidden="true">
+                <img src="media/house/10k/val_04000.png" alt="" aria-hidden="true">
+                <img src="media/house/10k/val_07000.png" alt="" aria-hidden="true">
+                <img src="media/house/10k/val_10000.png" alt="" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Tab labels for runs -->
           <div class="pe-tabbar" role="tablist" aria-label="Training run">
             <label for="S5k" role="tab">5k iters</label>
             <label for="S10k" role="tab">10k iters</label>
           </div>
         </div>
+      </div>
 
         <!-- Optional extra discussion after the tabs -->
         <article class="glass readable">
@@ -800,7 +861,7 @@
         <!-- Orbit GIF / video stays at the end -->
         <div class="center-media">
           <figure>
-            <img src="media/house/house_arc.gif" alt="NeRF orbit of the custom scene">
+            <img src="media/house/house_orbit_smooth_1k_iters.gif" alt="NeRF orbit of the custom scene">
             <figcaption>Orbit of the trained NeRF on the custom scene, showing novel synthesized views.</figcaption>
           </figure>
         </div>
