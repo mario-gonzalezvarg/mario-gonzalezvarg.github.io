@@ -346,7 +346,7 @@
   if (orbitImg && run5k && run10k) {
     const updateOrbit = () => {
       if (run10k.checked) {
-        orbitImg.src = 'media/house/10k/house_orbit_smooth.gif';
+        orbitImg.src = 'media/house/10k/house_12k_iters.gif';
         orbitImg.alt = 'NeRF orbit of the custom scene (10k-iteration run)';
       } else {
         orbitImg.src = 'media/house/5k/house_5k_360.gif'; // 5k GIF
