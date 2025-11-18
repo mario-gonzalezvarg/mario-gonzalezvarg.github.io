@@ -899,7 +899,7 @@
 
       <!-- Qualitative evolution and limitations -->
       <article class="glass readable">
-        Notice how early iteration renderings produce a diffuse brown volume with only faint hints of structure; at this
+        Notice how early iteration renderings produce a diffused brown volume with only faint hints of structure; at this
         stage the model has captured an
         average
         color but not yet aligned the cameras or geometry. Between one and two thousand iterations the triangular roof,
@@ -918,13 +918,10 @@
         so
         that its optical axis passes through a point near the centre of the house while its vertical axis is aligned
         with
-        the scene’s up direction. The
-        resulting animation demonstrates coherent parallax as the viewpoint moves around the object: the house facade,
-        roof, and visible sides deform consistently, the occluded rear face is filled in plausibly, and the calibration
-        board remains anchored to the tabletop without noticeable sliding or tearing. The remaining artefacts primarily
-        appear as mild smoothing of the checkerboard and background, which is to be acceoted as a trade-off between
-        training time, sample count, and the level of high-frequency detail recovered
-        from real-world, noisy imagery.
+        the scene’s up direction.  The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
+        steps, behaves differently after the midpoint.
+        Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
+        several thousand more iterations, adding another one to two decibels of improvement before flattening.
       </article>
 
 
@@ -944,10 +941,10 @@
 
 
       <article class="glass readable">
-        The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
+        <!-- The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
         steps, behaves differently after the midpoint.
         Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
-        several thousand more iterations, adding another one to two decibels of improvement before flattening.
+        several thousand more iterations, adding another one to two decibels of improvement before flattening. -->
         Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the
         edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board
         becoming easier to discern.
