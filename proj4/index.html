@@ -434,6 +434,22 @@
       </div>
 
       <article class="glass readable">
+        The PSNR curves quantify how quickly this representation emerges over training.
+        The batch PSNR rises from single-digit values to around 20 dB within a few hundred iterations, reflecting rapid
+        fitting of the global brightness and broad banding patterns.
+        The full-image PSNR curve shows a large jump between the initial and first checkpoint renders, then a slower,
+        almost linear increase that asymptotically approaches a mid-teens or low-twenties value by the end of training.
+        The corresponding renderings match this trajectory: the very first output is nearly uniform, early snapshots
+        show
+        only faint hints of the dominant bands and storms, and later snapshots progressively sharpen the cloud belts,
+        vortices, and color gradients until the final image closely resembles the ground truth while still smoothing the
+        finest turbulent eddies.
+        Taken together, the PCA plots and PSNR curves demonstrate that the model begins from a purely coordinate-driven
+        encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
+        spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
+      </article>
+
+      <!-- <article class="glass readable">
         Visually, this appears as a compact, curved sheet that peels away from the origin and then fades into a long,
         low-density tail.
         Pixels on the object and its immediate surroundings cluster tightly along one end of this arc, while background
@@ -444,7 +460,7 @@
         The PSNR curves reflect this difference: both widths reach similar overall reconstruction quality, but the wider
         model converges to slightly higher PSNR and exhibits a smoother, more monotonic improvement over training,
         consistent with its more structured internal feature manifold.
-      </article>
+      </article> -->
     </section>
 
     <section id="final_result" class="section alt">
@@ -452,7 +468,7 @@
         <h1 class="serif" data-reveal-line>Final Reconstruction on Chosen Scene</h1>
       </header>
 
-      <article class="glass readable">
+      <!-- <article class="glass readable">
         The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
         The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
         three-sheet manifold in the top three principal components.
@@ -463,7 +479,7 @@
         this volume, which confirms that the positional encoding itself does not yet reflect any semantic grouping by
         appearance; the geometry at this stage is dominated by coordinate-based oscillations rather than by the planet’s
         texture.
-      </article>
+      </article> -->
 
       <!-- Three static panels: UV, RGB, penultimate (no belt, always visible) -->
       <div class="pe-panels pe-panels-final">
@@ -485,7 +501,9 @@
         </div>
       </div>
 
-      <article class="glass readable">
+      
+
+      <!-- <article class="glass readable">
         The PSNR curves quantify how quickly this representation emerges over training.
         The batch PSNR rises from single-digit values to around 20 dB within a few hundred iterations, reflecting rapid
         fitting of the global brightness and broad banding patterns.
@@ -499,6 +517,20 @@
         Taken together, the PCA plots and PSNR curves demonstrate that the model begins from a purely coordinate-driven
         encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
         spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
+      </article> -->
+
+      <article class="glass readable">
+        The PCA of the penultimate features tells a very different story.
+        After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
+        they collapse into a highly elongated plume concentrated near one side of PC space, with most variance lying
+        along a single direction.
+        Points corresponding to bright clouds, blue storms, and the dark background are separated along this main axis,
+        while the secondary axes make only small corrections.
+        This pattern indicates that the network has reorganized the high-dimensional PE basis into a much more compact,
+        appearance-aligned representation in which luminance and large-scale color structure are encoded by one dominant
+        feature dimension, and finer chromatic and textural differences are stored in orthogonal directions.
+        In other words, the penultimate layer behaves like a learned color-space tailored to the Jupiter image rather
+        than a direct reflection of the original (u,v) coordinates.
       </article>
 
       <!-- <article class="glass readable">
@@ -561,7 +593,7 @@
         </div>
       </div>
 
-      <article class="glass readable">
+      <!-- <article class="glass readable">
         The PCA of the penultimate features tells a very different story.
         After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
         they collapse into a highly elongated plume concentrated near one side of PC space, with most variance lying
@@ -573,6 +605,19 @@
         feature dimension, and finer chromatic and textural differences are stored in orthogonal directions.
         In other words, the penultimate layer behaves like a learned color-space tailored to the Jupiter image rather
         than a direct reflection of the original (u,v) coordinates.
+      </article> -->
+
+       <article class="glass readable">
+        The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
+        The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
+        three-sheet manifold in the top three principal components.
+        The smooth transition from red to green across this structure indicates that the first principal components
+        remain strongly aligned with the underlying latitude and longitude on the sphere, so even at higher frequency
+        the encoding preserves a globally ordered map of spatial position.
+        When the same PE features are colored by RGB instead of UV, the color pattern spreads almost uniformly through
+        this volume, which confirms that the positional encoding itself does not yet reflect any semantic grouping by
+        appearance; the geometry at this stage is dominated by coordinate-based oscillations rather than by the planet’s
+        texture.
       </article>
 
       <!-- <article class="glass readable">
