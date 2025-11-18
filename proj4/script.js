@@ -349,7 +349,7 @@
         orbitImg.src = 'media/house/10k/house_orbit_smooth.gif';
         orbitImg.alt = 'NeRF orbit of the custom scene (10k-iteration run)';
       } else {
-        orbitImg.src = 'media/house/house_orbit_smooth_1k_iters.gif'; // 5k GIF
+        orbitImg.src = 'media/house/5k/house_5k_iters.gif'; // 5k GIF
         orbitImg.alt = 'NeRF orbit of the custom scene (5k-iteration run)';
       }
     };
