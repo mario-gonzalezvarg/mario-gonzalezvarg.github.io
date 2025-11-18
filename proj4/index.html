@@ -944,19 +944,6 @@
         </figure>
       </div>
 
-      <article class="glass readable">
-        To visualise the learned radiance field beyond the original camera poses, a smooth 360° orbit is synthesised by
-        placing virtual cameras on a circle whose radius matches the median distance of the training viewpoints. Each
-        virtual camera is constructed with a <code>look-at</code> transform that keeps the optical axis pointed at a
-        manually chosen scene centre near the house interior, while the up-vector is fixed in the world frame to
-        preserve
-        a consistent horizon. The resulting animation, shown below, demonstrates that the model generalises gracefully
-        between the training trajectories: parallax around the roof and walls is coherent, occluded regions (such as the
-        back face of the house) are reconstructed plausibly, and the ChArUco grid remains aligned with the tabletop. The
-        overall appearance resembles a low-pass-filtered version of the input photographs, which is consistent with the
-        moderate PSNR (≈21&nbsp;dB) and the limited spatial resolution of the 200×200 training images.
-      </article>
-
 
       <article class="glass readable">
         The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
