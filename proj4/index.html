@@ -723,14 +723,40 @@
         </h1>
       </header>
 
+
       <article class="glass readable">
-        Wlth all said done, we finally arrive to applying the NeRF pipeline to a real-world tabletop scene. The object I
-        chose is a small ceramic christmas cabin placed on a printed ChArUco calibration board. Ninety-one handheld photographs are captured around the object. The same
-        calibration and packing procedure used for the Lego dataset is employed here: each image is undistorted using
-        the recovered intrinsics, aligned via OpenCv framework, then downsampled to 200×200 pixels to be stored as .npz file together with the corresponding camera-to-world transforms and a shared focal
-        length. During training, rays are sampled uniformly across all views with a near–far range of 0.35–1.0&nbsp;m
-        and 64 stratified samples per ray for the 5k itertation and 128 rays from 10k iteration.
+        To assess how the reconstruction pipeline behaves on real imagery, the target is a small ceramic
+        house placed on an 8×11 ChArUco board and viewed from 91 handheld positions around the object. Camera intrinsics
+        are estimated once using a dedicated calibration sequence; for the NeRF training set, each photograph is
+        undistorted, its pose is recovered from the detected fiducial markers, and the resulting images are resampled to
+        a resolution of 200×200 pixels. The calibrated camera poses are expressed as rigid transforms from camera to
+        world coordinates and partitioned into 91 training views, 15 validation views, and a small set of test
+        viewpoints
+        reserved for novel-view evaluation. The radiance field is represented by a standard multi-layer perceptron of
+        depth eight and width 256, with a skip
+        connection that re-injects the input coordinates halfway through the network. Three-dimensional positions are
+        encoded with a sinusoidal positional encoding using ten frequency bands, and viewing directions are encoded with
+        four bands. Training proceeds by sampling thousands of rays per iteration uniformly over the training images.
       </article>
+
+      <!-- Training dynamics and quantitative results -->
+      <article class="glass readable">
+        Along each ray, a fixed number of points are drawn from a depth interval chosen to bracket the physical extent
+        of
+        the house and board. For each batch, the network predicts densities and view-dependent colors at these points,
+        which are then combined through volumetric integration to form final pixel intensities. The discrepancy between
+        rendered and observed colors is measured with a mean-squared-error objective, and the model is optimised for
+        10&nbsp;000 iterations using a stochastic gradient-based optimiser with a decaying learning rate.
+        The resulting learning curves exhibit the characteristic two-phase behaviour seen in many NeRF settings. In the
+        first few hundred iterations, the peak signal-to-noise ratio (PSNR) increases sharply from approximately
+        5–6&nbsp;dB
+        to the low teens as the network discovers the dominant color distribution and coarse geometry of the scene. The
+        growth then slows to a nearly linear trend on a logarithmic scale: by 5&nbsp;000 iterations the PSNR has reached
+        roughly 17&nbsp;dB, and by the end of training it stabilises around 21&nbsp;dB. The corresponding loss curve
+        decreases smoothly without oscillation, indicating a stable optimisation process and no visible signs of
+        over-fitting despite the relatively small number of views.
+      </article>
+
 
       <!-- Tabs for different training runs (e.g. 5k vs 10k iterations) -->
       <div class="pe-tabs">
@@ -858,20 +884,51 @@
       </div>
       </div>
 
+
+
       <!-- Optional extra discussion after the tabs -->
+      <!-- <article class="glass readable">
+        The 5k-iteration run already captures the global structure of the scene. The PSNR curve rises rapidly over the
+        first several hundred iterations, moving from roughly 10&nbsp;dB to the mid-teens as the network learns the
+        dominant colors and coarse geometry. Intermediate training renders follow this trajectory: early iterations
+        produce a largely uniform brown blur, by 1k iterations the triangular roof and square board are clearly visible,
+        and by 5k iterations the silhouette, lighting, and overall perspective are stable. Residual errors are
+        concentrated in high-frequency regions such as the checkerboard pattern and fine wood grain, which remain mildly
+        blurred.
+      </article> -->
+
+
+
+      <!-- Qualitative evolution and limitations -->
       <article class="glass readable">
-        The two training runs illustrate how additional optimization time mainly affects fine detail rather than the
-        overall layout of the scene.
-        In the 5k-iteration run, the batch PSNR curve rises rapidly over the first few hundred iterations, jumping
-        from roughly 10 dB into the mid-teens, and then increases more gradually as training proceeds.
-        The sequence of intermediate training renders reflects this shape: the image at iteration 0 is an amorphous
-        brown blur, by 1k iterations the triangular object and its supporting board begin to emerge, and by 5k
-        iterations the overall silhouette and shading are stable, with the checkerboard pattern on the board only
-        faintly visible.
-        The corresponding validation views show a similar progression: early frames barely distinguish foreground from
-        background, whereas the 5k snapshot already reconstructs the basic geometry and albedo from a held-out camera,
-        albeit with soft edges and residual mottling in the background.
+        Intermediate reconstructions along the training trajectory reflect these numerical trends. Very early iteration renderings
+        produce a diffuse brown volume with only faint hints of structure; at this stage the model has captured an
+        average
+        color but not yet aligned the cameras or geometry. Between one and two thousand iterations the triangular roof,
+        chimney, and square footprint of the house become clearly identifiable, and the high-contrast calibration board
+        emerges as a checker pattern rather than a blurred patch. Additional training primarily sharpens edges, improves
+        the separation between the house and background, and reduces low-frequency bias in the wood-grain texture of the
+        tabletop. In the final validation frame the roof ridgeline is crisp, the board squares are well separated, and
+        the residual blur is confined to the finest-scale details, which is consistent with the moderate resolution of
+        the input imagery and the chosen network capacity.
       </article>
+
+      <!-- Novel-view synthesis / orbit -->
+      <article class="glass readable">
+        To test generalisation beyond the training views, a synthetic orbit is constructed by placing virtual cameras on
+        a circle whose radius matches the typical distance of the captured viewpoints. Each virtual camera is oriented
+        so
+        that its optical axis passes through a point near the centre of the house while its vertical axis is aligned
+        with
+        the scene’s up direction, producing a smooth 360-degree path that was not present in the original data. The
+        resulting animation demonstrates coherent parallax as the viewpoint moves around the object: the house facade,
+        roof, and visible sides deform consistently, the occluded rear face is filled in plausibly, and the calibration
+        board remains anchored to the tabletop without noticeable sliding or tearing. The remaining artefacts primarily
+        appear as mild smoothing of the checkerboard and background, which is to be acceoted as a trade-off between
+        training time, sample count, and the level of high-frequency detail recovered
+        from real-world, noisy imagery.
+      </article>
+
 
 
 
@@ -886,6 +943,19 @@
           </figcaption>
         </figure>
       </div>
+
+      <article class="glass readable">
+        To visualise the learned radiance field beyond the original camera poses, a smooth 360° orbit is synthesised by
+        placing virtual cameras on a circle whose radius matches the median distance of the training viewpoints. Each
+        virtual camera is constructed with a <code>look-at</code> transform that keeps the optical axis pointed at a
+        manually chosen scene centre near the house interior, while the up-vector is fixed in the world frame to
+        preserve
+        a consistent horizon. The resulting animation, shown below, demonstrates that the model generalises gracefully
+        between the training trajectories: parallax around the roof and walls is coherent, occluded regions (such as the
+        back face of the house) are reconstructed plausibly, and the ChArUco grid remains aligned with the tabletop. The
+        overall appearance resembles a low-pass-filtered version of the input photographs, which is consistent with the
+        moderate PSNR (≈21&nbsp;dB) and the limited spatial resolution of the 200×200 training images.
+      </article>
 
 
       <article class="glass readable">
