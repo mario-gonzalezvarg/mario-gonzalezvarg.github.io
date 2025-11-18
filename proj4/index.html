@@ -771,23 +771,22 @@
             </div>
           </div>
 
-                    <!-- Run B: 10k iterations -->
+
+
+          <!-- Run B: 10k iterations -->
           <div class="panel" data-s="S10k">
             <figure class="pe-card">
-              <img src="media/house/10k/house_psnr_curve.png"
-                   alt="Custom scene – PSNR curve for 10k-iteration run">
+              <img src="media/house/10k/house_psnr_curve.png" alt="Custom scene – PSNR curve for 10k-iteration run">
               <figcaption>PSNR curve (10k iterations, extended schedule on the same architecture).</figcaption>
             </figure>
 
             <figure class="pe-card">
-              <img src="media/house/10k/house_loss_curve.png"
-                   alt="Custom scene – loss curve for 10k-iteration run">
+              <img src="media/house/10k/house_loss_curve.png" alt="Custom scene – loss curve for 10k-iteration run">
               <figcaption>Loss curve for the 10k-iteration run.</figcaption>
             </figure>
 
             <figure class="pe-card">
-              <img src="media/house/10k/val_10000.png"
-                   alt="Custom scene – validation view at 10k iterations">
+              <img src="media/house/10k/val_10000.png" alt="Custom scene – validation view at 10k iterations">
               <figcaption>Held-out validation view at 10k iterations.</figcaption>
             </figure>
 
@@ -834,53 +833,58 @@
           </div>
         </div>
         <!-- Tab labels for runs -->
-          <div class="pe-tabbar" role="tablist" aria-label="Training run">
-            <label for="S5k" role="tab">5k iters</label>
-            <label for="S10k" role="tab">10k iters</label>
-          </div>
+        <div class="pe-tabbar" role="tablist" aria-label="Training run">
+          <label for="S5k" role="tab">5k iters</label>
+          <label for="S10k" role="tab">10k iters</label>
         </div>
       </div>
+      </div>
 
-        <!-- Optional extra discussion after the tabs -->
-        <article class="glass readable">
-          The two training runs illustrate how additional optimization time mainly affects fine detail rather than the
-          overall layout of the scene.
-          In the 5k-iteration run, the batch PSNR curve rises rapidly over the first few hundred iterations, jumping
-          from roughly 10 dB into the mid-teens, and then increases more gradually as training proceeds.
-          The sequence of intermediate training renders reflects this shape: the image at iteration 0 is an amorphous
-          brown blur, by 1k iterations the triangular object and its supporting board begin to emerge, and by 5k
-          iterations the overall silhouette and shading are stable, with the checkerboard pattern on the board only
-          faintly visible.
-          The corresponding validation views show a similar progression: early frames barely distinguish foreground from
-          background, whereas the 5k snapshot already reconstructs the basic geometry and albedo from a held-out camera,
-          albeit with soft edges and residual mottling in the background.
-        </article>
+      <!-- Optional extra discussion after the tabs -->
+      <article class="glass readable">
+        The two training runs illustrate how additional optimization time mainly affects fine detail rather than the
+        overall layout of the scene.
+        In the 5k-iteration run, the batch PSNR curve rises rapidly over the first few hundred iterations, jumping
+        from roughly 10 dB into the mid-teens, and then increases more gradually as training proceeds.
+        The sequence of intermediate training renders reflects this shape: the image at iteration 0 is an amorphous
+        brown blur, by 1k iterations the triangular object and its supporting board begin to emerge, and by 5k
+        iterations the overall silhouette and shading are stable, with the checkerboard pattern on the board only
+        faintly visible.
+        The corresponding validation views show a similar progression: early frames barely distinguish foreground from
+        background, whereas the 5k snapshot already reconstructs the basic geometry and albedo from a held-out camera,
+        albeit with soft edges and residual mottling in the background.
+      </article>
 
 
 
-        <!-- Orbit GIF / video stays at the end -->
-        <div class="center-media">
-          <figure>
-            <img src="media/house/house_orbit_smooth_1k_iters.gif" alt="NeRF orbit of the custom scene">
-            <figcaption>Orbit of the trained NeRF on the custom scene, showing novel synthesized views.</figcaption>
-          </figure>
-        </div>
+      <!-- Orbit GIF / video stays at the end -->
+      <!-- Orbit GIF (switches with 5k / 10k buttons) -->
+      <div class="center-media">
+        <figure>
+          <img id="my-scene-orbit" src="media/house/house_arc.gif"
+            alt="NeRF orbit of the custom scene (5k-iteration run)">
+          <figcaption>
+            Orbit of the trained NeRF on the custom scene, showing novel synthesized views.
+          </figcaption>
+        </figure>
+      </div>
 
-        <article class="glass readable">
-          The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
-          steps, behaves differently after the midpoint.
-          Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
-          several thousand more iterations, adding another one to two decibels of improvement before flattening.
-          Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the
-          edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board
-          becoming easier to discern.
-          By iteration 10k, the training view has noticeably fewer low-frequency artifacts and less noise in the
-          background, and the validation view reveals cleaner lines along the object’s silhouette while preserving the
-          same global appearance as in the shorter run.
-          Together, these comparisons indicate that five thousand iterations are sufficient to capture the overall shape
-          and color of the scene, while a longer schedule primarily refines small-scale structure and reduces residual
-          blur, yielding smoother textures and slightly higher PSNR at the cost of additional compute.
-        </article>
+
+      <article class="glass readable">
+        The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
+        steps, behaves differently after the midpoint.
+        Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
+        several thousand more iterations, adding another one to two decibels of improvement before flattening.
+        Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the
+        edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board
+        becoming easier to discern.
+        By iteration 10k, the training view has noticeably fewer low-frequency artifacts and less noise in the
+        background, and the validation view reveals cleaner lines along the object’s silhouette while preserving the
+        same global appearance as in the shorter run.
+        Together, these comparisons indicate that five thousand iterations are sufficient to capture the overall shape
+        and color of the scene, while a longer schedule primarily refines small-scale structure and reduces residual
+        blur, yielding smoother textures and slightly higher PSNR at the cost of additional compute.
+      </article>
     </section>
 
 
