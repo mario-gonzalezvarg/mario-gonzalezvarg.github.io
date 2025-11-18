@@ -761,7 +761,7 @@
       <div class="pe-tabs">
         <!-- independent radio group for runs -->
         <input type="radio" name="S" id="S5k">
-        <input type="radio" name="S" id="S10k"checked>
+        <input type="radio" name="S" id="S10k" checked>
 
         <div class="pe-panels pe-mydata" aria-live="polite">
           <!-- Run A: 5k iterations -->
@@ -897,24 +897,10 @@
       </div>
 
 
-
-      <!-- Optional extra discussion after the tabs -->
-      <!-- <article class="glass readable">
-        The 5k-iteration run already captures the global structure of the scene. The PSNR curve rises rapidly over the
-        first several hundred iterations, moving from roughly 10&nbsp;dB to the mid-teens as the network learns the
-        dominant colors and coarse geometry. Intermediate training renders follow this trajectory: early iterations
-        produce a largely uniform brown blur, by 1k iterations the triangular roof and square board are clearly visible,
-        and by 5k iterations the silhouette, lighting, and overall perspective are stable. Residual errors are
-        concentrated in high-frequency regions such as the checkerboard pattern and fine wood grain, which remain mildly
-        blurred.
-      </article> -->
-
-
-
       <!-- Qualitative evolution and limitations -->
       <article class="glass readable">
-        Intermediate reconstructions along the training trajectory reflect these numerical trends. Very early iteration renderings
-        produce a diffuse brown volume with only faint hints of structure; at this stage the model has captured an
+        Notice how early iteration renderings produce a diffuse brown volume with only faint hints of structure; at this
+        stage the model has captured an
         average
         color but not yet aligned the cameras or geometry. Between one and two thousand iterations the triangular roof,
         chimney, and square footprint of the house become clearly identifiable, and the high-contrast calibration board
