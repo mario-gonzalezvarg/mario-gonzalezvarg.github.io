@@ -69,6 +69,18 @@
       </header>
 
       <article class="glass readable">
+        The two-dimensional neural field is implemented as a coordinate-based multilayer perceptron that maps
+        positional-encoded image coordinates to RGB values. Pixel locations (u,v) are normalised to lie in a fixed
+        range, expanded with a sinusoidal positional encoding up to a maximum frequency L, and then fed into a stack of
+        fully connected layers with ReLU activations. Unless otherwise stated, the network uses eight hidden layers
+        with a hidden width of 256 and a final linear layer that outputs three colour channels. Varying L or the hidden
+        width therefore changes only the encoding and channel count; the overall optimisation procedure remains the
+        same: models are trained from random initialisation with the Adam optimiser for 2&nbsp;500 iterations on
+        mini-batches of randomly sampled pixels at a learning rate of 1×10<sup>−2</sup>.
+      </article>
+
+
+      <article class="glass readable">
         To visualize how positional encoding transforms image coordinates, each PE(u,v) vector is projected onto its top
         three PCA components while the maximum encoding frequency L is varied.
         The PCA plots reveal that positional encoding progressively twists the original two-dimensional coordinate grid
@@ -426,7 +438,6 @@
         </div>
 
 
-
         <div class="pe-tabbar" role="tablist" aria-label="Width">
           <label for="W64" role="tab">W = 64</label>
           <label for="W256" role="tab">W = 256</label>
@@ -448,19 +459,6 @@
         encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
         spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
       </article>
-
-      <!-- <article class="glass readable">
-        Visually, this appears as a compact, curved sheet that peels away from the origin and then fades into a long,
-        low-density tail.
-        Pixels on the object and its immediate surroundings cluster tightly along one end of this arc, while background
-        pixels and saturated regions occupy the extended tail, indicating that the wider network has learned a more
-        organized representation where luminance and large-scale structure are encoded by a single dominant direction
-        and
-        finer variations are relegated to orthogonal subspaces.
-        The PSNR curves reflect this difference: both widths reach similar overall reconstruction quality, but the wider
-        model converges to slightly higher PSNR and exhibits a smoother, more monotonic improvement over training,
-        consistent with its more structured internal feature manifold.
-      </article> -->
     </section>
 
     <section id="final_result" class="section alt">
@@ -468,18 +466,17 @@
         <h1 class="serif" data-reveal-line>Final Reconstruction on Chosen Scene</h1>
       </header>
 
-      <!-- <article class="glass readable">
-        The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
-        The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
-        three-sheet manifold in the top three principal components.
-        The smooth transition from red to green across this structure indicates that the first principal components
-        remain strongly aligned with the underlying latitude and longitude on the sphere, so even at higher frequency
-        the encoding preserves a globally ordered map of spatial position.
-        When the same PE features are colored by RGB instead of UV, the color pattern spreads almost uniformly through
-        this volume, which confirms that the positional encoding itself does not yet reflect any semantic grouping by
-        appearance; the geometry at this stage is dominated by coordinate-based oscillations rather than by the planet’s
-        texture.
-      </article> -->
+      <article class="glass readable">
+        As a concrete example, the same 2D neural field architecture is trained on a single natural image of Jupiter
+        using a maximum encoding frequency of L = 16 and a hidden width of 256. The PSNR curve below tracks full-image
+        PSNR throughout optimisation, and the belt of intermediate renderings shows how the reconstruction gradually
+        sharpens over time. Early iterations capture only coarse colour and band structure, while later iterations
+        resolve the major storms and cloud bands until the final reconstruction closely matches the ground-truth
+        photograph. Together with the fox reconstruction belts in the width study, this example provides the designated
+        “image of choice” for the 2D neural field and illustrates how reconstruction quality improves during training.
+      </article>
+
+
 
       <!-- Three static panels: UV, RGB, penultimate (no belt, always visible) -->
       <div class="pe-panels pe-panels-final">
@@ -501,7 +498,7 @@
         </div>
       </div>
 
-      
+
 
       <!-- <article class="glass readable">
         The PSNR curves quantify how quickly this representation emerges over training.
@@ -607,7 +604,7 @@
         than a direct reflection of the original (u,v) coordinates.
       </article> -->
 
-       <article class="glass readable">
+      <article class="glass readable">
         The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
         The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
         three-sheet manifold in the top three principal components.
@@ -697,6 +694,18 @@
         The outcome of this stage is a dense batch of points in space, all organized per ray, ready to be evaluated by
         the neural network.
       </article>
+
+      <article class="glass readable">
+        The Lego experiments use a standard NeRF-style multilayer perceptron that takes 3D positions and viewing
+        directions as input and outputs a volume density and RGB colour for each queried point. Both inputs are first
+        mapped through sinusoidal positional encodings—ten frequency bands for positions and four for directions—and
+        then passed through an eight-layer fully connected network of width 256 with ReLU activations and a final
+        linear output layer. Training uses the Adam optimiser with a learning rate of 5×10<sup>−4</sup>, drawing 64
+        stratified samples along each ray for 10&nbsp;000 iterations. The PSNR curve and final train/validation views
+        above report reconstruction quality on held-out views and show that the model converges to a sharp,
+        view-consistent representation of the Lego scene.
+      </article>
+
 
       <!-- Lego NeRF: three panels (PSNR + final train + final val) -->
       <div class="pe-panels pe-lego" aria-live="polite">
@@ -805,30 +814,29 @@
         undistorted, its pose is recovered from the detected fiducial markers, and the resulting images are resampled to
         a resolution of 200×200 pixels. The calibrated camera poses are expressed as rigid transforms from camera to
         world coordinates and partitioned into 91 training views, 15 validation views, and a small set of test
-        viewpoints
-        reserved for novel-view evaluation. The radiance field is represented by a standard multi-layer perceptron of
-        depth eight and width 256, with a skip
-        connection that re-injects the input coordinates halfway through the network. Three-dimensional positions are
-        encoded with a sinusoidal positional encoding using ten frequency bands, and viewing directions are encoded with
-        four bands. Training proceeds by sampling thousands of rays per iteration uniformly over the training images.
+        viewpoints reserved for novel-view evaluation. The radiance field is represented by a standard multi-layer
+        perceptron of depth eight and width 256, with a skip connection that re-injects the input coordinates halfway
+        through the network. Three-dimensional positions are encoded with a sinusoidal positional encoding using ten
+        frequency bands, and viewing directions are encoded with four bands. Training proceeds by sampling thousands of
+        rays per iteration uniformly over the training images and optimising the network with Adam, starting from a
+        learning rate of 5×10<sup>−4</sup> and following a cosine decay schedule over 10&nbsp;000 iterations so that
+        early updates correct coarse geometry while later stages focus on fine-scale appearance.
       </article>
+
 
       <!-- Training dynamics and quantitative results -->
       <article class="glass readable">
-        Along each ray, a fixed number of points are drawn from a depth interval chosen to bracket the physical extent
-        of
-        the house and board. For each batch, the network predicts densities and view-dependent colors at these points,
-        which are then combined through volumetric integration to form final pixel intensities. The discrepancy between
-        rendered and observed colors is measured with a mean-squared-error objective, and the model is optimised for
-        10&nbsp;000 iterations using a stochastic gradient-based optimiser with a decaying learning rate.
-        The resulting learning curves exhibit the characteristic two-phase behaviour seen in many NeRF settings. In the
-        first few hundred iterations, the peak signal-to-noise ratio (PSNR) increases sharply from approximately
-        5–6&nbsp;dB
-        to the low teens as the network discovers the dominant color distribution and coarse geometry of the scene. The
-        growth then slows to a nearly linear trend on a logarithmic scale: by 5&nbsp;000 iterations the PSNR has reached
-        roughly 17&nbsp;dB, and by the end of training it stabilises around 21&nbsp;dB. The corresponding loss curve
-        decreases smoothly without oscillation, indicating a stable optimisation process and no visible signs of
-        over-fitting despite the relatively small number of views.
+        Along each ray, a fixed number of points are drawn from a depth interval that brackets the physical extent of
+        the house and calibration board (approximately 0.44 to 0.98 units in the calibrated frame). For each batch, the
+        network predicts densities and view-dependent colours at these samples, which are then combined through
+        volumetric integration to form final pixel intensities. The discrepancy between rendered and observed colours is
+        measured with a mean-squared-error objective. Optimising for 10&nbsp;000 iterations produces a characteristic
+        two-phase learning curve. PSNR jumps from roughly 5&nbsp;dB to around 18&nbsp;dB within the first thousand
+        iterations as the model discovers the dominant colour distribution and coarse geometry, then increases more
+        slowly, reaching about 22.5&nbsp;dB by 5&nbsp;000 iterations and stabilising near 23&nbsp;dB by the end of
+        training. The corresponding loss curve decreases smoothly from roughly 0.32 to about 5×10<sup>−3</sup> without
+        noticeable oscillation, indicating a stable optimisation process and no strong signs of over-fitting despite
+        the modest number of views.
       </article>
 
 
@@ -846,7 +854,7 @@
               <figcaption>PSNR (5k iterations, lr = 5e-4, 64 samples/ray).</figcaption>
             </figure>
             <figure class="pe-card">
-              <img src="media/house/house_loss_curve.png" alt="Loss curve for 5k iters">
+              <img src="media/house/5k/house_loss_curve.png" alt="Loss curve for 5k iters">
               <figcaption>Loss Function (width = 256, depth = 8)</figcaption>
             </figure>
             <figure class="pe-card">
@@ -974,7 +982,8 @@
 
       <!-- Qualitative evolution and limitations -->
       <article class="glass readable">
-        Notice how early iteration renderings produce a diffused brown volume with only faint hints of structure; at this
+        Notice how early iteration renderings produce a diffused brown volume with only faint hints of structure; at
+        this
         stage the model has captured an
         average
         color but not yet aligned the cameras or geometry. Between one and two thousand iterations the triangular roof,
@@ -990,14 +999,17 @@
       <article class="glass readable">
         To test generalisation beyond the training views, a synthetic orbit is constructed by placing virtual cameras on
         a circle whose radius matches the typical distance of the captured viewpoints. Each virtual camera is oriented
-        so
-        that its optical axis passes through a point near the centre of the house while its vertical axis is aligned
-        with
-        the scene’s up direction.  The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
-        steps, behaves differently after the midpoint.
-        Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
-        several thousand more iterations, adding another one to two decibels of improvement before flattening.
+        so that its optical axis passes through a point near the centre of the house while its vertical axis is aligned
+        with the scene’s up direction. Both the 5k and 10k runs use the same NeRF architecture, sampling strategy, and
+        initial learning rate; the 10k run simply follows the cosine decay schedule for the full 10&nbsp;000
+        iterations instead of stopping halfway. Consistent with the PSNR curves, the longer run does not change the
+        overall geometry of the reconstruction but gradually sharpens the roof edges, window grilles, calibration board,
+        and the
+        fine texture of the carpet (too much aliasing in my opinion), leading to slightly crisper novel views and fewer
+        residual rendering artefacts
+        along the orbit.
       </article>
+
 
 
 
@@ -1006,7 +1018,7 @@
       <!-- Orbit GIF (switches with 5k / 10k buttons) -->
       <div class="center-media">
         <figure>
-          <img id="my-scene-orbit" src="media/house/10k/house_12k_iters.gif"
+          <img id="my-scene-orbit" src="media/house/10k/house_10k.gif"
             alt="NeRF orbit of the custom scene (5k-iteration run)">
           <figcaption>
             Orbit of the trained NeRF scene!!
