@@ -31,6 +31,7 @@
       <p class="lead">UC&nbsp;Berkeley • CS180 Computational Photography. </p>
 
     </section>
+    
 
 
     <!----------------------------------------------- Part 0 Camera Calibration and 3D Scanning ------------------------------------------------->
@@ -39,27 +40,47 @@
         <h1 class="serif" data-reveal-line>Camera Calibration and 3D Scanning</h1>
       </header>
 
+      <article class="glass readable">
+        The calibration stage establishes a consistent geometric description of the camera used for all subsequent
+        experiments. A printed 8×11 ChArUco board is captured from many viewpoints in a dedicated sequence. For each
+        image, the system detects the chessboard corners and embedded ArUco markers, refines their locations to
+        subpixel accuracy, and associates them with known 3D coordinates on the board. These 2D–3D correspondences are
+        passed to a standard calibration routine that jointly estimates the intrinsic matrix, lens distortion
+        coefficients, and per-image extrinsic poses. Outlier views with large reprojection error are discarded, and the
+        remaining set is used to compute a final set of intrinsics that closely match the physical camera.
+      </article>
+
+
       <div class="pe-panels pe-panels-final">
         <div class="panel">
-
-
           <figure class="pe-card">
             <img src="media/viser/house_rays1.png" alt="View 1 — global layout of camera poses.">
             <figcaption>View 1 — global layout of camera poses.</figcaption>
           </figure>
 
           <figure class="pe-card">
-            <img src="media/viser/house.jpg" alt="PCA of PE features colored by RGB">
-            <figcaption>Object Scanend</figcaption>
+            <img src="media/viser/house.jpg" alt="3D scan of the ceramic house reconstructed from multi-view images.">
+            <figcaption>Reconstructed object scan from the calibrated multi-view sequence.</figcaption>
           </figure>
 
           <figure class="pe-card">
             <img src="media/viser/house_rays2.png" alt="View 2 — looking up from z-axis.">
-            <figcaption>View 2 — looking up from z-axis.</figcaption>
+            <figcaption>View 2 — looking up from the z-axis, highlighting coverage and elevation changes.</figcaption>
           </figure>
         </div>
       </div>
+
+      <article class="glass readable">
+        Once the camera model is fixed, the ChArUco board doubles as a world-coordinate reference for the 3D scanning
+        sequence. Each photograph of the ceramic house on the board is undistorted with the recovered lens parameters,
+        and the same corner and marker detections are used to solve for a rigid transform from camera space to board
+        space. These transforms are then interpreted as camera-to-world matrices and stored alongside the images in a
+        compact calibration file. Visualising the resulting frustums reveals a dense ring of cameras around the object
+        with varying elevation and azimuth, providing good coverage for volumetric reconstruction and novel-view
+        synthesis.
+      </article>
     </section>
+
 
 
     <!------------------------------------------------ Part 1 Fit a Neural Field to a 2D Image ---------------------------------------------------->
@@ -68,43 +89,30 @@
         <h1 class="serif" data-reveal-line>Varying Encoding Frequency</h1>
       </header>
 
-      <article class="glass readable">
-        The two-dimensional neural field is implemented as a coordinate-based multilayer perceptron that maps
-        positional-encoded image coordinates to RGB values. Pixel locations (u,v) are normalised to lie in a fixed
-        range, expanded with a sinusoidal positional encoding up to a maximum frequency L, and then fed into a stack of
-        fully connected layers with ReLU activations. Unless otherwise stated, the network uses eight hidden layers
-        with a hidden width of 256 and a final linear layer that outputs three colour channels. Varying L or the hidden
-        width therefore changes only the encoding and channel count; the overall optimisation procedure remains the
-        same: models are trained from random initialisation with the Adam optimiser for 2&nbsp;500 iterations on
-        mini-batches of randomly sampled pixels at a learning rate of 1×10<sup>−2</sup>.
-      </article>
 
 
       <article class="glass readable">
-        To visualize how positional encoding transforms image coordinates, each PE(u,v) vector is projected onto its top
-        three PCA components while the maximum encoding frequency L is varied.
-        The PCA plots reveal that positional encoding progressively twists the original two-dimensional coordinate grid
-        into a higher-dimensional manifold as L increases.
-        For very low frequency (L = 1), the encoded PE(u,v) vectors occupy a single smooth, bowl-shaped surface in the
-        top three principal components.
-        The gradient of colors from red to green along this surface indicates that the first two principal components
-        are almost linear functions of u and v, so the encoding behaves like a gently curved embedding of the image
-        plane with no folds: nearby pixels in image coordinates remain nearby in feature space.
-        This behavior is typical for low-frequency positional encodings, which tend to produce a smooth two-dimensional
-        sheet in feature space with only mild curvature from which the network can draw samples.
+        To visualise how positional encoding transforms image coordinates, each PE(u,v) vector is projected onto its top
+        three PCA components while the maximum encoding frequency L is varied. For very low frequency (L = 1), the
+        encoded PE(u,v) vectors occupy a single smooth, bowl-shaped surface in the top three principal components. The
+        colour gradient from red to green along this surface shows that the first two principal components remain almost
+        linear in u and v, so the encoding behaves like a gently curved embedding of the image plane with no folds:
+        nearby pixels in image coordinates remain nearby in feature space. At this end of the spectrum, the positional
+        encoding acts as a smooth reparameterisation of the image domain rather than introducing strong local
+        distortions.
+
       </article>
 
       <article class="glass readable">
-        At mid-range frequencies (L = 8 and L = 12), the PCA manifolds begin to exhibit clear multi-layered structure.
-        The surfaces no longer form a single simple bowl but instead resemble sheets that have been folded or partially
+        At mid-range frequencies (L = 8 and L = 12), the PCA manifolds develop a clear multi-layered structure. The
+        points no longer sit on a single simple bowl but instead trace out sheets that have been folded or partially
         rolled, with regions of the grid mapped to different heights in PC3 even when their PC1 and PC2 coordinates
-        almost overlap.
-        The color gradients in these plots confirm that the embedding is still globally ordered by u and v, because red
-        and green bands do not intersect randomly; however, pixels that are adjacent along one coordinate can now be
-        separated along the third principal component whenever the corresponding sine and cosine terms switch phase.
-        This behavior shows that mid-frequency encodings preserve global continuity but already introduce local
-        non-linearity: the network receives a representation where local neighborhoods are stretched and sheared, making
-        it easier to represent edges and moderate-frequency texture with a finite number of ReLU layers.
+        nearly coincide. The colour gradients remain ordered, indicating that the embedding still respects global
+        position, but pixels that are adjacent along one coordinate can now separate along the third principal component
+        whenever the corresponding sine and cosine terms shift phase. In effect, mid-frequency encodings preserve a
+        coherent global parameterisation while deliberately stretching and shearing local neighbourhoods, which makes it
+        easier for a finite-depth ReLU network to represent edges and moderate-frequency texture.
+
       </article>
 
 
@@ -318,22 +326,16 @@
 
 
       <article class="glass readable">
+        At high frequency (L = 16 and especially L = 24), the PCA geometry becomes highly oscillatory. Instead of a
+        single surface or gently folded ribbon, the points fill a dense volume of overlapping bands and sheets that
+        weave through one another. The UV-coloured plots reveal thin strands of similar colour that separate and rejoin
+        throughout this space, indicating that many small regions of the original image are now mapped to almost
+        orthogonal directions in the encoded feature space. Small changes in u or v trigger large swings in the
+        sinusoids at high L, so neighbouring pixels cycle through different basis directions in rapid succession. This
+        is precisely the regime positional encoding is designed to create: the MLP gains access to very fine spatial
+        detail by decorrelating local neighbourhoods, at the cost of a tangled, high-dimensional manifold that is
+        difficult to interpret visually but extremely expressive for function fitting.
 
-        At high frequency (L = 16 and especially L = 24), the PCA geometry becomes highly oscillatory.
-        Instead of a single surface or a gently folded ribbon, the points fill a dense volume made up of overlapping
-        bands and sheets that weave through one another.
-        The color pattern, which encodes the original UV coordinates, makes this structure easier to interpret: blocks
-        of similar color form thin, separated strands in PC space, indicating that many disjoint regions of the original
-        image are now mapped to very different directions in the encoded feature space.
-        In other words, small changes in u or v trigger large swings in the sinusoids at high L, so nearby pixels
-        oscillate through many nearly orthogonal basis vectors.
-        This is precisely the effect positional encoding is designed to achieve: it gives the MLP access to very fine
-        spatial detail by decorrelating local neighborhoods, at the expense of producing a tangled, highly folded
-        manifold that is more challenging to visualize.
-        Across the sweep, the PCA plots therefore illustrate a clear progression: low L preserves a simple, almost
-        planar embedding; mid-range L produces a structured but still readable ribbon; and high L yields a volumetric,
-        multi-sheet structure where the encoding has effectively sprinkled the image plane across a high-dimensional
-        torus in feature space.
       </article>
     </section>
 
@@ -344,21 +346,17 @@
 
 
       <article class="glass readable">
-        Varying the hidden width changes the geometry of the learned feature space much more than it changes the raw
-        positional-encoding manifold.
-        The PCA plots of PE(u,v) look essentially identical for the narrow and wide models, since both networks receive
-        the same sinusoidal expansion of the input image coordinates; the cloud of PE features remains a dense, roughly
-        cubic volume whose principal components are strongly aligned with u and v and only weakly correlated with color.
+        Changing the hidden width mainly affects the geometry of the learned feature space rather than the raw
+        positional-encoding manifold. The PCA plots of PE(u,v) remain essentially unchanged between the narrow and wide
+        networks, since both receive the same sinusoidal expansion of the image coordinates; the encoded points still
+        occupy a dense, roughly cubic volume whose principal components are strongly aligned with u and v. The contrast
+        appears in the PCA of the penultimate activations. With a smaller width, the distribution forms a relatively
+        thick fan-shaped cloud in which luminance, colour, and spatial location remain partially entangled across
+        several principal directions. Increasing the width produces a much more anisotropic embedding: most variance
+        collapses onto a dominant one-dimensional arc, with secondary components only modulating fine local deviations.
+        A wider network therefore spends its extra capacity organising features along a small number of semantically
+        meaningful directions rather than expanding the raw PE manifold itself.
 
-        The difference emerges at the penultimate layer.
-        With a smaller width, the PCA of the penultimate activations forms a relatively thick, fan-shaped cloud: the
-        first
-        principal component correlates strongly with luminance, but a large fraction of variance is still carried by the
-        second component, and colors and spatial regions remain partially entangled.
-        In contrast, increasing the width leads to a much more anisotropic embedding in feature space.
-        The penultimate PCA collapses into a dominant one-dimensional arc that explains the majority of the variance,
-        with
-        most points lying along a smooth trajectory in PC1 while PC2 and PC3 only modulate local deviations.
 
 
       </article>
@@ -445,19 +443,16 @@
       </div>
 
       <article class="glass readable">
-        The PSNR curves quantify how quickly this representation emerges over training.
-        The batch PSNR rises from single-digit values to around 20 dB within a few hundred iterations, reflecting rapid
-        fitting of the global brightness and broad banding patterns.
-        The full-image PSNR curve shows a large jump between the initial and first checkpoint renders, then a slower,
-        almost linear increase that asymptotically approaches a mid-teens or low-twenties value by the end of training.
-        The corresponding renderings match this trajectory: the very first output is nearly uniform, early snapshots
-        show
-        only faint hints of the dominant bands and storms, and later snapshots progressively sharpen the cloud belts,
-        vortices, and color gradients until the final image closely resembles the ground truth while still smoothing the
-        finest turbulent eddies.
-        Taken together, the PCA plots and PSNR curves demonstrate that the model begins from a purely coordinate-driven
-        encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
-        spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
+        The belts of intermediate fox reconstructions illustrate how these different embeddings translate into learning
+        dynamics. Both widths rapidly recover the coarse outline and average colours of the image, but the narrow model
+        retains visible banding and oversmoothed regions even after many iterations, while the wider model continues to
+        refine shadows, whiskers, and background texture. This behaviour is consistent with the PCA observations: when
+        the penultimate layer collapses most variance onto a single direction, optimisation can follow a relatively
+        simple trajectory that first explains global structure and then walks along the arc to capture increasingly fine
+        detail. The wider network therefore converges to sharper solutions under the same training schedule, not because
+        the positional encoding changed, but because the final layers have more room to carve out an appearance-aligned
+        feature space.
+
       </article>
     </section>
 
@@ -469,11 +464,12 @@
       <article class="glass readable">
         As a concrete example, the same 2D neural field architecture is trained on a single natural image of Jupiter
         using a maximum encoding frequency of L = 16 and a hidden width of 256. The PSNR curve below tracks full-image
-        PSNR throughout optimisation, and the belt of intermediate renderings shows how the reconstruction gradually
-        sharpens over time. Early iterations capture only coarse colour and band structure, while later iterations
-        resolve the major storms and cloud bands until the final reconstruction closely matches the ground-truth
-        photograph. Together with the fox reconstruction belts in the width study, this example provides the designated
-        “image of choice” for the 2D neural field and illustrates how reconstruction quality improves during training.
+        PSNR throughout optimisation, and the conveyor belt of renderings shows how the reconstruction evolves over
+        time. Early iterations capture only coarse colour and band structure; mid-training snapshots then recover the
+        major storms and cloud belts, and the final image closely matches the ground-truth photograph while still
+        smoothing the tiniest turbulent eddies. This experiment serves as the designated “image of choice” for the 2D
+        neural field and provides a reference point for interpreting the PCA plots and PSNR curves shown alongside.
+
       </article>
 
 
@@ -530,19 +526,6 @@
         than a direct reflection of the original (u,v) coordinates.
       </article>
 
-      <!-- <article class="glass readable">
-        The PCA of the penultimate features tells a very different story.
-        After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
-        they collapse into a highly elongated plume concentrated near one side of PC space, with most variance lying
-        along a single direction.
-        Points corresponding to bright clouds, blue storms, and the dark background are separated along this main axis,
-        while the secondary axes make only small corrections.
-        This pattern indicates that the network has reorganized the high-dimensional PE basis into a much more compact,
-        appearance-aligned representation in which luminance and large-scale color structure are encoded by one dominant
-        feature dimension, and finer chromatic and textural differences are stored in orthogonal directions.
-        In other words, the penultimate layer behaves like a learned color-space tailored to the Jupiter image rather
-        than a direct reflection of the original (u,v) coordinates.
-      </article> -->
 
       <!-- If you still want the final image + PSNR + belt, you can keep this or remove it -->
       <div class="pe-tabs">
@@ -605,16 +588,18 @@
       </article> -->
 
       <article class="glass readable">
-        The final Jupiter experiment can be interpreted by reading the PCA plots and PSNR curves together.
-        The PCA of PE features (colored by UV) shows that the raw positional encodings still occupy a fairly regular
-        three-sheet manifold in the top three principal components.
-        The smooth transition from red to green across this structure indicates that the first principal components
-        remain strongly aligned with the underlying latitude and longitude on the sphere, so even at higher frequency
-        the encoding preserves a globally ordered map of spatial position.
-        When the same PE features are colored by RGB instead of UV, the color pattern spreads almost uniformly through
-        this volume, which confirms that the positional encoding itself does not yet reflect any semantic grouping by
-        appearance; the geometry at this stage is dominated by coordinate-based oscillations rather than by the planet’s
-        texture.
+        Taken together, the PCA plots and PSNR curves describe a consistent progression from coordinate-driven to
+        appearance-driven representation. The PCA of PE features coloured by UV shows that the raw positional encodings
+        still form a regular three-sheet manifold whose principal components remain aligned with approximate latitude
+        and longitude on the sphere. When the same points are coloured by RGB instead of UV, the colours spread almost
+        uniformly throughout this volume, confirming that the encoding at this stage is dominated by oscillatory
+        coordinate structure rather than any semantic grouping by appearance. Only after passing through the MLP do the
+        points collapse into the elongated plume seen in the penultimate PCA, where a single dominant direction
+        separates bright clouds, blue storms, and dark background. The rising PSNR curve mirrors this reorganisation:
+        rapid gains in the first iterations reflect the network discovering a compact, appearance-aligned feature axis,
+        while the slower tail corresponds to fine adjustments along that axis that recover small-scale atmospheric
+        detail.
+
       </article>
 
       <!-- <article class="glass readable">
@@ -752,40 +737,178 @@
       <div class="pe-panels pe-lego" aria-live="polite">
         <div class="panel">
           <div class="graph-belt lego-belt" aria-label="Lego reconstruction progression">
-            <!-- Train progression -->
+            <!-- Training progression -->
             <div class="belt">
-              <img src="media/lego_scan/train_01000.png" alt="Training view, iteration 1 000">
-              <img src="media/lego_scan/train_03000.png" alt="Training view, iteration 3 000">
-              <img src="media/lego_scan/train_05000.png" alt="Training view, iteration 5 000">
-              <img src="media/lego_scan/train_07000.png" alt="Training view, iteration 7 000">
-              <img src="media/lego_scan/train_09000.png" alt="Training view, iteration 9 000">
-              <img src="media/lego_scan/train_10000.png" alt="Training view, iteration 10 000">
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_01000.png" alt="Training view, iteration 1 000">
+                <figcaption>Train 1k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_02000.png" alt="Training view, iteration 2 000">
+                <figcaption>Train 2k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_03000.png" alt="Training view, iteration 3 000">
+                <figcaption>Train 3k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_04000.png" alt="Training view, iteration 4 000">
+                <figcaption>Train 4k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_05000.png" alt="Training view, iteration 5 000">
+                <figcaption>Train 5k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_06000.png" alt="Training view, iteration 6 000">
+                <figcaption>Train 6k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_07000.png" alt="Training view, iteration 7 000">
+                <figcaption>Train 7k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_08000.png" alt="Training view, iteration 8 000">
+                <figcaption>Train 8k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_09000.png" alt="Training view, iteration 9 000">
+                <figcaption>Train 9k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_10000.png" alt="Training view, iteration 10 000">
+                <figcaption>Train 10k</figcaption>
+              </figure>
+
               <!-- loop copies for continuous scroll -->
-              <img src="media/lego_scan/train_01000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/train_03000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/train_05000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/train_07000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/train_09000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/train_10000.png" alt="" aria-hidden="true">
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_01000.png" alt="Training view, iteration 1 000">
+                <figcaption>Train 1k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_02000.png" alt="Training view, iteration 2 000">
+                <figcaption>Train 2k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_03000.png" alt="Training view, iteration 3 000">
+                <figcaption>Train 3k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_04000.png" alt="Training view, iteration 4 000">
+                <figcaption>Train 4k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_05000.png" alt="Training view, iteration 5 000">
+                <figcaption>Train 5k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_06000.png" alt="Training view, iteration 6 000">
+                <figcaption>Train 6k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_07000.png" alt="Training view, iteration 7 000">
+                <figcaption>Train 7k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_08000.png" alt="Training view, iteration 8 000">
+                <figcaption>Train 8k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_09000.png" alt="Training view, iteration 9 000">
+                <figcaption>Train 9k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/train_10000.png" alt="Training view, iteration 10 000">
+                <figcaption>Train 10k</figcaption>
             </div>
 
             <!-- Validation progression -->
             <div class="belt">
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_01000.png" alt="Validation view, iteration 1 000">
+                <figcaption>Validation 1k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_02000.png" alt="Validation view, iteration 2 000">
+                <figcaption>Validation 2k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_03000.png" alt="Validation view, iteration 3 000">
+                <figcaption>Validation 3k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_04000.png" alt="Validation view, iteration 4 000">
+                <figcaption>Validation 4k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_05000.png" alt="Validation view, iteration 5 000">
+                <figcaption>Validation 5k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_06000.png" alt="Validation view, iteration 6 000">
+                <figcaption>Validation 6k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_07000.png" alt="Validation view, iteration 7 000">
+                <figcaption>Validation 7k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_08000.png" alt="Validation view, iteration 8 000">
+                <figcaption>Validation 8k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_09000.png" alt="Validation view, iteration 9 000">
+                <figcaption>Validation 9k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_10000.png" alt="Validation view, iteration 10 000">
+                <figcaption>Validation 10k</figcaption>
+              </figure>
+
+              <!-- loop copies -->
+              figure class="belt-frame">
               <img src="media/lego_scan/val_01000.png" alt="Validation view, iteration 1 000">
-              <img src="media/lego_scan/val_03000.png" alt="Validation view, iteration 3 000">
-              <img src="media/lego_scan/val_05000.png" alt="Validation view, iteration 5 000">
-              <img src="media/lego_scan/val_07000.png" alt="Validation view, iteration 7 000">
-              <img src="media/lego_scan/val_09000.png" alt="Validation view, iteration 9 000">
-              <img src="media/lego_scan/val_10000.png" alt="Validation view, iteration 10 000">
-              <!-- loop copies for continuous scroll -->
-              <img src="media/lego_scan/val_01000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/val_03000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/val_05000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/val_07000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/val_09000.png" alt="" aria-hidden="true">
-              <img src="media/lego_scan/val_10000.png" alt="" aria-hidden="true">
+              <figcaption>Validation 1k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_02000.png" alt="Validation view, iteration 2 000">
+                <figcaption>Validation 2k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_03000.png" alt="Validation view, iteration 3 000">
+                <figcaption>Validation 3k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_04000.png" alt="Validation view, iteration 4 000">
+                <figcaption>Validation 4k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_05000.png" alt="Validation view, iteration 5 000">
+                <figcaption>Validation 5k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_06000.png" alt="Validation view, iteration 6 000">
+                <figcaption>Validation 6k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_07000.png" alt="Validation view, iteration 7 000">
+                <figcaption>Validation 7k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_08000.png" alt="Validation view, iteration 8 000">
+                <figcaption>Validation 8k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_09000.png" alt="Validation view, iteration 9 000">
+                <figcaption>Validation 9k</figcaption>
+              </figure>
+              <figure class="belt-frame">
+                <img src="media/lego_scan/val_10000.png" alt="Validation view, iteration 10 000">
+                <figcaption>Validation 10k</figcaption>
+              </figure>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -982,32 +1105,28 @@
 
       <!-- Qualitative evolution and limitations -->
       <article class="glass readable">
-        Notice how early iteration renderings produce a diffused brown volume with only faint hints of structure; at
-        this
-        stage the model has captured an
-        average
-        color but not yet aligned the cameras or geometry. Between one and two thousand iterations the triangular roof,
-        chimney, and square footprint of the house become clearly identifiable, and the high-contrast calibration board
-        emerges as a checker pattern rather than a blurred patch. Additional training primarily sharpens edges, improves
-        the separation between the house and background, and reduces low-frequency bias in the wood-grain texture of the
-        tabletop. In the final validation frame the roof ridgeline is crisp, the board squares are well separated, and
-        the residual blur is confined to the finest-scale details, which is consistent with the moderate resolution of
-        the input imagery and the chosen network capacity.
+        Early training snapshots of the ceramic house show a diffuse brown volume with only faint hints of structure; at
+        this stage the model has captured an average colour and rough depth range but has not yet aligned the geometry.
+        Between one and two thousand iterations the triangular roof, chimney, and square footprint become clearly
+        identifiable, and the high-contrast calibration board sharpens from a blurred patch into a checker pattern.
+        Subsequent iterations mainly refine edges, deepen shadows, and improve the separation between the house, board,
+        and background, reducing low-frequency bias in the tabletop texture. By the final validation frame the roof
+        ridgeline is crisp, the board squares are well separated, and residual blur is confined to the finest details,
+        which is consistent with the 200×200 resolution and the chosen network capacity.
+
       </article>
 
       <!-- Novel-view synthesis / orbit -->
       <article class="glass readable">
-        To test generalisation beyond the training views, a synthetic orbit is constructed by placing virtual cameras on
-        a circle whose radius matches the typical distance of the captured viewpoints. Each virtual camera is oriented
-        so that its optical axis passes through a point near the centre of the house while its vertical axis is aligned
-        with the scene’s up direction. Both the 5k and 10k runs use the same NeRF architecture, sampling strategy, and
-        initial learning rate; the 10k run simply follows the cosine decay schedule for the full 10&nbsp;000
-        iterations instead of stopping halfway. Consistent with the PSNR curves, the longer run does not change the
-        overall geometry of the reconstruction but gradually sharpens the roof edges, window grilles, calibration board,
-        and the
-        fine texture of the carpet (too much aliasing in my opinion), leading to slightly crisper novel views and fewer
-        residual rendering artefacts
-        along the orbit.
+        To evaluate generalisation beyond the training views, a synthetic orbit is generated by placing virtual cameras
+        on a circle whose radius matches the typical distance of the captured viewpoints. Each virtual camera is
+        oriented so that its optical axis passes through a point near the centre of the house while its vertical axis is
+        aligned with the scene’s up direction, producing a smooth sweep around the object at constant elevation. The
+        resulting novel views emphasise how the learned radiance field interpolates between the original poses: parallax
+        in the house silhouette and calibration board remains coherent, and specular highlights on the ceramic glaze
+        move consistently with viewpoint. Comparing orbits from the 5k and 10k runs shows that the longer schedule does
+        not alter the overall geometry but reduces shimmering artefacts and staircasing along high-contrast edges,
+        yielding cleaner motion and slightly sharper frames under the same rendering setup.
       </article>
 
 

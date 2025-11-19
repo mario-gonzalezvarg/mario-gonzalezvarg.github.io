@@ -59,8 +59,14 @@ html.scrolling .site-header{        /* reduce blur cost while scrolling */
 
 /* Hero */
 .hero{
-  min-height:72svh; padding:clamp(48px,7vw,96px) var(--space); display:grid; align-content:center; gap:16px; position:relative; isolation:isolate;
+  padding:32px var(--space) 24px;        /* top, sides, bottom */
+  display:grid;
+  align-content:flex-start;
+  gap:16px;
+  position:relative;
+  isolation:isolate;
 }
+
 .hero::before{
   content:""; position:absolute; inset:-20%; z-index:-1; filter:blur(60px) saturate(120%);
   background:
@@ -82,7 +88,7 @@ html.scrolling .site-header{        /* reduce blur cost while scrolling */
 @keyframes rise{to{transform:none;opacity:1}}
 
 /* Sections */
-.section{padding:64px var(--space)}
+.section{padding:40px var(--space)}
 .section.alt{background:rgba(10,14,26,.35)}
 .section-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px}
 .section-header h2{margin:0;position:relative;display:inline-block}
@@ -152,8 +158,8 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
     0 0 0 1px rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(18px) saturate(130%);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
-  padding: 1.75rem 2.2rem;
-  margin: 2rem auto;
+  padding: 1.4rem 1.9rem;
+  margin: 1.3rem auto;
   max-width: 250ch;
 }
 
@@ -512,14 +518,14 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 /* smoothed belt animation */
 .graph-belt .belt {
   display: flex;
-  gap: clamp(12px, 1.8vw, 20px);
+  gap: clamp(12px, 1.8vw, 10px);
   width: max-content;
 
   /* smoothness helpers */
   will-change: transform;
   transform: translate3d(0, 0, 0);
 
-  animation: belt-scroll 50s linear infinite;
+  animation: belt-scroll 90s linear infinite;
 }
 .graph-belt:hover .belt {
   animation-play-state: paused;
@@ -530,12 +536,33 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   margin-top: 0.75rem;
 }
 
-/* belt item thumbnails */
+/* belt items with captions */
+.graph-belt .belt-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: clamp(120px, 16vw, 260px);
+}
+
+.graph-belt .belt-frame img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.35);
+}
+
+.graph-belt .belt-frame figcaption {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}
+
 .graph-belt img {
   width: clamp(120px, 16vw, 240px);
   border-radius: 10px;
   box-shadow: 0 10px 26px rgba(0,0,0,.35);
 }
+
 
 /* keyframes for continuous scroll */
 @keyframes belt-scroll {
