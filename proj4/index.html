@@ -31,7 +31,7 @@
       <p class="lead">UC&nbsp;Berkeley • CS180 Computational Photography </p>
 
     </section>
-    
+
 
 
     <!----------------------------------------------- Part 0 Camera Calibration and 3D Scanning ------------------------------------------------->
@@ -142,18 +142,56 @@
 
             <div class="graph-belt" aria-label="Renderings for L1">
               <div class="belt">
-                <img src="media/render/freq/L1/render_00000.png" alt="L1 render 1">
-                <img src="media/render/freq/L1/render_00500.png" alt="L1 render 2">
-                <img src="media/render/freq/L1/render_01000.png" alt="L1 render 3">
-                <img src="media/render/freq/L1/render_01500.png" alt="L1 render 4">
-                <img src="media/render/freq/L1/render_02000.png" alt="L1 render 5">
-                <img src="media/render/freq/L1/render_02500.png" alt="L1 render 6">
-                <!-- loop -->
-                <img src="media/render/freq/L1/render_00000.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_00500.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_01500.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_02000.png" alt="" aria-hidden="true">
-                <img src="media/render/freq/L1/render_02500.png" alt="" aria-hidden="true">
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_00000.png" alt="L1 – iter 0">
+                  <figcaption>iteration = 0</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_00500.png" alt="L1 – iter 500">
+                  <figcaption>iteration = 500</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_01000.png" alt="L1 – iter 1000">
+                  <figcaption>iteration = 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_01500.png" alt="L1 – iter 1500">
+                  <figcaption>iteration = 1.5k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_02000.png" alt="L1 – iter 2000">
+                  <figcaption>iteration = 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_02500.png" alt="L1 – iter 2500">
+                  <figcaption>iteration = 2.5k</figcaption>
+                </figure>
+
+                <!-- loop copies for smooth scroll -->
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_00000.png" alt="L1 – iter 0">
+                  <figcaption>iteration = 0</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_00500.png" alt="L1 – iter 500">
+                  <figcaption>iteration = 500</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_01000.png" alt="L1 – iter 1000">
+                  <figcaption>iteration = 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_01500.png" alt="L1 – iter 1500">
+                  <figcaption>iteration = 1.5k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_02000.png" alt="L1 – iter 2000">
+                  <figcaption>iteration = 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/render/freq/L1/render_02500.png" alt="L1 – iter 2500">
+                  <figcaption>iteration = 2.5k</figcaption>
+                </figure>
               </div>
             </div>
           </div>
@@ -945,6 +983,9 @@
         learning rate of 5×10<sup>−4</sup> and following a cosine decay schedule over 10&nbsp;000 iterations so that
         early updates correct coarse geometry while later stages focus on fine-scale appearance.
       </article>
+
+      <!-- I WANT THE RAYS OF THE OBJECT HERE -->
+
 
 
       <!-- Training dynamics and quantitative results -->
