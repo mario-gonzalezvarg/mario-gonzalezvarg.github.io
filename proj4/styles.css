@@ -18,7 +18,7 @@ body{
 .serif{font-family:"Cormorant Garamond", Georgia, "Times New Roman", serif}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit;text-decoration:none}
-.muted{color:var(--muted)} .small{font-size:13px}
+.muted{color:var(--muted)} .small{font-size:16px}
 
 /* Canvas backdrop stays behind content, above body bg */
 #sky { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
