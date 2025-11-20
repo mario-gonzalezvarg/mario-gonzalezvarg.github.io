@@ -483,7 +483,7 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 
 /* static Lego 3-up + belts: always on */
 .pe-panels.pe-lego {
-  width: min(92vw, 1280px);
+  width: min(92vw, 1460px);
   margin: 2rem auto;
 }
 .pe-panels.pe-lego .panel {
@@ -492,7 +492,7 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 
 /* static rays three-panel block (pipeline section) */
 .pe-panels.pe-rays {
-  width: min(92vw, 1100px);
+  width: min(92vw, 1460px);
   margin: 2rem auto;
 }
 .pe-panels.pe-rays .panel {
@@ -503,7 +503,7 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 
 /* custom-data (house) 3-up + belts: always on */
 .pe-panels.pe-mydata {
-  width: min(92vw, 1100px);
+  width: min(92vw, 1460px);
   margin: 2rem auto;
 }
 
@@ -569,6 +569,10 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
   width: clamp(120px, 16vw, 640px);
 }
 
+#final_result .graph-belt .belt-frame {
+  width: clamp(120px, 16vw, 640px);
+}
+
 
 
 /* tighter spacing between fox width frames */
@@ -577,12 +581,16 @@ input:focus,textarea:focus{border-color:#34456a;box-shadow:0 0 0 3px rgba(52,69,
 }
 
 #max_encoding .graph-belt .belt {
-  gap: clamp(4px, 0.8vw, 2px);  /* or simply: gap: 6px; */
+  gap: 6px;  /* or even 4px if you want them very tight */
+}
+
+/* #max_encoding .graph-belt .belt {
+  gap: clamp(4px, 0.8vw, 2px);  
 }
 
 #max_encoding .graph-belt .belt-frame {
   width: clamp(120px, 16vw, 480px);
-}
+} */
 
 
 /* keyframes for continuous scroll */

@@ -871,21 +871,59 @@
 
             <div class="graph-belt" aria-label="Training progression for the chosen scene">
               <div class="belt">
-                <img src="media/jupiter/progression/render_00000.png" alt="Iteration 0">
-                <img src="media/jupiter/progression/render_01000.png" alt="Iteration 1000">
-                <img src="media/jupiter/progression/render_02000.png" alt="Iteration 2000">
-                <img src="media/jupiter/progression/render_03000.png" alt="Iteration 3000">
-                <img src="media/jupiter/progression/render_04000.png" alt="Iteration 4000">
-                <img src="media/jupiter/progression/render_05000.png" alt="Iteration 5000">
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_00000.png" alt="Iteration 0">
+                  <figcaption>iteration = 0</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_01000.png" alt="Iteration 1000">
+                  <figcaption>iteration = 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_02000.png" alt="Iteration 2000">
+                  <figcaption>iteration = 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_03000.png" alt="Iteration 3000">
+                  <figcaption>iteration = 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_04000.png" alt="Iteration 4000">
+                  <figcaption>iteration = 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_05000.png" alt="Iteration 5000">
+                  <figcaption>iteration = 5k</figcaption>
+                </figure>
+
                 <!-- loop copies for infinite scroll -->
-                <img src="media/jupiter/progression/render_00000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_01000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_02000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_03000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_04000.png" alt="" aria-hidden="true">
-                <img src="media/jupiter/progression/render_05000.png" alt="" aria-hidden="true">
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_00000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">iteration = 0</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_01000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">iteration = 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_02000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">iteration = 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_03000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">iteration = 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_04000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">iteration = 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/jupiter/progression/render_05000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">iteration = 5k</figcaption>
+                </figure>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -1303,46 +1341,112 @@
               <figcaption>PSNR (5k iterations, lr = 5e-4, 64 samples/ray).</figcaption>
             </figure>
             <figure class="pe-card">
-              <img src="media/house/5k/house_loss_curve.png" alt="Loss curve for 5k iters">
-              <figcaption>Loss Function (width = 256, depth = 8)</figcaption>
-            </figure>
-            <figure class="pe-card">
               <img src="media/house/5k/val_final.png" alt="Custom scene – validation view at 5k iterations">
               <figcaption>Held-out validation view (near = 0.35, far = 1.0).</figcaption>
             </figure>
+            <figure class="pe-card">
+              <img src="media/house/5k/house_loss_curve.png" alt="Loss curve for 5k iters">
+              <figcaption>Loss Function (width = 256, depth = 8)</figcaption>
+            </figure>
+            <!-- <figure class="pe-card">
+              <img src="media/house/5k/val_final.png" alt="Custom scene – validation view at 5k iterations">
+              <figcaption>Held-out validation view (near = 0.35, far = 1.0).</figcaption>
+            </figure> -->
 
-            <!-- Optional: belt of intermediate renders for this run -->
             <div class="graph-belt" aria-label="Custom scene progression (5k run)">
+              <!-- Training progression -->
               <div class="belt">
-                <img src="media/house/5k/train_01000.png" alt="5k run – iter 1k">
-                <img src="media/house/5k/train_02000.png" alt="5k run – iter 2k">
-                <img src="media/house/5k/train_03000.png" alt="5k run – iter 3k">
-                <img src="media/house/5k/train_04000.png" alt="5k run – iter 4k">
-                <img src="media/house/5k/train_05000.png" alt="5k run – iter 5k">
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_01000.png" alt="5k run – train iter 1k">
+                  <figcaption>Train 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_02000.png" alt="5k run – train iter 2k">
+                  <figcaption>Train 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_03000.png" alt="5k run – train iter 3k">
+                  <figcaption>Train 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_04000.png" alt="5k run – train iter 4k">
+                  <figcaption>Train 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_05000.png" alt="5k run – train iter 5k">
+                  <figcaption>Train 5k</figcaption>
+                </figure>
+
                 <!-- loop copies for smooth scroll -->
-                <img src="media/house/5k/train_01000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/train_02000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/train_03000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/train_04000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/train_05000.png" alt="" aria-hidden="true">
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_01000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_02000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_03000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_04000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/train_05000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 5k</figcaption>
+                </figure>
               </div>
 
               <!-- Validation progression -->
               <div class="belt">
-                <img src="media/house/5k/val_01000.png" alt="10k run – val iter 1k">
-                <img src="media/house/5k/val_02000.png" alt="10k run – val iter 2k">
-                <img src="media/house/5k/val_03000.png" alt="10k run – val iter 3k">
-                <img src="media/house/5k/val_04000.png" alt="10k run – val iter 4k">
-                <img src="media/house/5k/val_05000.png" alt="10k run – val iter 5k">
-                <!-- loop copies for continuous scroll -->
-                <img src="media/house/5k/val_01000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/val_02000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/val_03000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/val_04000.png" alt="" aria-hidden="true">
-                <img src="media/house/5k/val_05000.png" alt="" aria-hidden="true">
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_01000.png" alt="5k run – val iter 1k">
+                  <figcaption>Validation 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_02000.png" alt="5k run – val iter 2k">
+                  <figcaption>Validation 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_03000.png" alt="5k run – val iter 3k">
+                  <figcaption>Validation 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_04000.png" alt="5k run – val iter 4k">
+                  <figcaption>Validation 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_05000.png" alt="5k run – val iter 5k">
+                  <figcaption>Validation 5k</figcaption>
+                </figure>
 
+                <!-- loop copies for continuous scroll -->
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_01000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_02000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_03000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_04000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/5k/val_05000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 5k</figcaption>
+                </figure>
               </div>
             </div>
+
 
           </div>
 
@@ -1352,22 +1456,201 @@
           <div class="panel" data-s="S10k">
             <figure class="pe-card">
               <img src="media/house/10k/house_psnr_curve.png" alt="Custom scene – PSNR curve for 10k-iteration run">
-              <figcaption>PSNR curve (10k iterations, extended schedule on the same architecture).</figcaption>
-            </figure>
-
-            <figure class="pe-card">
-              <img src="media/house/10k/house_loss_curve.png" alt="Custom scene – loss curve for 10k-iteration run">
-              <figcaption>Loss curve for the 10k-iteration run.</figcaption>
+              <figcaption>PSNR (10k iterations, lr = 5e-4, 128 samples/ray).</figcaption>
             </figure>
 
             <figure class="pe-card">
               <img src="media/house/10k/val_10000.png" alt="Custom scene – validation view at 10k iterations">
-              <figcaption>Held-out validation view at 10k iterations.</figcaption>
+              <figcaption>Held-out validation view (near = 0.435, far = 0.985)</figcaption>
             </figure>
 
-            <!-- Stacked belts (train + val), every 1k, similar to Lego layout -->
+            <figure class="pe-card">
+              <img src="media/house/10k/house_loss_curve.png" alt="Custom scene – loss curve for 10k-iteration run">
+              <figcaption>Loss Function (width = 256, depth = 8)</figcaption>
+            </figure>
+
+            <!-- <figure class="pe-card">
+              <img src="media/house/10k/val_10000.png" alt="Custom scene – validation view at 10k iterations">
+              <figcaption>Held-out validation view at 10k iterations.</figcaption>
+            </figure> -->
+
             <div class="graph-belt" aria-label="Custom scene progression (10k run)">
               <!-- Training progression -->
+              <div class="belt">
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_01000.png" alt="10k run – train iter 1k">
+                  <figcaption>Train 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_02000.png" alt="10k run – train iter 2k">
+                  <figcaption>Train 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_03000.png" alt="10k run – train iter 3k">
+                  <figcaption>Train 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_04000.png" alt="10k run – train iter 4k">
+                  <figcaption>Train 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_05000.png" alt="10k run – train iter 5k">
+                  <figcaption>Train 5k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_06000.png" alt="10k run – train iter 6k">
+                  <figcaption>Train 6k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_07000.png" alt="10k run – train iter 7k">
+                  <figcaption>Train 7k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_08000.png" alt="10k run – train iter 8k">
+                  <figcaption>Train 8k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_09000.png" alt="10k run – train iter 9k">
+                  <figcaption>Train 9k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_10000.png" alt="10k run – train iter 10k">
+                  <figcaption>Train 10k</figcaption>
+                </figure>
+
+                <!-- loop copies for smooth scroll -->
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_01000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_02000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_03000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_04000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_05000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 5k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_06000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 6k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_07000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 7k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_08000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 8k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_09000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 9k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/train_10000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Train 10k</figcaption>
+                </figure>
+              </div>
+
+              <!-- Validation progression -->
+              <div class="belt">
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_01000.png" alt="10k run – val iter 1k">
+                  <figcaption>Validation 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_02000.png" alt="10k run – val iter 2k">
+                  <figcaption>Validation 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_03000.png" alt="10k run – val iter 3k">
+                  <figcaption>Validation 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_04000.png" alt="10k run – val iter 4k">
+                  <figcaption>Validation 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_05000.png" alt="10k run – val iter 5k">
+                  <figcaption>Validation 5k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_06000.png" alt="10k run – val iter 6k">
+                  <figcaption>Validation 6k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_07000.png" alt="10k run – val iter 7k">
+                  <figcaption>Validation 7k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_08000.png" alt="10k run – val iter 8k">
+                  <figcaption>Validation 8k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_09000.png" alt="10k run – val iter 9k">
+                  <figcaption>Validation 9k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_10000.png" alt="10k run – val iter 10k">
+                  <figcaption>Validation 10k</figcaption>
+                </figure>
+
+                <!-- loop copies for continuous scroll -->
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_01000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 1k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_02000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 2k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_03000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 3k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_04000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 4k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_05000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 5k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_06000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 6k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_07000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 7k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_08000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 8k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_09000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 9k</figcaption>
+                </figure>
+                <figure class="belt-frame">
+                  <img src="media/house/10k/val_10000.png" alt="" aria-hidden="true">
+                  <figcaption aria-hidden="true">Validation 10k</figcaption>
+                </figure>
+              </div>
+            </div>
+
+
+            <!-- Stacked belts (train + val), every 1k, similar to Lego layout -->
+            <!-- <div class="graph-belt" aria-label="Custom scene progression (10k run)">
               <div class="belt">
                 <img src="media/house/10k/train_01000.png" alt="10k run – train iter 1k">
                 <img src="media/house/10k/train_02000.png" alt="10k run – train iter 2k">
@@ -1379,7 +1662,6 @@
                 <img src="media/house/10k/train_08000.png" alt="10k run – train iter 8k">
                 <img src="media/house/10k/train_09000.png" alt="10k run – train iter 9k">
                 <img src="media/house/10k/train_10000.png" alt="10k run – train iter 10k">
-                <!-- loop copies for smooth scroll -->
                 <img src="media/house/10k/train_01000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/train_02000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/train_03000.png" alt="" aria-hidden="true">
@@ -1390,10 +1672,9 @@
                 <img src="media/house/10k/train_08000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/train_09000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/train_10000.png" alt="" aria-hidden="true">
-              </div>
+              </div> -->
 
-              <!-- Validation progression -->
-              <div class="belt">
+            <!-- <div class="belt">
                 <img src="media/house/10k/val_01000.png" alt="10k run – val iter 1k">
                 <img src="media/house/10k/val_02000.png" alt="10k run – val iter 2k">
                 <img src="media/house/10k/val_03000.png" alt="10k run – val iter 3k">
@@ -1405,7 +1686,6 @@
                 <img src="media/house/10k/val_09000.png" alt="10k run – val iter 9k">
                 <img src="media/house/10k/val_10000.png" alt="10k run – val iter 10k">
                 <img src="media/house/10k/val_11000.png" alt="10k run – val iter 11k">
-                <!-- loop copies for continuous scroll -->
                 <img src="media/house/10k/val_01000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/val_02000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/val_03000.png" alt="" aria-hidden="true">
@@ -1417,7 +1697,7 @@
                 <img src="media/house/10k/val_09000.png" alt="" aria-hidden="true">
                 <img src="media/house/10k/val_10000.png" alt="" aria-hidden="true">
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         <!-- Tab labels for runs -->
