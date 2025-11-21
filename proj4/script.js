@@ -356,7 +356,7 @@
 
     run5k.addEventListener('change', updateOrbit);
     run10k.addEventListener('change', updateOrbit);
-    updateOrbit(); // set correct GIF on page load
+    updateOrbit();
   }
 
 })();

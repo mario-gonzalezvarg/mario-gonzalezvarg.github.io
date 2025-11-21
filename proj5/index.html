@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fun With Diffusion Models — Part A</title>
+  <meta name="description"
+    content="CS180 Project 5 Part A report with DeepFloyd IF setup, precomputed text embeddings, and text-to-image results." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Cormorant+Garamond:wght@400;600&display=swap"
+    rel="stylesheet">
+  <!-- reuse your existing styles; copy proj4/styles.css into proj5/styles.css -->
+  <link rel="stylesheet" href="../proj5/styles.css" />
+  <script defer src="../proj5/script.js"></script>
+</head>
+
+<body>
+  <!-- optional canvas backdrop (styled in styles.css via #sky) -->
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <div class="progress" aria-hidden="true"><span class="bar"></span></div>
+    <a class="brand" href="#">CS180 • Project 5</a>
+
+    <button id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" class="btn small">
+      Menu
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Page sections">
+      <a href="#overview">Overview</a>
+      <a href="#deepfloyd">Setup</a>
+      <a href="#text2image">Text Prompts</a>
+      <a href="#notes">Reflections</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="serif title" data-split="chars">Fun With Diffusion Models</h1>
+      <p class="lead">
+        CS180 &middot; Project 5 &middot; Part A — DeepFloyd IF and diffusion sampling.
+      </p>
+      <div class="cta">
+        <span class="chip small">Part 0 &mdash; Setup &amp; Precomputed Embeddings</span>
+      </div>
+    </section>
+
+    <!-- Overview -->
+    <section id="overview" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Project Context</h2>
+      </header>
+
+      <article class="glass readable" data-reveal>
+        This page summarises the qualitative results from the Part&nbsp;A notebook for Project&nbsp;5.
+        All diffusion sampling and denoising experiments are executed in the provided Colab,
+        while this write-up focuses on presenting the generated images and interpreting their behaviour.
+        The emphasis is on how diffusion models reverse a fixed forward noising process,
+        and how the sampling schedule and guidance settings influence the final samples.
+      </article>
+    </section>
+
+    <!-- Part 0: DeepFloyd access + precomputed embeddings -->
+    <section id="deepfloyd" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Part 0 &mdash; DeepFloyd IF and Text Embeddings</h2>
+      </header>
+
+      <article class="glass readable" data-reveal>
+        DeepFloyd IF is used as a cascaded text-to-image diffusion pipeline.
+        Stage&nbsp;1 produces a 64×64 image conditioned on a text embedding,
+        and Stage&nbsp;2 upsamples the result to 256×256 resolution.
+        Access to the model is granted through Hugging&nbsp;Face after accepting the license and
+        authenticating with a personal access token in the notebook.
+      </article>
+
+      <article class="glass readable" data-reveal>
+        To avoid loading the large text encoder in every session,
+        precomputed embeddings are used for a small set of captions.
+        One of these serves as a “null-like” conditioning prompt
+        that roughly corresponds to asking the model for a generic high-quality photograph.
+        Throughout Part&nbsp;A, the same text embeddings are reused across all sampling experiments
+        so that changes in the output can be attributed to the diffusion schedule
+        instead of to variation in the language encoding.
+      </article>
+
+      <article class="glass readable" data-reveal>
+        <strong>Random seed.</strong>
+        All images shown on this page are generated with a fixed random seed:
+        <strong>seed = 12345</strong>.
+        This constant seed is used in every subsequent section to keep comparisons consistent
+        across different noise levels and sampling loops.
+        (Update this value here if a different seed is used in the notebook.)
+      </article>
+    </section>
+
+    <!-- Text prompts + images (Deliverable: 3 prompts, multiple num_inference_steps) -->
+    <section id="text2image" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Precomputed Prompts &amp; Text-to-Image Samples</h2>
+      </header>
+
+      <article class="glass readable" data-reveal>
+        Using the precomputed embeddings, DeepFloyd IF is run for three provided captions.
+        For each caption, two different values of <code>num_inference_steps</code> are used
+        to illustrate the trade-off between sampling budget and image quality.
+        The 50-step runs serve as a high-quality reference,
+        while the 20-step runs expose the characteristic artefacts of shorter sampling schedules.
+      </article>
+
+      <div class="pe-panels pe-panels-final" aria-live="polite">
+        <div class="panel">
+          <!-- Prompt A -->
+          <figure class="pe-card" data-reveal>
+            <!-- replace these src paths with your actual saved images -->
+            <img src="media/part0/promptA_steps50.png"
+              alt="Prompt A: 50-step DeepFloyd IF sample">
+            <img src="media/part0/promptA_steps20.png"
+              alt="Prompt A: 20-step DeepFloyd IF sample">
+            <figcaption>
+              <strong>Prompt A.</strong>
+              The upper image shows a 50-step sample, which exhibits cleaner edges,
+              more coherent global structure, and fewer sampling artefacts.
+              The lower 20-step sample tends to be slightly noisier and less detailed,
+              with textures and small objects appearing washed out or partially formed.
+            </figcaption>
+          </figure>
+
+          <!-- Prompt B -->
+          <figure class="pe-card" data-reveal>
+            <img src="media/part0/promptB_steps50.png"
+              alt="Prompt B: 50-step DeepFloyd IF sample">
+            <img src="media/part0/promptB_steps20.png"
+              alt="Prompt B: 20-step DeepFloyd IF sample">
+            <figcaption>
+              <strong>Prompt B.</strong>
+              At 50 steps, the model follows the caption closely,
+              capturing both the coarse layout and many of the finer textual cues.
+              Reducing the step count compresses the denoising trajectory,
+              so high-frequency details fall off first while the global pose
+              and colour palette remain largely intact.
+            </figcaption>
+          </figure>
+
+          <!-- Prompt C -->
+          <figure class="pe-card" data-reveal>
+            <img src="media/part0/promptC_steps50.png"
+              alt="Prompt C: 50-step DeepFloyd IF sample">
+            <img src="media/part0/promptC_steps20.png"
+              alt="Prompt C: 20-step DeepFloyd IF sample">
+            <figcaption>
+              <strong>Prompt C.</strong>
+              This prompt highlights how semantic fidelity improves with more denoising steps.
+              The 50-step sample resolves small structures that are only hinted at in the 20-step image,
+              and background clutter is suppressed more effectively,
+              indicating that later diffusion steps continue to refine both geometry and appearance.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sampling extremes + conveyor belt -->
+    <section id="quantum-extremes" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Sampling Extremes for a Quantum Prompt</h2>
+      </header>
+
+      <article class="glass readable" data-reveal>
+        At the smallest values of <code>num_inference_steps</code> (1–3 steps), the sampler is asked to denoise almost
+        the entire diffusion trajectory in a single jump. The resulting images are highly simplified: the model produces
+        smooth, radially symmetric blobs of colour that loosely resemble a stylized energy core rather than a detailed
+        physical scene. Coarse structure and global colour are established, but fine-scale texture, boundary sharpness,
+        and physically plausible lighting are largely absent. Increasing to 5–15 steps begins to recover more
+        recognisable structure around the central object, but the appearance remains closer to a schematic
+        visualisation than to a photorealistic photograph.
+      </article>
+
+      <article class="glass readable" data-reveal>
+        At the opposite extreme, very large step counts (500–1000 steps) do not continue this trend toward realism.
+        Instead, the samples become progressively less interpretable, eventually collapsing into high-frequency
+        artefacts and coloured noise. This behaviour reflects a mismatch between the inference schedule and the regime
+        in which the model and scheduler were tuned: once the latent has already been denoised to a plausible image,
+        hundreds of additional denoising steps drive the sample off the data manifold. The network continues to apply
+        corrections to an already clean signal, amplifying numerical error and hallucinating spurious structure.
+        Consequently, images generated with extremely large <code>num_inference_steps</code> appear less realistic
+        than those produced with a moderate number of steps (for example, 25–100), despite requiring substantially
+        more computation.
+      </article>
+
+      <div class="glass quantum-belt" data-reveal aria-label="Quark prompt images across different inference steps">
+        <div class="quantum-belt-inner">
+          <!-- 1 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps1_64.png"
+              alt="Quark prompt, 1 inference step">
+            <figcaption class="label">1 step</figcaption>
+          </figure>
+          <!-- 2 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps2_64.png"
+              alt="Quark prompt, 2 inference steps">
+            <figcaption class="label">2 steps</figcaption>
+          </figure>
+          <!-- 3 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps3_64.png"
+              alt="Quark prompt, 3 inference steps">
+            <figcaption class="label">3 steps</figcaption>
+          </figure>
+          <!-- 4 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps4_64.png"
+              alt="Quark prompt, 4 inference steps">
+            <figcaption class="label">4 steps</figcaption>
+          </figure>
+          <!-- 5 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps5_64.png"
+              alt="Quark prompt, 5 inference steps">
+            <figcaption class="label">5 steps</figcaption>
+          </figure>
+          <!-- 10 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps10_64.png"
+              alt="Quark prompt, 10 inference steps">
+            <figcaption class="label">10 steps</figcaption>
+          </figure>
+          <!-- 15 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps15_64.png"
+              alt="Quark prompt, 15 inference steps">
+            <figcaption class="label">15 steps</figcaption>
+          </figure>
+          <!-- 25 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps25_64.png"
+              alt="Quark prompt, 25 inference steps">
+            <figcaption class="label">25 steps</figcaption>
+          </figure>
+          <!-- 50 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps50_64.png"
+              alt="Quark prompt, 50 inference steps">
+            <figcaption class="label">50 steps</figcaption>
+          </figure>
+          <!-- 100 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps100_64.png"
+              alt="Quark prompt, 100 inference steps">
+            <figcaption class="label">100 steps</figcaption>
+          </figure>
+          <!-- 500 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps500_64.png"
+              alt="Quark prompt, 500 inference steps">
+            <figcaption class="label">500 steps</figcaption>
+          </figure>
+          <!-- 1000 -->
+          <figure class="quantum-frame">
+            <img src="media/quantum/a_high_quality_photorealistic_image_of_a_single_quark_bound_inside_a_proton_seen_steps1000_64.png"
+              alt="Quark prompt, 1000 inference steps">
+            <figcaption class="label">1000 steps</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Short reflections / notes -->
+    <section id="notes" class="section alt">
+      <header class="section-header">
+        <h2 class="serif" data-reveal-line>Observations on DeepFloyd Sampling</h2>
+      </header>
+
+      <article class="glass readable" data-reveal>
+        Across all three prompts, DeepFloyd IF produces images that remain tightly aligned
+        with the supplied captions, even when the sampling budget is cut in half.
+        The main differences between 20-step and 50-step runs appear in local texture,
+        sharpness along high-contrast boundaries, and the presence of small secondary objects.
+        This suggests that the early denoising iterations primarily establish coarse layout and colour,
+        while later iterations devote most of their capacity to refining high-frequency content.
+      </article>
+
+      <article class="glass readable" data-reveal>
+        The consistent behaviour under a fixed seed also shows that the model’s randomness
+        is largely governed by the initial noise sample rather than by instability in the denoising loop.
+        When the seed is reused, the same global arrangement reappears for a given prompt,
+        and only subtle stochastic differences are introduced when hyperparameters change.
+        This property is useful for controlled ablations in later parts of the project,
+        where the same initial noise can be reused to isolate the effect of modified sampling schemes.
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>CS180 Project 5 &middot; Part A</span>
+      <span class="muted">All figures generated with DeepFloyd IF using the course notebook.</span>
+    </footer>
+  </main>
+</body>
+
+</html>

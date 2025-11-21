@@ -16,7 +16,6 @@
 </head>
 
 <body>
-  <!-- fixed starfield backdrop -->
   <canvas id="sky" aria-hidden="true"></canvas>
 
   <header class="site-header" role="banner">
@@ -80,7 +79,6 @@
         synthesis.
       </article>
     </section>
-
 
 
     <!------------------------------------------------ Part 1 Fit a Neural Field to a 2D Image ---------------------------------------------------->
@@ -736,23 +734,6 @@
                 </figure>
               </div>
             </div>
-
-
-            <!-- <div class="graph-belt" aria-label="Renderings for L = 64, width = 256">
-              <div class="belt">
-                <img src="media/fox/width/256/render_00000.png" alt="W = 256, iter 0">
-                <img src="media/fox/width/256/render_00500.png" alt="W = 256, iter 500">
-                <img src="media/fox/width/256/render_01000.png" alt="W = 256, iter 1000">
-                <img src="media/fox/width/256/render_01500.png" alt="W = 256, iter 1500">
-                <img src="media/fox/width/256/render_02000.png" alt="W = 256, iter 2000">
-                <img src="media/fox/width/256/render_02500.png" alt="W = 256, iter 2500">
-                <img src="media/fox/width/256/render_00000.png" alt="" aria-hidden="true">
-                <img src="media/fox/width/256/render_00500.png" alt="" aria-hidden="true">
-                <img src="media/fox/width/256/render_01500.png" alt="" aria-hidden="true">
-                <img src="media/fox/width/256/render_02000.png" alt="" aria-hidden="true">
-                <img src="media/fox/width/256/render_02500.png" alt="" aria-hidden="true">
-              </div>
-            </div> -->
           </div>
         </div>
 
@@ -795,7 +776,7 @@
 
 
 
-      <!-- Three static panels: UV, RGB, penultimate (no belt, always visible) -->
+      <!-- Three static panels: UV, RGB, penultimate  -->
       <div class="pe-panels pe-panels-final">
         <div class="panel">
           <figure class="pe-card">
@@ -817,22 +798,6 @@
 
 
 
-      <!-- <article class="glass readable">
-        The PSNR curves quantify how quickly this representation emerges over training.
-        The batch PSNR rises from single-digit values to around 20 dB within a few hundred iterations, reflecting rapid
-        fitting of the global brightness and broad banding patterns.
-        The full-image PSNR curve shows a large jump between the initial and first checkpoint renders, then a slower,
-        almost linear increase that asymptotically approaches a mid-teens or low-twenties value by the end of training.
-        The corresponding renderings match this trajectory: the very first output is nearly uniform, early snapshots
-        show
-        only faint hints of the dominant bands and storms, and later snapshots progressively sharpen the cloud belts,
-        vortices, and color gradients until the final image closely resembles the ground truth while still smoothing the
-        finest turbulent eddies.
-        Taken together, the PCA plots and PSNR curves demonstrate that the model begins from a purely coordinate-driven
-        encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
-        spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
-      </article> -->
-
       <article class="glass readable">
         The PCA of the penultimate features tells a very different story.
         After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
@@ -848,7 +813,6 @@
       </article>
 
 
-      <!-- If you still want the final image + PSNR + belt, you can keep this or remove it -->
       <div class="pe-tabs">
         <input type="radio" name="R" id="RFINAL" checked>
 
@@ -932,19 +896,6 @@
         </div>
       </div>
 
-      <!-- <article class="glass readable">
-        The PCA of the penultimate features tells a very different story.
-        After passing through the MLP, the encoded points are no longer filling a symmetric three-sheet volume; instead,
-        they collapse into a highly elongated plume concentrated near one side of PC space, with most variance lying
-        along a single direction.
-        Points corresponding to bright clouds, blue storms, and the dark background are separated along this main axis,
-        while the secondary axes make only small corrections.
-        This pattern indicates that the network has reorganized the high-dimensional PE basis into a much more compact,
-        appearance-aligned representation in which luminance and large-scale color structure are encoded by one dominant
-        feature dimension, and finer chromatic and textural differences are stored in orthogonal directions.
-        In other words, the penultimate layer behaves like a learned color-space tailored to the Jupiter image rather
-        than a direct reflection of the original (u,v) coordinates.
-      </article> -->
 
       <article class="glass readable">
         Taken together, the PCA plots and PSNR curves describe a consistent progression from coordinate-driven to
@@ -961,21 +912,6 @@
 
       </article>
 
-      <!-- <article class="glass readable">
-        The PSNR curves quantify how quickly this representation emerges over training.
-        The batch PSNR rises from single-digit values to around 20 dB within a few hundred iterations, reflecting rapid
-        fitting of the global brightness and broad banding patterns.
-        The full-image PSNR curve shows a large jump between the initial and first checkpoint renders, then a slower,
-        almost linear increase that asymptotically approaches a mid-teens or low-twenties value by the end of training.
-        The corresponding renderings match this trajectory: the very first output is nearly uniform, early snapshots
-        show
-        only faint hints of the dominant bands and storms, and later snapshots progressively sharpen the cloud belts,
-        vortices, and color gradients until the final image closely resembles the ground truth while still smoothing the
-        finest turbulent eddies.
-        Taken together, the PCA plots and PSNR curves demonstrate that the model begins from a purely coordinate-driven
-        encoding, then gradually learns an appearance-driven feature space and uses it to reconstruct both the coarse
-        spherical structure and much of the intricate atmospheric detail of the original Jupiter photograph.
-      </article> -->
     </section>
 
     <section id="pipeline" class="section alt">
@@ -1004,7 +940,7 @@
         lines will be probed in the volume.
       </article>
 
-      <!-- Rays: three-panel visualization (always visible, no belt) -->
+      <!-- Rays -->
       <div class="pe-panels pe-rays" aria-live="polite">
         <div class="panel">
           <figure class="pe-card">
@@ -1092,7 +1028,7 @@
         training without ever needing to materialize the entire ray bundle in memory at once.
       </article>
 
-      <!-- Lego NeRF: stacked conveyor belts (train over validation) -->
+      <!-- Lego NeRF (train over validation) -->
       <div class="pe-panels pe-lego" aria-live="polite">
         <div class="panel">
           <div class="graph-belt lego-belt" aria-label="Lego reconstruction progression">
@@ -1305,11 +1241,6 @@
         early updates correct coarse geometry while later stages focus on fine-scale appearance.
       </article>
 
-      <!-- I WANT THE RAYS OF THE OBJECT HERE -->
-
-
-
-
 
       <!-- Training dynamics and quantitative results -->
       <article class="glass readable">
@@ -1327,7 +1258,7 @@
       </article>
 
 
-      <!-- Tabs for different training runs (e.g. 5k vs 10k iterations) -->
+      <!-- Tabs for different training runs (5k vs 10k iterations) -->
       <div class="pe-tabs">
         <!-- independent radio group for runs -->
         <input type="radio" name="S" id="S5k">
@@ -1348,10 +1279,6 @@
               <img src="media/house/5k/house_loss_curve.png" alt="Loss curve for 5k iters">
               <figcaption>Loss Function (width = 256, depth = 8)</figcaption>
             </figure>
-            <!-- <figure class="pe-card">
-              <img src="media/house/5k/val_final.png" alt="Custom scene – validation view at 5k iterations">
-              <figcaption>Held-out validation view (near = 0.35, far = 1.0).</figcaption>
-            </figure> -->
 
             <div class="graph-belt" aria-label="Custom scene progression (5k run)">
               <!-- Training progression -->
@@ -1469,10 +1396,7 @@
               <figcaption>Loss Function (width = 256, depth = 8)</figcaption>
             </figure>
 
-            <!-- <figure class="pe-card">
-              <img src="media/house/10k/val_10000.png" alt="Custom scene – validation view at 10k iterations">
-              <figcaption>Held-out validation view at 10k iterations.</figcaption>
-            </figure> -->
+         
 
             <div class="graph-belt" aria-label="Custom scene progression (10k run)">
               <!-- Training progression -->
@@ -1604,7 +1528,7 @@
                   <figcaption>Validation 10k</figcaption>
                 </figure>
 
-                <!-- loop copies for continuous scroll -->
+                <!-- loop for continuous scroll -->
                 <figure class="belt-frame">
                   <img src="media/house/10k/val_01000.png" alt="" aria-hidden="true">
                   <figcaption aria-hidden="true">Validation 1k</figcaption>
@@ -1647,60 +1571,8 @@
                 </figure>
               </div>
             </div>
-
-
-            <!-- Stacked belts (train + val), every 1k, similar to Lego layout -->
-            <!-- <div class="graph-belt" aria-label="Custom scene progression (10k run)">
-              <div class="belt">
-                <img src="media/house/10k/train_01000.png" alt="10k run – train iter 1k">
-                <img src="media/house/10k/train_02000.png" alt="10k run – train iter 2k">
-                <img src="media/house/10k/train_03000.png" alt="10k run – train iter 3k">
-                <img src="media/house/10k/train_04000.png" alt="10k run – train iter 4k">
-                <img src="media/house/10k/train_05000.png" alt="10k run – train iter 5k">
-                <img src="media/house/10k/train_06000.png" alt="10k run – train iter 6k">
-                <img src="media/house/10k/train_07000.png" alt="10k run – train iter 7k">
-                <img src="media/house/10k/train_08000.png" alt="10k run – train iter 8k">
-                <img src="media/house/10k/train_09000.png" alt="10k run – train iter 9k">
-                <img src="media/house/10k/train_10000.png" alt="10k run – train iter 10k">
-                <img src="media/house/10k/train_01000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_02000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_03000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_04000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_05000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_06000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_07000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_08000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_09000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/train_10000.png" alt="" aria-hidden="true">
-              </div> -->
-
-            <!-- <div class="belt">
-                <img src="media/house/10k/val_01000.png" alt="10k run – val iter 1k">
-                <img src="media/house/10k/val_02000.png" alt="10k run – val iter 2k">
-                <img src="media/house/10k/val_03000.png" alt="10k run – val iter 3k">
-                <img src="media/house/10k/val_04000.png" alt="10k run – val iter 4k">
-                <img src="media/house/10k/val_05000.png" alt="10k run – val iter 5k">
-                <img src="media/house/10k/val_06000.png" alt="10k run – val iter 6k">
-                <img src="media/house/10k/val_07000.png" alt="10k run – val iter 7k">
-                <img src="media/house/10k/val_08000.png" alt="10k run – val iter 8k">
-                <img src="media/house/10k/val_09000.png" alt="10k run – val iter 9k">
-                <img src="media/house/10k/val_10000.png" alt="10k run – val iter 10k">
-                <img src="media/house/10k/val_11000.png" alt="10k run – val iter 11k">
-                <img src="media/house/10k/val_01000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_02000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_03000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_04000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_05000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_06000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_07000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_08000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_09000.png" alt="" aria-hidden="true">
-                <img src="media/house/10k/val_10000.png" alt="" aria-hidden="true">
-              </div>
-            </div> -->
           </div>
         </div>
-        <!-- Tab labels for runs -->
         <div class="pe-tabbar" role="tablist" aria-label="Training run">
           <label for="S5k" role="tab">5k iters</label>
           <label for="S10k" role="tab">10k iters</label>
@@ -1739,8 +1611,7 @@
 
 
 
-      <!-- Orbit GIF / video stays at the end -->
-      <!-- Orbit GIF (switches with 5k / 10k buttons) -->
+      <!-- Orbit GIF -->
       <div class="center-media">
         <figure>
           <img id="my-scene-orbit" src="media/house/10k/house_10k.gif"
@@ -1751,12 +1622,7 @@
         </figure>
       </div>
 
-
       <article class="glass readable">
-        <!-- The 10k-iteration run, trained with the same base learning rate but a cosine decay down to 5e-6 after 5k
-        steps, behaves differently after the midpoint.
-        Its PSNR curve closely tracks the 5k curve up to approximately iteration 5000, then continues to climb for
-        several thousand more iterations, adding another one to two decibels of improvement before flattening. -->
         Qualitatively, the renders at 6k and 8k iterations show the triangular peak and its shadow sharpening, the
         edge between the board and the table becoming crisper, and the subtle grid pattern on the calibration board
         becoming easier to discern.
@@ -1767,38 +1633,7 @@
         and color of the scene, while a longer schedule primarily refines small-scale structure and reduces residual
         blur, yielding smoother textures and slightly higher PSNR at the cost of additional compute.
       </article>
+
     </section>
-
-
-
-
-
-
-
-
-
-
-
-    <!---------------------------------------- Part 2 Fit a Neural Radiance Field from Multi-view Images ----------------------------------------->
-    <!-- <section id="nrl" class="section-alt">
-      <header class="section-header">
-        <h1 class="serif" data-reveal-line> Fitting Neural Radiance Field from Multi-view Images</h1>
-      </header>
-      <article glass data-reveal>
-        <h2>
-          Report your model architecture including number of layers, width, and learning rate. Feel free to add other
-          details you think are important.
-          Show training progression (images at different iterations, similar to the above reference) on both the
-          provided test image and one of your own images.
-          Show final results for 2 choices of max positional encoding frequency and 2 choices of width (a 2x2 grid of
-          results). Try very low values for these hyperparameters to see how it affects the outputs.
-          Show the PSNR curve for training on one image of your choice.
-        </h2>
-      </article>
-    </section> -->
-
-
-    <!-- END OF HTML -->
 </body>
-
 </html>
