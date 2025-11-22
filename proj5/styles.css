@@ -20,9 +20,9 @@ body {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
   color: #f7f7ff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
@@ -31,7 +31,7 @@ body {
     linear-gradient(180deg, #050712 0%, #050814 40%, #020308 100%);
 }
 
-
+/* canvas covers full viewport behind content (unchanged) */
 #firefly-canvas {
   position: fixed;
   inset: 0;
@@ -41,25 +41,102 @@ body {
   z-index: 0;
 }
 
-/* Make the page stack sections vertically when using class="top-title" */
+/* content sits above the fireflies */
+.content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 1.75rem 2.25rem;
+  border-radius: 0.25rem;
+  backdrop-filter: blur(4px);
+  background: rgba(6, 10, 18, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* generic h1 inside content; main styling is on .title */
+.content h1 {
+  margin-bottom: 0.5rem;
+}
+
+/* body text inside cards */
+.content p {
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  color: #c9cfde;
+  max-width: 60rem;    /* wider card */
+  margin: 3rem auto;   /* centers horizontally */
+}
+
+/* main title: gold glowy, halo, dreamy, flickering — NO border behind text */
+.title {
+  line-height: 0.9;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 400;
+
+  color: #fff8d3;
+
+  text-shadow:
+    0 0 10px rgba(255, 230, 180, 0.85),
+    0 0 26px rgba(255, 215, 150, 0.7),
+    0 0 46px rgba(255, 195, 130, 0.55),
+    0 0 72px rgba(255, 175, 110, 0.4);
+
+  animation:
+    titlePulse 3.2s ease-in-out infinite alternate,
+    titleFlicker 7s linear infinite;
+}
+
+/* pulsing halo */
+@keyframes titlePulse {
+  0% {
+    text-shadow:
+      0 0 6px rgba(255, 230, 180, 0.7),
+      0 0 16px rgba(255, 215, 150, 0.55),
+      0 0 30px rgba(255, 195, 130, 0.4),
+      0 0 46px rgba(255, 175, 110, 0.3);
+    opacity: 0.9;
+  }
+  100% {
+    text-shadow:
+      0 0 12px rgba(255, 235, 190, 0.95),
+      0 0 32px rgba(255, 220, 160, 0.8),
+      0 0 60px rgba(255, 200, 140, 0.65),
+      0 0 90px rgba(255, 185, 120, 0.5);
+    opacity: 1;
+  }
+}
+
+/* occasional dynamic flicker */
+@keyframes titleFlicker {
+  0%, 88%, 100% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.55;
+  }
+  92% {
+    opacity: 0.2;
+  }
+  94% {
+    opacity: 0.8;
+  }
+  96% {
+    opacity: 0.35;
+  }
+  98% {
+    opacity: 1;
+  }
+}
+
+/* Make the page stack sections vertically with a clear gap */
 body.top-title {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   padding-top: 2.5rem;
-  gap: 2.5rem; 
-}
-
-/* Base card container – shared between title + writing */
-.content {
-  position: relative;
-  z-index: 10;
-  padding: 1.5rem 2rem;
-  border-radius: 1.25rem;
-  backdrop-filter: blur(8px);
-  background: rgba(6, 10, 18, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 3rem; /* noticeable gap between title and body */
 }
 
 /* Gold / glass effect for sections */
@@ -76,35 +153,52 @@ body.top-title {
     0 0 40px rgba(255, 210, 160, 0.12);
 }
 
-/* ===== Title section – independent styles ===== */
-
-.title-card {
-  text-align: center;
-}
-
-.title {
-  line-height: 0.9;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: clamp(2.2rem, 4vw, 4rem);
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  text-shadow:
-    0 0 18px rgba(255, 240, 160, 0.7),
-    0 0 40px rgba(200, 230, 120, 0.4);
-}
-
-/* ===== Writing section – independent styles ===== */
-
+/* body section card that holds subheading + text */
 .writing-section {
+  position: relative;
   text-align: left;
-  max-width: 80rem;
+  max-width: 40rem;
+  padding-top: 2.9rem; /* space for floating subheading label */
 }
 
-.writing-section h2 {
-  margin-bottom: 0.5rem;
+/* subheading label:
+   - similar gold glow
+   - sits just above top-left corner of the section border */
+.section-heading {
+  position: absolute;
+  top: 0;
+  left: 2.25rem;      /* align with inner text padding */
+  transform: translateY(-60%);
+  margin: 0;
+
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+
+  color: #ffeac7;
+  text-shadow:
+    0 0 6px rgba(255, 232, 190, 0.8),
+    0 0 18px rgba(255, 215, 150, 0.5);
 }
 
+/* subtle decorative line tying the label to the border */
+.section-heading::before {
+  content: "";
+  position: absolute;
+  bottom: -0.15rem;
+  left: 0;
+  width: 1.75rem;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 225, 180, 0.9),
+    transparent
+  );
+  opacity: 0.7;
+}
+
+/* paragraphs specifically inside writing sections */
 .writing-section p {
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
   color: #c9cfde;
@@ -114,5 +208,9 @@ body.top-title {
 @media (prefers-reduced-motion: reduce) {
   #firefly-canvas {
     display: none;
+  }
+
+  .title {
+    animation: none;
   }
 }

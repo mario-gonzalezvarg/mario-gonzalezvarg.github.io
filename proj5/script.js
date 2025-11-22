@@ -351,3 +351,50 @@ window.addEventListener("resize", () => {
   initDustMotes();
   initFireflies();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const title = document.querySelector(".title");
+  if (!title) return;
+
+  const DIM = "title--dim";
+  const BRIGHT = "title--bright";
+  const OFF = "title--off";
+
+  function setState(state) {
+    title.classList.remove(DIM, BRIGHT, OFF);
+    if (state === "dim") title.classList.add(DIM);
+    if (state === "bright") title.classList.add(BRIGHT);
+    if (state === "off") title.classList.add(OFF);
+    // "base" is just the .title class with no modifiers
+  }
+
+  function runFlickerBurst() {
+    // short sequence of dim/bright/off steps
+    const pattern = [
+      ["dim", 60],
+      ["off", 80],
+      ["bright", 120],
+      ["dim", 80],
+      ["base", 150],
+    ];
+
+    let delay = 0;
+    for (const [state, step] of pattern) {
+      delay += step;
+      setTimeout(() => setState(state), delay);
+    }
+  }
+
+  function loop() {
+    // return to base before scheduling the next burst
+    setState("base");
+
+    const wait = 1200 + Math.random() * 2800; // 1.2–4s between bursts
+    setTimeout(() => {
+      runFlickerBurst();
+      loop();
+    }, wait);
+  }
+
+  loop();
+});
