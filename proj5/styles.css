@@ -6,9 +6,13 @@
   padding: 0;
 }
 
-html,
-body {
-  height: 100%;
+html {
+  scrollbar-gutter: stable both-edges;
+}
+
+/* avoid layout jump on scrollbars */
+html:focus-within {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -27,7 +31,7 @@ body {
     linear-gradient(180deg, #050712 0%, #050814 40%, #020308 100%);
 }
 
-/* canvas covers full viewport behind content */
+
 #firefly-canvas {
   position: fixed;
   inset: 0;
@@ -37,30 +41,78 @@ body {
   z-index: 0;
 }
 
-/* content sits above the fireflies */
+/* Make the page stack sections vertically when using class="top-title" */
+body.top-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 2.5rem;
+  gap: 2.5rem; 
+}
+
+/* Base card container – shared between title + writing */
 .content {
   position: relative;
   z-index: 10;
-  text-align: center;
   padding: 1.5rem 2rem;
   border-radius: 1.25rem;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(8px);
   background: rgba(6, 10, 18, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.content h1 {
-  font-size: clamp(2.2rem, 4vw, 3rem);
+/* Gold / glass effect for sections */
+.content.gold-glass {
+  backdrop-filter: blur(18px);
+  background: linear-gradient(
+    135deg,
+    rgba(40, 30, 10, 0.55),
+    rgba(6, 10, 18, 0.75)
+  );
+  border: 1px solid rgba(255, 210, 160, 0.45);
+  box-shadow:
+    0 0 16px rgba(255, 210, 160, 0.16),
+    0 0 40px rgba(255, 210, 160, 0.12);
+}
+
+/* ===== Title section – independent styles ===== */
+
+.title-card {
+  text-align: center;
+}
+
+.title {
+  line-height: 0.9;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  font-weight: 600;
   margin-bottom: 0.75rem;
   text-shadow:
     0 0 18px rgba(255, 240, 160, 0.7),
     0 0 40px rgba(200, 230, 120, 0.4);
 }
 
-.content p {
+/* ===== Writing section – independent styles ===== */
+
+.writing-section {
+  text-align: left;
+  max-width: 80rem;
+}
+
+.writing-section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.writing-section p {
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
   color: #c9cfde;
   max-width: 32rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #firefly-canvas {
+    display: none;
+  }
 }

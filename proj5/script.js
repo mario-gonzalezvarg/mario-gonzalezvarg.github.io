@@ -17,8 +17,10 @@ let lastTime = 0;
 let globalOffset = 0;
 let globalSpeed = 5; // pixels per second
 
+
 function resize() {
-  dpr = window.devicePixelRatio || 1;
+  const maxDpr = 1.5;
+  dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
   width = window.innerWidth;
   height = window.innerHeight;
 
@@ -56,7 +58,7 @@ class DustMote {
   update(dt) {
     this.t += dt;
 
-    // very slow upward drift, like warm air carrying dust
+    // very slow upward drift (airlike effect)
     this.y -= this.speed * dt;
 
     // small horizontal sway
@@ -87,7 +89,7 @@ class DustMote {
 
 class Firefly {
   constructor(layerDepth) {
-    this.depth = layerDepth; // 0.5 (far) .. 1.4 (near)
+    this.depth = layerDepth;
     this.reset(true);
   }
 
@@ -99,7 +101,7 @@ class Firefly {
     this.y = randomY
       ? baseMin + Math.random() * (baseMax - baseMin)
       : baseMin +
-        (Math.random() * 0.4 - 0.2) * (baseMax - baseMin);
+      (Math.random() * 0.4 - 0.2) * (baseMax - baseMin);
 
     this.speed = (16 + Math.random() * 22) * this.depth;
 
@@ -112,7 +114,7 @@ class Firefly {
     this.radius = (1.0 + Math.random() * 1.6) * (2 - this.depth);
 
     // flashing parameters (trains of flashes)
-    this.flashPeriod = 3 + Math.random() * 5; // full cycle
+    this.flashPeriod = 3 + Math.random() * 24; // full cycle
     this.flashCount = 2 + Math.floor(Math.random() * 3); // 2–4 flashes per train
     this.flashDuration = 0.18 + Math.random() * 0.12;
     this.flashInterval = 0.28 + Math.random() * 0.14;
@@ -141,7 +143,7 @@ class Firefly {
     this.direction += angleDiff * 0.9 * dt;
 
     // bias to stay in a horizontal band
-    const preferredBandCenter = height * 0.7;
+    const preferredBandCenter = height * 0.8;
     const bandStrength = (this.y - preferredBandCenter) / height;
     const verticalBias = -bandStrength * 0.3;
 
@@ -170,17 +172,22 @@ class Firefly {
 
     // occasionally re-randomize flash pattern
     if (Math.random() < 0.0015) {
-      this.flashPeriod = 3 + Math.random() * 5;
+      // this.flashPeriod = 3 + Math.random() * 5;
+      this.flashPeriod = 8 + Math.random() * 12; 
       this.flashCount = 2 + Math.floor(Math.random() * 3);
-      this.flashDuration = 0.18 + Math.random() * 0.12;
-      this.flashInterval = 0.28 + Math.random() * 0.14;
+      this.flashDuration = 0.18 + Math.random() * 0.4;
+      // this.flashInterval = 0.28 + Math.random() * 0.14;
+      this.flashInterval = 0.4 + Math.random() * 0.3; 
+
     }
   }
 
   brightness() {
     // trains of short flashes with long dark gaps
     const totalTrainTime =
-      this.flashCount * (this.flashDuration + this.flashInterval);
+      // this.flashCount * (this.flashDuration + this.flashInterval);
+      this.flashCount = 1 + Math.floor(Math.random() * 2);
+
 
     const phase = this.t % this.flashPeriod;
 
@@ -199,9 +206,9 @@ class Firefly {
     }
 
     // active flash: quick rise, slower decay
-    const n = within / this.flashDuration; // 0..1
-    const up = Math.min(1, n * 3.2);
-    const down = Math.pow(1 - n, 1.6);
+    const n = within / this.flashDuration;
+    const up = Math.min(1, n * 2.0);
+    const down = Math.pow(1 - n, 3.0);
     const base = Math.min(up, down);
 
     return 0.6 + 0.4 * base;
@@ -248,24 +255,25 @@ class Firefly {
 function initDustMotes() {
   dustMotes = [];
 
-  // slightly scale count with viewport area
-  const baseCount = 40;
-  const extra = Math.floor((width * height) / 150000);
-  const count = baseCount + extra;
+  const baseCount = 20; // was 40
+  const extra = Math.floor((width * height) / 300000); // was /150000
+  const maxCount = 80;
+  const count = Math.min(baseCount + extra, maxCount);
 
   for (let i = 0; i < count; i++) {
     dustMotes.push(new DustMote(true));
   }
 }
 
+
 function initFireflies() {
   fireflies = [];
 
   // far: more, dimmer; near: fewer, larger/brighter
   const layers = [
-    { depth: 0.5, count: 28 },
-    { depth: 0.9, count: 22 },
-    { depth: 1.4, count: 14 },
+    { depth: 0.2, count: 28 },
+    { depth: 0.9, count: 36 },
+    { depth: 1.4, count: 48 },
   ];
 
   layers.forEach((layer) => {
@@ -276,10 +284,28 @@ function initFireflies() {
 }
 
 /* -------------------- Main loop -------------------- */
+const TARGET_FPS = 40;
+const FRAME_DURATION = 1000 / TARGET_FPS;
+let isRunning = true;
+
+document.addEventListener("visibilitychange", () => {
+  isRunning = !document.hidden;
+  if (!isRunning) lastTime = 0; // so on resume the first frame starts “fresh”
+});
+
 
 function drawFrame(timestamp) {
   if (!lastTime) lastTime = timestamp;
-  let dt = (timestamp - lastTime) / 1000;
+
+  const frameTime = timestamp - lastTime;
+  if (frameTime < FRAME_DURATION || !isRunning) {
+    requestAnimationFrame(drawFrame);
+    return;
+  }
+
+  let dt = frameTime / 1000;
+  if (dt > 0.05) dt = 0.05;
+
   lastTime = timestamp;
 
   if (dt > 0.05) dt = 0.05;
