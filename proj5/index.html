@@ -14,82 +14,151 @@
     <h1 class="title">Diffusion Models</h1>
   </div>
 
+  <!--============================================= Part 0: Prompt Embedding  ============================================ -->
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">DeepFloyd Prompts</h2>
     <p>
 
       REQUIRED:
 
-    For the 3 text prompts that we provide, display the caption and the output of the model. Reflect on the quality of the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps values.
-    Report the random seed that you're using here. You should use the same seed all subsequent parts.
+      For the 3 text prompts that we provide, display the caption and the output of the model. Reflect on the quality of
+      the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps
+      values.
+      Report the random seed that you're using here. You should use the same seed all subsequent parts.
 
     </p>
   </section>
 
-  <!-- BEFOREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -->
-<section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
-  <h2 class="iteration-belt__title">Noisy Campanile</h2>
+  <!-- ===================================== 1.1 Implementing the Forward Process ====================================  -->
+  <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
+    <h2 class="iteration-belt__title">Noisy Campanile</h2>
 
-  <div class="iteration-belt__viewport">
-    <div class="iteration-belt__track">
-      <!-- group 1 -->
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0000.png"
-             alt="Data visualization at iteration 0">
-        <figcaption class="iteration-belt__caption">Iteration 0</figcaption>
-      </figure>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- group 1 -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0000.png"
+            alt="Data visualization at iteration 0">
+          <figcaption class="iteration-belt__caption">Iteration 0</figcaption>
+        </figure>
 
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0300.png"
-             alt="Data visualization at iteration 250">
-        <figcaption class="iteration-belt__caption">Iteration 250</figcaption>
-      </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0300.png"
+            alt="Data visualization at iteration 250">
+          <figcaption class="iteration-belt__caption">Iteration 250</figcaption>
+        </figure>
 
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0500.png"
-             alt="Data visualization at iteration 500">
-        <figcaption class="iteration-belt__caption">Iteration 500</figcaption>
-      </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0500.png"
+            alt="Data visualization at iteration 500">
+          <figcaption class="iteration-belt__caption">Iteration 500</figcaption>
+        </figure>
 
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0700.png"
-             alt="Data visualization at iteration 750">
-        <figcaption class="iteration-belt__caption">Iteration 750</figcaption>
-      </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0700.png"
+            alt="Data visualization at iteration 750">
+          <figcaption class="iteration-belt__caption">Iteration 750</figcaption>
+        </figure>
 
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0300.png"
-             alt="Data visualization at iteration 250">
-        <figcaption class="iteration-belt__caption">Iteration 250</figcaption>
-      </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0000.png"
+            alt="Data visualization at iteration 0">
+          <figcaption class="iteration-belt__caption">Iteration 0</figcaption>
+        </figure>
 
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0500.png"
-             alt="Data visualization at iteration 500">
-        <figcaption class="iteration-belt__caption">Iteration 500</figcaption>
-      </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0300.png"
+            alt="Data visualization at iteration 250">
+          <figcaption class="iteration-belt__caption">Iteration 250</figcaption>
+        </figure>
 
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image"
-             src="media/forward_process/I/campanile_t_0700.png"
-             alt="Data visualization at iteration 750">
-        <figcaption class="iteration-belt__caption">Iteration 750</figcaption>
-      </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0500.png"
+            alt="Data visualization at iteration 500">
+          <figcaption class="iteration-belt__caption">Iteration 500</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/I/campanile_t_0700.png"
+            alt="Data visualization at iteration 750">
+          <figcaption class="iteration-belt__caption">Iteration 750</figcaption>
+        </figure>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- ============================================ 1.2 Classical Denoising =============================================== -->
 
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Classical Denoising</h2>
+    <p>
 
-  <!-- AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR -->
+      REQUIRED:
 
-  <script src="script.js" defer></script>
+      For the 3 text prompts that we provide, display the caption and the output of the model. Reflect on the quality of
+      the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps
+      values.
+      Report the random seed that you're using here. You should use the same seed all subsequent parts.
+
+    </p>
+  </section>
+  
+  <section class="content gold-glass iteration-belt" aria-label="Iteration">
+    <h2 class="iteration-belt__title">Gaussian Blur</h2>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_000.png"
+            alt="Gaussian blur at iteration t = 0">
+          <figcaption class="iteration-belt__caption">Iteration t = 0</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_250.png"
+            alt="Gaussian blur at iteration t = 250">
+          <figcaption class="iteration-belt__caption">Iteration  t = 250</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_500.png"
+            alt="Gaussian blur at iteration t = 500">
+          <figcaption class="iteration-belt__caption">Iteration t = 500</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_750.png"
+            alt="Gaussian blur at iteration t = 750">
+          <figcaption class="iteration-belt__caption">Iteration t = 750</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_000.png"
+            alt="Gaussian blur at iteration t = 0">
+          <figcaption class="iteration-belt__caption">Iteration t = 0</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_250.png"
+            alt="Gaussian blur at iteration t = 250">
+          <figcaption class="iteration-belt__caption">Iteration  t = 250</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_500.png"
+            alt="Gaussian blur at iteration t = 500">
+          <figcaption class="iteration-belt__caption">Iteration t = 500</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/I/gauss_t_750.png"
+            alt="Gaussian blur at iteration t = 750">
+          <figcaption class="iteration-belt__caption">Iteration t = 750</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <script src="../proj5/script.js" defer></script>
 </body>
 
 
