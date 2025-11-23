@@ -28,7 +28,7 @@ body {
   position: relative;
   width: 100%;
   min-height: 50vh;
-  overflow: hidden;
+  overflow-x: hidden;
   color: #f7f7ff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
@@ -219,5 +219,91 @@ body.top-title {
 
   .title {
     animation: none;
+  }
+}
+
+
+/* NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW BELTTTTTTTTTTTTTTTTTTTTT */
+
+/* ------------------------------
+   Infinite iteration conveyor belt
+------------------------------ */
+
+.iteration-belt {
+  max-width: 80rem;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.iteration-belt__title {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #ffeac7;
+  margin-bottom: 1rem;
+}
+
+.iteration-belt__viewport {
+  overflow: hidden;
+  padding: 0.25rem 0;
+}
+
+.iteration-belt__track {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  animation: iteration-belt-scroll 30s linear infinite;
+}
+
+/* pause on hover (optional) */
+.iteration-belt__viewport:hover .iteration-belt__track {
+  animation-play-state: paused;
+}
+
+.iteration-belt__item {
+  flex: 0 0 auto;
+  width: 16rem;
+}
+
+.iteration-belt__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 211, 160, 0.4);
+}
+
+.iteration-belt__caption {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: #c9cfde;
+}
+
+/* continuous scroll:
+   content is duplicated, so we only need to move by 50% */
+@keyframes iteration-belt-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Mobile tweaks */
+
+@media (max-width: 600px) {
+  .iteration-belt {
+    max-width: 100%;
+  }
+
+  .iteration-belt__item {
+    width: 11rem;
+  }
+
+  .iteration-belt__title {
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
   }
 }
