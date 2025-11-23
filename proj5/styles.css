@@ -43,8 +43,8 @@ body.top-title {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 2.5rem;
-  gap: 12rem;
+  padding-top: 3.0rem;
+  gap: 10rem;
 }
 
 
@@ -78,6 +78,15 @@ body.top-title {
 }
 
 /* gold / glass variant for sections */
+.content.big-title {
+  backdrop-filter: blur(18px);
+  border-radius: None;
+  border: None;
+  backdrop-filter: None;
+  background: None;
+}
+
+/* gold / glass variant for sections */
 .content.gold-glass {
   backdrop-filter: blur(18px);
   background: linear-gradient(
@@ -85,7 +94,8 @@ body.top-title {
     rgba(40, 30, 10, 0.55),
     rgba(6, 10, 18, 0.75)
   );
-  border: 1px solid rgba(255, 211, 160, 0.716);
+  /* border: 1px solid rgba(255, 211, 160, 0.716); */
+  border-block: 1px solid rgba(255, 211, 160, 0.716);
   box-shadow:
     0 0 16px rgba(255, 210, 160, 0.16),
     0 0 40px rgba(255, 210, 160, 0.12);
@@ -161,7 +171,7 @@ body.top-title {
 .writing-section {
   position: relative;
   text-align: left;
-  max-width: 80rem;
+  max-width: 95rem;
   margin: 0 auto;
   padding: 2.9rem 2.25rem 2.25rem; /* room for floating subheading label */
 }
@@ -232,16 +242,17 @@ body.top-title {
 .iteration-belt {
   max-width: 80rem;
   margin: 0 auto;
-  text-align: left;
+  text-align: center;
 }
 
 .iteration-belt__title {
   font-size: 0.85rem;
+  /* transform: translateY(-64px); */
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 360;
   color: #ffeac7;
-  margin-bottom: 1rem;
+  margin-bottom: 1.0rem;
 }
 
 .iteration-belt__viewport {
@@ -252,7 +263,7 @@ body.top-title {
 .iteration-belt__track {
   display: flex;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 1.0rem;
   animation: iteration-belt-scroll 30s linear infinite;
 }
 
@@ -271,7 +282,8 @@ body.top-title {
   width: 100%;
   height: auto;
   border-radius: 0.5rem;
-  border: 1px solid rgba(255, 211, 160, 0.4);
+  /* border: 1px solid rgba(255, 211, 160, 0.4); */
+  border: None;
 }
 
 .iteration-belt__caption {
