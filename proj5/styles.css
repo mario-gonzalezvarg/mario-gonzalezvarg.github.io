@@ -44,7 +44,7 @@ body.top-title {
   align-items: center;
   justify-content: flex-start;
   padding-top: 3.0rem;
-  gap: 10rem;
+  gap: 5rem;
 }
 
 
@@ -99,11 +99,12 @@ body.top-title {
   box-shadow:
     0 0 16px rgba(255, 210, 160, 0.16),
     0 0 40px rgba(255, 210, 160, 0.12);
+
 }
 
 /* generic h1 inside content; main styling is on .title */
 .content h1 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 /* body text inside cards */
@@ -173,7 +174,7 @@ body.top-title {
   text-align: left;
   max-width: 95rem;
   margin: 0 auto;
-  padding: 2.9rem 2.25rem 2.25rem; /* room for floating subheading label */
+  padding: 2.25rem; /* room for floating subheading label */
 }
 
 .writing-section p {
@@ -211,7 +212,7 @@ body.top-title {
   height: 1px;
   background: linear-gradient(
     to right,
-    rgba(255, 225, 180, 0.9),
+    rgba(255, 244, 194, 0.9),
     transparent
   );
   opacity: 0.7;
@@ -252,7 +253,7 @@ body.top-title {
   text-transform: uppercase;
   font-weight: 360;
   color: #ffeac7;
-  margin-bottom: 1.0rem;
+  margin-bottom: 1.5rem;
 }
 
 .iteration-belt__viewport {

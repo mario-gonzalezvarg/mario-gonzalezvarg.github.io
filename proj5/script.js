@@ -103,7 +103,9 @@ class Firefly {
       : baseMin +
       (Math.random() * 0.4 - 0.2) * (baseMax - baseMin);
 
+    // this.speed = (16 + Math.random() * 22) * this.depth;
     this.speed = (16 + Math.random() * 22) * this.depth;
+
 
     // movement steering
     this.direction = Math.random() * Math.PI * 2;
@@ -116,8 +118,8 @@ class Firefly {
     // flashing parameters (trains of flashes)
     this.flashPeriod = 3 + Math.random() * 24; // full cycle
     this.flashCount = 2 + Math.floor(Math.random() * 3); // 2–4 flashes per train
-    this.flashDuration = 0.18 + Math.random() * 0.12;
-    this.flashInterval = 0.28 + Math.random() * 0.14;
+    this.flashDuration = 1.18 + Math.random() * 0.12;
+    this.flashInterval = 1.28 + Math.random() * 0.14;
     this.t = Math.random() * this.flashPeriod;
 
     // hue around warm yellow-green
@@ -143,7 +145,7 @@ class Firefly {
     this.direction += angleDiff * 0.9 * dt;
 
     // bias to stay in a horizontal band
-    const preferredBandCenter = height * 0.95;
+    const preferredBandCenter = height * 0.1;
     const bandStrength = (this.y - preferredBandCenter) / height;
     const verticalBias = -bandStrength * 0.3;
 
