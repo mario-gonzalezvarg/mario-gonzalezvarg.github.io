@@ -79,7 +79,7 @@ class DustMote {
 
   draw(ctx) {
     ctx.beginPath();
-    ctx.fillStyle = `rgba(240, 248, 255, ${this.alpha})`; // very subtle cool white
+    ctx.fillStyle = `rgba(255, 244, 108, 1, ${this.alpha})`; // very subtle cool white
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
   }
@@ -143,7 +143,7 @@ class Firefly {
     this.direction += angleDiff * 0.9 * dt;
 
     // bias to stay in a horizontal band
-    const preferredBandCenter = height * 0.8;
+    const preferredBandCenter = height * 0.95;
     const bandStrength = (this.y - preferredBandCenter) / height;
     const verticalBias = -bandStrength * 0.3;
 
@@ -371,17 +371,26 @@ document.addEventListener("DOMContentLoaded", () => {
   function runFlickerBurst() {
     // short sequence of dim/bright/off steps
     const pattern = [
-      ["dim", 60],
-      ["off", 80],
-      ["bright", 120],
-      ["dim", 80],
-      ["base", 150],
+      ["bright", 5000],
+      // ["dim", 500],
+      // ["bright", 1000],
+      // ["off", 5],
+      ["bright", 5000],
+      // ["dim", 500],
+      ["bright", 1000],
+      ["off", 5],
+      ["bright", 1000]
+      // ["off", 80],
+      // ["bright", 120],
+      // ["dim", 80],
+      // ["dim", 40],
+      // ["base", 150],
     ];
 
     let delay = 0;
     for (const [state, step] of pattern) {
       delay += step;
-      setTimeout(() => setState(state), delay);
+      setTimeout(() => setState(state), 0.5 * Math.random() + delay);
     }
   }
 
@@ -389,7 +398,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // return to base before scheduling the next burst
     setState("base");
 
-    const wait = 1200 + Math.random() * 2800; // 1.2–4s between bursts
+    // 1.2–4s between bursts
+    const wait = 500 + Math.random() * 1000; 
     setTimeout(() => {
       runFlickerBurst();
       loop();
