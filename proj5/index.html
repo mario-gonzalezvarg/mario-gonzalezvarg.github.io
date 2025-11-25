@@ -340,9 +340,22 @@
         </div>
       </div>
     </div>
-
-
   </section>
+
+  <!-- ============================================ 1.4 Iterative Denoising =============================================== -->
+   <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Iterative Denoising</h2>
+    <p>Using i_start = 10:
+
+    Create strided_timesteps: a list of monotonically decreasing timesteps, starting at 990, with a stride of 30, eventually reaching 0. Also initialize the timesteps using the function stage_1.scheduler.set_timesteps(timesteps=strided_timesteps)
+    Complete the iterative_denoise function
+    Show the noisy Campanile every 5th loop of denoising (it should gradually become less noisy)
+    Show the final predicted clean image, using iterative denoising
+    Show the predicted clean image using only a single denoising step, as was done in the previous part. This should look much worse.
+    Show the predicted clean image using gaussian blurring, as was done in part 1.2.
+</p>
+   </section>
+
 
   <script src="../proj5/script.js" defer></script>
 </body>
