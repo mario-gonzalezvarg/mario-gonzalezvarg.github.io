@@ -1,3 +1,16 @@
+:root {
+  --bg: #04060d;
+  --bg-2: #070b16;
+  --ink: #eef1f6;
+  --muted: #b9c1d1;
+  --line: #182032;
+  --panel: rgba(12, 16, 28, .55);
+  --accent: #f1deaa;
+  --space: clamp(16px, 2.2vw, 28px);
+  --radius: 14px;
+  --shadow: 0 12px 30px rgba(0, 0, 0, .35);
+}
+
 /* ------------------------------
    Global reset
 ------------------------------ */
@@ -19,22 +32,28 @@ html:focus-within {
   scroll-behavior: smooth;
 }
 
+/* Canvas backdrop stays behind content, above body bg */
+#sky {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
 
 /* ------------------------------
    Page background / body layout
 ------------------------------ */
-
 body {
-  position: relative;
-  width: 100%;
-  min-height: 50vh;
-  overflow-x: hidden;
-  color: #f7f7ff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  color: var(--ink);
   background:
-    radial-gradient(circle at 50% 130%, #284524 0, rgba(18, 30, 18, 0) 55%),
-    radial-gradient(circle at 10% 0%, #192946 0, rgba(23, 37, 71, 0) 55%),
-    linear-gradient(180deg, #050712 0%, #050814 40%, #020308 100%);
+    radial-gradient(1200px 800px at 15% 10%, #0e1730 10%, rgba(16, 26, 51, 0) 60%),
+    radial-gradient(1000px 800px at 80% 15%, #12204a 8%, rgba(23, 34, 63, 0) 58%),
+    linear-gradient(var(--bg) 0%, var(--bg-2) 60%, #02040a 100%);
+  font: 16px/1.5 Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* stack title + sections vertically with clear gap */
@@ -46,7 +65,6 @@ body.top-title {
   padding-top: 3.0rem;
   gap: 5rem;
 }
-
 
 /* ------------------------------
    Firefly canvas layer
@@ -60,7 +78,6 @@ body.top-title {
   display: block;
   z-index: 0;
 }
-
 
 /* ------------------------------
    Generic content card
@@ -77,13 +94,14 @@ body.top-title {
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* gold / glass variant for sections */
+/* title banner: remove chrome, keep only glowing text */
 .content.big-title {
-  backdrop-filter: blur(18px);
-  border-radius: None;
-  border: None;
-  backdrop-filter: None;
-  background: None;
+  /* Title card: no chrome, let text glow stand alone */
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  backdrop-filter: none;
+  background: transparent;
 }
 
 /* gold / glass variant for sections */
@@ -91,15 +109,14 @@ body.top-title {
   backdrop-filter: blur(18px);
   background: linear-gradient(
     135deg,
-    rgba(40, 30, 10, 0.55),
-    rgba(6, 10, 18, 0.75)
+    rgba(3, 12, 24, 0.92),
+    rgba(2, 24, 20, 0.9)
   );
-  /* border: 1px solid rgba(255, 211, 160, 0.716); */
-  border-block: 1px solid rgba(255, 211, 160, 0.716);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(163, 255, 203, 0.42);
   box-shadow:
-    0 0 16px rgba(255, 210, 160, 0.16),
-    0 0 40px rgba(255, 210, 160, 0.12);
-
+    0 0 18px rgba(118, 255, 203, 0.25),
+    0 0 60px rgba(118, 255, 203, 0.18);
 }
 
 /* generic h1 inside content; main styling is on .title */
@@ -113,7 +130,6 @@ body.top-title {
   color: #c9cfde;
 }
 
-
 /* ------------------------------
    Main title states
 ------------------------------ */
@@ -124,14 +140,12 @@ body.top-title {
   font-size: clamp(48px, 14vw, 60px);
   font-weight: 360;
   text-transform: uppercase;
-
   color: #fff8d6;
   text-shadow:
     0 0 14px rgba(255, 236, 190, 0.9),
     0 0 34px rgba(255, 220, 160, 0.75),
     0 0 68px rgba(255, 200, 140, 0.55),
     0 0 120px rgba(255, 185, 120, 0.35);
-
   transition:
     opacity 0.12s linear,
     text-shadow 0.08s linear;
@@ -164,7 +178,6 @@ body.top-title {
     0 0 16px rgba(116, 86, 59, 0.373);
 }
 
-
 /* ------------------------------
    Writing section / my_notes
 ------------------------------ */
@@ -187,7 +200,7 @@ body.top-title {
 .section-heading {
   position: absolute;
   top: 0;
-  left: 1.25rem;        
+  left: 1.25rem;
   transform: translateY(-36px);
   margin: 0;
 
@@ -196,10 +209,10 @@ body.top-title {
   letter-spacing: 0.24em;
   font-weight: 250;
 
-  color: #ffeac7;
+  color: #d8ffe7;
   text-shadow:
-    0 0 6px rgba(247, 218, 113, 0.827),
-    0 0 18px rgba(255, 215, 150, 0.5);
+    0 0 6px rgba(152, 255, 210, 0.8),
+    0 0 18px rgba(118, 255, 203, 0.55);
 }
 
 /* decorative line tying label to the border */
@@ -212,12 +225,11 @@ body.top-title {
   height: 1px;
   background: linear-gradient(
     to right,
-    rgba(255, 244, 194, 0.9),
+    rgba(180, 255, 220, 0.9),
     transparent
   );
-  opacity: 0.7;
+  opacity: 0.8;
 }
-
 
 /* ------------------------------
    Motion reduction
@@ -233,9 +245,6 @@ body.top-title {
   }
 }
 
-
-/* NEWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW BELTTTTTTTTTTTTTTTTTTTTT */
-
 /* ------------------------------
    Infinite iteration conveyor belt
 ------------------------------ */
@@ -246,15 +255,15 @@ body.top-title {
   text-align: center;
 }
 
-.iteration-belt__title {
+/* .iteration-belt__title {
   font-size: 0.85rem;
-  /* transform: translateY(-64px); */
+  transform: translateY(-64px);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 360;
   color: #ffeac7;
   margin-bottom: 1.5rem;
-}
+} */
 
 .iteration-belt__viewport {
   overflow: hidden;
@@ -284,13 +293,36 @@ body.top-title {
   height: auto;
   border-radius: 0.5rem;
   /* border: 1px solid rgba(255, 211, 160, 0.4); */
-  border: None;
+  border: none;
 }
 
 .iteration-belt__caption {
   margin-top: 0.45rem;
   font-size: 0.8rem;
   color: #c9cfde;
+}
+
+/* two-row comparison belt: stack rows vertically */
+.iteration-belt--two-rows {
+  display: flex;
+  flex-direction: column;   /* one row on top of the other */
+  gap: 1.25rem;
+}
+
+/* each row = label + belt */
+.iteration-belt__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.iteration-belt__row-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffeac7;
+  margin: 0 0 0.25rem;
+  text-align: left;
 }
 
 /* continuous scroll:

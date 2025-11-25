@@ -1,412 +1,396 @@
-// script.js
+(() => {
+  const scrollEl = document.scrollingElement || document.documentElement;
 
+  initProgressBar(scrollEl);
+  initMobileMenu();
+  initCharSplit();
+  initScrollStateClass();
 
-
-const canvas = document.getElementById("firefly-canvas");
-const ctx = canvas.getContext("2d");
-
-let width = 0;
-let height = 0;
-let dpr = window.devicePixelRatio || 1;
-
-let fireflies = [];
-let dustMotes = [];
-let lastTime = 0;
-
-// subtle "camera sway" to make the scene feel alive
-let globalOffset = 0;
-let globalSpeed = 5; // pixels per second
-
-
-function resize() {
-  const maxDpr = 1.5;
-  dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
-  width = window.innerWidth;
-  height = window.innerHeight;
-
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-
-/* -------------------- Dust motes (background layer) -------------------- */
-
-class DustMote {
-  constructor(fromAnywhere = true) {
-    this.reset(fromAnywhere);
+  const skyCanvas = document.getElementById('sky');
+  if (skyCanvas && skyCanvas.getContext) {
+    initStarfield(skyCanvas, scrollEl);
   }
 
-  reset(fromAnywhere = true) {
-    this.x = Math.random() * width;
-    if (fromAnywhere) {
-      this.y = Math.random() * height;
-    } else {
-      // respawn near bottom, drift upward
-      this.y = height + 20 + Math.random() * (height * 0.2);
+  initOrbitToggle();
+
+  // ------------------------------
+  // Progress bar
+  // ------------------------------
+  function initProgressBar(scrollTarget) {
+    const bar = document.querySelector('.progress .bar');
+    if (!bar) return;
+
+    function updateProgress() {
+      const scrollTop = scrollTarget.scrollTop;
+      const maxScroll = scrollTarget.scrollHeight - scrollTarget.clientHeight;
+      const ratio = maxScroll > 0 ? scrollTop / maxScroll : 0;
+      bar.style.width = (ratio * 100).toFixed(2) + '%';
     }
 
-    this.radius = 0.4 + Math.random() * 0.9;
-    this.speed = 4 + Math.random() * 12; // vertical speed
-    this.horizontalDrift = (Math.random() - 0.5) * 6;
-
-    this.alpha = 0.04 + Math.random() * 0.06;
-    this.t = Math.random() * Math.PI * 2;
-    this.swingAmp = 4 + Math.random() * 10;
-  }
-
-  update(dt) {
-    this.t += dt;
-
-    // very slow upward drift (airlike effect)
-    this.y -= this.speed * dt;
-
-    // small horizontal sway
-    this.x +=
-      Math.sin(this.t * 0.6) * this.swingAmp * dt +
-      (this.horizontalDrift * 0.12) * dt;
-
-    // wrap horizontally
-    const margin = 20;
-    if (this.x < -margin) this.x = width + margin;
-    if (this.x > width + margin) this.x = -margin;
-
-    // if out of view at top, respawn at bottom
-    if (this.y + this.radius < -20) {
-      this.reset(false);
-    }
-  }
-
-  draw(ctx) {
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(255, 244, 108, 1, ${this.alpha})`; // very subtle cool white
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-/* -------------------- Fireflies (main layer) -------------------- */
-
-class Firefly {
-  constructor(layerDepth) {
-    this.depth = layerDepth;
-    this.reset(true);
-  }
-
-  reset(randomY = false) {
-    this.x = Math.random() * width;
-
-    const baseMin = height * 0.35;
-    const baseMax = height * 0.95;
-    this.y = randomY
-      ? baseMin + Math.random() * (baseMax - baseMin)
-      : baseMin +
-      (Math.random() * 0.4 - 0.2) * (baseMax - baseMin);
-
-    // this.speed = (16 + Math.random() * 22) * this.depth;
-    this.speed = (16 + Math.random() * 22) * this.depth;
-
-
-    // movement steering
-    this.direction = Math.random() * Math.PI * 2;
-    this.targetDirection = this.direction;
-    this.retargetTimer = 0;
-    this.retargetEvery = 1.5 + Math.random() * 3.5;
-
-    this.radius = (1.0 + Math.random() * 1.6) * (2 - this.depth);
-
-    // flashing parameters (trains of flashes)
-    this.flashPeriod = 3 + Math.random() * 24; // full cycle
-    this.flashCount = 2 + Math.floor(Math.random() * 3); // 2–4 flashes per train
-    this.flashDuration = 1.18 + Math.random() * 0.12;
-    this.flashInterval = 1.28 + Math.random() * 0.14;
-    this.t = Math.random() * this.flashPeriod;
-
-    // hue around warm yellow-green
-    this.hue = 50 + Math.random() * 15;
-  }
-
-  update(dt) {
-    this.t += dt;
-
-    // occasionally change where it wants to go
-    this.retargetTimer += dt;
-    if (this.retargetTimer > this.retargetEvery) {
-      this.targetDirection += (Math.random() - 0.5) * Math.PI * 0.8;
-      this.retargetEvery = 1.5 + Math.random() * 3.5;
-      this.retargetTimer = 0;
-    }
-
-    // gently steer toward targetDirection
-    const angleDiff = Math.atan2(
-      Math.sin(this.targetDirection - this.direction),
-      Math.cos(this.targetDirection - this.direction)
-    );
-    this.direction += angleDiff * 0.9 * dt;
-
-    // bias to stay in a horizontal band
-    const preferredBandCenter = height * 0.1;
-    const bandStrength = (this.y - preferredBandCenter) / height;
-    const verticalBias = -bandStrength * 0.3;
-
-    const vx = Math.cos(this.direction) * this.speed;
-    const vy = (Math.sin(this.direction) + verticalBias) * this.speed * 0.4;
-
-    this.x += vx * dt;
-    this.y += vy * dt;
-
-    // soft horizontal wrap
-    const margin = 60;
-    if (this.x < -margin) this.x = width + margin;
-    if (this.x > width + margin) this.x = -margin;
-
-    // soft vertical constraint
-    const minY = height * 0.25;
-    const maxY = height * 0.98;
-    if (this.y < minY) {
-      this.y = minY + (minY - this.y) * 0.45;
-      this.targetDirection += Math.PI * 0.4;
-    }
-    if (this.y > maxY) {
-      this.y = maxY - (this.y - maxY) * 0.45;
-      this.targetDirection -= Math.PI * 0.4;
-    }
-
-    // occasionally re-randomize flash pattern
-    if (Math.random() < 0.0015) {
-      // this.flashPeriod = 3 + Math.random() * 5;
-      this.flashPeriod = 8 + Math.random() * 12; 
-      this.flashCount = 2 + Math.floor(Math.random() * 3);
-      this.flashDuration = 0.18 + Math.random() * 0.4;
-      // this.flashInterval = 0.28 + Math.random() * 0.14;
-      this.flashInterval = 0.4 + Math.random() * 0.3; 
-
-    }
-  }
-
-  brightness() {
-    // trains of short flashes with long dark gaps
-    const totalTrainTime =
-      // this.flashCount * (this.flashDuration + this.flashInterval);
-      this.flashCount = 1 + Math.floor(Math.random() * 2);
-
-
-    const phase = this.t % this.flashPeriod;
-
-    if (phase > totalTrainTime) {
-      // dark between trains
-      return 0.05 * Math.random();
-    }
-
-    const perFlash = this.flashDuration + this.flashInterval;
-    const flashIndex = Math.floor(phase / perFlash);
-    const within = phase - flashIndex * perFlash;
-
-    if (within > this.flashDuration) {
-      // gap inside a train
-      return 0.02 * Math.random();
-    }
-
-    // active flash: quick rise, slower decay
-    const n = within / this.flashDuration;
-    const up = Math.min(1, n * 2.0);
-    const down = Math.pow(1 - n, 3.0);
-    const base = Math.min(up, down);
-
-    return 0.6 + 0.4 * base;
-  }
-
-  draw(ctx) {
-    const b = this.brightness();
-    if (b <= 0.002) return;
-
-    const coreRadius = this.radius;
-    const glowRadius = coreRadius * 14 * this.depth;
-
-    const x = this.x;
-    const y = this.y;
-
-    const alphaGlow = 0.5 * b;
-    const alphaCore = 0.75 + 0.25 * b;
-
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
-    gradient.addColorStop(0, `hsla(${this.hue}, 100%, 78%, ${alphaGlow})`);
-    gradient.addColorStop(
-      0.4,
-      `hsla(${this.hue}, 100%, 64%, ${alphaGlow * 0.6})`
-    );
-    gradient.addColorStop(1, `hsla(${this.hue}, 100%, 50%, 0)`);
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(
-      x - glowRadius,
-      y - glowRadius,
-      glowRadius * 2,
-      glowRadius * 2
+    let rafId = 0;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+          rafId = 0;
+          updateProgress();
+        });
+      },
+      { passive: true }
     );
 
-    ctx.beginPath();
-    ctx.fillStyle = `hsla(${this.hue}, 100%, 88%, ${alphaCore})`;
-    ctx.arc(x, y, coreRadius, 0, Math.PI * 2);
-    ctx.fill();
+    updateProgress();
   }
-}
 
-/* -------------------- Init helpers -------------------- */
+  // ------------------------------
+  // Mobile menu
+  // ------------------------------
+  function initMobileMenu() {
+    const menuBtn = document.getElementById('menu-btn');
+    const nav = document.getElementById('nav');
+    if (!menuBtn || !nav) return;
 
-function initDustMotes() {
-  dustMotes = [];
+    const toggle = () => {
+      const open = !nav.classList.contains('open');
+      nav.classList.toggle('open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+    };
 
-  const baseCount = 20; // was 40
-  const extra = Math.floor((width * height) / 300000); // was /150000
-  const maxCount = 80;
-  const count = Math.min(baseCount + extra, maxCount);
-
-  for (let i = 0; i < count; i++) {
-    dustMotes.push(new DustMote(true));
+    menuBtn.addEventListener('click', toggle);
+    nav.addEventListener('click', event => {
+      if (event.target.matches('a')) toggle();
+    });
   }
-}
 
+  // ------------------------------
+  // Character splitting for headings
+  // ------------------------------
+  function initCharSplit() {
+    document.querySelectorAll('[data-split="chars"]').forEach(element => {
+      const text = element.textContent || '';
+      element.textContent = '';
+      let i = 0;
+      for (const ch of text) {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.style.setProperty('--i', String(i++));
+        span.textContent = ch;
+        element.appendChild(span);
+      }
+    });
+  }
 
-function initFireflies() {
-  fireflies = [];
+  // ------------------------------
+  // Scroll state helper
+  // ------------------------------
+  function initScrollStateClass() {
+    let timerId;
+    window.addEventListener(
+      'scroll',
+      () => {
+        document.documentElement.classList.add('scrolling');
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+          document.documentElement.classList.remove('scrolling');
+        }, 120);
+      },
+      { passive: true }
+    );
+  }
 
-  // far: more, dimmer; near: fewer, larger/brighter
-  const layers = [
-    { depth: 0.2, count: 28 },
-    { depth: 0.9, count: 36 },
-    { depth: 1.4, count: 48 },
-  ];
+  // ------------------------------
+  // Starfield
+  // ------------------------------
+  function initStarfield(canvas, scrollTarget) {
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
 
-  layers.forEach((layer) => {
-    for (let i = 0; i < layer.count; i++) {
-      fireflies.push(new Firefly(layer.depth));
+    const supportsMatchMedia = typeof window.matchMedia === 'function';
+
+    const reducedMotion =
+      supportsMatchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const isMobile =
+      supportsMatchMedia &&
+      window.matchMedia('(max-width: 640px), (pointer: coarse)').matches;
+
+    const lowHW =
+      (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+      (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+
+    const saveData = navigator.connection && navigator.connection.saveData;
+    const lowPower = !!(isMobile || lowHW || saveData);
+
+    const MAX_FPS = reducedMotion || lowPower ? 30 : 60;
+    const FRAME_BUDGET = 1000 / MAX_FPS;
+    const STAR_COUNT = lowPower ? 180 : 320;
+    const METEOR_BASE_SPEED = lowPower ? 700 : 950;
+
+    const state = {
+      width: 0,
+      height: 0,
+      dpr: window.devicePixelRatio || 1,
+      stars: [],
+      meteors: [],
+      lastTime: performance.now(),
+      lastDraw: performance.now(),
+      scrollY: scrollTarget.scrollTop,
+      paused: document.hidden
+    };
+
+    class Star {
+      constructor(width, height) {
+        this.reset(width, height);
+      }
+
+      reset(width, height) {
+        this.depth = Math.random(); // 0 far, 1 near
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.baseRadius = 0.5 + this.depth * 1.8;
+        this.baseAlpha = 0.25 + this.depth * 0.5;
+        this.twinkleAmp = 0.15 + Math.random() * 0.25;
+        this.twinkleSpeed = 0.3 + Math.random() * 0.7;
+        this.twinklePhase = Math.random() * Math.PI * 2;
+
+        // Mostly cool hues, some warm
+        const cool = Math.random() < 0.85;
+        this.h = cool
+          ? 210 + Math.random() * 40
+          : 35 + Math.random() * 20;
+        this.s = 18 + Math.random() * 40;
+        this.l = 60 + this.depth * 20;
+      }
+
+      draw(ctx, time, scrollY, state) {
+        const parallax = 0.02 + this.depth * 0.12;
+        const drift = 0.004 + this.depth * 0.012;
+
+        const offsetX = (time * drift * state.width) % state.width;
+        const offsetY = -scrollY * parallax;
+
+        let x = this.x + offsetX;
+        let y = this.y + offsetY;
+
+        // Wrap around edges
+        x = (x + state.width) % state.width;
+        y = (y + state.height) % state.height;
+
+        const twinkle = Math.sin(time * this.twinkleSpeed + this.twinklePhase);
+        const alpha = Math.max(0, this.baseAlpha + this.twinkleAmp * twinkle);
+        const radius = this.baseRadius * state.dpr;
+
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${this.h}, ${this.s}%, ${this.l}%, ${alpha.toFixed(
+          3
+        )})`;
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
-  });
-}
 
-/* -------------------- Main loop -------------------- */
-const TARGET_FPS = 40;
-const FRAME_DURATION = 1000 / TARGET_FPS;
-let isRunning = true;
+    class Meteor {
+      constructor(x, y, angle, speed, maxLifeMs, dpr) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.life = 0;
+        this.maxLife = maxLifeMs;
+        this.length = 220 * dpr;
+        this.h = 40 + Math.random() * 30;
+        this.thickness = Math.max(1.5 * dpr, 2.0 * dpr);
+      }
 
-document.addEventListener("visibilitychange", () => {
-  isRunning = !document.hidden;
-  if (!isRunning) lastTime = 0; // so on resume the first frame starts “fresh”
-});
+      step(dt) {
+        this.life += dt * 1000;
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+      }
 
+      get alive() {
+        return this.life < this.maxLife;
+      }
 
-function drawFrame(timestamp) {
-  if (!lastTime) lastTime = timestamp;
+      draw(ctx) {
+        const t = this.life / this.maxLife;
+        const alpha = 1 - t;
+        if (alpha <= 0) return;
 
-  const frameTime = timestamp - lastTime;
-  if (frameTime < FRAME_DURATION || !isRunning) {
-    requestAnimationFrame(drawFrame);
-    return;
-  }
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
 
-  let dt = frameTime / 1000;
-  if (dt > 0.05) dt = 0.05;
+        const gradient = ctx.createLinearGradient(0, 0, -this.length, 0);
+        gradient.addColorStop(
+          0,
+          `hsla(${this.h}, 70%, 98%, ${0.9 * alpha})`
+        );
+        gradient.addColorStop(1, `hsla(${this.h}, 80%, 60%, 0)`);
 
-  lastTime = timestamp;
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = this.thickness;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-this.length, 0);
+        ctx.stroke();
 
-  if (dt > 0.05) dt = 0.05;
-
-  // slow sway
-  globalOffset += globalSpeed * dt;
-  if (globalOffset > 20 || globalOffset < -20) {
-    globalSpeed *= -1;
-  }
-
-  ctx.save();
-  ctx.translate(0, globalOffset * 0.03);
-
-  // semi-transparent clear for trails
-  ctx.fillStyle = "rgba(5, 7, 18, 0.35)";
-  ctx.fillRect(0, 0, width, height);
-
-  // background dust first
-  for (const mote of dustMotes) {
-    mote.update(dt);
-    mote.draw(ctx);
-  }
-
-  // fireflies on top
-  for (const f of fireflies) {
-    f.update(dt);
-    f.draw(ctx);
-  }
-
-  ctx.restore();
-
-  requestAnimationFrame(drawFrame);
-}
-
-// setup
-resize();
-initDustMotes();
-initFireflies();
-requestAnimationFrame(drawFrame);
-
-window.addEventListener("resize", () => {
-  resize();
-  initDustMotes();
-  initFireflies();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const title = document.querySelector(".title");
-  if (!title) return;
-
-  const DIM = "title--dim";
-  const BRIGHT = "title--bright";
-  const OFF = "title--off";
-
-  function setState(state) {
-    title.classList.remove(DIM, BRIGHT, OFF);
-    if (state === "dim") title.classList.add(DIM);
-    if (state === "bright") title.classList.add(BRIGHT);
-    if (state === "off") title.classList.add(OFF);
-    // "base" is just the .title class with no modifiers
-  }
-
-  function runFlickerBurst() {
-    // short sequence of dim/bright/off steps
-    const pattern = [
-      ["bright", 5000],
-      // ["dim", 500],
-      // ["bright", 1000],
-      // ["off", 5],
-      ["bright", 5000],
-      // ["dim", 500],
-      ["bright", 1000],
-      ["off", 5],
-      ["bright", 1000]
-      // ["off", 80],
-      // ["bright", 120],
-      // ["dim", 80],
-      // ["dim", 40],
-      // ["base", 150],
-    ];
-
-    let delay = 0;
-    for (const [state, step] of pattern) {
-      delay += step;
-      setTimeout(() => setState(state), 0.5 * Math.random() + delay);
+        ctx.restore();
+      }
     }
+
+    function buildStars() {
+      state.stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        state.stars.push(new Star(state.width, state.height));
+      }
+    }
+
+    function resize() {
+      const cssWidth = window.innerWidth;
+      const cssHeight = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 1.5);
+
+      state.dpr = dpr;
+      state.width = Math.round(cssWidth * dpr);
+      state.height = Math.round(cssHeight * dpr);
+
+      canvas.width = state.width;
+      canvas.height = state.height;
+      canvas.style.width = cssWidth + 'px';
+      canvas.style.height = cssHeight + 'px';
+
+      buildStars();
+    }
+
+    let resizeRaf = 0;
+    window.addEventListener('resize', () => {
+      if (resizeRaf) return;
+      resizeRaf = requestAnimationFrame(() => {
+        resize();
+        resizeRaf = 0;
+      });
+    });
+    resize();
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        state.scrollY = scrollTarget.scrollTop;
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('pointerdown', event => {
+      if (event.button && event.button !== 0) return;
+      spawnMeteor(event.clientX, event.clientY);
+    });
+
+    function spawnMeteor(clientX, clientY) {
+      const x = clientX * state.dpr;
+      const y = clientY * state.dpr;
+
+      const targetX =
+        x < state.width / 2
+          ? state.width + 200 * state.dpr
+          : -200 * state.dpr;
+      const targetY =
+        y < state.height / 2
+          ? state.height + 200 * state.dpr
+          : -200 * state.dpr;
+
+      const dx = targetX - x;
+      const dy = targetY - y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const angle = Math.atan2(dy, dx);
+
+      const travelSeconds = distance / METEOR_BASE_SPEED;
+      const lifeMs = travelSeconds * 1000 + 200;
+
+      state.meteors.push(
+        new Meteor(
+          x,
+          y,
+          angle,
+          METEOR_BASE_SPEED * state.dpr,
+          lifeMs,
+          state.dpr
+        )
+      );
+    }
+
+    function drawBackground() {
+      const g = ctx.createLinearGradient(0, 0, 0, state.height);
+      g.addColorStop(0, '#060a14');
+      g.addColorStop(0.5, '#050812');
+      g.addColorStop(1, '#020309');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, state.width, state.height);
+    }
+
+    function drawVignette() {
+      const radiusInner = Math.min(state.width, state.height) * 0.2;
+      const radiusOuter = Math.max(state.width, state.height) * 0.85;
+      const vignette = ctx.createRadialGradient(
+        state.width / 2,
+        state.height / 2,
+        radiusInner,
+        state.width / 2,
+        state.height / 2,
+        radiusOuter
+      );
+      vignette.addColorStop(0, 'rgba(0,0,0,0)');
+      vignette.addColorStop(1, 'rgba(0,0,0,0.35)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, state.width, state.height);
+    }
+
+    function step(dt) {
+      const time = performance.now() / 1000;
+
+      for (const star of state.stars) {
+        star.draw(ctx, time, state.scrollY, state);
+      }
+
+      for (const meteor of state.meteors) {
+        meteor.step(dt);
+        meteor.draw(ctx);
+      }
+
+      state.meteors = state.meteors.filter(m => m.alive);
+    }
+
+    function frame(now) {
+      if (state.paused && !state.meteors.length) {
+        state.lastTime = now;
+        state.lastDraw = now;
+        requestAnimationFrame(frame);
+        return;
+      }
+
+      const deltaMs = now - state.lastTime;
+      const dt = Math.min(deltaMs / 1000, 0.1);
+
+      if (now - state.lastDraw >= FRAME_BUDGET) {
+        ctx.clearRect(0, 0, state.width, state.height);
+        drawBackground();
+        step(dt);
+        drawVignette();
+        state.lastDraw = now;
+      }
+
+      state.lastTime = now;
+      requestAnimationFrame(frame);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      state.paused = document.hidden;
+    });
+
+    requestAnimationFrame(frame);
   }
-
-  function loop() {
-    // return to base before scheduling the next burst
-    setState("base");
-
-    // 1.2–4s between bursts
-    const wait = 500 + Math.random() * 1000; 
-    setTimeout(() => {
-      runFlickerBurst();
-      loop();
-    }, wait);
-  }
-
-  loop();
-});
+})();
