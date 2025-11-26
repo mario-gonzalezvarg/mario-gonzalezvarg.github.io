@@ -62,8 +62,8 @@ body.top-title {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 3.0rem;
-  gap: 5rem;
+  padding-top: 5.0rem;
+  gap: 5.5rem;
 }
 
 /* ------------------------------
@@ -94,14 +94,13 @@ body.top-title {
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* title banner: remove chrome, keep only glowing text */
 .content.big-title {
-  /* Title card: no chrome, let text glow stand alone */
   padding: 0;
   border-radius: 0;
   border: none;
   backdrop-filter: none;
   background: transparent;
+  /* padding-bottom: 2rem; */
 }
 
 /* gold / glass variant for sections */
@@ -112,11 +111,13 @@ body.top-title {
     rgba(3, 12, 24, 0.92),
     rgba(2, 24, 20, 0.9)
   );
-  border-radius: 0.75rem;
+  /* border-radius: 0.75rem; */
   border: 1px solid rgba(163, 255, 203, 0.42);
   box-shadow:
     0 0 18px rgba(118, 255, 203, 0.25),
     0 0 60px rgba(118, 255, 203, 0.18);
+    /* 0 0 24px rgba(255, 236, 190, 0.9); */
+    /* 0 0 16px rgba(255, 220, 160, 0.75); */
 }
 
 /* generic h1 inside content; main styling is on .title */
@@ -135,10 +136,10 @@ body.top-title {
 ------------------------------ */
 
 .title {
-  line-height: 0.9;
+  line-height: 1.2;
   letter-spacing: 0.18em;
   font-size: clamp(48px, 14vw, 60px);
-  font-weight: 360;
+  font-weight: 480;
   text-transform: uppercase;
   color: #fff8d6;
   text-shadow:
@@ -185,9 +186,10 @@ body.top-title {
 .writing-section {
   position: relative;
   text-align: left;
-  max-width: 95rem;
+  width: 95rem;
+  /* max-width: 95rem; */
   margin: 0 auto;
-  padding: 2.25rem; /* room for floating subheading label */
+  padding: 2.5rem; /* room for floating subheading label */
 }
 
 .writing-section p {
@@ -204,10 +206,10 @@ body.top-title {
   transform: translateY(-36px);
   margin: 0;
 
-  font-size: 1.30rem;
+  font-size: 1.40rem;
   text-transform: uppercase;
   letter-spacing: 0.24em;
-  font-weight: 250;
+  font-weight: 364;
 
   color: #c9cfde;
   text-shadow:
@@ -256,7 +258,7 @@ body.top-title {
 }
 
 .iteration-belt__title {
-  font-size: 0.85rem;
+  font-size: 1.0rem;
   /* transform: translateY(-64px); */
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -278,9 +280,9 @@ body.top-title {
 }
 
 /* pause on hover (optional) */
-.iteration-belt__viewport:hover .iteration-belt__track {
+/* .iteration-belt__viewport:hover .iteration-belt__track {
   animation-play-state: paused;
-}
+} */
 
 .iteration-belt__item {
   flex: 0 0 auto;
@@ -306,14 +308,14 @@ body.top-title {
 .iteration-belt--two-rows {
   display: flex;
   flex-direction: column;   /* one row on top of the other */
-  gap: 1.25rem;
+  /* gap: 1.25rem; */
 }
 
 /* each row = label + belt */
 .iteration-belt__row {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  /* gap: 0.35rem; */
 }
 
 .iteration-belt__row-title {
