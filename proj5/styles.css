@@ -62,7 +62,7 @@ body.top-title {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 2.0rem;
+  padding-top: 5.0rem;
   gap: 5.5rem;
 }
 
@@ -100,7 +100,7 @@ body.top-title {
   border: none;
   backdrop-filter: none;
   background: transparent;
-  /* padding-bottom: 2rem; */
+  padding-bottom: 2rem;
 }
 
 /* gold / glass variant for sections */
@@ -189,7 +189,7 @@ body.top-title {
   width: 95rem;
   /* max-width: 95rem; */
   margin: 0 auto;
-  padding: 2.5rem; /* room for floating subheading label */
+  padding: 2.25rem; /* room for floating subheading label */
 }
 
 .writing-section p {
@@ -209,7 +209,7 @@ body.top-title {
   font-size: 1.40rem;
   text-transform: uppercase;
   letter-spacing: 0.24em;
-  font-weight: 364;
+  font-weight: 350;
 
   color: #c9cfde;
   text-shadow:
