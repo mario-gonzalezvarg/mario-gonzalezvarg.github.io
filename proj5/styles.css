@@ -186,7 +186,7 @@ body.top-title {
 .writing-section {
   position: relative;
   text-align: left;
-  width: 95rem;
+  width: 100rem;
   /* max-width: 95rem; */
   margin: 0 auto;
   padding: 2.25rem; /* room for floating subheading label */
@@ -346,7 +346,7 @@ body.top-title {
   }
 
   .iteration-belt__item {
-    width: 11rem;
+    width: 12rem;
   }
 
   .iteration-belt__title {

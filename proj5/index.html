@@ -29,7 +29,7 @@
 
   <!-- ===================================== 1.1 Implementing the Forward Process ====================================  -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Forward Process</h2>
+    <h2 class="section-heading">I. Forward Process</h2>
     <p>
       Deliverables
 
@@ -40,7 +40,7 @@
   </section>
 
   <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
-    <h2 class="iteration-belt__title">Noisy Campanile</h2>
+    <h2 class="iteration-belt__title">Adding Noise</h2>
 
     <div class="iteration-belt__viewport">
       <div class="iteration-belt__track">
@@ -99,7 +99,7 @@
 
   <!-- ============================================ 1.2 Classical Denoising =============================================== -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Classical Denoising</h2>
+    <h2 class="section-heading">II. Classical Denoising</h2>
     <p>
       REQUIRED:
       For the 3 text prompts that we provide, display the caption and the output of the model. Reflect on the quality of
@@ -229,7 +229,7 @@
   <!-- ============================================ 1.3 One-Step Denoising =============================================== -->
 
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">One-Step Denoising</h2>
+    <h2 class="section-heading">III. One-Step Denoising</h2>
     <p>For the 3 noisy images from 1.2 (t = [250, 500, 750]):
 
       Use your forward function to add noise to your Campanile.
@@ -366,74 +366,73 @@
     </p>
   </section>
 
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows" aria-label="One-step denoising comparison">
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="One-step denoising comparison">
     <h2 class="iteration-belt__title">Various Denoising Methods</h2>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
 
-          <!-- iterative denoised images -->
+        <!-- iterative denoised images -->
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_90.png"
-              alt="Denoised image t = 90">
-            <figcaption class="iteration-belt__caption">t = 90 </figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_90.png" alt="Denoised image t = 90">
+          <figcaption class="iteration-belt__caption">t = 90 </figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_240.png"
-              alt="Denoised image t = 240">
-            <figcaption class="iteration-belt__caption">t = 240</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_240.png"
+            alt="Denoised image t = 240">
+          <figcaption class="iteration-belt__caption">t = 240</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_390.png"
-              alt="Denoised image t = 390">
-            <figcaption class="iteration-belt__caption">t = 390</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_390.png"
+            alt="Denoised image t = 390">
+          <figcaption class="iteration-belt__caption">t = 390</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_540.png"
-              alt="Denoised image t = 540">
-            <figcaption class="iteration-belt__caption">t = 540</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_540.png"
+            alt="Denoised image t = 540">
+          <figcaption class="iteration-belt__caption">t = 540</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_690.png"
-              alt="Denoised image t = 690">
-            <figcaption class="iteration-belt__caption">t = 690</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_690.png"
+            alt="Denoised image t = 690">
+          <figcaption class="iteration-belt__caption">t = 690</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_90.png"
-              alt="Denoised image t = 90">
-            <figcaption class="iteration-belt__caption">t = 90 </figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_90.png" alt="Denoised image t = 90">
+          <figcaption class="iteration-belt__caption">t = 90 </figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_240.png"
-              alt="Denoised image t = 240">
-            <figcaption class="iteration-belt__caption">t = 240</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_240.png"
+            alt="Denoised image t = 240">
+          <figcaption class="iteration-belt__caption">t = 240</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_390.png"
-              alt="Denoised image t = 390">
-            <figcaption class="iteration-belt__caption">t = 390</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_390.png"
+            alt="Denoised image t = 390">
+          <figcaption class="iteration-belt__caption">t = 390</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_540.png"
-              alt="Denoised image t = 540">
-            <figcaption class="iteration-belt__caption">t = 540</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_540.png"
+            alt="Denoised image t = 540">
+          <figcaption class="iteration-belt__caption">t = 540</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_690.png"
-              alt="Denoised image t = 690">
-            <figcaption class="iteration-belt__caption">t = 690</figcaption>
-          </figure>
-        </div>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/iterative_denoising/noisy_t_690.png"
+            alt="Denoised image t = 690">
+          <figcaption class="iteration-belt__caption">t = 690</figcaption>
+        </figure>
       </div>
+    </div>
     </div>
 
     <!-- Row 2: iterative denoise inputs -->
@@ -571,90 +570,95 @@
   </section>
 
   <!-- ============================================ 1.6 Classifier-Free Guidance (CFG) =============================================== -->
-   <section class="content gold-glass writing-section">
+  <section class="content gold-glass writing-section">
     <h2 class="section-heading">Classifier-Free Guidance (CFG)</h2>
     <p> Deliverables
 
-    Implement the iterative_denoise_cfg function
-    Show 5 images of "a high quality photo" with a CFG scale of 
+      Implement the iterative_denoise_cfg function
+      Show 5 images of "a high quality photo" with a CFG scale of
 
-    . Now this prompt becomes a condition (but fairly weak) to generate conditional noise! You will use your customized prompts as stronger conditions in part 1.7 - part 1.9.
+      . Now this prompt becomes a condition (but fairly weak) to generate conditional noise! You will use your
+      customized prompts as stronger conditions in part 1.7 - part 1.9.
 
     </p>
   </section>
 
-  <section class="content gold-glass iteration-belt" aria-label="Iterative Denosing">
-    <h2 class="iteration-belt__title">Sampled Images</h2>
+  <section class="content gold-glass iteration-belt" aria-label="CFG Diffusion Sampling">
+    <h2 class="iteration-belt__title">Sample with CFG</h2>
 
     <div class="iteration-belt__viewport">
       <div class="iteration-belt__track">
 
         <!-- 5 sampled images -->
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s4.png"
-            alt="Sample with seed 32168">
+          <img class="iteration-belt__image" src="media/cfg/s4.png" alt="Sample with seed 32168">
           <figcaption class="iteration-belt__caption">Sample 1</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s8.png"
-            alt="Sample with seed 100570">
+          <img class="iteration-belt__image" src="media/cfg/s8.png" alt="Sample with seed 100570">
           <figcaption class="iteration-belt__caption">Sample 2</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s5.png"
-            alt="Sample with seed 91798">
+          <img class="iteration-belt__image" src="media/cfg/s5.png" alt="Sample with seed 91798">
           <figcaption class="iteration-belt__caption">Sample 3</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s2.png"
-            alt="Sample with seed 1215">
+          <img class="iteration-belt__image" src="media/cfg/s2.png" alt="Sample with seed 1215">
           <figcaption class="iteration-belt__caption">Sample 4</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s6.png"
-            alt="Sample with seed 122607">
+          <img class="iteration-belt__image" src="media/cfg/s6.png" alt="Sample with seed 122607">
           <figcaption class="iteration-belt__caption">Sample 5</figcaption>
         </figure>
 
-         <!-- 5 sampled images -->
-         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s4.png"
-            alt="Sample with seed 32168">
+        <!-- 5 sampled images -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/cfg/s4.png" alt="Sample with seed 32168">
           <figcaption class="iteration-belt__caption">Sample 1</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s8.png"
-            alt="Sample with seed 100570">
+          <img class="iteration-belt__image" src="media/cfg/s8.png" alt="Sample with seed 100570">
           <figcaption class="iteration-belt__caption">Sample 2</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s5.png"
-            alt="Sample with seed 91798">
+          <img class="iteration-belt__image" src="media/cfg/s5.png" alt="Sample with seed 91798">
           <figcaption class="iteration-belt__caption">Sample 3</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s2.png"
-            alt="Sample with seed 1215">
+          <img class="iteration-belt__image" src="media/cfg/s2.png" alt="Sample with seed 1215">
           <figcaption class="iteration-belt__caption">Sample 4</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s6.png"
-            alt="Sample with seed 122607">
+          <img class="iteration-belt__image" src="media/cfg/s6.png" alt="Sample with seed 122607">
           <figcaption class="iteration-belt__caption">Sample 5</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
+  <!-- ============================================ 1.7 Image-to-image Translation =============================================== -->
 
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Image-to-image Translation</h2>
+    <p> Deliverables
+
+      Edits of the Campanile image, using the given prompt at noise levels [1, 3, 5, 7, 10, 20] with the conditional
+      text prompt "a high quality photo"
+      Edits of 2 of your own test images, using the same procedure.
+
+      Hints
+
+      You should have a range of images, gradually looking more like the original image
+    </p>
+  </section>
 
   <script src="../proj5/script.js" defer></script>
 </body>
