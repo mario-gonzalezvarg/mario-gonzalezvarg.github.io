@@ -276,7 +276,7 @@ body.top-title {
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  animation: iteration-belt-scroll 60s linear infinite;
+  animation: iteration-belt-scroll 50s linear infinite;
 }
 
 /* pause on hover (optional) */
@@ -347,6 +347,10 @@ body.top-title {
 
   .iteration-belt__item {
     width: 12rem;
+  }
+
+  .content.gold-glass {
+    width: auto;
   }
 
   .iteration-belt__title {
