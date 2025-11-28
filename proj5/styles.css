@@ -9,7 +9,6 @@
   --space: clamp(16px, 2.2vw, 28px);
   --radius: 14px;
   --shadow: 0 12px 30px rgba(0, 0, 0, .35);
-  --belt-duration: 30s;
 }
 
 /* ------------------------------
@@ -104,21 +103,18 @@ body.top-title {
   padding-bottom: 2rem;
 }
 
-/* gold / glass variant for sections */
 .content.gold-glass {
   backdrop-filter: blur(18px);
-  background: linear-gradient(
-    135deg,
-    rgba(3, 12, 24, 0.92),
-    rgba(2, 24, 20, 0.9)
-  );
+  background: linear-gradient(135deg,
+      rgba(3, 12, 24, 0.92),
+      rgba(2, 24, 20, 0.9));
   /* border-radius: 0.75rem; */
   border: 1px solid rgba(163, 255, 203, 0.42);
   box-shadow:
     0 0 18px rgba(118, 255, 203, 0.25),
     0 0 60px rgba(118, 255, 203, 0.18);
-    /* 0 0 24px rgba(255, 236, 190, 0.9); */
-    /* 0 0 16px rgba(255, 220, 160, 0.75); */
+  /* 0 0 24px rgba(255, 236, 190, 0.9); */
+  /* 0 0 16px rgba(255, 220, 160, 0.75); */
 }
 
 /* generic h1 inside content; main styling is on .title */
@@ -189,7 +185,8 @@ body.top-title {
   text-align: left;
   width: 100rem;
   margin: 0.5rem;
-  padding: 2.25rem; /* room for floating subheading label */
+  padding: 2.25rem;
+  /* room for floating subheading label */
 }
 
 .writing-section p {
@@ -225,11 +222,9 @@ body.top-title {
   left: 0;
   width: 1.75rem;
   height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(180, 255, 220, 0.9),
-    transparent
-  );
+  background: linear-gradient(to right,
+      rgba(180, 255, 220, 0.9),
+      transparent);
   opacity: 0.8;
 }
 
@@ -303,7 +298,8 @@ body.top-title {
 /* two-row comparison belt: stack rows vertically */
 .iteration-belt--two-rows {
   display: flex;
-  flex-direction: column;   /* one row on top of the other */
+  flex-direction: column;
+  /* one row on top of the other */
   /* gap: 1.25rem; */
 }
 
@@ -356,15 +352,6 @@ body.top-title {
   box-shadow: 0 0 0 1px rgba(241, 222, 170, 0.6);
 }
 
-
-@keyframes iteration-belt-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
 
 /* Mobile tweaks */
 

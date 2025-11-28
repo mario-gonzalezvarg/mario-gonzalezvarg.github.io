@@ -392,83 +392,95 @@
 
     requestAnimationFrame(frame);
   }
+  const beltTrackStates = [];
 
-  //  duplicate items once for a seamless infinite scroll
   document.querySelectorAll('.iteration-belt__track').forEach(track => {
+    // Turn off any CSS animation so JS fully controls movement
+    track.style.animation = 'none';
+
+    // Only clone once
     if (track.dataset.cloned === 'true') return;
     track.dataset.cloned = 'true';
 
     const items = Array.from(track.children);
     items.forEach(item => {
       const clone = item.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true'); // hide duplicates from SRs
+      clone.setAttribute('aria-hidden', 'true'); // don't double-announce
       track.appendChild(clone);
     });
+
+    // One logical loop = width of original sequence
+    const loopWidth = track.scrollWidth / 2;
+
+    // Look up speed on the parent .iteration-belt (data-belt-speed)
+    const belt = track.closest('.iteration-belt');
+    let speed = 16; // default px/s
+
+    if (belt && belt.dataset.beltSpeed) {
+      const parsed = parseFloat(belt.dataset.beltSpeed);
+      if (!Number.isNaN(parsed) && parsed > 0) {
+        speed = parsed;
+      }
+    }
+
+    beltTrackStates.push({
+      track,
+      loopWidth,
+      x: 0,          // current offset in px
+      v: speed,      // constant speed in px/s, from HTML or default
+      running: true  // controlled by Pause buttons
+    });
   });
 
-  // per-belt state: user pause + in-view
-  const beltState = new WeakMap();
 
-  function applyBeltState(belt) {
-    const state = beltState.get(belt);
-    if (!state) return;
+  // 2) Hook up Pause/Play buttons per belt
+  document.querySelectorAll('.iteration-belt').forEach(belt => {
+    const toggle = belt.querySelector('.iteration-belt__toggle');
+    if (!toggle) return;
 
-    const { userPaused, inView, tracks, toggle } = state;
-    const running = inView && !userPaused;
+    // Init label / state
+    toggle.textContent = 'Pause';
+    toggle.setAttribute('aria-pressed', 'false');
 
-    tracks.forEach(track => {
-      track.style.animationPlayState = running ? 'running' : 'paused';
+    toggle.addEventListener('click', () => {
+      const pressed = toggle.getAttribute('aria-pressed') === 'true';
+      const nowPressed = !pressed;          // true = user wants it paused
+      toggle.setAttribute('aria-pressed', String(nowPressed));
+      toggle.textContent = nowPressed ? 'Play' : 'Pause';
+
+      const shouldRun = !nowPressed;
+
+      // Flip running flag for all tracks inside this belt
+      belt.querySelectorAll('.iteration-belt__track').forEach(track => {
+        const state = beltTrackStates.find(s => s.track === track);
+        if (state) state.running = shouldRun;
+      });
+    });
+  });
+
+  // 3) Global animation loop at constant speed
+  let lastTime = performance.now();
+
+  function step(now) {
+    const dt = (now - lastTime) / 1000; // seconds
+    lastTime = now;
+
+    beltTrackStates.forEach(state => {
+      if (!state.running) return;
+
+      // x(t+dt) = x(t) + v * dt
+      state.x += state.v * dt;
+
+      // Wrap so we stay within [0, loopWidth)
+      if (state.x >= state.loopWidth) {
+        state.x -= state.loopWidth * Math.floor(state.x / state.loopWidth);
+      }
+
+      state.track.style.transform = `translateX(${-state.x}px)`;
     });
 
-    if (toggle) {
-      toggle.textContent = userPaused ? 'Play' : 'Pause';
-      toggle.setAttribute('aria-pressed', String(userPaused));
-    }
+    requestAnimationFrame(step);
   }
 
-  // setting up belts + play/pause button
-  const belts = Array.from(document.querySelectorAll('.iteration-belt'));
-
-  belts.forEach(belt => {
-    const toggle = belt.querySelector('.iteration-belt__toggle');
-    const tracks = belt.querySelectorAll('.iteration-belt__track');
-    if (!tracks.length) return;
-
-    beltState.set(belt, {
-      userPaused: false,
-      inView: true,   // assume on-screen at load
-      tracks,
-      toggle
-    });
-
-    if (toggle) {
-      toggle.addEventListener('click', () => {
-        const state = beltState.get(belt);
-        if (!state) return;
-        state.userPaused = !state.userPaused;
-        applyBeltState(belt);
-      });
-    }
-
-    applyBeltState(belt);
-  });
-
-  // auto-pause when belt leaves viewport
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      const belt = entry.target;
-      const state = beltState.get(belt);
-      if (!state) return;
-
-      state.inView = entry.isIntersecting;
-      applyBeltState(belt);
-    });
-  }, {
-    root: null,
-    // require ~20% of belt visible to "run"
-    threshold: 0.2
-  });
-
-  belts.forEach(belt => observer.observe(belt));
-
+  requestAnimationFrame(step);
 })();
