@@ -40,7 +40,7 @@
   </section>
 
   <!-- 1.1 belt -->
-  <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots" data-belt-speed="15">
+  <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots" >
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">Adding Noise</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -90,7 +90,7 @@
   </section>
 
   <!-- 1.2 double belt images-->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows" data-belt-speed="19">
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows" >
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">Classical Denoising (Noisy vs Gaussian)</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -251,7 +251,7 @@
 
   <!-- ============================================ 1.4 Iterative Denoising =============================================== -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Iterative Denoising</h2>
+    <h2 class="section-heading">IV. Iterative Denoising</h2>
     <p>Using i_start = 10:
 
       Create strided_timesteps: a list of monotonically decreasing timesteps, starting at 990, with a stride of 30,
@@ -267,7 +267,7 @@
   </section>
 
   <!-- 1.4 double belt images -->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows" data-belt-speed="18">
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows" >
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">Various Denoising Methods</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -282,8 +282,7 @@
 
           <!-- row 1-->
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/i_start1.gif"
-              alt="Denoised image t = 90">
+            <img class="iteration-belt__image" src="media/iterative_denoising/i_start1.gif" alt="Denoised image t = 90">
             <figcaption class="iteration-belt__caption">t = 90 </figcaption>
           </figure>
 
@@ -349,7 +348,7 @@
 
   <!-- ============================================ 1.5 Diffusion Model Sampling=============================================== -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Diffusion Model Sampling</h2>
+    <h2 class="section-heading">V. Diffusion Model Sampling</h2>
     <p>
       Show 5 sampled images.
     </p>
@@ -407,7 +406,7 @@
 
   <!-- ============================================ 1.6 Classifier-Free Guidance (CFG) =============================================== -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Classifier-Free Guidance (CFG)</h2>
+    <h2 class="section-heading">VI. Classifier-Free Guidance (CFG)</h2>
     <p> Deliverables
 
       Implement the iterative_denoise_cfg function
@@ -477,7 +476,7 @@
     </p>
   </section>
 
-  <!-- campinele SDEdit -->
+  <!-- predicting campinele SDEdit -->
   <section class="content gold-glass iteration-belt" aria-label="CFG Diffusion Sampling">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">1.7 Predicting Campanile with SDEdit Algorithm</h2>
@@ -588,32 +587,32 @@
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start1.png">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start1.gif">
             <figcaption class="iteration-belt__caption">starting index = 1</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start3.png">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start3.gif">
             <figcaption class="iteration-belt__caption">starting index = 3</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start5.png">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start5.gif">
             <figcaption class="iteration-belt__caption">starting index = 5</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start7.png">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start7.gif">
             <figcaption class="iteration-belt__caption">starting index = 7</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start10.png">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start10.gif">
             <figcaption class="iteration-belt__caption">starting index = 10</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start20.png">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start20.gif">
             <figcaption class="iteration-belt__caption">starting index = 20</figcaption>
           </figure>
 
@@ -626,12 +625,12 @@
     </div>
   </section>
 
-  <!-- ============================================ 1.7.1 Image-to-image Translation =============================================== -->
+  <!----------------------------------------------  1.7.1 Image-to-image Translation --------------------------------------------- -->
 
-  <!-- campinele SDEdit -->
-  <section class="content gold-glass iteration-belt" data-belt-speed="32">
+  <!------------------- web image 1.7.1 -->
+  <section class="content gold-glass iteration-belt">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">1.7 Predicting Campanile with SDEdit Algorithm</h2>
+      <h2 class="iteration-belt__title">Web based image: The Crab Nebula </h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
@@ -671,56 +670,116 @@
           <figcaption class="iteration-belt__caption">start index = 20</figcaption>
         </figure>
 
-         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/web_img.jpg" alt="id start = start">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/hand_web/web/orig.png" alt="id start = start">
           <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
         </figure>
       </div>
     </div>
+  </section>
 
-     <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">NASA Image Prediction</h3>
-      <div class="iteration-belt__track">
+  <!--------------- 1.7.1 doodles -->
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows" >
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">Various Denoising Methods</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
 
-        <!-- web images -->
+    <!-- Row 2: iterative denoise inputs -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Doodle 1: The Blue Bandit</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
 
+           <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif" alt="id start = 1">
+            <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif" alt="id start = 1">
-          <figcaption class="iteration-belt__caption">start index = 1</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif" alt="id start = 1">
+            <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start3.gif" alt="id_start = 3">
-          <figcaption class="iteration-belt__caption">start index = 3</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start3.gif" alt="id_start = 3">
+            <figcaption class="iteration-belt__caption">start index = 3</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start5.gif" alt="id_start = 5">
-          <figcaption class="iteration-belt__caption">start index = 5</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start5.gif" alt="id_start = 5">
+            <figcaption class="iteration-belt__caption">start index = 5</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start7.gif" alt="id_start = 7">
-          <figcaption class="iteration-belt__caption">start index = 7</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start7.gif" alt="id_start = 7">
+            <figcaption class="iteration-belt__caption">start index = 7</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start10.gif" alt="id start = 10">
-          <figcaption class="iteration-belt__caption">start index = 10</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start10.gif" alt="id start = 10">
+            <figcaption class="iteration-belt__caption">start index = 10</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start20.gif" alt="id start = 10">
-          <figcaption class="iteration-belt__caption">start index = 20</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start20.gif" alt="id start = start">
+            <figcaption class="iteration-belt__caption">start index = 20</figcaption>
+          </figure>
 
-         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/doodle1/orig.png" alt="id start = start">
-          <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/orig.png" alt="id start = start">
+            <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
+          </figure>
+        </div>
       </div>
     </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Doodle 2: The Little Prince</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start1.gif" alt="id start = 1">
+            <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start3.gif" alt="id_start = 3">
+            <figcaption class="iteration-belt__caption">start index = 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start5.gif" alt="id_start = 5">
+            <figcaption class="iteration-belt__caption">start index = 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start7.gif" alt="id_start = 7">
+            <figcaption class="iteration-belt__caption">start index = 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start10.gif" alt="id start = 10">
+            <figcaption class="iteration-belt__caption">start index = 10</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start20.gif" alt="id start = start">
+            <figcaption class="iteration-belt__caption">start index = 20</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/orig.png" alt="id start = start">
+            <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+
   </section>
 
 
