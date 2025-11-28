@@ -9,7 +9,7 @@
   --space: clamp(16px, 2.2vw, 28px);
   --radius: 14px;
   --shadow: 0 12px 30px rgba(0, 0, 0, .35);
-  --belt-duration: 45s;
+  --belt-duration: 30s;
 }
 
 /* ------------------------------

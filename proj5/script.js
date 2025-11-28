@@ -386,16 +386,14 @@
       requestAnimationFrame(frame);
     }
 
-      // ... end of initStarfield, right before the closing brace of the IIFE ...
+    document.addEventListener('visibilitychange', () => {
+      state.paused = document.hidden;
+    });
 
-  document.addEventListener('visibilitychange', () => {
-    state.paused = document.hidden;
-  });
+    requestAnimationFrame(frame);
+  }
 
-  requestAnimationFrame(frame);
-}
-  // === Iteration belt setup ===
-
+  //  duplicate items once for a seamless infinite scroll
   document.querySelectorAll('.iteration-belt__track').forEach(track => {
     if (track.dataset.cloned === 'true') return;
     track.dataset.cloned = 'true';
@@ -403,37 +401,74 @@
     const items = Array.from(track.children);
     items.forEach(item => {
       const clone = item.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true'); // don't announce duplicates
+      clone.setAttribute('aria-hidden', 'true'); // hide duplicates from SRs
       track.appendChild(clone);
     });
   });
 
-  // 2) Play / pause per belt
-  document.querySelectorAll('.iteration-belt').forEach(belt => {
-    const toggle = belt.querySelector('.iteration-belt__toggle');
-    const tracks = belt.querySelectorAll('.iteration-belt__track');
+  // per-belt state: user pause + in-view
+  const beltState = new WeakMap();
 
-    if (!toggle || !tracks.length) return;
+  function applyBeltState(belt) {
+    const state = beltState.get(belt);
+    if (!state) return;
 
-    let paused = false;
+    const { userPaused, inView, tracks, toggle } = state;
+    const running = inView && !userPaused;
 
-    function apply() {
-      tracks.forEach(track => {
-        track.style.animationPlayState = paused ? 'paused' : 'running';
-      });
-      toggle.textContent = paused ? 'Play' : 'Pause';
-      toggle.setAttribute('aria-pressed', String(paused));
-    }
-
-    toggle.addEventListener('click', () => {
-      paused = !paused;
-      apply();
+    tracks.forEach(track => {
+      track.style.animationPlayState = running ? 'running' : 'paused';
     });
 
-    // start in playing state
-    apply();
+    if (toggle) {
+      toggle.textContent = userPaused ? 'Play' : 'Pause';
+      toggle.setAttribute('aria-pressed', String(userPaused));
+    }
+  }
+
+  // setting up belts + play/pause button
+  const belts = Array.from(document.querySelectorAll('.iteration-belt'));
+
+  belts.forEach(belt => {
+    const toggle = belt.querySelector('.iteration-belt__toggle');
+    const tracks = belt.querySelectorAll('.iteration-belt__track');
+    if (!tracks.length) return;
+
+    beltState.set(belt, {
+      userPaused: false,
+      inView: true,   // assume on-screen at load
+      tracks,
+      toggle
+    });
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const state = beltState.get(belt);
+        if (!state) return;
+        state.userPaused = !state.userPaused;
+        applyBeltState(belt);
+      });
+    }
+
+    applyBeltState(belt);
   });
 
+  // auto-pause when belt leaves viewport
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const belt = entry.target;
+      const state = beltState.get(belt);
+      if (!state) return;
 
+      state.inView = entry.isIntersecting;
+      applyBeltState(belt);
+    });
+  }, {
+    root: null,
+    // require ~20% of belt visible to "run"
+    threshold: 0.2
+  });
+
+  belts.forEach(belt => observer.observe(belt));
 
 })();
