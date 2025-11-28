@@ -11,7 +11,6 @@
     initStarfield(skyCanvas, scrollEl);
   }
 
-  initOrbitToggle();
 
   // ------------------------------
   // Progress bar
@@ -387,10 +386,54 @@
       requestAnimationFrame(frame);
     }
 
-    document.addEventListener('visibilitychange', () => {
-      state.paused = document.hidden;
+      // ... end of initStarfield, right before the closing brace of the IIFE ...
+
+  document.addEventListener('visibilitychange', () => {
+    state.paused = document.hidden;
+  });
+
+  requestAnimationFrame(frame);
+}
+  // === Iteration belt setup ===
+
+  document.querySelectorAll('.iteration-belt__track').forEach(track => {
+    if (track.dataset.cloned === 'true') return;
+    track.dataset.cloned = 'true';
+
+    const items = Array.from(track.children);
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true'); // don't announce duplicates
+      track.appendChild(clone);
+    });
+  });
+
+  // 2) Play / pause per belt
+  document.querySelectorAll('.iteration-belt').forEach(belt => {
+    const toggle = belt.querySelector('.iteration-belt__toggle');
+    const tracks = belt.querySelectorAll('.iteration-belt__track');
+
+    if (!toggle || !tracks.length) return;
+
+    let paused = false;
+
+    function apply() {
+      tracks.forEach(track => {
+        track.style.animationPlayState = paused ? 'paused' : 'running';
+      });
+      toggle.textContent = paused ? 'Play' : 'Pause';
+      toggle.setAttribute('aria-pressed', String(paused));
+    }
+
+    toggle.addEventListener('click', () => {
+      paused = !paused;
+      apply();
     });
 
-    requestAnimationFrame(frame);
-  }
+    // start in playing state
+    apply();
+  });
+
+
+
 })();

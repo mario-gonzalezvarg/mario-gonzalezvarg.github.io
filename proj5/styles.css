@@ -9,6 +9,7 @@
   --space: clamp(16px, 2.2vw, 28px);
   --radius: 14px;
   --shadow: 0 12px 30px rgba(0, 0, 0, .35);
+  --belt-duration: 45s;
 }
 
 /* ------------------------------
@@ -187,8 +188,7 @@ body.top-title {
   position: relative;
   text-align: left;
   width: 100rem;
-  /* max-width: 95rem; */
-  margin: 0 auto;
+  margin: 0.5rem;
   padding: 2.25rem; /* room for floating subheading label */
 }
 
@@ -276,13 +276,9 @@ body.top-title {
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  animation: iteration-belt-scroll 50s linear infinite;
+  /* animation: iteration-belt-scroll 30s linear infinite; */
+  animation: iteration-belt-scroll var(--belt-duration) linear infinite;
 }
-
-/* pause on hover (optional) */
-/* .iteration-belt__viewport:hover .iteration-belt__track {
-  animation-play-state: paused;
-} */
 
 .iteration-belt__item {
   flex: 0 0 auto;
@@ -327,8 +323,40 @@ body.top-title {
   text-align: left;
 }
 
-/* continuous scroll:
-   content is duplicated, so we only need to move by 50% */
+.iteration-belt__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.iteration-belt__toggle {
+  padding: 0.3rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(241, 222, 170, 0.7);
+  background: rgba(6, 16, 20, 0.9);
+  color: #ffeac7;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    /* background 0.2s ease, */
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.iteration-belt__toggle:hover {
+  box-shadow: 0 0 18px rgba(241, 222, 170, 0.6);
+  transform: translateY(-1px);
+}
+
+.iteration-belt__toggle[aria-pressed="true"] {
+  background: rgba(241, 222, 170, 0.15);
+  box-shadow: 0 0 0 1px rgba(241, 222, 170, 0.6);
+}
+
+
 @keyframes iteration-belt-scroll {
   from {
     transform: translateX(0);
@@ -356,5 +384,11 @@ body.top-title {
   .iteration-belt__title {
     font-size: 0.8rem;
     letter-spacing: 0.14em;
+  }
+
+  .iteration-belt__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }
