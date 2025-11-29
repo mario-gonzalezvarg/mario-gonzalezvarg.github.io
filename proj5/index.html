@@ -865,7 +865,7 @@
 
   <!-- ==================================================== 1.7.3 Text-Conditional Image-to-image Translation ====================================================== -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">1.7.3 Text-Conditional Image-to-image Translation</h2>
+    <h2 class="section-heading">Text-Conditional Image-to-image Translation</h2>
     <p>
       Now, we will do the same thing as SDEdit, but guide the projection with a text prompt. This is no longer pure
       "projection to the natural image manifold" but also adds control using language. This is simply a matter of
@@ -884,14 +884,15 @@
 
   <section class="content gold-glass iteration-belt">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Inpainting The Campanile</h2>
+      <!-- <h2 class="iteration-belt__title">Inpainting The Campanile</h2> -->
+      <h2 class="iteration-belt__title">1.7.3 Prompt Guided Diffusion Models</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
     <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Timesteps </h3>
+      <h3 class="iteration-belt__row-title">Prompt: "a rocketship launching into space"</h3>
       <div class="iteration-belt__track">
 
         <!-- <figure class="iteration-belt__item">
@@ -906,32 +907,32 @@
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/txtCond_img2img/i_start1.gif">
-          <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/txtCond_img2img/i_start3.gif">
-          <figcaption class="iteration-belt__caption">start index = 3</figcaption>
+          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/txtCond_img2img/i_start5.gif">
-          <figcaption class="iteration-belt__caption">start index = 5</figcaption>
+          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/txtCond_img2img/i_start7.gif">
-          <figcaption class="iteration-belt__caption">start index = 7</figcaption>
+          <figcaption class="iteration-belt__caption">noise level 7</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/txtCond_img2img/i_start10.gif">
-          <figcaption class="iteration-belt__caption">start index =  10</figcaption>
+          <figcaption class="iteration-belt__caption">noise level 10</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/txtCond_img2img/i_start20.gif">
-          <figcaption class="iteration-belt__caption">start index = 20</figcaption>
+          <figcaption class="iteration-belt__caption">noise level 20</figcaption>
         </figure>
       </div>
     </div>
@@ -1007,42 +1008,47 @@
     </div>
 
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Prompt 2: "'a Renaissance painting of a celestial choir of angels"</h3>
+      <h3 class="iteration-belt__row-title">Prompt: "'a Renaissance painting of a celestial choir of angels"</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start1.gif" alt="id start = 1">
-            <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start1.gif" alt="id start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start3.gif" alt="id_start = 3">
-            <figcaption class="iteration-belt__caption">start index = 3</figcaption>
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start3.gif" alt="id_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start5.gif" alt="id_start = 5">
-            <figcaption class="iteration-belt__caption">start index = 5</figcaption>
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start5.gif" alt="id_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start7.gif" alt="id_start = 7">
-            <figcaption class="iteration-belt__caption">start index = 7</figcaption>
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start7.gif" alt="id_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start10.gif" alt="id start = 10">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start10.gif" alt="id start = 10">
             <figcaption class="iteration-belt__caption">start index = 10</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start20.gif" alt="id start = start">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start17.gif" alt="id start = 17">
+            <figcaption class="iteration-belt__caption">start index = 17</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start20.gif" alt="id start = 20">
             <figcaption class="iteration-belt__caption">start index = 20</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/orig.png" alt="id start = start">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/orig.png" alt="id start = original">
             <figcaption class="iteration-belt__caption">Original</figcaption>
           </figure>
         </div>
