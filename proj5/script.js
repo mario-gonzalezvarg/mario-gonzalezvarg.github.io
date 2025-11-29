@@ -483,4 +483,35 @@
   }
 
   requestAnimationFrame(step);
+
+    // ------------------------------
+  // Sync all GIFs inside iteration belts
+  // ------------------------------
+  function syncAllBeltGifs() {
+    // Every GIF inside any belt track (original + cloned items)
+    const gifs = document.querySelectorAll(
+      '.iteration-belt__track img.iteration-belt__image[src$=".gif"]'
+    );
+    if (!gifs.length) return;
+
+    // One shared timestamp so cache + restart time is identical
+    const stamp = Date.now();
+
+    gifs.forEach(img => {
+      // Remember the base src (without any old query string)
+      const base =
+        (img.dataset.baseSrc || img.src).split('?')[0];
+
+      img.dataset.baseSrc = base;
+      // Setting src with the same cache-buster on all of them
+      // forces them to restart from frame 0 together.
+      img.src = `${base}?t=${stamp}`;
+    });
+  }
+
+  // After all images + belts are ready, restart all GIFs in sync
+  window.addEventListener('load', () => {
+    syncAllBeltGifs();
+  });
+
 })();
