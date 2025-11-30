@@ -1058,6 +1058,41 @@
 
   </section>
 
+  <!-- ==================================================== 1.8 Visual Anagrams ====================================================== -->
+
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Visual Anagrams</h2>
+    <p>
+      In this part, we are finally ready to implement Visual Anagrams and create optical illusions with diffusion
+      models. In this part, we will create an image that looks like "an oil painting of people around a campfire", but
+      when flipped upside down will reveal "an oil painting of an old man".
+
+      To do this, we will denoise an image
+      at step normally with the prompt , to obtain noise estimate . But at the same time, we will flip upside down, and
+      denoise with the prompt , to get noise estimate . We can flip
+
+      back, and average the two noise estimates. We can then perform a reverse/denoising diffusion step with the
+      averaged noise estimate.
+
+      The full algorithm will be:
+
+      where UNet is the diffusion model UNet from before, is a function that flips the image, and and are two different
+      text prompt embeddings. And our final noise estimate is
+
+      . Please implement the above algorithm and show example of an illusion.
+      Deliverables
+
+      Correctly implemented visual_anagrams function
+      2 illusions of your choice that change appearance when you flip it upside down (feel free to take inspirations
+      from this page).
+
+      Hints
+
+      You may have to run multiple times to get a really good result for the same reasons as above.
+
+    </p>
+  </section>
+
 
   <script src="../proj5/script.js" defer></script>
 </body>
