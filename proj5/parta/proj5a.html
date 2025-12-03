@@ -5,14 +5,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Diffusion Models – Visualizations</title>
-  <link rel="stylesheet" href="../proj5/styles.css" />
+  <link rel="stylesheet" href="../styles.css" />
 </head>
 
 <body class="top-title">
   <canvas id="sky" aria-hidden="true"></canvas>
 
+  <!-- Top nav bar -->
+  <header class="site-header">
+    <div class="content">
+      <nav class="top-nav" aria-label="Project navigation">
+        <a href="../../index.html" class="nav-logo">
+          Home
+        </a>
+        <!-- <div class="top-nav__links">
+          <a href="../parta/proj5a.html" class="nav-link">Part A</a>
+          <a href="../partb/proj5b.html" class="nav-link">Part B</a>
+        </div> -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- Title + Part A / Part B buttons -->
   <div class="content big-title">
     <h1 class="title">Diffusion Models</h1>
+
+    <div class="project-switcher" aria-label="Jump to project parts">
+      <a href="../parta/proj5a.html"
+         class="project-switcher__button project-switcher__button--primary">
+        Part A
+      </a>
+      <a href="../partb/proj5b.html" class="project-switcher__button">
+        Part B
+      </a>
+    </div>
   </div>
 
   <!--============================================= DeepFloyd Prompts ============================================ -->
@@ -1093,8 +1119,107 @@
     </p>
   </section>
 
+  <section class="content gold-glass iteration-belt">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">Visual Anagrams</h2>
 
-  <script src="../proj5/script.js" defer></script>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <h3 class="iteration-belt__row-title">Various Prompts</h3>
+
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/anagram_flipped.png">
+          <figcaption class="iteration-belt__caption">an oil painting of an old man</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/anagram_upright.png">
+          <figcaption class="iteration-belt__caption">an oil painting of people around a campfire</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/a/anagram_upright.png">
+          <figcaption class="iteration-belt__caption">a baroque painting of Cleopatra as a newborn princess in a tall
+            palace hall</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/a/anagram_flipped.png">
+          <figcaption class="iteration-belt__caption">a baroque painting of Cleopatra as a dying queen in the same tall
+            palace hall</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/b/anagram_flipped.png">
+          <figcaption class="iteration-belt__caption">a romanticism painting of the storming of the Bastille
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/b/anagram_upright.png">
+          <figcaption class="iteration-belt__caption"> a neoclassical painting of the signing of the United States
+            Declaration of Independence</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <!-- ==================================================== 1.9 Hybrid Images ====================================================== -->
+
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Visual Anagrams</h2>
+    <p>
+      Deliverables
+
+      Correctly implemented make_hybrids function
+      2 hybrid images of your choosing (feel free to take inspirations from this page).
+
+      Hints
+
+      use torchvision.transforms.functional.gaussian_blur
+      You may have to run multiple times to get a really good result for the same reasons as above
+    </p>
+  </section>
+
+  <section class="content gold-glass iteration-belt">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">Hybrid Images</h2>
+
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <h3 class="iteration-belt__row-title">Various Prompts</h3>
+
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/hybrid/a/hybrid_steps.gif">
+          <figcaption class="iteration-belt__caption">"a lithograph of a skull" / "a lithograph of a waterfall"</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/hybrid/b/hybrid_steps.gif">
+          <figcaption class="iteration-belt__caption">"a lithograph of a king" / "a lithograph of a volcano"</figcaption>
+        </figure>
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/hybrid/c/hybrid_steps.gif">
+          <figcaption class="iteration-belt__caption">"a young woman reading near a candlelight" / "a gothic cathedral"</figcaption>
+        </figure>
+    
+      </div>
+    </div>
+  </section>
+
+
+  <script src="../script.js" defer></script>
 </body>
 
 </html>

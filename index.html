@@ -4,26 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mario Gonzalez</title>
+
+  <!-- Global night-sky / proj5 style -->
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+
+<body class="top-title">
+  <!-- Starry background -->
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <!-- Top nav -->
   <header class="nav-band">
-    <nav class="nav container" aria-label="Primary">
+    <nav class="nav" aria-label="Primary">
       <a href="index.html" class="active" aria-current="page">Home</a>
     </nav>
   </header>
 
-  <section class="hero">
-    <div class="container">
-      <h1>It's-a Me, Mario! Gonzalez</h1>
-      <p class="part-note">Welcome to my semi-finished CS180 website!</p>
-      <a class="btn" href="proj0/index.html">Project 0 <span class="chev" aria-hidden="true">›</span></a>
-      <a class="btn" href="proj1/index.html">Project 1: Colorizing the Prokudin-Gorskii photo collection <span class="chev" aria-hidden="true">›</span></a>
-      <a class="btn" href="proj2/index.html">Project 2: Fun with Filters and Frequencies</a>
-      <a class="btn" href="proj3/index.html">Project 3: Stitching Photo Mosaics</a>
-      <a class="btn" href="proj4/index.html">Project 4: Neural Radiance Fields</a>
-      <a class="btn" href="proj5/index.html">Project 5: Diffusion Models</a>
-    </div>
+  <!-- Main glowing title -->
+  <div class="content big-title">
+    <h1 class="title">Mario Gonzalez</h1>
+  </div>
+
+  <!-- Project list card -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">CS180 Projects</h2>
+
+    <p>
+      <a class="btn" href="proj0/index.html">
+        Project 0
+        <span class="chev" aria-hidden="true">›</span>
+      </a>
+      <a class="btn" href="proj1/index.html">
+        Project 1: Colorizing the Prokudin-Gorskii photo collection
+        <span class="chev" aria-hidden="true">›</span>
+      </a>
+      <a class="btn" href="proj2/index.html">
+        Project 2: Fun with Filters and Frequencies
+      </a>
+      <a class="btn" href="proj3/index.html">
+        Project 3: Stitching Photo Mosaics
+      </a>
+      <a class="btn" href="proj4/index.html">
+        Project 4: Neural Radiance Fields
+      </a>
+      <a class="btn" href="proj5/parta/proj5a.html">
+        Project 5: Diffusion Models
+      </a>
+    </p>
   </section>
+
+  <!-- Night-sky / belt behavior -->
+  <script src="proj5/script.js" defer></script>
 </body>
 </html>

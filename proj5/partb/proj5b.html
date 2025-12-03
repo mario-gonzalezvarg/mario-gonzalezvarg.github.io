@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flow Matching from Scratch – Part B</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+
+<body class="top-title">
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <!-- Top nav bar -->
+  <header class="site-header">
+    <div class="content">
+      <nav class="top-nav" aria-label="Project navigation">
+        <a href="../../index.html" class="nav-logo">
+          CS180 · Project 5
+        </a>
+        <div class="top-nav__links">
+          <a href="../parta/proj5a.html" class="nav-link">Part A</a>
+          <a href="../partb/proj5b.html" class="nav-link">Part B</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Title + Part A / Part B buttons -->
+  <div class="content big-title">
+    <h1 class="title">Flow Matching from Scratch</h1>
+
+    <div class="project-switcher" aria-label="Jump to project parts">
+      <a href="../parta/proj5a.html"
+         class="project-switcher__button project-switcher__button--primary">
+        Go to Part A
+      </a>
+      <a href="../partb/proj5b.html" class="project-switcher__button">
+        Go to Part B
+      </a>
+    </div>
+  </div>
+
+  <!-- ===================================================== Part 1: Single-Step Denoising UNet ===================================================== -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Part 1 · Training a Single-Step Denoising UNet</h2>
+    <p>
+      In this part you build an unconditional UNet denoiser on MNIST and study how well it removes Gaussian noise and
+      whether it can be used as a generative model.
+    </p>
+  </section>
+
+  <!-- ============================================ 1.1 Implementing the UNet (description only) ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">1.1 Implementing the UNet</h2>
+    <p>
+      Briefly describe your UNet architecture and any deviations from the provided diagram
+      (number of channels, depth, activation functions, etc.). Optionally include an architecture
+      figure or diagram here.
+    </p>
+  </section>
+
+  <!-- ============================================ 1.2 Using the UNet to Train a Denoiser ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">1.2 Using the UNet to Train a Denoiser</h2>
+    <p>
+      Here you visualize the noising process for different noise levels and then train the UNet
+      to denoise images at a fixed noise level.
+    </p>
+    <p>
+      Deliverable:
+    </p>
+    <ul>
+      <li>Visualization of the noising process for a digit over
+        <code>&sigma; ∈ {0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0}</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt" aria-label="Noising process visualization">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">1.2 · Noising Process (&sigma; Sweep)</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- TODO: Add one <figure> per sigma value: 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 1.2.1 Training at σ = 0.5 ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">1.2.1 Training with σ = 0.5</h2>
+    <p>
+      Train the UNet as a denoiser for images noised at
+      <code>&sigma; = 0.5</code>,
+      and monitor both the loss and qualitative outputs.
+    </p>
+    <p>Deliverables:</p>
+    <ul>
+      <li>A training loss curve recorded throughout training for <code>&sigma; = 0.5</code>.</li>
+      <li>Example denoised test digits at noise level <code>&sigma; = 0.5</code> after epoch 1 and epoch 5.</li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+           aria-label="Training and denoising results for σ = 0.5">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">1.2.1 · σ = 0.5 Training Results</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Training Loss Curve</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+          <!-- TODO: Add a <figure> with your loss curve image for σ = 0.5 -->
+        </div>
+      </div>
+    </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Denoised Test Digits (Epochs 1 &amp; 5)</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+          <!-- TODO: Add figures showing test digits and their denoised outputs at epoch 1 and epoch 5 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 1.2.2 Out-of-Distribution Testing ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">1.2.2 Out-of-Distribution Testing</h2>
+    <p>
+      Evaluate how the σ = 0.5 denoiser behaves when asked to denoise digits corrupted with
+      various noise levels it has not specifically been trained on.
+    </p>
+    <p>Deliverable:</p>
+    <ul>
+      <li>
+        For a fixed test digit, show denoiser outputs for
+        <code>&sigma; ∈ {0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0}</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt"
+           aria-label="Out-of-distribution noise level comparison">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">1.2.2 · Out-of-Distribution σ</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- TODO: Add figures showing the same digit denoised at each σ value above -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 1.2.3 Denoising Pure Noise ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">1.2.3 Denoising Pure Noise</h2>
+    <p>
+      Retrain the denoiser to map pure Gaussian noise directly to clean digits and then inspect
+      what kinds of images it produces.
+    </p>
+    <p>Deliverables:</p>
+    <ul>
+      <li>Training loss curve while training on pure noise inputs.</li>
+      <li>Sample outputs from denoising pure noise after epoch 1 and epoch 5.</li>
+      <li>
+        A short explanation of the visual patterns you observe and why they might arise given
+        the MSE objective.
+      </li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+           aria-label="Pure noise denoising results">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">1.2.3 · Denoising Pure Noise</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Training Loss (Pure Noise)</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+          <!-- TODO: Add a figure with the pure-noise training loss curve -->
+        </div>
+      </div>
+    </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Generated Samples from Pure Noise</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+          <!-- TODO: Add figures showing denoising results after epoch 1 and epoch 5 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== Part 2: Flow Matching Model ===================================================== -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Part 2 · Training a Flow Matching Model</h2>
+    <p>
+      In this part you extend the UNet with time and class conditioning, train a flow matching model,
+      and then sample digits by iteratively denoising from pure noise.
+    </p>
+  </section>
+
+  <!-- ============================================ 2.1 Adding Time Conditioning to UNet (description) ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">2.1 Adding Time Conditioning to UNet</h2>
+    <p>
+      Describe how you inject the scalar timestep <code>t</code> into the UNet (FCBlocks, where you
+      multiply or modulate intermediate features, normalization of <code>t</code>, etc.).
+      Include any diagrams if you want.
+    </p>
+  </section>
+
+  <!-- ============================================ 2.2 Training Time-Conditioned UNet ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">2.2 Training the Time-Conditioned UNet</h2>
+    <p>
+      Train the time-conditioned UNet to approximate the flow between noisy samples and clean digits
+      across timesteps.
+    </p>
+    <p>Deliverable:</p>
+    <ul>
+      <li>A training loss curve for the time-conditioned UNet over the full training schedule.</li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt"
+           aria-label="Time-conditioned UNet training curve">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">2.2 · Time-Conditioned UNet Training</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- TODO: Add a figure with the training loss curve for the time-conditioned UNet -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 2.3 Sampling from Time-Conditioned UNet ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">2.3 Sampling from the Time-Conditioned UNet</h2>
+    <p>
+      Use the sampling algorithm to iteratively denoise from pure noise and visualize digits
+      generated after different numbers of training epochs.
+    </p>
+    <p>Deliverables:</p>
+    <ul>
+      <li>
+        Sampling grids (or belts) from the time-conditioned UNet after 1, 5, and 10 epochs of training.
+      </li>
+      <li>
+        (Optional / bells &amp; whistles) Additional experiments improving sample quality.
+      </li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt"
+           aria-label="Sampling from time-conditioned UNet">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">2.3 · Time-Conditioned Sampling (Epochs 1, 5, 10)</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- TODO: Add figures showing samples after 1, 5, and 10 epochs -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 2.4 Adding Class Conditioning (description) ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">2.4 Adding Class-Conditioning to UNet</h2>
+    <p>
+      Explain how you extend the UNet to take a class one-hot vector, where you inject class
+      information, and how classifier-free guidance is implemented by occasionally dropping the class.
+    </p>
+  </section>
+
+  <!-- ============================================ 2.5 Training Class-Conditioned UNet ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">2.5 Training the Class-Conditioned UNet</h2>
+    <p>
+      Train the class-conditioned UNet on MNIST digits, using both time and class inputs, with
+      occasional unconditional training for classifier-free guidance.
+    </p>
+    <p>Deliverable:</p>
+    <ul>
+      <li>A training loss curve for the class-conditioned UNet across all epochs.</li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt"
+           aria-label="Class-conditioned UNet training curve">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">2.5 · Class-Conditioned UNet Training</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- TODO: Add a figure with the class-conditioned UNet training loss curve -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 2.6 Sampling from Class-Conditioned UNet ============================================ -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">2.6 Sampling from the Class-Conditioned UNet</h2>
+    <p>
+      Use classifier-free guidance to generate digits conditioned on class labels and study both
+      convergence speed and the effect of the learning rate scheduler.
+    </p>
+    <p>Deliverables:</p>
+    <ul>
+      <li>
+        Sampling results from the class-conditioned UNet after 1, 5, and 10 epochs, with several
+        samples per digit class (e.g., 4 instances of digits 0–9).
+      </li>
+      <li>
+        An additional run without the exponential learning rate scheduler:
+        show its samples and discuss what you changed to keep performance comparable.
+      </li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+           aria-label="Class-conditioned sampling results">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">2.6 · Class-Conditioned Sampling &amp; LR Scheduler Ablation</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Sampling with Scheduler (Epochs 1, 5, 10)</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+          <!-- TODO: Add figures showing per-class samples with the scheduler enabled -->
+        </div>
+      </div>
+    </div>
+
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Sampling without Scheduler</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+          <!-- TODO: Add figures showing samples when training without the scheduler -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== Part 3: Bells & Whistles (optional) ===================================================== -->
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Part 3 · Bells &amp; Whistles (Optional)</h2>
+    <p>
+      Use this section if you attempt any of the suggested extensions (e.g., improving the
+      time-conditioned UNet or training on other datasets such as SVHN, Fashion-MNIST, or CIFAR10).
+    </p>
+    <p>Possible deliverables:</p>
+    <ul>
+      <li>Improved time-only UNet samples compared to the baseline in Section 2.3.</li>
+      <li>Results on additional datasets or creative applications of your flow matching model.</li>
+    </ul>
+  </section>
+
+  <section class="content gold-glass iteration-belt"
+           aria-label="Bells and whistles results">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">3 · Extra Experiments</h2>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- TODO: Add any extra qualitative results here if you do bells & whistles -->
+      </div>
+    </div>
+  </section>
+
+  <script src="../script.js" defer></script>
+</body>
+
+</html>
