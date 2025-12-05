@@ -220,7 +220,6 @@ body.top-title {
 
 .iteration-belt__title {
   font-size: 1.0rem;
-  /* transform: translateY(-64px); */
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-weight: 360;
@@ -243,8 +242,10 @@ body.top-title {
 
 .iteration-belt__item {
   flex: 0 0 auto;
-  width: 18rem;
+  /* was: width: 18rem; */
+  width: var(--belt-item-width, 18rem); /* default 18rem */
 }
+
 
 .iteration-belt__image {
   display: block;

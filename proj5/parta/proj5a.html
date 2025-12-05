@@ -6,13 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Diffusion Models – Visualizations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-  href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap"
-  rel="stylesheet"
-/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../styles.css" />
 
   <link rel="stylesheet" href="../styles.css" />
 </head>
@@ -40,10 +37,9 @@
     <h1 class="title">Diffusion Models</h1>
 
     <div class="project-switcher" aria-label="Jump to project parts">
-      <a href="../parta/proj5a.html"
-         class="project-switcher__button project-switcher__button--primary">
+      <a href="../parta/proj5a.html" class="project-switcher__button project-switcher__button--primary">
         Part A
-      </a>  
+      </a>
       <a href="../partb/proj5b.html" class="project-switcher__button">
         Part B
       </a>
@@ -59,6 +55,38 @@
       the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps
       values. Report the random seed that you're using here. You should use the same seed all subsequent parts.
     </p>
+  </section>
+
+  <!-- 1.1 belt -->
+  <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
+    <div class="iteration-belt__header">
+      <h2 class="iteration-belt__title">DeepFloyd Prompts</h2>
+
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <h3 class="iteration-belt__row-title">Timesteps </h3>
+      <div class="iteration-belt__track">
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/lewis_clark/stage3_1024.png"
+            alt="Data visualization at iteration 0">
+          <figcaption class="iteration-belt__caption">a symbolist painting of Lewis and Clark reaching the Columbia
+            River, soft edges</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/forward_process/noisy_t_0.png"
+            alt="Data visualization at iteration 0">
+          <figcaption class="iteration-belt__caption">a romanticism oil painting of a mermaid seen only as a reflection
+            in dark waves under moonlight
+          </figcaption>
+        </figure>
+      </div>
+    </div>
   </section>
 
 
@@ -78,7 +106,7 @@
   <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">Adding Noise</h2>
-      
+
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
@@ -1212,20 +1240,23 @@
       <div class="iteration-belt__track">
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/hybrid/a/hybrid_steps.gif">
-          <figcaption class="iteration-belt__caption">"a lithograph of a skull" / "a lithograph of a waterfall"</figcaption>
+          <figcaption class="iteration-belt__caption">"a lithograph of a skull" / "a lithograph of a waterfall"
+          </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/hybrid/b/hybrid_steps.gif">
-          <figcaption class="iteration-belt__caption">"a lithograph of a king" / "a lithograph of a volcano"</figcaption>
+          <figcaption class="iteration-belt__caption">"a lithograph of a king" / "a lithograph of a volcano"
+          </figcaption>
         </figure>
 
 
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/hybrid/c/hybrid_steps.gif">
-          <figcaption class="iteration-belt__caption">"a young woman reading near a candlelight" / "a gothic cathedral"</figcaption>
+          <figcaption class="iteration-belt__caption">"a young woman reading near a candlelight" / "a gothic cathedral"
+          </figcaption>
         </figure>
-    
+
       </div>
     </div>
   </section>
