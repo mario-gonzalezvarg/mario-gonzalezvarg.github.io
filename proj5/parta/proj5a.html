@@ -8,9 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="../styles.css" />
-
   <link rel="stylesheet" href="../styles.css" />
 </head>
 
@@ -46,15 +43,75 @@
     </div>
   </div>
 
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">HuggingFace Model Interface</h2>
+    <figure class="standalone-diagram">
+      <img src="media/diagrams/pipeline.png" alt="High-level inference pipeline from raw text to predictions.">
+    </figure>
+    <p>
+      The HuggingFace inference pipeline can be generalized as a sequence of clearly defined
+      transformations. The process starts with <em>raw text</em>, a plain string such as “This course is
+      amazing.” The <strong>tokenizer</strong> takes this string, splits it into subword units, and looks
+      up each unit in a fixed vocabulary table. This step produces a sequence of integers called
+      <em>input IDs</em>, which is the form the model can consume. The <strong>model</strong> then takes
+      these input IDs and computes a real-valued score for each possible label; these scores are called
+      <em>logits</em> and encode how compatible the text is with each class before any normalization.
+      The final <strong>post-processing</strong> block converts logits into something usable: a softmax
+      turns them into probabilities, and simple decision logic (such as taking the largest probability)
+      chooses the predicted label, for example POSITIVE versus NEGATIVE sentiment.
+    </p>
+  </section>
+
+
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">Transformer Architecture & DeepFloyd IF</h2>
+    <p>
+      The internal structure of the model can be decomposed into an embedding layer, a stack of
+      transformer layers, and a classification head. First, an <strong>embedding layer</strong> maps each
+      input ID to a dense vector that represents the token in a continuous space. A stack of
+      <strong>transformer layers</strong> then processes the entire sequence: each layer applies
+      self-attention, so every token can use information from every other token, followed by small
+      feed-forward networks that refine these combined representations. After several such layers, the
+      model extracts a single summary vector for the whole sequence (for example, by reading a special
+      classification token or averaging all token vectors). A small <strong>classification head</strong>—
+      typically one or two linear layers—takes this summary vector and produces the logits. These logits
+      feed directly into the post-processing step from the first paragraph, completing the logical chain
+      from raw text to final prediction.
+    </p>
+
+    <figure class="standalone-diagram">
+      <img src="media/diagrams/transformer_and_head-dark.svg"
+        alt="Transformer backbone and output head used in the HuggingFace model.">
+    </figure>
+
+    <p>
+      DeepFloyd IF can be understood as coupling this text encoder to a three-stage cascaded diffusion
+      model: a 64×64 base denoiser (stage 1) followed by two upsamplers that refine the image to higher
+      resolutions (stages 2 and 3). For all experiments in this section, prompt embeddings produced by
+      the transformer are used as conditioning signals at every denoising step, while the random seed is
+      fixed to 12152000 so that differences in the outputs primarily reflect the prompts and sampling
+      hyperparameters. Classifier-free guidance is applied with a relatively strong guidance scale in
+      stage 1 (γ ≈ 9.0) and slightly lower guidance in the upsampling stages (γ ≈ 7.0), which stabilizes
+      global structure while allowing the higher-resolution stages to sharpen details. This setup
+      provides a controlled environment for the prompt-based images that follow, making it possible to
+      interpret how changes in text descriptions translate into systematic changes in composition,
+      lighting, and reflective structure.
+    </p>
+  </section>
+
+
   <!--============================================= DeepFloyd Prompts ============================================ -->
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">DeepFloyd Prompts</h2>
-    <p>
-      REQUIRED:
-      For the 3 text prompts that we provide, display the caption and the output of the model. Reflect on the quality of
-      the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps
-      values. Report the random seed that you're using here. You should use the same seed all subsequent parts.
-    </p>
+<p>
+  Prompt design in this part is instantiated by a small, curated set of historical and
+  reflection-based descriptions. Six prompts are used in total, including: a symbolist scene of
+  Lewis and Clark reaching the Columbia River, a crowded baroque marketplace lit by torches, a
+  mermaid under moonlight described through reflections, a Renaissance city square seen through
+  glass panes, a library whose windows open onto different skies, and a symbolic close-up of an
+  eye reflecting the Hiroshima mushroom cloud. For each prompt, a text embedding is obtained using
+  the HuggingFace text encoder and reused across all subsequent sampling runs.
+</p>
   </section>
 
   <!-- 1.1 belt -->
@@ -67,26 +124,82 @@
       </button>
     </div>
 
+    
+
     <div class="iteration-belt__viewport">
       <h3 class="iteration-belt__row-title">Timesteps </h3>
       <div class="iteration-belt__track">
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/lewis_clark/stage3_1024.png"
-            alt="Data visualization at iteration 0">
-          <figcaption class="iteration-belt__caption">a symbolist painting of Lewis and Clark reaching the Columbia
-            River, soft edges</figcaption>
+          <img class="iteration-belt__image" src="media/prompts/lewis.png">
+          <figcaption class="iteration-belt__caption">"a symbolist painting of Lewis and Clark reaching the Columbia
+            River, soft edges"</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/forward_process/noisy_t_0.png"
-            alt="Data visualization at iteration 0">
-          <figcaption class="iteration-belt__caption">a romanticism oil painting of a mermaid seen only as a reflection
-            in dark waves under moonlight
+          <img class="iteration-belt__image" src="media/prompts/market.png">
+          <figcaption class="iteration-belt__caption">"a baroque oil painting of a crowded market lit by torches and
+            deep shadows"
           </figcaption>
         </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/mermaid.png">
+          <figcaption class="iteration-belt__caption">"a romanticism oil painting of a mermaid seen only as a reflection
+            in dark waves under moonlight"
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/glass_planes.png">
+          <figcaption class="iteration-belt__caption">" “a renaissance-style painting of a city square reflected in many
+            small glass panes”
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/hiroshima.png">
+          <figcaption class="iteration-belt__caption">"a symbolist oil painting, close-up of a human eye whose iris is a
+            reflection of a distant mushroom of the atomic bomb dropped at Hiroshima"
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/windows.png">
+          <figcaption class="iteration-belt__caption">"a realism painting of a library where each window opens onto a
+            different sky"
+          </figcaption>
+        </figure>
+
       </div>
     </div>
+  </section>
+
+  <section class="content gold-glass writing-section">
+    <h2 class="section-heading">DeepFloyd Prompts</h2>
+    <p>
+      Reflection-based prompts reveal a different behavior. The mermaid prompt requests “a romanticism oil painting of a
+      mermaid seen only as a reflection in dark waves under moonlight.” The output instead depicts a fully visible
+      mermaid bathed in moonlight with softly rendered water and a luminous tail. The painting strongly matches the
+      romantic color palette and lighting, but the “seen only as a reflection” clause is interpreted more as an
+      atmospheric cue than as a strict geometric constraint. By contrast, the city-square prompt (“a renaissance-style
+      painting of a city square reflected in many small glass panes”) produces a convincing tiled window where each pane
+      contains part of the underlying urban scene, closely following the requested grid-like reflection structure. The
+      crowded-market prompt produces baroque-style architecture, warm torchlight, and deep cast shadows, illustrating
+      how the model responds reliably to cues about period and lighting such as “baroque,” “torches,” and “deep
+      shadows.”
+    </p>
+
+    <p>To study the effect of the number of sampling steps, the mermaid prompt is reused with a separate fixed seed
+      (1215200) and different num_inference_steps values. The resulting images (Mermaid_5, Mermaid_10, Mermaid_15,
+      Mermaid_20) form a progression in both detail and stability. At lower step counts the images resemble loose oil
+      sketches: edges are soft, the waves merge into broad strokes of color, and facial features remain only hinted. As
+      the step count increases, the diffusion trajectory has more opportunities to refine structure, leading to crisper
+      silhouettes, better-resolved hair and scales, and more coherent moonlight reflections on the water. Beyond a
+      certain point, additional steps mainly encourage alternative but equally plausible compositions (for example,
+      different poses or head tilts) rather than dramatic gains in fidelity, illustrating the typical trade-off in
+      diffusion sampling: more steps enhance alignment and detail but also allow the sampler to explore different modes
+      of the prompt-conditioned image distribution.</p>
   </section>
 
 

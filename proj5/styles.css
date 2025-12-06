@@ -147,30 +147,55 @@ body.top-title {
 
 
 /* ------------------------------
-   Writing section / my_notes
+   Writing section
 ------------------------------ */
 
 .writing-section {
   position: relative;
   text-align: left;
-  /* width: 100rem; */
   width: 100%;
-  max-width: 84rem;
-  /* margin: 0.5rem; */
-  margin: 1.5rem auto;
-  /* padding: 2.25rem; */
-  padding: 1.75rem 1.5rem;
-  /* room for floating subheading label */
+  max-width: 96rem;
+  margin: 0.75em auto 0.5em;
+  padding: 1.75em 2.5em;
 }
 
 .writing-section p {
   font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 300; /* light */
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-  line-height: 1.8;
+  font-weight: 450;
+  font-size: clamp(1.0rem, 1.4vw, 1.1rem);
+  line-height: 1.92;
   color: #c9cfde;
   max-width: 100%;
+  margin: 0 0 1.5rem;
 }
+
+.writing-section figure {
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.writing-section figure img {
+  display: block;
+  max-width: min(100%, 64rem);
+  margin: 0 auto;
+  height: auto;
+  /* text-align: center; */
+}
+
+.standalone-diagram {
+  margin: 1.75rem auto;
+  max-width: 100%;
+  text-align: center;
+}
+
+.standalone-diagram img {
+  display: block;
+  width: min(100%, 52rem);  
+  height: auto;
+  margin: 0 auto;
+}
+
+
 
 
 /* subheading label: above top-left of border */
@@ -207,13 +232,14 @@ body.top-title {
 }
 
 
+
+
 /* ------------------------------
    Infinite iteration conveyor belt
 ------------------------------ */
 
 .iteration-belt {
-  width: 100%;
-  max-width: 90rem;
+  width: 98%;
   margin: 0 auto;
   text-align: center;
 }
@@ -236,23 +262,19 @@ body.top-title {
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  /* animation: iteration-belt-scroll 30s linear infinite; */
   animation: iteration-belt-scroll var(--belt-duration) linear infinite;
 }
 
 .iteration-belt__item {
   flex: 0 0 auto;
-  /* was: width: 18rem; */
-  width: var(--belt-item-width, 18rem); /* default 18rem */
+  width: var(--belt-item-width, 26rem);
 }
-
 
 .iteration-belt__image {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 0.5rem;
-  /* border: 1px solid rgba(255, 211, 160, 0.4); */
   border: none;
 }
 
@@ -274,7 +296,7 @@ body.top-title {
 .iteration-belt__row {
   display: flex;
   flex-direction: column;
-  /* gap: 0.35rem; */
+  gap: 0.35rem;
 }
 
 .iteration-belt__row-title {
@@ -510,6 +532,12 @@ body.top-title {
     padding-top: 1.25rem;
     /* no need to reserve space for floating label */
   }
+  @media (max-width: 600px) {
+  .diagram-pair {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 
 
