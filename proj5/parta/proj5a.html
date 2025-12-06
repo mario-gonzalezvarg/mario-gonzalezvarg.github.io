@@ -12,6 +12,7 @@
 </head>
 
 <body class="top-title">
+
   <canvas id="sky" aria-hidden="true"></canvas>
   <header class="site-header">
     <div class="content">
@@ -22,6 +23,7 @@
       </nav>
     </div>
   </header>
+
   <div class="content big-title">
     <h1 class="title">Diffusion Models</h1>
 
@@ -34,6 +36,8 @@
       </a>
     </div>
   </div>
+
+  <!--============================================= HuggingFace Interface Introduction ============================================ -->
 
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">HuggingFace Model Interface</h2>
@@ -92,7 +96,7 @@
   </section>
 
 
-  <!--============================================= DeepFloyd Prompts ============================================ -->
+  <!--============================================= 0 DeepFloyd Prompts =========================================================== -->
   <section class="content gold-glass iteration-belt" aria-label="DeepFloyd prompts">
     <h2 class="section-heading">DeepFloyd Prompts</h2>
     <div class="iteration-belt__intro">
@@ -108,7 +112,7 @@
     </div>
 
     <div class="iteration-belt__header">
-      <h3 class="iteration-belt__title">DeepFloyd Prompts</h3>
+      <!-- <h3 class="iteration-belt__title">Renders</h3> -->
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
     </div>
 
@@ -161,7 +165,7 @@
       </div>
     </div>
 
-    <div class="iteration-belt__outro">
+    <!-- <div class="iteration-belt__outro">
       <p>
         Three of these prompts are selected as primary case studies and are rendered repeatedly with a
         fixed random seed of 12152000 and multiple stage-1 num_inference_steps configurations, while
@@ -171,74 +175,11 @@
         single seed that is carried forward into later parts of the project so that differences in the
         outputs can be attributed to the prompts and sampling settings rather than to randomness.
       </p>
-    </div>
+    </div> -->
 
   </section>
 
-
-  <!-- 1.1 belt -->
-  <!-- <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
-    <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">DeepFloyd Prompts</h2>
-
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
-
-
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Timesteps </h3>
-      <div class="iteration-belt__track">
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/lewis.png">
-          <figcaption class="iteration-belt__caption">"a symbolist painting of Lewis and Clark reaching the Columbia
-            River, soft edges"</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/market.png">
-          <figcaption class="iteration-belt__caption">"a baroque oil painting of a crowded market lit by torches and
-            deep shadows"
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/mermaid.png">
-          <figcaption class="iteration-belt__caption">"a romanticism oil painting of a mermaid seen only as a reflection
-            in dark waves under moonlight"
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/glass_planes.png">
-          <figcaption class="iteration-belt__caption">" “a renaissance-style painting of a city square reflected in many
-            small glass panes”
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/hiroshima.png">
-          <figcaption class="iteration-belt__caption">"a symbolist oil painting, close-up of a human eye whose iris is a
-            reflection of a distant mushroom of the atomic bomb dropped at Hiroshima"
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/windows.png">
-          <figcaption class="iteration-belt__caption">"a realism painting of a library where each window opens onto a
-            different sky"
-          </figcaption>
-        </figure>
-
-      </div>
-    </div>
-  </section> -->
-
-
-
-  <!-- ===================================== 1.1 Implementing the Forward Process ====================================  -->
+  <!-- ===================================== 1.1 Implementing the Forward Process =================================================  -->
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">1.1 Forward Process</h2>
     <p>
