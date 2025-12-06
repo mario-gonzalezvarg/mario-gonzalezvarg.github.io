@@ -222,10 +222,16 @@ body.top-title {
 ------------------------------ */
 
 /* iteration belt that lives as a full card */
-.iteration-belt {
+/* .iteration-belt {
   width: 100%;
   max-width: 96rem;
   margin: 0.75rem auto 0.5rem;
+} */
+ .iteration-belt {
+  width: 100%;
+  max-width: 100rem;   /* or 100rem if you want it even wider */
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* optional text blocks above/below the belt */
