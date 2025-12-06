@@ -13,23 +13,15 @@
 
 <body class="top-title">
   <canvas id="sky" aria-hidden="true"></canvas>
-
-  <!-- Top nav bar -->
   <header class="site-header">
     <div class="content">
       <nav class="top-nav" aria-label="Project navigation">
         <a href="../../index.html" class="nav-logo">
           Home
         </a>
-        <!-- <div class="top-nav__links">
-          <a href="../parta/proj5a.html" class="nav-link">Part A</a>
-          <a href="../partb/proj5b.html" class="nav-link">Part B</a>
-        </div> -->
       </nav>
     </div>
   </header>
-
-  <!-- Title + Part A / Part B buttons -->
   <div class="content big-title">
     <h1 class="title">Diffusion Models</h1>
 
@@ -101,21 +93,85 @@
 
 
   <!--============================================= DeepFloyd Prompts ============================================ -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">DeepFloyd Prompts</h2>
-<p>
-  Prompt design in this part is instantiated by a small, curated set of historical and
-  reflection-based descriptions. Six prompts are used in total, including: a symbolist scene of
-  Lewis and Clark reaching the Columbia River, a crowded baroque marketplace lit by torches, a
-  mermaid under moonlight described through reflections, a Renaissance city square seen through
-  glass panes, a library whose windows open onto different skies, and a symbolic close-up of an
-  eye reflecting the Hiroshima mushroom cloud. For each prompt, a text embedding is obtained using
-  the HuggingFace text encoder and reused across all subsequent sampling runs.
-</p>
-  </section>
+<section class="content gold-glass iteration-belt" aria-label="DeepFloyd prompts">
+  <h2 class="section-heading">DeepFloyd Prompts</h2>
+
+  <div class="iteration-belt__intro">
+    <p>
+      Prompt design in this part is instantiated by a small, curated set of historical and
+      reflection-based descriptions. Six prompts are used in total, including: a symbolist scene of
+      Lewis and Clark reaching the Columbia River, a crowded baroque marketplace lit by torches, a
+      mermaid under moonlight described through reflections, a Renaissance city square seen through
+      glass panes, a library whose windows open onto different skies, and a symbolic close-up of an
+      eye reflecting the Hiroshima mushroom cloud. For each prompt, a text embedding is obtained using
+      the HuggingFace text encoder and reused across all subsequent sampling runs.
+    </p>
+  </div>
+
+  <div class="iteration-belt__header">
+    <h3 class="iteration-belt__title">DeepFloyd Prompts</h3>
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+  </div>
+
+  <div class="iteration-belt__viewport">
+    <h4 class="iteration-belt__row-title">Timesteps</h4>
+    <div class="iteration-belt__track">
+       <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/lewis.png">
+            <figcaption class="iteration-belt__caption">"a symbolist painting of Lewis and Clark reaching the Columbia
+              River, soft edges"</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/market.png">
+            <figcaption class="iteration-belt__caption">"a baroque oil painting of a crowded market lit by torches and
+              deep shadows"
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/mermaid.png">
+            <figcaption class="iteration-belt__caption">"a romanticism oil painting of a mermaid seen only as a
+              reflection
+              in dark waves under moonlight"
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/glass_planes.png">
+            <figcaption class="iteration-belt__caption">" “a renaissance-style painting of a city square reflected in
+              many
+              small glass panes”
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/hiroshima.png">
+            <figcaption class="iteration-belt__caption">"a symbolist oil painting, close-up of a human eye whose iris is
+              a
+              reflection of a distant mushroom of the atomic bomb dropped at Hiroshima"
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/windows.png">
+            <figcaption class="iteration-belt__caption">"a realism painting of a library where each window opens onto a
+              different sky"
+            </figcaption>
+          </figure>
+    </div>
+  </div>
+
+  <!-- Optional text below the belt
+  <div class="iteration-belt__outro">
+    <p>...</p>
+  </div>
+  -->
+</section>
+
 
   <!-- 1.1 belt -->
-  <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
+  <!-- <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">DeepFloyd Prompts</h2>
 
@@ -124,7 +180,6 @@
       </button>
     </div>
 
-    
 
     <div class="iteration-belt__viewport">
       <h3 class="iteration-belt__row-title">Timesteps </h3>
@@ -173,34 +228,8 @@
 
       </div>
     </div>
-  </section>
+  </section> -->
 
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">DeepFloyd Prompts</h2>
-    <p>
-      Reflection-based prompts reveal a different behavior. The mermaid prompt requests “a romanticism oil painting of a
-      mermaid seen only as a reflection in dark waves under moonlight.” The output instead depicts a fully visible
-      mermaid bathed in moonlight with softly rendered water and a luminous tail. The painting strongly matches the
-      romantic color palette and lighting, but the “seen only as a reflection” clause is interpreted more as an
-      atmospheric cue than as a strict geometric constraint. By contrast, the city-square prompt (“a renaissance-style
-      painting of a city square reflected in many small glass panes”) produces a convincing tiled window where each pane
-      contains part of the underlying urban scene, closely following the requested grid-like reflection structure. The
-      crowded-market prompt produces baroque-style architecture, warm torchlight, and deep cast shadows, illustrating
-      how the model responds reliably to cues about period and lighting such as “baroque,” “torches,” and “deep
-      shadows.”
-    </p>
-
-    <p>To study the effect of the number of sampling steps, the mermaid prompt is reused with a separate fixed seed
-      (1215200) and different num_inference_steps values. The resulting images (Mermaid_5, Mermaid_10, Mermaid_15,
-      Mermaid_20) form a progression in both detail and stability. At lower step counts the images resemble loose oil
-      sketches: edges are soft, the waves merge into broad strokes of color, and facial features remain only hinted. As
-      the step count increases, the diffusion trajectory has more opportunities to refine structure, leading to crisper
-      silhouettes, better-resolved hair and scales, and more coherent moonlight reflections on the water. Beyond a
-      certain point, additional steps mainly encourage alternative but equally plausible compositions (for example,
-      different poses or head tilts) rather than dramatic gains in fidelity, illustrating the typical trade-off in
-      diffusion sampling: more steps enhance alignment and detail but also allow the sampler to explore different modes
-      of the prompt-conditioned image distribution.</p>
-  </section>
 
 
   <!-- ===================================== 1.1 Implementing the Forward Process ====================================  -->

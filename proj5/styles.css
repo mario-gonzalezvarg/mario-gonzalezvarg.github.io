@@ -97,13 +97,11 @@ body.top-title {
   background: linear-gradient(135deg,
       rgba(3, 12, 24, 0.92),
       rgba(2, 24, 20, 0.9));
-  /* border-radius: 0.75rem; */
+  border-radius: 0.75rem;  /* UNCOMMENT / ADD THIS */
   border: 1px solid rgba(163, 255, 203, 0.42);
   box-shadow:
     0 0 18px rgba(118, 255, 203, 0.25),
     0 0 60px rgba(118, 255, 203, 0.18);
-  /* 0 0 24px rgba(255, 236, 190, 0.9); */
-  /* 0 0 16px rgba(255, 220, 160, 0.75); */
 }
 
 /* generic h1 inside content; main styling is on .title */
@@ -171,6 +169,7 @@ body.top-title {
 
 .writing-section figure {
   margin: 2rem auto;
+  max-width: 100%;
   text-align: center;
 }
 
@@ -180,19 +179,6 @@ body.top-title {
   margin: 0 auto;
   height: auto;
   /* text-align: center; */
-}
-
-.standalone-diagram {
-  margin: 1.75rem auto;
-  max-width: 100%;
-  text-align: center;
-}
-
-.standalone-diagram img {
-  display: block;
-  width: min(100%, 52rem);  
-  height: auto;
-  margin: 0 auto;
 }
 
 
@@ -238,10 +224,33 @@ body.top-title {
    Infinite iteration conveyor belt
 ------------------------------ */
 
+/* iteration belt that lives as a full card */
 .iteration-belt {
-  width: 98%;
-  margin: 0 auto;
-  text-align: center;
+  width: 100%;
+  max-width: 96rem;
+  margin: 0.75rem auto 0.5rem;
+}
+
+/* optional text blocks above/below the belt */
+.iteration-belt__intro,
+.iteration-belt__outro {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.iteration-belt__outro {
+  margin-top: 1.5rem;
+}
+
+/* make intro/outro text match writing-section style */
+.iteration-belt__intro p,
+.iteration-belt__outro p {
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 450;
+  font-size: clamp(1.0rem, 1.4vw, 1.1rem);
+  line-height: 1.92;
+  color: #c9cfde;
+  margin: 0;
 }
 
 .iteration-belt__title {
