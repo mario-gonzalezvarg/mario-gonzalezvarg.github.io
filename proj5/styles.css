@@ -181,9 +181,6 @@ body.top-title {
   /* text-align: center; */
 }
 
-
-
-
 /* subheading label: above top-left of border */
 .section-heading {
   position: absolute;
@@ -381,28 +378,6 @@ body.top-title {
   opacity: 0.9;
 }
 
-.top-nav__links {
-  display: flex;
-  gap: 1rem;
-}
-
-.nav-link {
-  font-size: 0.9rem;
-  text-decoration: none;
-  color: rgba(244, 241, 255, 0.9);
-  padding: 0.35rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  transition: border-color 150ms ease, background-color 150ms ease,
-              color 150ms ease, transform 150ms ease;
-}
-
-.nav-link:hover {
-  border-color: rgba(244, 241, 255, 0.6);
-  background: rgba(244, 241, 255, 0.06);
-  transform: translateY(-1px);
-}
-
 /* Part A / Part B buttons under title */
 .project-switcher {
   margin-top: 1.5rem;
@@ -541,14 +516,4 @@ body.top-title {
     padding-top: 1.25rem;
     /* no need to reserve space for floating label */
   }
-  @media (max-width: 600px) {
-  .diagram-pair {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-
-
-
 }

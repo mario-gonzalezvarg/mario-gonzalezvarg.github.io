@@ -37,7 +37,7 @@
 
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">HuggingFace Model Interface</h2>
-    <figure class="standalone-diagram">
+    <figure class="writing-section figure img">
       <img src="media/diagrams/pipeline.png" alt="High-level inference pipeline from raw text to predictions.">
     </figure>
     <p>
@@ -65,13 +65,13 @@
       self-attention, so every token can use information from every other token, followed by small
       feed-forward networks that refine these combined representations. After several such layers, the
       model extracts a single summary vector for the whole sequence (for example, by reading a special
-      classification token or averaging all token vectors). A small <strong>classification head</strong>—
-      typically one or two linear layers—takes this summary vector and produces the logits. These logits
+      classification token or averaging all token vectors). A small <strong>classification head</strong>,
+      typically one or two linear layers, takes this summary vector and produces the logits. These logits
       feed directly into the post-processing step from the first paragraph, completing the logical chain
       from raw text to final prediction.
     </p>
 
-    <figure class="standalone-diagram">
+    <figure class="writing-section figure img">
       <img src="media/diagrams/transformer_and_head-dark.svg"
         alt="Transformer backbone and output head used in the HuggingFace model.">
     </figure>
@@ -93,81 +93,87 @@
 
 
   <!--============================================= DeepFloyd Prompts ============================================ -->
-<section class="content gold-glass iteration-belt" aria-label="DeepFloyd prompts">
-  <h2 class="section-heading">DeepFloyd Prompts</h2>
-
-  <div class="iteration-belt__intro">
-    <p>
-      Prompt design in this part is instantiated by a small, curated set of historical and
-      reflection-based descriptions. Six prompts are used in total, including: a symbolist scene of
-      Lewis and Clark reaching the Columbia River, a crowded baroque marketplace lit by torches, a
-      mermaid under moonlight described through reflections, a Renaissance city square seen through
-      glass panes, a library whose windows open onto different skies, and a symbolic close-up of an
-      eye reflecting the Hiroshima mushroom cloud. For each prompt, a text embedding is obtained using
-      the HuggingFace text encoder and reused across all subsequent sampling runs.
-    </p>
-  </div>
-
-  <div class="iteration-belt__header">
-    <h3 class="iteration-belt__title">DeepFloyd Prompts</h3>
-    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
-  </div>
-
-  <div class="iteration-belt__viewport">
-    <h4 class="iteration-belt__row-title">Timesteps</h4>
-    <div class="iteration-belt__track">
-       <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/prompts/lewis.png">
-            <figcaption class="iteration-belt__caption">"a symbolist painting of Lewis and Clark reaching the Columbia
-              River, soft edges"</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/prompts/market.png">
-            <figcaption class="iteration-belt__caption">"a baroque oil painting of a crowded market lit by torches and
-              deep shadows"
-            </figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/prompts/mermaid.png">
-            <figcaption class="iteration-belt__caption">"a romanticism oil painting of a mermaid seen only as a
-              reflection
-              in dark waves under moonlight"
-            </figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/prompts/glass_planes.png">
-            <figcaption class="iteration-belt__caption">" “a renaissance-style painting of a city square reflected in
-              many
-              small glass panes”
-            </figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/prompts/hiroshima.png">
-            <figcaption class="iteration-belt__caption">"a symbolist oil painting, close-up of a human eye whose iris is
-              a
-              reflection of a distant mushroom of the atomic bomb dropped at Hiroshima"
-            </figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/prompts/windows.png">
-            <figcaption class="iteration-belt__caption">"a realism painting of a library where each window opens onto a
-              different sky"
-            </figcaption>
-          </figure>
+  <section class="content gold-glass iteration-belt" aria-label="DeepFloyd prompts">
+    <h2 class="section-heading">DeepFloyd Prompts</h2>
+    <div class="iteration-belt__intro">
+      <p>
+        Prompt design in this part is instantiated by a small, curated set of historical and
+        reflection-based descriptions. Six prompts are used in total, including: a symbolist scene of
+        Lewis and Clark reaching the Columbia River, a crowded baroque marketplace lit by torches, a
+        mermaid under moonlight described through reflections, a Renaissance city square seen through
+        glass panes, a library whose windows open onto different skies, and a symbolic close-up of an
+        eye reflecting the Hiroshima mushroom cloud. For each prompt, a text embedding is obtained using
+        the HuggingFace text encoder and reused across all subsequent sampling runs.
+      </p>
     </div>
-  </div>
 
-  <!-- Optional text below the belt
-  <div class="iteration-belt__outro">
-    <p>...</p>
-  </div>
-  -->
-</section>
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">DeepFloyd Prompts</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <h4 class="iteration-belt__row-title">Timesteps</h4>
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/lewis.png">
+          <figcaption class="iteration-belt__caption">"a symbolist painting of Lewis and Clark reaching the Columbia
+            River, soft edges"</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/market.png">
+          <figcaption class="iteration-belt__caption">"a baroque oil painting of a crowded market lit by torches and
+            deep shadows"
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/mermaid.png">
+          <figcaption class="iteration-belt__caption">"a romanticism oil painting of a mermaid seen only as a
+            reflection
+            in dark waves under moonlight"
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/glass_planes.png">
+          <figcaption class="iteration-belt__caption">" “a renaissance-style painting of a city square reflected in
+            many
+            small glass panes”
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/hiroshima.png">
+          <figcaption class="iteration-belt__caption">"a symbolist oil painting, close-up of a human eye whose iris is
+            a
+            reflection of a distant mushroom of the atomic bomb dropped at Hiroshima"
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/prompts/windows.png">
+          <figcaption class="iteration-belt__caption">"a realism painting of a library where each window opens onto a
+            different sky"
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        Three of these prompts are selected as primary case studies and are rendered repeatedly with a
+        fixed random seed of 12152000 and multiple stage-1 num_inference_steps configurations, while
+        keeping the higher-resolution stages and guidance scales fixed. This setup satisfies the
+        deliverable requirements: it produces concrete images for the chosen captions, exposes how
+        changes in the diffusion depth alter the realization of each description, and establishes a
+        single seed that is carried forward into later parts of the project so that differences in the
+        outputs can be attributed to the prompts and sampling settings rather than to randomness.
+      </p>
+    </div>
+
+  </section>
 
 
   <!-- 1.1 belt -->
