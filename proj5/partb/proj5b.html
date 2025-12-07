@@ -9,6 +9,7 @@
 </head>
 
 <!-- <body class="top-title"> -->
+
 <body class="top-title theme-b">
 
   <canvas id="sky" aria-hidden="true"></canvas>
@@ -33,8 +34,7 @@
     <h1 class="title">Flow Matching</h1>
 
     <div class="project-switcher" aria-label="Jump to project parts">
-      <a href="../parta/proj5a.html"
-         class="project-switcher__button project-switcher__button--primary">
+      <a href="../parta/proj5a.html" class="project-switcher__button project-switcher__button--primary">
         Part A
       </a>
       <a href="../partb/proj5b.html" class="project-switcher__button">
@@ -43,56 +43,122 @@
     </div>
   </div>
 
-  <!-- ===================================================== Part 1: Single-Step Denoising UNet ===================================================== -->
+  <!-- ===================================================== Part 1: Single-Step Denoising UNet (combined 1 + 1.1) ===================================================== -->
   <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Part 1 · Training a Single-Step Denoising UNet</h2>
+    <h2 class="section-heading">Single-Step Denoising UNet</h2>
+
+    <figure class="unet-diagram">
+      <img src="media/unconditional_arch.png"
+        alt="Full UNet architecture for MNIST denoising, showing feature map sizes, DownBlocks into a 2D×7×7 bottleneck, Flatten/Unflatten, and UpBlocks with skip connections back to a 1×28×28 output." />
+    </figure>
     <p>
-      In this part you build an unconditional UNet denoiser on MNIST and study how well it removes Gaussian noise and
-      whether it can be used as a generative model.
+      UNet is an encoder–decoder convolutional network with skip connections. The
+      left half of the architecture repeatedly downsamples the feature maps, moving from large,
+      high-resolution activations to smaller, low-resolution ones, while the right half performs
+      the reverse operation and upsamples back to the original resolution. Skip connections copy
+      encoder features across to the corresponding decoder blocks so that global context from the
+      deepest layers is combined with fine spatial detail from earlier layers, as sketched in the
+      overview diagram below.
     </p>
+
+
+    <p>
+      The implementation used in this project follows this pattern with three resolution levels
+      tailored to 28×28 MNIST digits. Simple building blocks such as convolution with BatchNorm
+      and GELU, strided convolutions for downsampling, transposed convolutions for upsampling,
+      average pooling for flattening, and feature concatenation are composed into higher-level
+      <code>ConvBlock</code>, <code>DownBlock</code>, and <code>UpBlock</code> modules. These modules
+      are then arranged into an encoder–bottleneck–decoder chain with skip connections.
+    </p>
+
+    <figure class="unet-diagram">
+      <img src="media/atomic_ops_new.png"
+        alt="Diagram decomposing the UNet into simple operations such as Conv, DownConv, UpConv, Flatten, Unflatten, and Concat, and their composition into ConvBlock, DownBlock, and UpBlock." />
+    </figure>
   </section>
 
-  <!-- ============================================ 1.1 Implementing the UNet (description only) ============================================ -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">1.1 Implementing the UNet</h2>
-    <p>
-      Briefly describe your UNet architecture and any deviations from the provided diagram
-      (number of channels, depth, activation functions, etc.). Optionally include an architecture
-      figure or diagram here.
-    </p>
-  </section>
 
   <!-- ============================================ 1.2 Using the UNet to Train a Denoiser ============================================ -->
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">1.2 Using the UNet to Train a Denoiser</h2>
+
     <p>
-      Here you visualize the noising process for different noise levels and then train the UNet
-      to denoise images at a fixed noise level.
+      This section studies how a single-step UNet denoiser behaves as the strength of the added noise
+      changes. The noise level is controlled by a parameter σ: small σ produces mildly corrupted
+      digits, while large σ produces images that are almost indistinguishable from pure noise. The
+      goal is to understand for which σ the model can still reliably recover the underlying digit and
+      how its errors are distributed in space.
     </p>
+
+    <!-- Noise-only σ sweep on a single digit -->
     <p>
-      Deliverable:
+      The first visualization fixes one handwritten “7” and applies Gaussian noise with
+      σ in {0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0}. For σ = 0.0 the digit is perfectly clean. As σ
+      increases, random speckling appears, gradually thickening into a salt-and-pepper pattern that
+      obscures the strokes. Around σ = 0.5 the digit is still recognizable but heavily corrupted,
+      whereas by σ ≈ 0.8–1.0 most of the structure is lost and only a vague brightness pattern
+      remains. This sweep shows that moderate noise levels still preserve semantic information about
+      the digit, while the highest noise levels effectively erase it.
     </p>
-    <ul>
-      <li>Visualization of the noising process for a digit over
-        <code>&sigma; ∈ {0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0}</code>.
-      </li>
-    </ul>
+
+    <figure>
+      <img src="media/noising_process.png" alt="Sigma sweep for a fixed MNIST digit 7 with σ from 0.0 to 1.0" />
+      <figcaption>
+        Noise-only σ sweep for a fixed digit: increasing σ gradually destroys fine stroke structure
+        and eventually leaves an image that resembles pure noise.
+      </figcaption>
+    </figure>
+
+    <!-- GIF: noisy / denoised / error as σ varies -->
+    <p>
+      To relate this corruption to the denoiser’s behavior, a σ-sweep GIF shows three panels for the
+      same digit and each noise level: the noisy input, the UNet’s denoised output, and a heatmap of
+      the absolute difference between them. A static triptych at a representative σ highlights the
+      layout: the left image contains the noisy digit, the center image is the reconstruction, and the
+      right image encodes where the model changed the pixels. For small σ, the input already looks
+      clean, the reconstruction nearly matches the original, and the error map is almost empty. As σ
+      increases, the noisy input becomes increasingly scrambled, yet the denoised output remains a
+      sharp, well-formed “7” up to moderate σ, with errors concentrated in a thin band along the
+      stroke edges. At the largest σ, the model still produces a digit-shaped pattern even though the
+      input contains almost no visible structure, and the error map becomes bright across most of the
+      strokes, reflecting how much the prediction must deviate from the true image.
+    </p>
+
+    <figure>
+      <img src="media/single_digit_sigma_sweep.gif"
+        alt="Animated triptych showing noisy input, denoised output, and error heatmap for a fixed digit as σ varies" />
+      <figcaption>
+        σ-sweep with noisy input, denoised output, and error heatmap for a single digit: at moderate
+        noise levels the UNet restores a clean digit with errors confined to stroke boundaries, while
+        at very high noise levels it must effectively hallucinate the entire digit.
+      </figcaption>
+    </figure>
+
+    <!-- Dataset-level mean absolute error heatmap -->
+    <p>
+      The final visualization aggregates these per-pixel errors over the entire test set at σ = 0.5.
+      For each location in the 28×28 grid, the absolute difference between the denoised output and
+      the clean digit is averaged across many examples, and the result is shown as a heatmap. Dark
+      regions correspond to pixels where the UNet is almost always correct; bright regions indicate
+      pixels where its predictions are less reliable. The resulting image resembles a blurred template
+      of a typical MNIST digit: the outer corners, which are usually pure background, remain nearly
+      error-free, while the central vertical band and arcs—where the strokes of digits 0–9 tend to
+      pass—show systematically higher error. This pattern indicates that the model is extremely
+      confident on blank background but inevitably uncertain about the exact thickness and placement
+      of the handwritten strokes, which is precisely where different digits differ from one another.
+    </p>
+
+    <figure>
+      <img src="media/plots/sigma_row_heatmap.png"
+        alt="Mean absolute error heatmap over the MNIST test set at σ = 0.5" />
+      <figcaption>
+        Mean absolute error over the test set at σ = 0.5: errors concentrate along the typical stroke
+        region of MNIST digits, while the background is reconstructed with almost no error.
+      </figcaption>
+    </figure>
   </section>
 
-  <section class="content gold-glass iteration-belt" aria-label="Noising process visualization">
-    <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">1.2 · Noising Process (&sigma; Sweep)</h2>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
 
-    <div class="iteration-belt__viewport">
-      <div class="iteration-belt__track">
-        <!-- TODO: Add one <figure> per sigma value: 0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0 -->
-      </div>
-    </div>
-  </section>
 
   <!-- ============================================ 1.2.1 Training at σ = 0.5 ============================================ -->
   <section class="content gold-glass writing-section">
@@ -110,7 +176,7 @@
   </section>
 
   <section class="content gold-glass iteration-belt iteration-belt--two-rows"
-           aria-label="Training and denoising results for σ = 0.5">
+    aria-label="Training and denoising results for σ = 0.5">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">1.2.1 · σ = 0.5 Training Results</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -153,8 +219,7 @@
     </ul>
   </section>
 
-  <section class="content gold-glass iteration-belt"
-           aria-label="Out-of-distribution noise level comparison">
+  <section class="content gold-glass iteration-belt" aria-label="Out-of-distribution noise level comparison">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">1.2.2 · Out-of-Distribution σ</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -187,8 +252,7 @@
     </ul>
   </section>
 
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
-           aria-label="Pure noise denoising results">
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows" aria-label="Pure noise denoising results">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">1.2.3 · Denoising Pure Noise</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -247,8 +311,7 @@
     </ul>
   </section>
 
-  <section class="content gold-glass iteration-belt"
-           aria-label="Time-conditioned UNet training curve">
+  <section class="content gold-glass iteration-belt" aria-label="Time-conditioned UNet training curve">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">2.2 · Time-Conditioned UNet Training</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -281,8 +344,7 @@
     </ul>
   </section>
 
-  <section class="content gold-glass iteration-belt"
-           aria-label="Sampling from time-conditioned UNet">
+  <section class="content gold-glass iteration-belt" aria-label="Sampling from time-conditioned UNet">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">2.3 · Time-Conditioned Sampling (Epochs 1, 5, 10)</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -319,8 +381,7 @@
     </ul>
   </section>
 
-  <section class="content gold-glass iteration-belt"
-           aria-label="Class-conditioned UNet training curve">
+  <section class="content gold-glass iteration-belt" aria-label="Class-conditioned UNet training curve">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">2.5 · Class-Conditioned UNet Training</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -356,7 +417,7 @@
   </section>
 
   <section class="content gold-glass iteration-belt iteration-belt--two-rows"
-           aria-label="Class-conditioned sampling results">
+    aria-label="Class-conditioned sampling results">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">2.6 · Class-Conditioned Sampling &amp; LR Scheduler Ablation</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
@@ -397,8 +458,7 @@
     </ul>
   </section>
 
-  <section class="content gold-glass iteration-belt"
-           aria-label="Bells and whistles results">
+  <section class="content gold-glass iteration-belt" aria-label="Bells and whistles results">
     <div class="iteration-belt__header">
       <h2 class="iteration-belt__title">3 · Extra Experiments</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
