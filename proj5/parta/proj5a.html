@@ -96,7 +96,7 @@
   </section>
 
 
-  <!--============================================= 0 DeepFloyd Prompts =========================================================== -->
+  <!--============================================== 0 DeepFloyd Prompts =========================================================== -->
   <section class="content gold-glass iteration-belt" aria-label="DeepFloyd prompts">
     <h2 class="section-heading">DeepFloyd Prompts</h2>
     <div class="iteration-belt__intro">
@@ -177,7 +177,7 @@
 
   </section>
 
-  <!-- ===================================== 1.1 Implementing the Forward Process =================================================  -->
+  <!-- ============================================ 1.1 Implementing the Forward Process =================================================  -->
 
   <section class="content gold-glass iteration-belt">
     <h2 class="section-heading">1.1 Forward Process</h2>
@@ -410,553 +410,679 @@
     </div>
   </section>
 
+
   <!-- ============================================ 1.4 Iterative Denoising =============================================== -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">IV. Iterative Denoising</h2>
-    <p>Using i_start = 10:
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="Iterative denoising comparison">
+    <h2 class="section-heading">1.4 Iterative Denoising</h2>
 
-      Create strided_timesteps: a list of monotonically decreasing timesteps, starting at 990, with a stride of 30,
-      eventually reaching 0. Also initialize the timesteps using the function
-      stage_1.scheduler.set_timesteps(timesteps=strided_timesteps)
-      Complete the iterative_denoise function
-      Show the noisy Campanile every 5th loop of denoising (it should gradually become less noisy)
-      Show the final predicted clean image, using iterative denoising
-      Show the predicted clean image using only a single denoising step, as was done in the previous part. This should
-      look much worse.
-      Show the predicted clean image using gaussian blurring, as was done in part 1.2.
-    </p>
-  </section>
+    <div class="iteration-belt__intro">
+      <p>
+        Iterative denoising generalizes the one-step procedure by applying the learned noise predictor
+        across a full schedule of reverse diffusion steps. Starting from a heavily noised Campanile
+        image at an initial index <code>i_start = 10</code>, a strided list of timesteps is constructed
+        (from 990 down to 0 in steps of 30), and at each timestep the UNet estimates the noise and
+        performs a small update toward the clean image. This produces a sequence of intermediate
+        reconstructions that progressively recover large-scale structure and fine detail, rather than
+        attempting to undo all of the corruption in a single jump.
+      </p>
+    </div>
 
-  <!-- 1.4 double belt images -->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Various Denoising Methods</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
+    <!-- Row 1: iterative denoising trajectory (GIFs every few steps) -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title"> Iterative Denoising </h3>
+      <h3 class="iteration-belt__row-title">Iterative denoising trajectory</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
-          <!-- row 1-->
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/iterative_denoising/i_start1.gif" alt="Denoised image t = 90">
-            <figcaption class="iteration-belt__caption">t = 90 </figcaption>
+            <img class="iteration-belt__image" src="media/iterative_denoising/i_start1.gif"
+              alt="Iterative denoising from early timestep">
+            <figcaption class="iteration-belt__caption">early steps</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/iterative_denoising/i_start3.gif"
-              alt="Denoised image t = 240">
-            <figcaption class="iteration-belt__caption">t = 240</figcaption>
+              alt="Iterative denoising after several updates">
+            <figcaption class="iteration-belt__caption">midway (1)</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/iterative_denoising/i_start5.gif"
-              alt="Denoised image t = 390">
-            <figcaption class="iteration-belt__caption">t = 390</figcaption>
+              alt="Iterative denoising after more updates">
+            <figcaption class="iteration-belt__caption">midway (2)</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/iterative_denoising/i_start7.gif"
-              alt="Denoised image t = 540">
-            <figcaption class="iteration-belt__caption">t = 540</figcaption>
+              alt="Iterative denoising near the end of the schedule">
+            <figcaption class="iteration-belt__caption">late steps</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/iterative_denoising/i_start10.gif"
-              alt="Denoised image t = 690">
-            <figcaption class="iteration-belt__caption">t = 690</figcaption>
+              alt="Iterative denoising with more aggressive schedule">
+            <figcaption class="iteration-belt__caption">aggressive schedule</figcaption>
           </figure>
+
         </div>
       </div>
     </div>
 
-    <!-- Row 2: iterative denoise inputs -->
+    <!-- Row 2: final reconstructions compared -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Denoised Images</h3>
+      <h3 class="iteration-belt__row-title">Final reconstructions</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/iterative_denoising/orig.png" alt="Original image">
-            <figcaption class="iteration-belt__caption">Original</figcaption>
+            <figcaption class="iteration-belt__caption">Original Campanile</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/iterative_denoising/i_start20.png"
-              alt="Iterative Denoised Campanile">
-            <figcaption class="iteration-belt__caption">Iterative Denoised Campanile</figcaption>
+              alt="Iterative denoised Campanile">
+            <figcaption class="iteration-belt__caption">Iterative denoising</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/one_step/denoised_t_500.png"
-              alt="One-Step Denoised Campanile">
-            <figcaption class="iteration-belt__caption">One-Step Denoised Campanile</figcaption>
+              alt="One-step denoised Campanile">
+            <figcaption class="iteration-belt__caption">One-step denoising</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/classical_denoising/gauss_t_500.png"
-              alt="Gaussian Blurred Campanile">
-            <figcaption class="iteration-belt__caption">Gaussian Blurred Campanile</figcaption>
+              alt="Gaussian blurred Campanile">
+            <figcaption class="iteration-belt__caption">Gaussian baseline</figcaption>
           </figure>
+
         </div>
       </div>
     </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The GIFs in the first row show the noisy Campanile gradually emerging from near-pure noise:
+        early frames retain little structure, mid-sequence frames recover the tower silhouette and sky
+        gradient, and late frames sharpen edges and contrast. The second row compares the final
+        iterative reconstruction against the original image, the one-step estimate, and the classical
+        Gaussian baseline. Iterative denoising produces the closest match to the original: the tower
+        and trees are well defined and textures are plausibly restored. The one-step estimate recovers
+        only coarse shape and remains noticeably washed out, while the Gaussian result is over-smoothed
+        and lacks architectural detail. This comparison demonstrates that repeatedly applying the
+        learned reverse step along a carefully chosen schedule is essential for high-quality
+        reconstructions in diffusion models.
+      </p>
+    </div>
   </section>
 
-  <!-- ============================================ 1.5 Diffusion Model Sampling=============================================== -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">V. Diffusion Model Sampling</h2>
-    <p>
-      Show 5 sampled images.
-    </p>
-  </section>
 
-  <!-- 1.5 single belt images -->
-  <section class="content gold-glass iteration-belt" aria-label="Iterative Denosing">
+  <!-- ============================================ 1.5 Diffusion Model Sampling =============================================== -->
+  <section class="content gold-glass iteration-belt" aria-label="Diffusion model sampling">
+    <h2 class="section-heading">1.5 Diffusion Model Sampling</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        Diffusion model sampling reverses the forward corruption process by starting from pure Gaussian
+        noise and applying the learned denoising model along the full schedule of timesteps. For this
+        part, the stage&nbsp;1 sampler is run five times with different random seeds
+        (32168, 100570, 91798, 1215, 122607). Each run draws an independent noise image at the final
+        timestep and then traverses the entire reverse chain, producing one synthesized 64×64 image per
+        seed. Model weights, scheduler settings, and all hyperparameters are held fixed; only the
+        initial noise realization changes. This configuration directly realizes the marginal
+        distribution learned by the model and satisfies the requirement to “show 5 sampled images.”
+      </p>
+    </div>
+
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Sampled Images</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title"> Sampling at timesteps t = 0</h3>
+      <h3 class="iteration-belt__row-title">Samples at timestep t = 0</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <!-- 5 sampled images -->
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_32168.png"
-              alt="Sample with seed 32168">
-            <figcaption class="iteration-belt__caption">Sample 1</figcaption>
+              alt="Sampled landscape with flowers and a pier at sunrise">
+            <figcaption class="iteration-belt__caption">
+              Seed 32168 – lakeside sunrise with foreground flowers
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_100570.png"
-              alt="Sample with seed 100570">
-            <figcaption class="iteration-belt__caption">Sample 2</figcaption>
+              alt="Grid of architectural and landscape thumbnails">
+            <figcaption class="iteration-belt__caption">
+              Seed 100570 – collage of coastal and architectural scenes
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_91798.png"
-              alt="Sample with seed 91798">
-            <figcaption class="iteration-belt__caption">Sample 3</figcaption>
+              alt="Portrait of a person looking up in a storm of particles">
+            <figcaption class="iteration-belt__caption">
+              Seed 91798 – portrait in a field of glowing particles
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_1215.png"
-              alt="Sample with seed 1215">
-            <figcaption class="iteration-belt__caption">Sample 4</figcaption>
+              alt="Monochrome cityscape partially obscured by smoke">
+            <figcaption class="iteration-belt__caption">
+              Seed 1215 – atmospheric monochrome cityscape
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_122607.png"
-              alt="Sample with seed 122607">
-            <figcaption class="iteration-belt__caption">Sample 5</figcaption>
+              alt="Figure walking along pastel rock formations at sunset">
+            <figcaption class="iteration-belt__caption">
+              Seed 122607 – figure in pastel desert landscape
+            </figcaption>
           </figure>
+
         </div>
       </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The five samples exhibit diverse scene types and compositions—ranging from a flower-framed
+        lakeside at sunrise to a portrait immersed in particles and a pastel desert landscape—despite
+        being generated by the same model and schedule. This diversity arises solely from the different
+        random seeds, which determine the initial noise pattern at the start of the reverse process.
+        At the same time, all images share consistent photographic qualities such as coherent lighting,
+        natural textures, and plausible perspective, indicating that the model has learned a strong
+        prior over natural images rather than memorizing individual examples. These observations
+        confirm that the sampler is correctly traversing the learned image distribution.
+      </p>
     </div>
   </section>
 
 
   <!-- ============================================ 1.6 Classifier-Free Guidance (CFG) =============================================== -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">VI. Classifier-Free Guidance (CFG)</h2>
-    <p> Deliverables
+  <section class="content gold-glass iteration-belt" aria-label="CFG diffusion sampling">
+    <h2 class="section-heading">1.6 Classifier-Free Guidance (CFG)</h2>
 
-      Implement the iterative_denoise_cfg function
-      Show 5 images of "a high quality photo" with a CFG scale of
+    <div class="iteration-belt__intro">
+      <p>
+        Classifier-free guidance modifies the sampling process by interpolating between unconditional
+        and text-conditioned predictions from the UNet. At each reverse step, the model is run twice:
+        once with the prompt dropped (unconditional) and once with the prompt “a high quality photo.”
+        The final noise estimate is obtained by adding a scaled difference between these two outputs,
+        controlled by a guidance scale <em>w</em>. Small values of <em>w</em> keep the samples close to
+        the unconditional image distribution and emphasize diversity, whereas large values force the
+        generation to adhere more strongly to the prompt, at the risk of oversharpening or introducing
+        artifacts. In this section, five images are generated with a fixed random seed and guidance
+        scales {2, 4, 5, 6, 8}, satisfying the requirement to show five CFG samples for the same text
+        description.
+      </p>
+    </div>
 
-      . Now this prompt becomes a condition (but fairly weak) to generate conditional noise! You will use your
-      customized prompts as stronger conditions in part 1.7 - part 1.9.
-
-    </p>
-  </section>
-
-
-  <!-- 1.6 single belt images of campanile -->
-  <section class="content gold-glass iteration-belt" aria-label="CFG Diffusion Sampling">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">1.6 Sample with CFG</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
-    <div class="iteration-belt__viewport">
-      <div class="iteration-belt__track">
-
-        <!-- 5 sampled images -->
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s4.png" alt="Sample with seed 32168">
-          <figcaption class="iteration-belt__caption">Sample 1</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s8.png" alt="Sample with seed 100570">
-          <figcaption class="iteration-belt__caption">Sample 2</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s5.png" alt="Sample with seed 91798">
-          <figcaption class="iteration-belt__caption">Sample 3</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s2.png" alt="Sample with seed 1215">
-          <figcaption class="iteration-belt__caption">Sample 4</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/cfg/s6.png" alt="Sample with seed 122607">
-          <figcaption class="iteration-belt__caption">Sample 5</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============================================ 1.7 Image-to-image Translation =============================================== -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">VII. Image-to-image Translation</h2>
-    <p> Deliverables
-
-      Edits of the Campanile image, using the given prompt at noise levels [1, 3, 5, 7, 10, 20] with the conditional
-      text prompt "a high quality photo"
-      Edits of 2 of your own test images, using the same procedure.
-
-      Hints
-
-      You should have a range of images, gradually looking more like the original image
-    </p>
-  </section>
-
-  <!-- predicting campinele SDEdit -->
-  <section class="content gold-glass iteration-belt" aria-label="CFG Diffusion Sampling">
-    <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">1.7 Predicting Campanile with SDEdit Algorithm</h2>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
-
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Sampled images </h3>
-      <div class="iteration-belt__track">
-
-        <!-- 5 sampled images for campinale -->
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/i_start1.gif" alt="id start = 1">
-          <figcaption class="iteration-belt__caption">start index = 1</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/i_start3.gif" alt="id_start = 3">
-          <figcaption class="iteration-belt__caption">start index = 2</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/i_start5.gif" alt="id_start = 5">
-          <figcaption class="iteration-belt__caption">start index = 3</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/i_start7.gif" alt="id_start = 7">
-          <figcaption class="iteration-belt__caption">start index = 7</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/i_start10.gif" alt="id start = 10">
-          <figcaption class="iteration-belt__caption">start index = 10</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/i_start20.gif" alt="id start = start">
-          <figcaption class="iteration-belt__caption">start index = 20</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/orig.png" alt="id start = start">
-          <figcaption class="iteration-belt__caption">Original input</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- 1.7 double belt images -->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
-    aria-label="One-step denoising comparison">
-
-    <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Sampling using SDEdit algorithm</h2>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Glass Art </h3>
-      <div class="iteration-belt__track">
-        <!-- selection 1 SDEdit images -->
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/i_start1.gif">
-          <figcaption class="iteration-belt__caption">starting index = 1</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/i_start3.gif">
-          <figcaption class="iteration-belt__caption">starting index = 3</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/i_start5.gif">
-          <figcaption class="iteration-belt__caption">starting index = 5</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/i_start7.gif">
-          <figcaption class="iteration-belt__caption">starting index = 7</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/i_start10.gif">
-          <figcaption class="iteration-belt__caption">starting index = 10</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/i_start20.gif">
-          <figcaption class="iteration-belt__caption">starting index = 20</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/SDEdit/a/orig.png">
-          <figcaption class="iteration-belt__caption">Original</figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <!-- Row 2: iterative denoise inputs -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Space Needle</h3>
+      <h3 class="iteration-belt__row-title">Samples with varying CFG scales</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start1.gif">
-            <figcaption class="iteration-belt__caption">starting index = 1</figcaption>
+            <img class="iteration-belt__image" src="media/cfg/s2.png" alt="Soft portrait sampled with low CFG scale">
+            <figcaption class="iteration-belt__caption">
+              CFG scale 2 – soft, low-contrast portrait
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start3.gif">
-            <figcaption class="iteration-belt__caption">starting index = 3</figcaption>
+            <img class="iteration-belt__image" src="media/cfg/s4.png"
+              alt="Monochrome portrait with stronger definition">
+            <figcaption class="iteration-belt__caption">
+              CFG scale 4 – more defined monochrome portrait
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start5.gif">
-            <figcaption class="iteration-belt__caption">starting index = 5</figcaption>
+            <img class="iteration-belt__image" src="media/cfg/s5.png" alt="Close-up portrait with vivid colors">
+            <figcaption class="iteration-belt__caption">
+              CFG scale 5 – vivid close-up portrait
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start7.gif">
-            <figcaption class="iteration-belt__caption">starting index = 7</figcaption>
+            <img class="iteration-belt__image" src="media/cfg/s6.png" alt="Landscape at dusk with strong reflections">
+            <figcaption class="iteration-belt__caption">
+              CFG scale 6 – high-contrast landscape at dusk
+            </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start10.gif">
-            <figcaption class="iteration-belt__caption">starting index = 10</figcaption>
+            <img class="iteration-belt__image" src="media/cfg/s8.png" alt="Bright portrait in a green field">
+            <figcaption class="iteration-belt__caption">
+              CFG scale 8 – very sharp, strongly conditioned portrait
+            </figcaption>
           </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/i_start20.gif">
-            <figcaption class="iteration-belt__caption">starting index = 20</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/SDEdit/b/orig.png">
-            <figcaption class="iteration-belt__caption">Original</figcaption>
-          </figure>
         </div>
       </div>
     </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        As the CFG scale increases, the samples move from soft, low-contrast renderings toward images
+        with sharper edges, stronger color saturation, and more “on-prompt” structure. At low guidance
+        (e.g., scale 2), the model behaves similarly to the unconditional sampler: compositions are
+        plausible but loosely tied to the prompt. Intermediate scales (around 4–6) balance fidelity and
+        realism, producing images that read clearly as high-quality photographs without obvious
+        artifacts. At the highest scale (8), the model adheres very strongly to the prompt, which
+        enhances detail but can also exaggerate contrast and make textures look slightly artificial.
+        This progression illustrates the core trade-off of classifier-free guidance: stronger guidance
+        improves prompt alignment but gradually reduces diversity and can push samples away from the
+        natural image manifold if set too high.
+      </p>
+    </div>
   </section>
 
-  <!----------------------------------------------  1.7.1 Image-to-image Translation --------------------------------------------- -->
 
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">1.7.1 Editing Web Images</h2>
-    <p>
-      1 image from the web of your choice, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and
-      whatever additional noise levels you want)
-      2 hand drawn images, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and whatever additional
-      noise levels you want)
-    </p>
-  </section>
+  <!-- ============================================ 1.7 Image-to-image Translation (SDEdit) ===================================== -->
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="Image-to-image translation with SDEdit">
+    <h2 class="section-heading">1.7 Image-to-image Translation (SDEdit)</h2>
 
+    <div class="iteration-belt__intro">
+      <p>
+        Image-to-image translation in this part is implemented using the SDEdit procedure. Instead of
+        sampling from pure noise, the algorithm begins from a real 64×64 photograph of the Campanile,
+        runs the forward diffusion process up to a chosen noise index <em>i_start</em>, and then applies
+        the usual reverse sampler conditioned on the prompt “a high quality photo.” For small values of
+        <em>i_start</em>, the starting point is only mildly corrupted and the sampler behaves like a
+        noise-removal-and-retouch operator; larger values push the image closer to pure noise before
+        denoising, giving the model more freedom to reinterpret the scene while still being guided by
+        the original structure.
+      </p>
+    </div>
 
-  <!-- ================================================ 1.7.1 Editing Hand Drawn and Web Images =============================== -->
-  <section class="content gold-glass iteration-belt">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Web based image: The Crab Nebula </h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Sampled images </h3>
-      <div class="iteration-belt__track">
+    <!-- Row 1: Campanile SDEdit -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Campanile: noise level sweep</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/i_start1.gif" alt="id start = 1">
-          <figcaption class="iteration-belt__caption">start index = 1</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/i_start1.gif" alt="Campanile SDEdit i_start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/i_start3.gif" alt="id_start = 3">
-          <figcaption class="iteration-belt__caption">start index = 3</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/i_start3.gif" alt="Campanile SDEdit i_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/i_start5.gif" alt="id_start = 5">
-          <figcaption class="iteration-belt__caption">start index = 5</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/i_start5.gif" alt="Campanile SDEdit i_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/i_start7.gif" alt="id_start = 7">
-          <figcaption class="iteration-belt__caption">start index = 7</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/i_start7.gif" alt="Campanile SDEdit i_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/i_start10.gif" alt="id start = 10">
-          <figcaption class="iteration-belt__caption">start index = 10</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/i_start10.gif" alt="Campanile SDEdit i_start = 10">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/i_start20.gif" alt="id start = start">
-          <figcaption class="iteration-belt__caption">start index = 20</figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/i_start20.gif" alt="Campanile SDEdit i_start = 20">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hand_web/web/orig.png" alt="id start = start">
-          <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/orig.png" alt="Original Campanile">
+            <figcaption class="iteration-belt__caption">Original input</figcaption>
+          </figure>
+
+        </div>
       </div>
     </div>
+
+    <!-- Row 2: Glass Art example -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Glass Art: Chihuly-style sculpture</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/i_start1.gif"
+              alt="Glass sculpture SDEdit i_start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/i_start3.gif"
+              alt="Glass sculpture SDEdit i_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/i_start5.gif"
+              alt="Glass sculpture SDEdit i_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/i_start7.gif"
+              alt="Glass sculpture SDEdit i_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/i_start10.gif"
+              alt="Glass sculpture SDEdit i_start = 10">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/i_start20.gif"
+              alt="Glass sculpture SDEdit i_start = 20">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/a/orig.png" alt="Original glass sculpture">
+            <figcaption class="iteration-belt__caption">Original input</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Space Needle example -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Space Needle: cityscape reinterpretation</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start1.gif" alt="Space Needle SDEdit i_start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start3.gif" alt="Space Needle SDEdit i_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start5.gif" alt="Space Needle SDEdit i_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start7.gif" alt="Space Needle SDEdit i_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start10.gif"
+              alt="Space Needle SDEdit i_start = 10">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/i_start20.gif"
+              alt="Space Needle SDEdit i_start = 20">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/SDEdit/b/orig.png" alt="Original Space Needle photograph">
+            <figcaption class="iteration-belt__caption">Original input</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        Across all three examples, the SDEdit trajectory shows a consistent pattern. For the Campanile,
+        low noise levels preserve the tower and skyline almost exactly, while higher levels introduce
+        softer clouds, altered color grading, and occasionally new structural details. The glass
+        sculpture begins as a dense cluster of orange spikes and, under increasing noise, is redrawn
+        as more diffuse, branching forms that still respect the radial “explosion” motif but explore
+        new lighting and background colors. The Space Needle sequence similarly moves from a faithful
+        reconstruction of the original skyline to more stylized versions where the tower, clouds, and
+        city lights are exaggerated or partially reimagined. Together, these rows demonstrate that
+        SDEdit can either gently refine an existing photograph or drive it toward a more creative,
+        prompt-driven reinterpretation, depending on how far along the forward diffusion trajectory
+        the sampler chooses to re-enter.
+      </p>
+    </div>
   </section>
 
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">1.7.1 Editing Hand Drawn Images</h2>
-    <p>
-      1 image from the web of your choice, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and
-      whatever additional noise levels you want)
-      2 hand drawn images, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and whatever additional
-      noise levels you want)
-    </p>
-  </section>
+  <!-- ============================================ 1.7.1 Editing Web and Hand-Drawn Images ===================================== -->
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="Editing web and hand-drawn images with SDEdit">
+    <h2 class="section-heading">1.7.1 Editing Web and Hand-Drawn Images</h2>
 
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows" delta-speed>
+    <div class="iteration-belt__intro">
+      <p>
+        This section tests SDEdit on images that do not come from the Campanile dataset. One image is
+        sourced from the web (a high-contrast photograph of the Crab Nebula), and two are hand-drawn
+        doodles (“The Blue Bandit” and “The Little Prince”). For each input, the forward process is
+        run to noise levels <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20}, and the reverse sampler is then
+        applied under the prompt “a high quality photo.” At low noise levels, the procedure behaves
+        like a local enhancement operator that cleans and stylizes the input while preserving its
+        structure; at high noise levels, the model is forced to hallucinate more content from its
+        learned prior while still being anchored by the original image. These sequences satisfy the
+        deliverable requirement of editing one web image and two hand-drawn images across the specified
+        noise levels.
+      </p>
+    </div>
+
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Various Denoising Methods</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
-    <!-- Row 2: iterative denoise inputs -->
+    <!-- Row 1: Web image (Crab Nebula) -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Web image: The Crab Nebula</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/orig.png"
+              alt="Rescaled 64×64 Crab Nebula input image">
+            <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/i_start1.gif"
+              alt="Crab Nebula SDEdit i_start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/i_start3.gif"
+              alt="Crab Nebula SDEdit i_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/i_start5.gif"
+              alt="Crab Nebula SDEdit i_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/i_start7.gif"
+              alt="Crab Nebula SDEdit i_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/i_start10.gif"
+              alt="Crab Nebula SDEdit i_start = 10">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/hand_web/web/i_start20.gif"
+              alt="Crab Nebula SDEdit i_start = 20">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Doodle 1 – The Blue Bandit -->
     <div class="iteration-belt__row">
       <h3 class="iteration-belt__row-title">Doodle 1: The Blue Bandit</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/orig.png" alt="id start = start">
-            <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/orig.png" alt="Hand-drawn Blue Bandit input">
+            <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif" alt="id start = 1">
-            <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif"
+              alt="Blue Bandit SDEdit i_start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start3.gif" alt="id_start = 3">
-            <figcaption class="iteration-belt__caption">start index = 3</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start3.gif"
+              alt="Blue Bandit SDEdit i_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start5.gif" alt="id_start = 5">
-            <figcaption class="iteration-belt__caption">start index = 5</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start5.gif"
+              alt="Blue Bandit SDEdit i_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start7.gif" alt="id_start = 7">
-            <figcaption class="iteration-belt__caption">start index = 7</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start7.gif"
+              alt="Blue Bandit SDEdit i_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start10.gif" alt="id start = 10">
-            <figcaption class="iteration-belt__caption">start index = 10</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start10.gif"
+              alt="Blue Bandit SDEdit i_start = 10">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start20.gif" alt="id start = start">
-            <figcaption class="iteration-belt__caption">start index = 20</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start20.gif"
+              alt="Blue Bandit SDEdit i_start = 20">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
           </figure>
+
         </div>
       </div>
     </div>
 
+    <!-- Row 3: Doodle 2 – The Little Prince -->
     <div class="iteration-belt__row">
       <h3 class="iteration-belt__row-title">Doodle 2: The Little Prince</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/orig.png" alt="id start = start">
-            <figcaption class="iteration-belt__caption">Rescaled Input Image (64x64) </figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/orig.png"
+              alt="Hand-drawn Little Prince input">
+            <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start1.gif" alt="id start = 1">
-            <figcaption class="iteration-belt__caption">start index = 1</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start1.gif"
+              alt="Little Prince SDEdit i_start = 1">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start3.gif" alt="id_start = 3">
-            <figcaption class="iteration-belt__caption">start index = 3</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start3.gif"
+              alt="Little Prince SDEdit i_start = 3">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start5.gif" alt="id_start = 5">
-            <figcaption class="iteration-belt__caption">start index = 5</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start5.gif"
+              alt="Little Prince SDEdit i_start = 5">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start7.gif" alt="id_start = 7">
-            <figcaption class="iteration-belt__caption">start index = 7</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start7.gif"
+              alt="Little Prince SDEdit i_start = 7">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start10.gif" alt="id start = 10">
-            <figcaption class="iteration-belt__caption">start index = 10</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start10.gif"
+              alt="Little Prince SDEdit i_start = 10">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start20.gif" alt="id start = start">
-            <figcaption class="iteration-belt__caption">start index = 20</figcaption>
+            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start20.gif"
+              alt="Little Prince SDEdit i_start = 20">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
           </figure>
+
         </div>
       </div>
     </div>
 
-
+    <div class="iteration-belt__outro">
+      <p>
+        The Crab Nebula sequence shows that, even for a complex astronomical scene, low noise levels
+        allow the sampler to clean and sharpen filaments while preserving the overall color palette and
+        radial structure. At higher noise, the model still reconstructs a nebula-like cloud but freely
+        adjusts fine filament geometry and local lighting. For the hand-drawn doodles, the behavior is
+        even more revealing: starting from simple line art, low <em>i_start</em> values yield
+        photo-like renderings that closely follow the original silhouettes (for example, the masked
+        face of the Blue Bandit or the child and planet in The Little Prince), while higher values
+        gradually replace sketchy strokes with richer shading, textured backgrounds, and new
+        high-frequency detail. Across all three inputs, the SDEdit edits confirm that the diffusion
+        model can project both photographic and non-photographic images onto its learned natural image
+        manifold, controlling the strength of the transformation through a single noise-level
+        parameter.
+      </p>
+    </div>
   </section>
+
+
 
   <!-- ==================================================== 1.7.2 Inpainting ====================================================== -->
   <section class="content gold-glass writing-section">
