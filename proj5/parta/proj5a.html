@@ -101,14 +101,21 @@
     <h2 class="section-heading">DeepFloyd Prompts</h2>
     <div class="iteration-belt__intro">
       <p>
-        Prompt design in this part is instantiated by a small, curated set of historical and
-        reflection-based descriptions. Six prompts are used in total, including: a symbolist scene of
-        Lewis and Clark reaching the Columbia River, a crowded baroque marketplace lit by torches, a
-        mermaid under moonlight described through reflections, a Renaissance city square seen through
-        glass panes, a library whose windows open onto different skies, and a symbolic close-up of an
-        eye reflecting the Hiroshima mushroom cloud. For each prompt, a text embedding is obtained using
-        the HuggingFace text encoder and reused across all subsequent sampling runs.
+        The prompt study evaluates how faithfully DeepFloyd IF translates
+        language into images, rather than simply demonstrating that it can produce visually pleasing
+        samples. A small bank of prompts is first encoded with the HuggingFace text encoder to obtain a
+        fixed set of embeddings that are reused throughout the project. From this bank, three prompts are
+        chosen as exemplars and are displayed side by side with their generated images, using a single
+        random seed and at least two different values of <em>num_inference_steps</em> for each prompt. This
+        setup makes it possible to isolate how the model handles semantics: the outputs are examined for
+        whether the core subject, viewpoint, and stylistic cues match the description, and whether more
+        delicate relational clauses—such as instructions about reflections, grids of windows, or localized
+        details—are preserved, softened, or ignored. Across these examples, the model reliably captures
+        the broad scene type, composition, and lighting implied by the caption, while showing weaker
+        control over complex relational language, which provides a reference point for interpreting the
+        more advanced experiments that follow.
       </p>
+
     </div>
 
     <div class="iteration-belt__header">
@@ -166,46 +173,34 @@
     </div>
 
     <!-- <div class="iteration-belt__outro">
-      <p>
-        Three of these prompts are selected as primary case studies and are rendered repeatedly with a
-        fixed random seed of 12152000 and multiple stage-1 num_inference_steps configurations, while
-        keeping the higher-resolution stages and guidance scales fixed. This setup satisfies the
-        deliverable requirements: it produces concrete images for the chosen captions, exposes how
-        changes in the diffusion depth alter the realization of each description, and establishes a
-        single seed that is carried forward into later parts of the project so that differences in the
-        outputs can be attributed to the prompts and sampling settings rather than to randomness.
-      </p>
     </div> -->
 
   </section>
 
   <!-- ===================================== 1.1 Implementing the Forward Process =================================================  -->
-  <section class="content gold-glass writing-section">
+
+  <section class="content gold-glass iteration-belt">
     <h2 class="section-heading">1.1 Forward Process</h2>
-    <p>
-      Deliverables
+    <div class="iteration-belt__intro">
+      <p>
+        The forward diffusion process is implemented as a function <code>forward(im, t)</code> that maps a
+        clean 64×64 Campanile image to a noisy version at timestep <code>t</code>. At each timestep, the
+        function adds Gaussian noise with variance prescribed by the fixed noise schedule, so that larger
+        values of <code>t</code> correspond to stronger corruption. This defines a monotonic path from the
+        data distribution toward an isotropic Gaussian, which is the starting point for the reverse
+        denoising process in later parts of the project.
+      </p>
+    </div>
 
-      Implement the noisy_im = forward(im, t) function
-      Show the Campanile at noise level [250, 500, 750].
 
-    </p>
-  </section>
-
-  <!-- 1.1 belt -->
-  <section class="content gold-glass iteration-belt" aria-label="Iteration snapshots">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Adding Noise</h2>
-
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
+      <!-- <h3 class="iteration-belt__title">Renders</h3> -->
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
     </div>
 
     <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Timesteps </h3>
-
+      <h4 class="iteration-belt__row-title">Timesteps</h4>
       <div class="iteration-belt__track">
-        <!-- group 1 -->
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/forward_process/noisy_t_0.png"
             alt="Data visualization at iteration 0">
@@ -231,23 +226,116 @@
         </figure>
       </div>
     </div>
+
+
+    <div class="iteration-belt__outro">
+
+      <p>
+        To visualize this behavior, the Campanile is shown at several representative timesteps:
+        <code>t = 0</code>, <code>250</code>, <code>400</code>, <code>500</code>, and <code>750</code>.
+        At <code>t = 0</code>, the image is the original, noise-free photograph. By <code>t = 250</code>,
+        moderate noise is visible, but the tower, trees, and sky remain clearly recognizable. At
+        <code>t = 500</code>, the injected noise dominates fine detail: edges
+        blur, colors fluctuate more erratically, and the Campanile is reduced to a faint silhouette. By
+        <code>t = 750</code>, the sample is visually indistinguishable from pure noise, with only faint
+        trace of the original structure.
+      </p>
+    </div>
+
+
   </section>
 
   <!-- ============================================ 1.2 Classical Denoising =============================================== -->
-  <section class="content gold-glass writing-section">
+  <section class="content gold-glass iteration-belt">
     <h2 class="section-heading">1.2 Classical Denoising</h2>
-    <p>
-      REQUIRED:
-      For the 3 text prompts that we provide, display the caption and the output of the model. Reflect on the quality of
-      the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps
-      values. Report the random seed that you're using here. You should use the same seed all subsequent parts.
-    </p>
+    <div class="iteration-belt__intro">
+      <p>
+        Classical denoising here is instantiated by a simple Gaussian blur applied directly to the noisy
+        Campanile images from the forward process. For each noise level (t = 0, 250, 500, 750), the noisy
+        image is filtered with a fixed-radius Gaussian kernel, which suppresses high-frequency variations
+        but does not use any knowledge of the underlying data distribution. This produces a purely
+        low-pass baseline that can be compared against the diffusion-based denoisers in later parts of the
+        project.
+      </p>
+
+    </div>
+
+
+    <div class="iteration-belt__header">
+      <!-- <h3 class="iteration-belt__title">Renders</h3> -->
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+
+    <div class="iteration-belt__viewport">
+      <h4 class="iteration-belt__row-title">Timesteps</h4>
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_0.png" alt="Noisy image t = 0">
+          <figcaption class="iteration-belt__caption">t = 0</figcaption>
+        </figure>
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_250.png" alt="Noisy image t = 250">
+          <figcaption class="iteration-belt__caption">t = 250</figcaption>
+        </figure>
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_500.png" alt="Noisy image t = 500">
+          <figcaption class="iteration-belt__caption">t = 500</figcaption>
+        </figure>
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_750.png" alt="Noisy image t = 750">
+          <figcaption class="iteration-belt__caption">t = 750</figcaption>
+        </figure>
+
+
+      </div>
+    </div>
+
+
+    <div class="iteration-belt__outro">
+      <p>
+        The sequence of results highlights both the strengths and limitations of this approach. At low
+        noise levels (t = 0 and t = 250), Gaussian denoising successfully reduces speckle in the sky and
+        façade while preserving the overall silhouette of the tower and trees, although fine edges become
+        noticeably softened. At higher noise levels (t = 500 and especially t = 750), the blur removes some
+        of the colorful grain but also smears out important structure, leaving a hazy, almost watercolor
+        version of the scene in which architectural details and tree textures are largely lost. This
+        behavior illustrates why classical smoothing is a useful but ultimately insufficient baseline:
+        it can attenuate noise, but without a learned prior it cannot reconstruct missing high-frequency
+        detail once the forward process has heavily corrupted the image.
+      </p>
+    </div>
+
+
   </section>
 
-  <!-- 1.2 double belt images-->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows">
+  <!-- ============================================ 1.3 One-Step Denoising =============================================== -->
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="One-step denoising comparison">
+    <h2 class="section-heading">1.3 One-Step Denoising</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        One-step denoising evaluates how much structure can be recovered from a noisy observation using
+        a single reverse diffusion step. For each timestep <em>t</em> in {250, 500, 750}, the forward
+        process is first used to corrupt the clean 64×64 Campanile image and obtain a noisy input. This
+        noisy image is then passed through <code>stage_1.unet</code> to estimate the noise component,
+        and a one-step reconstruction is formed by subtracting the predicted noise from the noisy input.
+        The resulting estimate can be compared directly against the original image and the noisy
+        observation to assess how well a single denoising step in the learned model inverts the forward
+        process at different noise levels.
+      </p>
+    </div>
+
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Classical Denoising (Noisy vs Gaussian)</h2>
+      <!-- optional small title; can be commented out if you prefer only the Pause button -->
+      <!-- <h3 class="iteration-belt__title">One-Step Denoising (Noisy vs Estimation)</h3> -->
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
@@ -259,148 +347,66 @@
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_0.png" alt="Noisy image t = 0">
+            <img class="iteration-belt__image" src="media/one_step/noisy_t_0.png" alt="Noisy image at t = 0">
             <figcaption class="iteration-belt__caption">t = 0</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_250.png"
-              alt="Noisy image t = 250">
+            <img class="iteration-belt__image" src="media/one_step/noisy_t_250.png" alt="Noisy image at t = 250">
             <figcaption class="iteration-belt__caption">t = 250</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_500.png"
-              alt="Noisy image t = 500">
+            <img class="iteration-belt__image" src="media/one_step/noisy_t_500.png" alt="Noisy image at t = 500">
             <figcaption class="iteration-belt__caption">t = 500</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/noisy_t_750.png"
-              alt="Noisy image t = 750">
+            <img class="iteration-belt__image" src="media/one_step/noisy_t_750.png" alt="Noisy image at t = 750">
             <figcaption class="iteration-belt__caption">t = 750</figcaption>
           </figure>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Gaussian denoised -->
+    <!-- Row 2: one-step denoised estimates -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Gaussian denoised</h3>
+      <h3 class="iteration-belt__row-title">One-step denoised estimate</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
-
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/gauss_t_0.png"
-              alt="Gaussian blur at iteration t = 0">
+            <img class="iteration-belt__image" src="media/one_step/denoised_t_0.png"
+              alt="One-step denoised image at t = 0">
             <figcaption class="iteration-belt__caption">t = 0</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/gauss_t_250.png"
-              alt="Gaussian blur at iteration t = 250">
+            <img class="iteration-belt__image" src="media/one_step/denoised_t_250.png"
+              alt="One-step denoised image at t = 250">
             <figcaption class="iteration-belt__caption">t = 250</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/gauss_t_500.png"
-              alt="Gaussian blur at iteration t = 500">
+            <img class="iteration-belt__image" src="media/one_step/denoised_t_500.png"
+              alt="One-step denoised image at t = 500">
             <figcaption class="iteration-belt__caption">t = 500</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/classical_denoising/gauss_t_750.png"
-              alt="Gaussian blur at iteration t = 750">
-            <figcaption class="iteration-belt__caption">t = 750</figcaption>
-          </figure>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================ 1.3 One-Step Denoising =============================================== -->
-
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">1.3 One-Step Denoising</h2>
-    <p>For the 3 noisy images from 1.2 (t = [250, 500, 750]):
-
-      Use your forward function to add noise to your Campanile.
-      Estimate the noise in the new noisy image, by passing it through stage_1.unet
-      Remove the noise from the noisy image to obtain an estimate of the original image.
-      Visualize the original image, the noisy image, and the estimate of the original image</p>
-  </section>
-
-  <!-- 1.3 double belt images -->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
-    aria-label="One-step denoising comparison">
-    <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">One-Step Denoising (Noisy vs Estimation)</h2>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
-
-
-    <!-- Row 1: Gaussian denoised -->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">One-Step Denoised</h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/noisy_t_0.png"
-              alt="Gaussian blur at iteration t = 0">
-            <figcaption class="iteration-belt__caption">t = 0</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/noisy_t_250.png"
-              alt="Gaussian blur at iteration t = 250">
-            <figcaption class="iteration-belt__caption">t = 250</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/noisy_t_500.png"
-              alt="Gaussian blur at iteration t = 500">
-            <figcaption class="iteration-belt__caption">t = 500</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/noisy_t_750.png"
-              alt="Gaussian blur at iteration t = 750">
+            <img class="iteration-belt__image" src="media/one_step/denoised_t_750.png"
+              alt="One-step denoised image at t = 750">
             <figcaption class="iteration-belt__caption">t = 750</figcaption>
           </figure>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: noisy inputs -->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Noisy input</h3>
-      <div class="iteration-belt__viewport">
-
-        <div class="iteration-belt__track">
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/denoised_t_0.png" alt="Denoised image t = 0">
-            <figcaption class="iteration-belt__caption">t = 0</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/denoised_t_250.png" alt="Denoised image t = 250">
-            <figcaption class="iteration-belt__caption">t = 250</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/denoised_t_500.png" alt="Denoised image t = 500">
-            <figcaption class="iteration-belt__caption">t = 500</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one_step/denoised_t_750.png" alt="Denoised image t = 750">
-            <figcaption class="iteration-belt__caption">t = 750</figcaption>
-          </figure>
-        </div>
-      </div>
+    <div class="iteration-belt__outro">
+      <p>
+        As the noise level increases, the one-step reconstructions retain the coarse outline of the
+        Campanile but lose fine detail and contrast, highlighting the limitations of a single reverse
+        step and motivating the iterative denoising scheme developed in the next section.
+      </p>
     </div>
   </section>
 
