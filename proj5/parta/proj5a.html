@@ -97,85 +97,147 @@
 
 
   <!--============================================== 0 DeepFloyd Prompts =========================================================== -->
-  <section class="content gold-glass iteration-belt" aria-label="DeepFloyd prompts">
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows" aria-label="DeepFloyd prompts">
     <h2 class="section-heading">DeepFloyd Prompts</h2>
+
     <div class="iteration-belt__intro">
       <p>
         The prompt study evaluates how faithfully DeepFloyd IF translates
         language into images, rather than simply demonstrating that it can produce visually pleasing
         samples. A small bank of prompts is first encoded with the HuggingFace text encoder to obtain a
-        fixed set of embeddings that are reused throughout the project. From this bank, three prompts are
-        chosen as exemplars and are displayed side by side with their generated images, using a single
-        random seed and at least two different values of <em>num_inference_steps</em> for each prompt. This
-        setup makes it possible to isolate how the model handles semantics: the outputs are examined for
-        whether the core subject, viewpoint, and stylistic cues match the description, and whether more
-        delicate relational clauses—such as instructions about reflections, grids of windows, or localized
-        details—are preserved, softened, or ignored. Across these examples, the model reliably captures
-        the broad scene type, composition, and lighting implied by the caption, while showing weaker
-        control over complex relational language, which provides a reference point for interpreting the
-        more advanced experiments that follow.
+        fixed set of embeddings that are reused throughout the project. From this bank, several prompts
+        are chosen as exemplars and are displayed side by side with their generated images, using a
+        single random seed and multiple values of <em>num_inference_steps</em>. The outputs are examined for whether the
+        core subject, viewpoint, and stylistic cues match the description, and whether more delicate
+        relational clauses—such as instructions about reflections, grids of windows, or localized
+        details—are preserved, softened, or ignored.
       </p>
-
     </div>
 
     <div class="iteration-belt__header">
-      <!-- <h3 class="iteration-belt__title">Renders</h3> -->
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
     </div>
 
-    <div class="iteration-belt__viewport">
-      <h4 class="iteration-belt__row-title">Timesteps</h4>
-      <div class="iteration-belt__track">
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/lewis.png">
-          <figcaption class="iteration-belt__caption">"a symbolist painting of Lewis and Clark reaching the Columbia
-            River, soft edges"</figcaption>
-        </figure>
+    <!-- Row 1: prompt outputs -->
+    <div class="iteration-belt__row">
+      <h4 class="iteration-belt__row-title">Prompt outputs</h4>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/market.png">
-          <figcaption class="iteration-belt__caption">"a baroque oil painting of a crowded market lit by torches and
-            deep shadows"
-          </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/lewis.png" alt="Lewis and Clark prompt output">
+            <figcaption class="iteration-belt__caption">
+              "a symbolist painting of Lewis and Clark reaching the Columbia River, soft edges"
+            </figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/mermaid.png">
-          <figcaption class="iteration-belt__caption">"a romanticism oil painting of a mermaid seen only as a
-            reflection
-            in dark waves under moonlight"
-          </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/market.png" alt="Crowded market prompt output">
+            <figcaption class="iteration-belt__caption">
+              "a baroque oil painting of a crowded market lit by torches and deep shadows"
+            </figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/glass_planes.png">
-          <figcaption class="iteration-belt__caption">" “a renaissance-style painting of a city square reflected in
-            many
-            small glass panes”
-          </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/mermaid.png" alt="Mermaid reflection prompt output">
+            <figcaption class="iteration-belt__caption">
+              "a romanticism oil painting of a mermaid seen only as a reflection in dark waves under moonlight"
+            </figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/hiroshima.png">
-          <figcaption class="iteration-belt__caption">"a symbolist oil painting, close-up of a human eye whose iris is
-            a
-            reflection of a distant mushroom of the atomic bomb dropped at Hiroshima"
-          </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/glass_planes.png"
+              alt="City square glass panes output">
+            <figcaption class="iteration-belt__caption">
+              "a renaissance-style painting of a city square reflected in many small glass panes"
+            </figcaption>
+          </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/prompts/windows.png">
-          <figcaption class="iteration-belt__caption">"a realism painting of a library where each window opens onto a
-            different sky"
-          </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/hiroshima.png" alt="Hiroshima eye prompt output">
+            <figcaption class="iteration-belt__caption">
+              "an oil painting, close-up of a villager's eye with a distant mushroom cloud reflected in the iris"
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/windows.png" alt="Library windows prompt output">
+            <figcaption class="iteration-belt__caption">
+              "a realism painting of a library where each window opens onto a different sky"
+            </figcaption>
+          </figure>
+
+        </div>
       </div>
     </div>
 
-    <!-- <div class="iteration-belt__outro">
-    </div> -->
+    <!-- Row 2: stage-1 num_inference_steps sweep -->
+    <div class="iteration-belt__row">
+      <h4 class="iteration-belt__row-title">Stage&nbsp;1 sampling steps</h4>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/steps/20251206-233502.png"
+              alt="Stage 1 sampling with 10 steps">
+            <figcaption class="iteration-belt__caption">stage&nbsp;1: 10 steps</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/steps/20251205-020333.png"
+              alt="Stage 1 sampling with 25 steps">
+            <figcaption class="iteration-belt__caption">stage&nbsp;1: 25 steps</figcaption>
+          </figure>
+
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/steps/20251206-233653.png"
+              alt="Stage 1 sampling with 75 steps">
+            <figcaption class="iteration-belt__caption">stage&nbsp;1: 75 steps</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/steps/20251206-231738.png"
+              alt="Stage 1 sampling with 100 steps">
+            <figcaption class="iteration-belt__caption">stage&nbsp;1: 100 steps</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/steps/20251206-233954.png"
+              alt="Stage 1 sampling with 100 steps">
+            <figcaption class="iteration-belt__caption">stage&nbsp;1: 125 steps</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/prompts/steps/20251206-232804.png"
+              alt="Stage 1 sampling with 175 steps">
+            <figcaption class="iteration-belt__caption">stage&nbsp;1: 175 steps</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The first row shows that DeepFloyd IF consistently respects broad scene type and global
+        composition: crowded interiors, reflective windows, and symbolic iris structures all align
+        closely with their prompts, even when fine relational details are only partially enforced.
+        The second row then isolates the effect of the number of sampling steps in the stage&nbsp;1
+        base model. With only 10 steps, the iris image has roughly correct layout but incorrect anatomy of the eyelid
+        and relatively coarse shading; at 25–50 steps, edges around the iris and eyelids sharpen and
+        the reflected landscape stabilizes. Increasing to 75–125 steps yields smoother gradients and
+        more precise highlights on the cornea, indicating that the sampler is projecting the sample
+        closer to the natural image manifold. Around 150 steps there are only modest improvements, and
+        once the step count is pushed beyond roughly 200, structure begins to break down: the iris and
+        eyelids dissolve into over-textured patterns and, in the most extreme cases, stage&nbsp;1
+        produces almost pure noise. At that point stages&nbsp;2 and&nbsp;3 simply upscale whatever is
+        present, leading to hallucinated detail or noise at higher resolutions rather than recovering
+        the intended eye.
+      </p>
+    </div>
 
   </section>
+
 
   <!-- ============================================ 1.1 Implementing the Forward Process =================================================  -->
 
@@ -232,7 +294,7 @@
 
       <p>
         To visualize this behavior, the Campanile is shown at several representative timesteps:
-        <code>t = 0</code>, <code>250</code>, <code>400</code>, <code>500</code>, and <code>750</code>.
+        <code>t = 0</code>, <code>250</code>, <code>500</code>, and <code>750</code>.
         At <code>t = 0</code>, the image is the original, noise-free photograph. By <code>t = 250</code>,
         moderate noise is visible, but the tower, trees, and sky remain clearly recognizable. At
         <code>t = 500</code>, the injected noise dominates fine detail: edges
@@ -509,16 +571,15 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The GIFs in the first row show the noisy Campanile gradually emerging from near-pure noise:
+        The GIFs in the first row show the Campanile image gradually emerging from near-pure noise:
         early frames retain little structure, mid-sequence frames recover the tower silhouette and sky
         gradient, and late frames sharpen edges and contrast. The second row compares the final
         iterative reconstruction against the original image, the one-step estimate, and the classical
         Gaussian baseline. Iterative denoising produces the closest match to the original: the tower
         and trees are well defined and textures are plausibly restored. The one-step estimate recovers
         only coarse shape and remains noticeably washed out, while the Gaussian result is over-smoothed
-        and lacks architectural detail. This comparison demonstrates that repeatedly applying the
-        learned reverse step along a carefully chosen schedule is essential for high-quality
-        reconstructions in diffusion models.
+        and lacks architectural detail. It's evident that repeatedly applying the learned reverse step along
+        a carefully chosen schedule is essential for high-quality reconstructions in diffusion models.
       </p>
     </div>
   </section>
@@ -536,8 +597,7 @@
         (32168, 100570, 91798, 1215, 122607). Each run draws an independent noise image at the final
         timestep and then traverses the entire reverse chain, producing one synthesized 64×64 image per
         seed. Model weights, scheduler settings, and all hyperparameters are held fixed; only the
-        initial noise realization changes. This configuration directly realizes the marginal
-        distribution learned by the model and satisfies the requirement to “show 5 sampled images.”
+        initial noise realization changes.
       </p>
     </div>
 
@@ -557,7 +617,7 @@
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_32168.png"
               alt="Sampled landscape with flowers and a pier at sunrise">
             <figcaption class="iteration-belt__caption">
-              Seed 32168 – lakeside sunrise with foreground flowers
+              Seed 32168
             </figcaption>
           </figure>
 
@@ -565,7 +625,7 @@
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_100570.png"
               alt="Grid of architectural and landscape thumbnails">
             <figcaption class="iteration-belt__caption">
-              Seed 100570 – collage of coastal and architectural scenes
+              Seed 100570
             </figcaption>
           </figure>
 
@@ -573,7 +633,7 @@
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_91798.png"
               alt="Portrait of a person looking up in a storm of particles">
             <figcaption class="iteration-belt__caption">
-              Seed 91798 – portrait in a field of glowing particles
+              Seed 91798
             </figcaption>
           </figure>
 
@@ -581,7 +641,7 @@
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_1215.png"
               alt="Monochrome cityscape partially obscured by smoke">
             <figcaption class="iteration-belt__caption">
-              Seed 1215 – atmospheric monochrome cityscape
+              Seed 1215
             </figcaption>
           </figure>
 
@@ -589,7 +649,7 @@
             <img class="iteration-belt__image" src="media/diffusion_model_sampling/sample_122607.png"
               alt="Figure walking along pastel rock formations at sunset">
             <figcaption class="iteration-belt__caption">
-              Seed 122607 – figure in pastel desert landscape
+              Seed 122607
             </figcaption>
           </figure>
 
@@ -599,14 +659,13 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The five samples exhibit diverse scene types and compositions—ranging from a flower-framed
-        lakeside at sunrise to a portrait immersed in particles and a pastel desert landscape—despite
-        being generated by the same model and schedule. This diversity arises solely from the different
+        The five samples exhibit diverse scene types and compositions, ranging from landscapes
+        to portraits despite being generated by the same model and schedule. This diversity arises solely from the
+        different
         random seeds, which determine the initial noise pattern at the start of the reverse process.
         At the same time, all images share consistent photographic qualities such as coherent lighting,
         natural textures, and plausible perspective, indicating that the model has learned a strong
-        prior over natural images rather than memorizing individual examples. These observations
-        confirm that the sampler is correctly traversing the learned image distribution.
+        prior over natural images rather than memorizing individual examples.
       </p>
     </div>
   </section>
@@ -626,8 +685,7 @@
         the unconditional image distribution and emphasize diversity, whereas large values force the
         generation to adhere more strongly to the prompt, at the risk of oversharpening or introducing
         artifacts. In this section, five images are generated with a fixed random seed and guidance
-        scales {2, 4, 5, 6, 8}, satisfying the requirement to show five CFG samples for the same text
-        description.
+        scales {2, 4, 5, 6, 8}.
       </p>
     </div>
 
@@ -650,29 +708,30 @@
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/cfg/s4.png"
-              alt="Monochrome portrait with stronger definition">
+            <img class="iteration-belt__image" src="media/cfg/s4.png" alt="Landscape at dusk with strong reflections">
             <figcaption class="iteration-belt__caption">
-              CFG scale 4 – more defined monochrome portrait
+              CFG scale 4 – high-contrast landscape at dusk
             </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
             <img class="iteration-belt__image" src="media/cfg/s5.png" alt="Close-up portrait with vivid colors">
             <figcaption class="iteration-belt__caption">
-              CFG scale 5 – vivid close-up portrait
+              CFG scale 5 – more defined monochrome portrait
+
             </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/cfg/s6.png" alt="Landscape at dusk with strong reflections">
+            <img class="iteration-belt__image" src="media/cfg/s6.png"
+              alt="Monochrome portrait with stronger definition">
             <figcaption class="iteration-belt__caption">
-              CFG scale 6 – high-contrast landscape at dusk
+              CFG scale 6 – vivid close-up portrait
             </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/cfg/s8.png" alt="Bright portrait in a green field">
+            <img class="iteration-belt__image" src="media/cfg/s8.png">
             <figcaption class="iteration-belt__caption">
               CFG scale 8 – very sharp, strongly conditioned portrait
             </figcaption>
@@ -685,7 +744,7 @@
     <div class="iteration-belt__outro">
       <p>
         As the CFG scale increases, the samples move from soft, low-contrast renderings toward images
-        with sharper edges, stronger color saturation, and more “on-prompt” structure. At low guidance
+        with sharper edges, stronger color saturation. At low guidance
         (e.g., scale 2), the model behaves similarly to the unconditional sampler: compositions are
         plausible but loosely tied to the prompt. Intermediate scales (around 4–6) balance fidelity and
         realism, producing images that read clearly as high-quality photographs without obvious
@@ -821,7 +880,7 @@
 
     <!-- Row 3: Space Needle example -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Space Needle: cityscape reinterpretation</h3>
+      <h3 class="iteration-belt__row-title">More Glass Art!!</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
@@ -869,14 +928,15 @@
     <div class="iteration-belt__outro">
       <p>
         Across all three examples, the SDEdit trajectory shows a consistent pattern. For the Campanile,
-        low noise levels preserve the tower and skyline almost exactly, while higher levels introduce
-        softer clouds, altered color grading, and occasionally new structural details. The glass
-        sculpture begins as a dense cluster of orange spikes and, under increasing noise, is redrawn
+        low noise levels preserve the tower and horizion line almost exactly, while higher levels introduce
+        softer clouds, altered color grading, and occasionally new structural details. My first personal image is of a
+        glass
+        sculpture which begins as a dense cluster of orange spikes and, under increasing noise, is redrawn
         as more diffuse, branching forms that still respect the radial “explosion” motif but explore
-        new lighting and background colors. The Space Needle sequence similarly moves from a faithful
-        reconstruction of the original skyline to more stylized versions where the tower, clouds, and
-        city lights are exaggerated or partially reimagined. Together, these rows demonstrate that
-        SDEdit can either gently refine an existing photograph or drive it toward a more creative,
+        new lighting and background colors. The thrid sequence similarly moves from a faithful
+        reconstruction of the original scultupre to more stylized versions where the artwwork, colors, and background
+        are exaggerated or partially reimagined as flowers and landscapes. And so, SDEdit can either gently refine an
+        existing photograph or drive it toward a more creative,
         prompt-driven reinterpretation, depending on how far along the forward diffusion trajectory
         the sampler chooses to re-enter.
       </p>
@@ -891,15 +951,13 @@
     <div class="iteration-belt__intro">
       <p>
         This section tests SDEdit on images that do not come from the Campanile dataset. One image is
-        sourced from the web (a high-contrast photograph of the Crab Nebula), and two are hand-drawn
+        sourced from the web (Crab Nebula provided by NASA), and two are hand-drawn
         doodles (“The Blue Bandit” and “The Little Prince”). For each input, the forward process is
         run to noise levels <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20}, and the reverse sampler is then
         applied under the prompt “a high quality photo.” At low noise levels, the procedure behaves
         like a local enhancement operator that cleans and stylizes the input while preserving its
         structure; at high noise levels, the model is forced to hallucinate more content from its
-        learned prior while still being anchored by the original image. These sequences satisfy the
-        deliverable requirement of editing one web image and two hand-drawn images across the specified
-        noise levels.
+        learned prior while still being anchored by the original image.
       </p>
     </div>
 
@@ -1069,10 +1127,9 @@
         The Crab Nebula sequence shows that, even for a complex astronomical scene, low noise levels
         allow the sampler to clean and sharpen filaments while preserving the overall color palette and
         radial structure. At higher noise, the model still reconstructs a nebula-like cloud but freely
-        adjusts fine filament geometry and local lighting. For the hand-drawn doodles, the behavior is
-        even more revealing: starting from simple line art, low <em>i_start</em> values yield
-        photo-like renderings that closely follow the original silhouettes (for example, the masked
-        face of the Blue Bandit or the child and planet in The Little Prince), while higher values
+        adjusts fine filament geometry and local lighting. For the hand-drawn input images, low <em>i_start</em> values
+        produced results which deviated from the input medium but somewhat was able to closely follow the original
+        silhouettes, while higher values
         gradually replace sketchy strokes with richer shading, textured backgrounds, and new
         high-frequency detail. Across all three inputs, the SDEdit edits confirm that the diffusion
         model can project both photographic and non-photographic images onto its learned natural image
@@ -1083,403 +1140,471 @@
   </section>
 
 
-
   <!-- ==================================================== 1.7.2 Inpainting ====================================================== -->
-  <section class="content gold-glass writing-section">
+  <section class="content gold-glass iteration-belt" aria-label="Inpainting the Campanile">
     <h2 class="section-heading">1.7.2 Inpainting</h2>
-    <p>
-      1 image from the web of your choice, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and
-      whatever additional noise levels you want)
-      2 hand drawn images, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and whatever additional
-      noise levels you want)
-    </p>
-  </section>
 
-  <section class="content gold-glass iteration-belt">
+    <div class="iteration-belt__intro">
+      <p>
+        Inpainting focuses on editing only a specified region of the image while preserving the
+        surrounding context. The 64×64 Campanile photograph is paired with a binary mask that marks
+        the section of the tower to be regenerated. Inside the mask, the image is diffused forward to
+        noise levels <em>i_start</em> ∈ {1, 2, 3, 4, 5, 7}, while pixels outside the mask remain fixed.
+        The reverse sampler, conditioned on “a high quality photo,” then reconstructs the masked region
+        so that it blends seamlessly with the unchanged background. The images below show the input,
+        mask, and inpainting trajectories for different noise entry points, satisfying the inpainting
+        deliverable for this part.
+      </p>
+    </div>
+
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Inpainting The Campanile</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
     <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Timesteps </h3>
+      <h3 class="iteration-belt__row-title">Inpainting at different noise levels</h3>
       <div class="iteration-belt__track">
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png">
-          <figcaption class="iteration-belt__caption">Input Image </figcaption>
+          <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png" alt="Original Campanile image">
+          <figcaption class="iteration-belt__caption">Original input</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/camp_double_mask.png">
-          <figcaption class="iteration-belt__caption">Mask</figcaption>
+          <img class="iteration-belt__image" src="media/inpainting/campanile/camp_double_mask.png"
+            alt="Binary inpainting mask over the Campanile">
+          <figcaption class="iteration-belt__caption">Mask (edited region)</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start1.gif">
-          <figcaption class="iteration-belt__caption">start index = 1</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start2.gif">
-          <figcaption class="iteration-belt__caption">start index = 2</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start3.gif">
-          <figcaption class="iteration-belt__caption">start index = 3</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start4.gif">
-          <figcaption class="iteration-belt__caption">start index = 4</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start5.gif">
-          <figcaption class="iteration-belt__caption">start index = 5</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start7.gif">
-          <figcaption class="iteration-belt__caption">start index = 7</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================== 1.7.3 Text-Conditional Image-to-image Translation ====================================================== -->
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Text-Conditional Image-to-image Translation</h2>
-    <p>
-      Now, we will do the same thing as SDEdit, but guide the projection with a text prompt. This is no longer pure
-      "projection to the natural image manifold" but also adds control using language. This is simply a matter of
-      changing the prompt from "a high quality photo" to any of your prompt!
-      Deliverables
-
-      Edits of the Campanile, using the given prompt at noise levels [1, 3, 5, 7, 10, 20]
-      Edits of 2 of your own test images, using the same procedure
-
-      Hints
-
-      The images should gradually look more like original image, but also look like the text prompt.
-
-    </p>
-  </section>
-
-  <section class="content gold-glass iteration-belt">
-    <div class="iteration-belt__header">
-      <!-- <h2 class="iteration-belt__title">Inpainting The Campanile</h2> -->
-      <h2 class="iteration-belt__title">1.7.3 Prompt Guided Diffusion Models</h2>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
-
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Prompt: "a rocketship launching into space"</h3>
-      <div class="iteration-belt__track">
-
-        <!-- <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png">
-          <figcaption class="iteration-belt__caption">Input Image </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/camp_double_mask.png">
-          <figcaption class="iteration-belt__caption">Mask</figcaption>
-        </figure> -->
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/txtCond_img2img/i_start1.gif">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start1.gif"
+            alt="Inpainting trajectory with i_start = 1">
           <figcaption class="iteration-belt__caption">noise level 1</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/txtCond_img2img/i_start3.gif">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start2.gif"
+            alt="Inpainting trajectory with i_start = 2">
+          <figcaption class="iteration-belt__caption">noise level 2</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start3.gif"
+            alt="Inpainting trajectory with i_start = 3">
           <figcaption class="iteration-belt__caption">noise level 3</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/txtCond_img2img/i_start5.gif">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start4.gif"
+            alt="Inpainting trajectory with i_start = 4">
+          <figcaption class="iteration-belt__caption">noise level 4</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start5.gif"
+            alt="Inpainting trajectory with i_start = 5">
           <figcaption class="iteration-belt__caption">noise level 5</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/txtCond_img2img/i_start7.gif">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start7.gif"
+            alt="Inpainting trajectory with i_start = 7">
           <figcaption class="iteration-belt__caption">noise level 7</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/txtCond_img2img/i_start10.gif">
-          <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          <img class="iteration-belt__image" src="media/inpainting/campanile/inpaint_final.png"
+            alt="Final inpainted Campanile image">
+          <figcaption class="iteration-belt__caption">Final inpainted result</figcaption>
         </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/txtCond_img2img/i_start20.gif">
-          <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-        </figure>
       </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The original image and mask at the beginning of the belt clarify which portion of the tower is
+        being regenerated. For the lowest noise levels, the inpainted region remains very close to the
+        original structure: the tower edges align across the mask boundary, and only subtle texture and
+        lighting changes appear. As <em>i_start</em> increases, the tower interior and base are redrawn
+        with more variation, and the model begins to hallucinate new details while still matching the
+        surrounding sky and trees in color and shading. The end result demonstrates that
+        the diffusion model can fill in a missing region with a plausible, high-quality reconstruction
+        that respects both the global geometry of the scene and the local context provided by the
+        unmasked pixels.
+      </p>
     </div>
   </section>
 
-  <!-------------------------------------------------------------1.7.3 image A ------------------------------------------>
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Text-Conditional Image-to-image Translation</h2>
-    <p>
-      1 image from the web of your choice, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and
-      whatever additional noise levels you want)
-      2 hand drawn images, edited using the above method for noise levels [1, 3, 5, 7, 10, 20] (and whatever additional
-      noise levels you want)
-    </p>
-  </section>
 
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows" delta-speed>
+  <!-- ==================================================== 1.7.3 Text-Conditional Image-to-image Translation ===================== -->
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="Text-conditional image-to-image translation">
+    <h2 class="section-heading">1.7.3 Text-Conditional Image-to-image Translation</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        This part extends SDEdit by replacing the generic prompt “a high quality photo” with richer
+        text descriptions. For each input image, the forward process is run to noise levels
+        <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20}, and the reverse sampler is guided by a specific prompt.
+        The Campanile image is edited with the prompt “a rocketship launching into space,” while two
+        additional images are edited with Renaissance-style prompts: “a Renaissance painting of a
+        knight and a dragon” and “a Renaissance painting of a celestial choir of angels.”
+      </p>
+    </div>
+
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Prompt Guided Diffusion Models</h2>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
-    <!-- Row 2: iterative denoise inputs -->
+    <!-- Row 1: Campanile with rocketship prompt -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Prompt: "a Renaissance painting of a knight and a dragon"</h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
-
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start1.gif" alt="id start = 1">
-            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start3.gif" alt="id_start = 3">
-            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start5.gif" alt="id_start = 5">
-            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start7.gif" alt="id_start = 7">
-            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start10.gif" alt="id start = 10">
-            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start17.gif" alt="id start = 10">
-            <figcaption class="iteration-belt__caption">noise level 17</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start20.gif" alt="id start = start">
-            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/orig.png" alt="id start = start">
-            <figcaption class="iteration-belt__caption">Original</figcaption>
-          </figure>
-        </div>
-      </div>
-    </div>
-
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Prompt: "'a Renaissance painting of a celestial choir of angels"</h3>
+      <h3 class="iteration-belt__row-title">
+        Campanile – prompt: “a rocketship launching into space”
+      </h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start1.gif" alt="id start = 1">
+            <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png"
+              alt="Original Campanile image for text-conditional editing">
+            <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/i_start1.gif">
             <figcaption class="iteration-belt__caption">noise level 1</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start3.gif" alt="id_start = 3">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/i_start3.gif">
             <figcaption class="iteration-belt__caption">noise level 3</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start5.gif" alt="id_start = 5">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/i_start5.gif">
             <figcaption class="iteration-belt__caption">noise level 5</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start7.gif" alt="id_start = 7">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/i_start7.gif">
             <figcaption class="iteration-belt__caption">noise level 7</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start10.gif" alt="id start = 10">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/i_start10.gif">
             <figcaption class="iteration-belt__caption">noise level 10</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start17.gif" alt="id start = 17">
-            <figcaption class="iteration-belt__caption">noise level 17</figcaption>
-          </figure>
-
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start20.gif" alt="id start = 20">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/i_start20.gif">
             <figcaption class="iteration-belt__caption">noise level 20</figcaption>
           </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/orig.png" alt="id start = original">
-            <figcaption class="iteration-belt__caption">Original</figcaption>
-          </figure>
         </div>
       </div>
     </div>
 
+    <!-- Row 2: Web / photo image – knight and dragon prompt -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">
+        Prompt: “a Renaissance painting of a knight and a dragon”
+      </h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
 
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/orig.png"
+              alt="Original image for knight and dragon prompt">
+            <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start1.gif">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start3.gif">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start5.gif">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start7.gif">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start10.gif">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start17.gif">
+            <figcaption class="iteration-belt__caption">noise level 17</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/a/i_start20.gif">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Web / photo image – celestial choir prompt -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">
+        Prompt: “a Renaissance painting of a celestial choir of angels”
+      </h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/orig.png"
+              alt="Original image for celestial choir prompt">
+            <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start1.gif">
+            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start3.gif">
+            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start5.gif">
+            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start7.gif">
+            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start10.gif">
+            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start17.gif">
+            <figcaption class="iteration-belt__caption">noise level 17</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/txtCond_img2img/b/i_start20.gif">
+            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        Increasing the noise level before denoising systematically trades fidelity to the original pixels
+        for stronger alignment with the text prompt. For the Campanile, low noise levels simply add
+        rocket-like exhaust and faint sky streaks to the existing tower, while higher levels let the model
+        bend the silhouette and sky into a clear launch scene. Under the knight-and-dragon prompt, fine
+        photographic detail is gradually overwritten by painterly armor, banners, and dragon forms, until
+        at the highest noise levels the image reads almost entirely as a Renaissance illustration. The
+        celestial-choir prompt shows a similar pattern: mild noise yields subtle halos and robes layered
+        over the original figures, whereas strong noise produces densely populated, golden-toned scenes
+        with increasingly distorted anatomy. Varying the noise-level parameter thus allows SDEdit to
+        interpolate between gentle stylistic editing and full semantic reinterpretation while remaining
+        anchored to the structure implied by the prompts.
+      </p>
+    </div>
   </section>
 
   <!-- ==================================================== 1.8 Visual Anagrams ====================================================== -->
+  <section class="content gold-glass iteration-belt" aria-label="Visual anagrams with diffusion models">
+    <h2 class="section-heading">1.8 Visual Anagrams</h2>
 
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Visual Anagrams</h2>
-    <p>
-      In this part, we are finally ready to implement Visual Anagrams and create optical illusions with diffusion
-      models. In this part, we will create an image that looks like "an oil painting of people around a campfire", but
-      when flipped upside down will reveal "an oil painting of an old man".
+    <div class="iteration-belt__intro">
+      <p>
+        Visual anagrams are constructed by coupling the diffusion model with two different text prompts
+        and a 180° flip operation. The procedure starts from a noisy 64×64 image and alternates between
+        two denoising passes: one conditioned on the “upright” prompt and one conditioned on the
+        “flipped” prompt, where the image is rotated by 180° before the second pass. The two predicted
+        noise fields are rotated into a common orientation and averaged, and this averaged estimate is
+        used for the reverse diffusion update. Repeating this through the whole schedule yields an
+        image that is simultaneously compatible with both prompts, but with each one dominating in a
+        different orientation.
+      </p>
+    </div>
 
-      To do this, we will denoise an image
-      at step normally with the prompt , to obtain noise estimate . But at the same time, we will flip upside down, and
-      denoise with the prompt , to get noise estimate . We can flip
-
-      back, and average the two noise estimates. We can then perform a reverse/denoising diffusion step with the
-      averaged noise estimate.
-
-      The full algorithm will be:
-
-      where UNet is the diffusion model UNet from before, is a function that flips the image, and and are two different
-      text prompt embeddings. And our final noise estimate is
-
-      . Please implement the above algorithm and show example of an illusion.
-      Deliverables
-
-      Correctly implemented visual_anagrams function
-      2 illusions of your choice that change appearance when you flip it upside down (feel free to take inspirations
-      from this page).
-
-      Hints
-
-      You may have to run multiple times to get a really good result for the same reasons as above.
-
-    </p>
-  </section>
-
-  <section class="content gold-glass iteration-belt">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Visual Anagrams</h2>
-
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
     <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Various Prompts</h3>
-
+      <h3 class="iteration-belt__row-title">Upright vs. flipped interpretations</h3>
       <div class="iteration-belt__track">
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/visual_anagrams/anagram_flipped.png">
-          <figcaption class="iteration-belt__caption">an oil painting of an old man</figcaption>
-        </figure>
 
+        <!-- Illusion 1: Campfire / Old Man -->
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/visual_anagrams/anagram_upright.png">
-          <figcaption class="iteration-belt__caption">an oil painting of people around a campfire</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/visual_anagrams/a/anagram_upright.png">
-          <figcaption class="iteration-belt__caption">a baroque painting of Cleopatra as a newborn princess in a tall
-            palace hall</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/visual_anagrams/a/anagram_flipped.png">
-          <figcaption class="iteration-belt__caption">a baroque painting of Cleopatra as a dying queen in the same tall
-            palace hall</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/visual_anagrams/b/anagram_flipped.png">
-          <figcaption class="iteration-belt__caption">a romanticism painting of the storming of the Bastille
+          <img class="iteration-belt__image" src="media/visual_anagrams/anagram_upright.png"
+            alt="Visual anagram upright: people around a campfire">
+          <figcaption class="iteration-belt__caption">
+            Upright: “an oil painting of people around a campfire”
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/visual_anagrams/b/anagram_upright.png">
-          <figcaption class="iteration-belt__caption"> a neoclassical painting of the signing of the United States
-            Declaration of Independence</figcaption>
+          <img class="iteration-belt__image" src="media/visual_anagrams/anagram_flipped.png"
+            alt="Visual anagram flipped: old man">
+          <figcaption class="iteration-belt__caption">
+            Flipped: “an oil painting of an old man”
+          </figcaption>
         </figure>
+
+        <!-- Illusion 2: Cleopatra newborn / dying queen -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/a/anagram_upright.png"
+            alt="Upright Cleopatra visual anagram">
+          <figcaption class="iteration-belt__caption">
+            Upright: “a baroque painting of Cleopatra as a newborn princess
+            in a tall palace hall”
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/a/anagram_flipped.png"
+            alt="Flipped Cleopatra visual anagram">
+          <figcaption class="iteration-belt__caption">
+            Flipped: “a baroque painting of Cleopatra as a dying queen in the same hall”
+          </figcaption>
+        </figure>
+
+        <!-- Illusion 3: Bastille / Declaration of Independence -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/b/anagram_flipped.png"
+            alt="Visual anagram flipped: storming of the Bastille">
+          <figcaption class="iteration-belt__caption">
+            Flipped: “a romanticism painting of the storming of the Bastille”
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/visual_anagrams/b/anagram_upright.png"
+            alt="Visual anagram upright: signing of the U.S. Declaration of Independence">
+          <figcaption class="iteration-belt__caption">
+            Upright: “a neoclassical painting of the signing of the United States
+            Declaration of Independence”
+          </figcaption>
+        </figure>
+
       </div>
     </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The first pair demonstrates the core effect most explicitly: when viewed upright, the image
+        clearly depicts a ring of figures around a campfire, but flipping it 180° reveals the face of
+        an old man emerging from the same pattern of highlights and shadows. The Cleopatra anagram
+        uses the symmetry of the palace architecture and drapery to encode two temporal states of the
+        same character—birth and death—in a single canvas, with the vertical axes of the columns and
+        stairs serving both compositions. The final pair blends two historical scenes into one:
+        in one orientation, the flags, torches, and crowd read as the storming of the Bastille,
+        whereas in the other orientation the same shapes align into the orderly assembly and banners
+        of the U.S. Declaration’s signing. Diffusion models not only produce standalone images but
+        can be steered to produce images that occupy the intersection of two distinct textual
+        descriptions, with rotation acting as the switch that selects which interpretation dominates.
+      </p>
+    </div>
   </section>
+
   <!-- ==================================================== 1.9 Hybrid Images ====================================================== -->
+  <section class="content gold-glass iteration-belt" aria-label="Hybrid images">
+    <h2 class="section-heading">1.9 Hybrid Images</h2>
 
-  <section class="content gold-glass writing-section">
-    <h2 class="section-heading">Visual Anagrams</h2>
-    <p>
-      Deliverables
+    <div class="iteration-belt__intro">
+      <p>
+        Hybrid images are constructed by combining the low-frequency content of one image with the
+        high-frequency detail of another. In this part, two prompts are sampled separately, then split
+        into “blurred” and “detail” components using Gaussian smoothing and a corresponding
+        high-pass residual. The final hybrid is obtained by adding the low frequencies of the first
+        image to the high frequencies of the second. When viewed up close, the eye is drawn to the
+        high-frequency structure and the hybrid resembles the second prompt; when viewed from farther
+        away or at a reduced resolution, the low-frequency structure dominates and the first prompt
+        becomes more apparent.
+      </p>
+    </div>
 
-      Correctly implemented make_hybrids function
-      2 hybrid images of your choosing (feel free to take inspirations from this page).
-
-      Hints
-
-      use torchvision.transforms.functional.gaussian_blur
-      You may have to run multiple times to get a really good result for the same reasons as above
-    </p>
-  </section>
-
-  <section class="content gold-glass iteration-belt">
     <div class="iteration-belt__header">
-      <h2 class="iteration-belt__title">Hybrid Images</h2>
-
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div>
 
     <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Various Prompts</h3>
-
+      <h3 class="iteration-belt__row-title">Hybrids across spatial frequency scales</h3>
       <div class="iteration-belt__track">
+
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hybrid/a/hybrid_steps.gif">
-          <figcaption class="iteration-belt__caption">"a lithograph of a skull" / "a lithograph of a waterfall"
+          <img class="iteration-belt__image" src="media/hybrid/a/hybrid_steps.gif"
+            alt="Hybrid between a skull and a waterfall">
+          <figcaption class="iteration-belt__caption">
+            “a lithograph of a skull” / “a lithograph of a waterfall” – up close the skull’s eye
+            sockets and teeth dominate, while from a distance the smooth cascades and vertical bands
+            read as a waterfall.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hybrid/b/hybrid_steps.gif">
-          <figcaption class="iteration-belt__caption">"a lithograph of a king" / "a lithograph of a volcano"
+          <img class="iteration-belt__image" src="media/hybrid/b/hybrid_steps.gif"
+            alt="Hybrid between a king and a volcano">
+          <figcaption class="iteration-belt__caption">
+            “a lithograph of a king” / “a lithograph of a volcano” – at high resolution the crown,
+            facial features, and cloak outlines identify the king; as the image is shrunk or viewed
+            from afar, the same contours merge into the cone, crater, and plume of a volcanic scene.
           </figcaption>
         </figure>
 
-
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/hybrid/c/hybrid_steps.gif">
-          <figcaption class="iteration-belt__caption">"a young woman reading near a candlelight" / "a gothic cathedral"
+          <img class="iteration-belt__image" src="media/hybrid/c/hybrid_steps.gif"
+            alt="Hybrid between a woman reading and a gothic cathedral">
+          <figcaption class="iteration-belt__caption">
+            “a young woman reading near a candlelight” / “a gothic cathedral” – nearby, the hybrid
+            looks like a softly lit portrait, with facial details and hair strands defined by the
+            high-frequency component; at a distance, the arches, windows, and vertical buttresses of a
+            cathedral emerge from the low-frequency structure.
           </figcaption>
         </figure>
 
       </div>
     </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        Across all three examples, the GIFs make the frequency trade-off explicit. Early frames emphasize
+        heavily blurred bases in which only coarse silhouettes from the first prompt are visible, while
+        later frames sharpen edges, textures, and small-scale contrast contributed by the second prompt.
+        The resulting static hybrids therefore encode two distinct descriptions in a single image, with
+        the perceived interpretation shifting smoothly as the viewing distance or display scale changes.
+        This behavior provides direct evidence that the model correctly separates and recombines
+        low- and high-frequency information to produce perceptually convincing hybrid images.
+      </p>
+    </div>
+
   </section>
 
 
