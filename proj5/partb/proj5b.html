@@ -85,6 +85,7 @@
 
 
   <!-- ===================================================== Part 1.2: Using the UNet to Train a Denoiser ===================================================== -->
+  <!-- ===================================================== Part 1.2: Using the UNet to Train a Denoiser ===================================================== -->
 
   <section class="content gold-glass writing-section">
     <h2 class="section-heading">1.2 Using the UNet to Train a Denoiser</h2>
@@ -117,7 +118,8 @@
     </p>
 
     <figure>
-      <img src="media/one/1.2/single_digit_sigma_sweep.gif" alt="Noisy input, reconstruction, and error for varying sigma" />
+      <img src="media/one/1.2/single_digit_sigma_sweep.gif"
+        alt="Noisy input, reconstruction, and error for varying sigma" />
       <figcaption>
         σ-sweep showing noisy input, denoised output, and reconstruction error. The UNet performs
         reliably while structural cues remain, but errors intensify as σ removes nearly all evidence of
@@ -144,7 +146,213 @@
         the single-digit analysis.
       </figcaption>
     </figure>
-  </section>
+
+    <!-- ============================ 1.2.2 Out-of-Distribution Noise Levels ============================ -->
+
+    <h3 class="section-subheading">1.2.2 Out-of-Distribution Noise Levels</h3>
+
+    <p>
+      The denoiser is trained at a single noise level, σ = 0.5, but then evaluated across the full
+      range σ ∈ [0.0, 1.0]. Several aggregated statistics summarize how performance degrades as the
+      test noise moves away from the training regime and how the network allocates its corrections
+      across the image plane.
+    </p>
+
+    <p>
+      A first summary compresses each denoised image to a one-dimensional profile by recording the
+      average intensity along a central row and stacking these profiles as σ varies. The resulting
+      heatmap shows a bright vertical band where the stroke of the digit typically passes and dark
+      regions elsewhere. For small σ, the band is narrow and well defined, indicating a stable and
+      localized reconstruction of the stroke. As σ increases, this band broadens slightly and weak
+      activations appear in neighboring columns, reflecting the model’s growing uncertainty about the
+      exact stroke location when the input is heavily corrupted.
+    </p>
+
+    <figure>
+      <img src="media/one/1.2/sigma_row_heatmap.png"
+        alt="Row intensity vs sigma for a central scanline of the denoised digit" />
+      <figcaption>
+        Row intensity vs σ: a central scanline through the denoised digits remains sharply localized at
+        low σ and gradually broadens as noise increases, indicating growing uncertainty in stroke
+        placement.
+      </figcaption>
+    </figure>
+
+    <p>
+      The class-wise MSE curves provide a complementary view. For each digit class, the test MSE rises
+      monotonically with σ, producing a family of smooth, upward-sloping curves. Simple digits with a
+      single dominant stroke, such as “1”, incur the lowest error across the range, while more complex
+      shapes show higher error, especially at large σ. This pattern reflects the fact that recovering a
+      simple vertical stroke from noise is easier than reconstructing multi-stroke digits whose
+      structure is more sensitive to small perturbations.
+    </p>
+
+    <figure>
+      <img src="media/one/1.2/classwise_mse_vs_sigma.png" alt="Class-wise MSE as a function of sigma" />
+      <figcaption>
+        Class-wise MSE vs σ: errors increase smoothly with noise level, with simple digits such as “1”
+        remaining easiest to reconstruct and more complex digits accumulating higher error at large σ.
+      </figcaption>
+    </figure>
+
+    <p>
+      Averaging the absolute reconstruction error pixelwise over the entire test set at σ = 0.5
+      reveals a spatial structure that closely resembles a blurred template of the MNIST manifold.
+      Background regions, which are almost always blank, exhibit near-zero error. In contrast, the
+      central vertical band and surrounding arcs—where strokes from many digits tend to pass—show
+      systematically elevated error. This behavior indicates that the network is highly confident on
+      background pixels but inevitably uncertain about the precise thickness and placement of
+      handwritten strokes, which vary from digit to digit.
+    </p>
+
+    <figure>
+      <img src="media/one/1.2/mean_error_heatmap_sigma0.5.png"
+        alt="Mean absolute error heatmap over the dataset at sigma 0.5" />
+      <figcaption>
+        Mean absolute error at σ = 0.5: errors concentrate in regions occupied by strokes across many
+        digits, while the background is reconstructed with almost no error.
+      </figcaption>
+    </figure>
+
+    <p>
+      Distributional and spectral analyses tell a consistent story. Histograms of pixel intensities
+      show that the noisy images spread mass across a broad range of gray levels, while the denoised
+      outputs return mass to the sharp bimodal structure characteristic of clean MNIST digits
+      (dominant peaks near 0 and 1). In the Fourier domain, magnitude spectra and radial profiles
+      reveal that noise injects excess high-frequency energy, whereas the denoiser restores a spectrum
+      closely aligned with the clean reference by suppressing high frequencies and preserving
+      low-frequency content that encodes overall digit shape.
+    </p>
+
+    <figure>
+      <img src="media/one/1.2/intensity_histograms.png"
+        alt="Pixel intensity histograms for clean, noisy, and denoised digits" />
+      <figcaption>
+        Pixel intensity distributions: noise flattens the histogram, while the denoised outputs recover
+        a distribution that closely matches the clean digits with mass concentrated near background and
+        stroke intensities.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/one/1.2/frequency_spectra.png"
+        alt="2D frequency magnitude maps for clean, noisy, and denoised digits" />
+      <figcaption>
+        2D frequency spectra: noisy images exhibit amplified high-frequency content, whereas denoised
+        images suppress these components and restore a spectrum dominated by low frequencies, similar
+        to the clean digits.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/one/1.2/frequency_radial.png"
+        alt="Radial frequency spectra for clean, noisy, and denoised digits" />
+      <figcaption>
+        Radial frequency profiles: the noisy curve sits above the clean baseline at high spatial
+        frequencies, while the denoised curve tracks the clean profile, confirming that the UNet
+        behaves as a data-aware low-pass filter.
+      </figcaption>
+    </figure>
+
+    <p>
+      Finally, the internal representation learned by the network is visualized by projecting
+      bottleneck features onto their first two principal components. Points corresponding to different
+      digit classes form overlapping but structured clusters, with certain digits (notably “1”) forming
+      well-separated lobes. Together with a panel contrasting the lowest- and highest-error examples,
+      this view shows that the UNet organizes digits into a meaningful latent space: canonical,
+      easy-to-read instances concentrate in regions where the model reconstructs accurately, while
+      atypical handwriting styles occupy regions associated with larger reconstruction error.
+    </p>
+
+    <figure>
+      <img src="media/one/1.2/bottleneck_pca.png" alt="PCA of bottleneck features colored by digit class" />
+      <figcaption>
+        Bottleneck PCA colored by digit label: digits cluster by class in the latent space, with
+        well-formed examples occupying dense regions and more ambiguous handwriting pushed toward the
+        periphery.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <img src="media/one/1.2/best_worst_examples_sigma0.5.png"
+        alt="Panel of best and worst reconstructed digits at sigma 0.5" />
+      <figcaption>
+        Best- and worst-case reconstructions at σ = 0.5: simple, cleanly written digits yield very
+        small errors, while atypical shapes and ambiguous strokes produce noticeably larger
+        reconstruction discrepancies.
+      </figcaption>
+    </figure>
+
+    <!-- ============================ 1.2.3 Denoising Pure Noise ============================ -->
+
+        <!-- ============================ 1.2.3 Denoising Pure Noise ============================ -->
+
+    <h3 class="section-subheading">1.2.3 Denoising Pure Noise</h3>
+
+    <p>
+      A final experiment trains the same UNet to map pure Gaussian noise directly to clean MNIST
+      digits. In this regime the input contains no recognizable structure, so the network cannot rely
+      on residual strokes and must instead learn a direct mapping from random patterns to typical
+      digit shapes. The training curve shows a steep initial drop in MSE followed by a long, shallow
+      plateau, indicating rapid acquisition of a coarse noise-to-digit mapping and then gradually
+      diminishing returns as the model refines fine-scale details.
+    </p>
+
+    <figure>
+      <img
+        src="media/one/1.2/pure_noise_train_loss.png"
+        alt="Training loss curve for the pure-noise denoiser"
+      />
+      <figcaption>
+        Pure-noise denoiser training loss: the MSE falls sharply during early iterations as the UNet
+        learns to produce digit-like outputs from random noise, then levels off as further training
+        yields only modest improvements in stroke sharpness and alignment.
+      </figcaption>
+    </figure>
+
+    <p>
+      The sample grids make this evolution visible. Each column corresponds to a test digit, with the
+      top row showing the clean target, the middle row a pure-noise input, and the bottom row the
+      UNet output. After a single epoch, the outputs resemble blurry, almost class-agnostic blobs:
+      approximate digit silhouettes are present, but many columns look similar to one another. This
+      behavior aligns with the rapid loss decrease at the start of training—the network quickly learns
+      to move away from noise and toward an “average MNIST digit” that already reduces MSE
+      substantially, even if it does not yet capture class-specific structure.
+    </p>
+
+    <figure>
+      <img
+        src="media/one/1.2/pure_noise_epoch1.png"
+        alt="Pure-noise denoiser outputs after epoch 1: clean targets, noise inputs, and blurry outputs"
+      />
+      <figcaption>
+        Pure-noise denoiser after epoch&nbsp;1: outputs are coarse, blurred digit-like blobs that
+        already improve substantially over pure noise but remain only weakly tied to the underlying
+        class labels.
+      </figcaption>
+    </figure>
+
+    <p>
+      By epoch&nbsp;5, the bottom row has sharpened into clearly readable digits whose identities match
+      the clean targets much more consistently. Strokes are thinner and better aligned, and variation
+      across columns reflects class differences rather than generic “digitness.” These qualitative
+      changes correspond to the slow, incremental loss reductions observed after the initial drop: the
+      model has already captured the bulk of the signal by learning a generic digit prior, and further
+      optimization mainly polishes shapes and stroke placement rather than producing large numerical
+      gains in MSE.
+    </p>
+
+    <figure>
+      <img
+        src="media/one/1.2/pure_noise_epoch5.png"
+        alt="Pure-noise denoiser outputs after epoch 5: clean targets, noise inputs, and sharper digit outputs"
+      />
+      <figcaption>
+        Pure-noise denoiser after epoch&nbsp;5: outputs are sharper and class-consistent, reflecting
+        refinement of the digit prior learned in early training and matching the gradual flattening of
+        the training loss curve.
+      </figcaption>
+    </figure>
 
 
 
