@@ -181,6 +181,29 @@ body.top-title {
   /* text-align: center; */
 }
 
+/* Generic multi-panel row inside writing-section figures */
+.writing-section .figure-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;        /* allow wrapping on narrow screens */
+  align-items: flex-start;
+}
+
+.writing-section .figure-row > * {
+  flex: 0 1 24rem;        /* each panel can shrink, but not grow huge */
+}
+
+.writing-section .figure-row__label {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: #c9cfde;
+  text-align: center;
+}
+
+
+
+
 /* subheading label: above top-left of border */
 .section-heading {
   position: absolute;

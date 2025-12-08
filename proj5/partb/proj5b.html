@@ -157,7 +157,7 @@
       test noise moves away from the training regime and how the network allocates its corrections
       across the image plane.
     </p>
-
+    <!-- 
     <p>
       A first summary compresses each denoised image to a one-dimensional profile by recording the
       average intensity along a central row and stacking these profiles as σ varies. The resulting
@@ -166,7 +166,7 @@
       localized reconstruction of the stroke. As σ increases, this band broadens slightly and weak
       activations appear in neighboring columns, reflecting the model’s growing uncertainty about the
       exact stroke location when the input is heavily corrupted.
-    </p>
+    </p> -->
 
     <figure>
       <img src="media/one/1.2/sigma_row_heatmap.png"
@@ -177,6 +177,8 @@
         placement.
       </figcaption>
     </figure>
+
+
 
     <p>
       The class-wise MSE curves provide a complementary view. For each digit class, the test MSE rises
@@ -195,7 +197,7 @@
       </figcaption>
     </figure>
 
-    <p>
+    <!-- <p>
       Averaging the absolute reconstruction error pixelwise over the entire test set at σ = 0.5
       reveals a spatial structure that closely resembles a blurred template of the MNIST manifold.
       Background regions, which are almost always blank, exhibit near-zero error. In contrast, the
@@ -212,7 +214,7 @@
         Mean absolute error at σ = 0.5: errors concentrate in regions occupied by strokes across many
         digits, while the background is reconstructed with almost no error.
       </figcaption>
-    </figure>
+    </figure> -->
 
     <p>
       Distributional and spectral analyses tell a consistent story. Histograms of pixel intensities
@@ -273,6 +275,7 @@
       </figcaption>
     </figure>
 
+
     <figure>
       <img src="media/one/1.2/best_worst_examples_sigma0.5.png"
         alt="Panel of best and worst reconstructed digits at sigma 0.5" />
@@ -283,76 +286,148 @@
       </figcaption>
     </figure>
 
-    <!-- ============================ 1.2.3 Denoising Pure Noise ============================ -->
-
-        <!-- ============================ 1.2.3 Denoising Pure Noise ============================ -->
-
-    <h3 class="section-subheading">1.2.3 Denoising Pure Noise</h3>
-
-    <p>
-      A final experiment trains the same UNet to map pure Gaussian noise directly to clean MNIST
-      digits. In this regime the input contains no recognizable structure, so the network cannot rely
-      on residual strokes and must instead learn a direct mapping from random patterns to typical
-      digit shapes. The training curve shows a steep initial drop in MSE followed by a long, shallow
-      plateau, indicating rapid acquisition of a coarse noise-to-digit mapping and then gradually
-      diminishing returns as the model refines fine-scale details.
-    </p>
-
-    <figure>
-      <img
-        src="media/one/1.2/pure_noise_train_loss.png"
-        alt="Training loss curve for the pure-noise denoiser"
-      />
-      <figcaption>
-        Pure-noise denoiser training loss: the MSE falls sharply during early iterations as the UNet
-        learns to produce digit-like outputs from random noise, then levels off as further training
-        yields only modest improvements in stroke sharpness and alignment.
-      </figcaption>
-    </figure>
-
     <p>
       The sample grids make this evolution visible. Each column corresponds to a test digit, with the
       top row showing the clean target, the middle row a pure-noise input, and the bottom row the
       UNet output. After a single epoch, the outputs resemble blurry, almost class-agnostic blobs:
-      approximate digit silhouettes are present, but many columns look similar to one another. This
-      behavior aligns with the rapid loss decrease at the start of training—the network quickly learns
-      to move away from noise and toward an “average MNIST digit” that already reduces MSE
-      substantially, even if it does not yet capture class-specific structure.
+      rough digit silhouettes are present, but many columns look similar to one another. This
+      behavior is consistent with the early steep loss drop: the network quickly learns to map
+      arbitrary noise to an “average MNIST digit” that already reduces MSE substantially, without
+      yet encoding class-specific structure.
     </p>
 
     <figure>
-      <img
-        src="media/one/1.2/pure_noise_epoch1.png"
-        alt="Pure-noise denoiser outputs after epoch 1: clean targets, noise inputs, and blurry outputs"
-      />
+      <img src="media/one/1.2/pure_noise_epoch1.png"
+        alt="Pure-noise denoiser outputs after epoch 1: clean targets, noise inputs, and blurry outputs" />
       <figcaption>
-        Pure-noise denoiser after epoch&nbsp;1: outputs are coarse, blurred digit-like blobs that
-        already improve substantially over pure noise but remain only weakly tied to the underlying
-        class labels.
+        Pure-noise denoiser after epoch&nbsp;1: outputs are diffuse, digit-shaped blobs that move the
+        prediction away from white noise but remain only weakly tied to the underlying class labels.
       </figcaption>
     </figure>
 
     <p>
-      By epoch&nbsp;5, the bottom row has sharpened into clearly readable digits whose identities match
-      the clean targets much more consistently. Strokes are thinner and better aligned, and variation
-      across columns reflects class differences rather than generic “digitness.” These qualitative
-      changes correspond to the slow, incremental loss reductions observed after the initial drop: the
-      model has already captured the bulk of the signal by learning a generic digit prior, and further
-      optimization mainly polishes shapes and stroke placement rather than producing large numerical
-      gains in MSE.
+      By epoch&nbsp;5, the bottom row remains qualitatively unchanged. The predictions are still
+      smooth, averaged digit prototypes that do not track the identity or fine stroke patterns of
+      the targets in the top row; at most, contrast and overall mass are slightly adjusted. This
+      stagnation reflects the limitation of the pure-noise setting: because the input carries no
+      information about which digit should be produced, the network can only learn a generic digit
+      prior rather than accurate, sample-specific reconstructions.
     </p>
 
     <figure>
-      <img
-        src="media/one/1.2/pure_noise_epoch5.png"
-        alt="Pure-noise denoiser outputs after epoch 5: clean targets, noise inputs, and sharper digit outputs"
-      />
+      <img src="media/one/1.2/pure_noise_epoch5.png"
+        alt="Pure-noise denoiser outputs after epoch 5: clean targets, noise inputs, and similarly blurred outputs" />
       <figcaption>
-        Pure-noise denoiser after epoch&nbsp;5: outputs are sharper and class-consistent, reflecting
-        refinement of the digit prior learned in early training and matching the gradual flattening of
-        the training loss curve.
+        Pure-noise denoiser after epoch&nbsp;5: outputs remain blurry, class-agnostic prototype
+        digits, showing little visible improvement over epoch&nbsp;1 and confirming that further
+        training cannot recover per-sample detail from noise-only inputs.
       </figcaption>
     </figure>
+
+
+    <p>
+      Averaging the absolute reconstruction error pixelwise over the entire test set at σ = 0.5
+      reveals a spatial structure that closely resembles a blurred template of the MNIST manifold.
+      Background regions, which are almost always blank, exhibit near-zero error. In contrast, the
+      central vertical band and surrounding arcs—where strokes from many digits tend to pass—show
+      systematically elevated error. This pattern indicates that the network has effectively learned
+      a per-pixel average over the dataset: pixels that are consistently off are reconstructed with
+      high confidence, whereas pixels that sometimes contain a stroke incur unavoidable residual
+      error. The blurred “average digit” visible in the heatmap explains why, even by epoch&nbsp;5 in
+      the pure-noise setting, the model converges to soft prototype digits rather than sharpening to
+      sample-specific reconstructions.
+    </p>
+
+    <figure>
+      <img src="media/one/1.2/mean_error_heatmap_sigma0.5.png"
+        alt="Mean absolute error heatmap over the dataset at sigma 0.5" />
+      <figcaption>
+        Mean absolute error at σ = 0.5: errors concentrate in stroke-bearing regions and trace out a
+        blurred digit template, showing that the network behaves like a per-pixel average over the
+        MNIST dataset and matching the prototype-like outputs observed for pure-noise inputs even
+        after epoch&nbsp;5.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================ 2.2–2.3 Training and Sampling ============================ -->
+  <section class="content gold-glass writing-section">
+    <h3 class="section-heading">2.2–2.3 Training and Sampling from the Time-Conditioned UNet</h3>
+
+    <p>
+      The time-conditioned UNet is trained on MNIST to predict the instantaneous update that moves a
+      noisy digit a little closer to the data manifold. Each training step draws a clean digit,
+      samples a random noise level, corrupts the image, and asks the network to predict the
+      corresponding flow. The model uses the same convolutional backbone as in Part&nbsp;1, with an
+      additional branch that embeds the scalar timestep and injects it into the feature maps. Training
+      with Adam, a learning rate of 0.01, batch size 128, and an exponentially decaying schedule over
+      15 epochs produces a loss curve with a steep initial drop followed by a long, flat tail,
+      indicating rapid learning of a coarse flow field and then gradual refinement of small residual
+      errors.
+    </p>
+
+    <figure>
+      <img src="media/b/2.2/time_unet_train_loss.png" alt="Training loss curve for the time-conditioned UNet" />
+      <figcaption>
+        Training loss for the time-conditioned UNet over 15 epochs. The loss collapses within the
+        first few hundred iterations, then decreases slowly as the learned flow is polished with
+        additional passes through the data.
+      </figcaption>
+    </figure>
+
+    <p>
+      Sampling uses this learned flow for iterative denoising. Starting from pure Gaussian noise,
+      the sampler marches through a sequence of timesteps, applying the UNet at each step to nudge
+      samples toward the digit manifold. The grids below show independent samples at epoch&nbsp;1 and
+      epoch&nbsp;20 using the same sampling schedule. After one epoch, most digits are only partially
+      formed: strokes are broken, many shapes are ambiguous, and some samples resemble textured
+      noise more than digits. By epoch&nbsp;20, the samples have somewhat sharp, continuous strokes, clear
+      digit identities, and far fewer artifacts. This progression mirrors the behavior of the loss
+      curve: once the coarse flow has been learned, continued training primarily improves local
+      geometry and stroke-level detail.
+    </p>
+
+    <figure>
+      <div class="figure-row">
+        <div>
+          <img src="media/b/2.2/time_unet_samples_epoch1.png"
+            alt="Samples from the time-conditioned UNet after epoch 1" />
+          <div class="figure-row__label">Epoch&nbsp;1 samples</div>
+        </div>
+        <div>
+          <img src="media/b/2.2/time_unet_samples_epoch15.png"
+            alt="Samples from the time-conditioned UNet after epoch 15" />
+          <div class="figure-row__label">Epoch&nbsp;20 samples</div>
+        </div>
+      </div>
+      <figcaption>
+        Samples from the time-conditioned UNet early and late in training. After a single epoch the
+        model produces noisy, fragmented digits, while by epoch&nbsp;15 the same sampler generates
+        clean, class-consistent digits with well-defined strokes.
+      </figcaption>
+    </figure>
+
+
+    <p>
+      The illsutration below makes this evolution more explicit by tracking a fixed batch of noise seeds
+      across epochs. Early in training, trajectories wander and often collapse to distorted or
+      inconsistent shapes. As the flow improves, the same seeds converge reliably to stable,
+      recognizable digits, illustrating how the learned dynamics gradually carve out the MNIST
+      manifold from an initially random latent space.
+    </p>
+
+    <figure>
+      <img src="media/b/2.2/time_unet_training.gif"
+        alt="GIF of iterative denoising with the time-conditioned UNet across epochs" />
+      <figcaption>
+        Evolution of iterative denoising for fixed noise seeds over training. The trajectories
+        transition from unstable, noisy shapes to stable, high-quality digits as the time-conditioned
+        UNet converges.
+      </figcaption>
+    </figure>
+  </section>
+
+
 
 
 

@@ -1,0 +1,8 @@
+run_id: part2.5_20251207-233334_1a010580
+device: cuda
+seed: 1234
+batch_size: 64
+hidden_dim: 64
+base_lr: 0.01
+class_num_epochs: 10
+elapsed_seconds: 172.13
