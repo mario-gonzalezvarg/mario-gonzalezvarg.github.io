@@ -34,10 +34,10 @@
     <h1 class="title">Flow Matching</h1>
 
     <div class="project-switcher" aria-label="Jump to project parts">
-      <a href="../parta/proj5a.html" class="project-switcher__button project-switcher__button--primary">
+      <a href="../parta/proj5a.html" class="project-switcher__button">
         Part A
       </a>
-      <a href="../partb/proj5b.html" class="project-switcher__button">
+      <a href="../partb/proj5b.html" class="project-switcher__button project-switcher__button--primary">
         Part B
       </a>
     </div>
@@ -301,7 +301,7 @@
       Averaging the absolute reconstruction error pixelwise over the entire test set at σ = 0.5
       reveals a spatial structure that closely resembles a blurred template of the MNIST manifold.
       Background regions, which are almost always blank, exhibit near-zero error. In contrast, the
-      central vertical band and surrounding arcs—where strokes from many digits tend to pass—show
+      central vertical band and surrounding arcs, where strokes from many digits tend to pass, show
       systematically elevated error. This pattern indicates that the network has effectively learned
       a per-pixel average over the dataset: pixels that are consistently off are reconstructed with
       high confidence, whereas pixels that sometimes contain a stroke incur unavoidable residual
