@@ -157,16 +157,7 @@
       test noise moves away from the training regime and how the network allocates its corrections
       across the image plane.
     </p>
-    <!-- 
-    <p>
-      A first summary compresses each denoised image to a one-dimensional profile by recording the
-      average intensity along a central row and stacking these profiles as σ varies. The resulting
-      heatmap shows a bright vertical band where the stroke of the digit typically passes and dark
-      regions elsewhere. For small σ, the band is narrow and well defined, indicating a stable and
-      localized reconstruction of the stroke. As σ increases, this band broadens slightly and weak
-      activations appear in neighboring columns, reflecting the model’s growing uncertainty about the
-      exact stroke location when the input is heavily corrupted.
-    </p> -->
+
 
     <figure>
       <img src="media/one/1.2/sigma_row_heatmap.png"
@@ -197,24 +188,7 @@
       </figcaption>
     </figure>
 
-    <!-- <p>
-      Averaging the absolute reconstruction error pixelwise over the entire test set at σ = 0.5
-      reveals a spatial structure that closely resembles a blurred template of the MNIST manifold.
-      Background regions, which are almost always blank, exhibit near-zero error. In contrast, the
-      central vertical band and surrounding arcs—where strokes from many digits tend to pass—show
-      systematically elevated error. This behavior indicates that the network is highly confident on
-      background pixels but inevitably uncertain about the precise thickness and placement of
-      handwritten strokes, which vary from digit to digit.
-    </p>
 
-    <figure>
-      <img src="media/one/1.2/mean_error_heatmap_sigma0.5.png"
-        alt="Mean absolute error heatmap over the dataset at sigma 0.5" />
-      <figcaption>
-        Mean absolute error at σ = 0.5: errors concentrate in regions occupied by strokes across many
-        digits, while the background is reconstructed with almost no error.
-      </figcaption>
-    </figure> -->
 
     <p>
       Distributional and spectral analyses tell a consistent story. Histograms of pixel intensities
@@ -287,14 +261,12 @@
     </figure>
 
     <p>
-      The sample grids make this evolution visible. Each column corresponds to a test digit, with the
-      top row showing the clean target, the middle row a pure-noise input, and the bottom row the
-      UNet output. After a single epoch, the outputs resemble blurry, almost class-agnostic blobs:
-      rough digit silhouettes are present, but many columns look similar to one another. This
-      behavior is consistent with the early steep loss drop: the network quickly learns to map
-      arbitrary noise to an “average MNIST digit” that already reduces MSE substantially, without
-      yet encoding class-specific structure.
+      By epoch&nbsp;5, this behavior persists. The denoised digits retain the same prototype-like form
+      seen at epoch&nbsp;1, reflecting the limitations of pure-noise inputs: without class-specific
+      information in the observation, the model can sharpen the global silhouette only modestly and
+      cannot recover fine details unique to each target digit.
     </p>
+
 
     <figure>
       <img src="media/one/1.2/pure_noise_epoch1.png"
@@ -425,6 +397,173 @@
         UNet converges.
       </figcaption>
     </figure>
+  </section>
+
+  <!-- ============================ 2.4–2.5 Class-Conditioned UNet ============================ -->
+  <section class="content gold-glass writing-section">
+    <h3 class="section-heading">2.4–2.5 Class-Conditioned Flow Matching UNet</h3>
+
+    <p>
+      The final model augments the time-conditioned UNet with an additional conditioning branch for the
+      digit label. Each class index is converted into a one-hot vector, embedded with fully connected
+      blocks, and injected alongside the time embedding at the bottleneck and early decoder layers.
+      During training, the class signal is randomly dropped for a fraction of the batches so that the
+      network learns both unconditional and class-guided flows. Using a hidden width of 64 channels,
+      batch size 64, learning rate 0.01 with exponential decay, and training for 10 epochs on a GPU
+      produces rapid convergence of the class-conditioned flow field.
+    </p>
+
+    <figure>
+      <img src="media/b/2.5/class_unet_train_loss.png" alt="Training loss curve for the class-conditioned UNet" />
+      <figcaption>
+        Training loss for the class-conditioned UNet over 10 epochs. The loss drops sharply within the
+        first few hundred updates and then flattens into a low plateau, indicating that adding label
+        conditioning helps the model fit the flow field efficiently while remaining numerically stable.
+      </figcaption>
+    </figure>
+
+    <p>
+      Sampling now starts from pure noise together with a requested digit label and uses
+      classifier-free guidance to steer samples toward that class. The grids below show four instances
+      of each digit for epochs&nbsp;1, 5, and 10 using the same guidance strength and sampling schedule.
+      After a single epoch, the digits are only loosely tied to their labels: many strokes are broken,
+      shapes are fuzzy, and some columns contain off-class artifacts. By epoch&nbsp;5, each row forms
+      clean, correctly ordered digits zero through nine with recognizable handwriting structure and
+      consistent stroke thickness. After epoch&nbsp;10, the digits sharpen further while preserving
+      class identity, with backgrounds remaining dark and artifacts largely removed. Compared with the
+      time-only model, label conditioning clearly accelerates convergence and produces better aligned,
+      class-consistent samples for the same number of epochs.
+    </p>
+
+    <figure>
+      <div class="figure-row">
+        <div>
+          <img src="media/b/2.5/class_cond_samples_epoch1.png" alt="Class-conditioned UNet samples after epoch 1" />
+          <div class="figure-row__label">Epoch&nbsp;1 samples</div>
+        </div>
+        <div>
+          <img src="media/b/2.5/class_cond_samples_epoch5.png" alt="Class-conditioned UNet samples after epoch 5" />
+          <div class="figure-row__label">Epoch&nbsp;5 samples</div>
+        </div>
+        <div>
+          <img src="media/b/2.5/class_cond_samples_epoch10.png" alt="Class-conditioned UNet samples after epoch 10" />
+          <div class="figure-row__label">Epoch&nbsp;10 samples</div>
+        </div>
+      </div>
+      <figcaption>
+        Evolution of class-conditioned samples across training. Early in training, the outputs only
+        roughly respect the target labels, while after 5–10 epochs each row displays sharp, clean
+        digits zero through nine with minimal off-class artifacts, illustrating the benefit of
+        conditioning on digit identity.
+      </figcaption>
+    </figure>
+
+    <p>
+      The training animation further highlights how class conditioning sculpts the digit manifold over
+      time. For a fixed grid of noise seeds and target labels, early frames show unstable, flickering
+      shapes that occasionally jump between classes. As optimization proceeds, trajectories settle into
+      stable attractors: each seed consistently produces the same digit, strokes become crisp, and
+      only small stylistic variations remain from frame to frame. This behavior matches the loss curve:
+      once the coarse, label-aware flow has been learned, the remaining epochs mainly refine local
+      stroke geometry and contrast while preserving global class structure.
+    </p>
+
+
+    <figure>
+      <img src="media/b/2.5/class_unet_training.gif" alt="GIF of class-conditioned UNet samples over epochs" />
+      <figcaption>
+        Animated class-conditioned sampling over epochs. Fixed noise seeds and labels evolve from
+        noisy, unstable glyphs into stable, high-quality digits, demonstrating how the learned
+        class-aware flow gradually carves out the MNIST digit manifold from pure noise.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================ 2.6 Removing the Learning Rate Scheduler ============================ -->
+  <section class="content gold-glass writing-section">
+    <h3 class="section-heading">2.6 Class-Conditioned UNet without a Learning Rate Scheduler</h3>
+
+    <p>
+      This ablation examines whether the exponential learning rate scheduler is essential for the
+      convergence behavior of the class-conditioned flow model. The scheduler is removed and replaced
+      with a fixed learning rate chosen to approximate the effective average rate of the decayed
+      schedule. In practice, a constant step size of 0.003 preserves training stability and aligns with
+      the typical optimization dynamics of the original configuration.
+    </p>
+
+    <figure>
+      <img src="media/b/2.6/class_unet_train_loss.png"
+        alt="Training loss for the class-conditioned UNet without a scheduler" />
+      <figcaption>
+        Training loss for the class-conditioned UNet trained for 10 epochs with a constant learning
+        rate. The curve closely matches the scheduler-trained behavior, confirming that exponential
+        decay is not necessary for stability or convergence.
+      </figcaption>
+
+    </figure>
+
+    <p>
+      Sampling performance mirrors this behavior. Four samples of each digit are generated from pure
+      noise at epochs&nbsp;1, 5, and 10. After a single epoch, the digits are fragmentary and only
+      loosely aligned with labels. By epoch&nbsp;5, the rows settle into clean, class-consistent
+      structure, and by epoch&nbsp;10 the digits sharpen further, exhibiting nearly identical fidelity
+      to the scheduler-trained counterpart. This confirms that classifier-free guidance combined with
+      label conditioning largely determines the convergence profile, while the learning rate schedule
+      plays only a secondary role.
+    </p>
+
+    <figure>
+      <div class="figure-row">
+        <div>
+          <img src="media/b/2.6/class_cond_samples_epoch1.png"
+            alt="Class-conditioned samples at epoch 1 (no scheduler)" />
+          <div class="figure-row__label">Epoch&nbsp;1 samples</div>
+        </div>
+        <div>
+          <img src="media/b/2.6/class_cond_samples_epoch5.png"
+            alt="Class-conditioned samples at epoch 5 (no scheduler)" />
+          <div class="figure-row__label">Epoch&nbsp;5 samples</div>
+        </div>
+        <div>
+          <img src="media/b/2.6/class_cond_samples_epoch10.png"
+            alt="Class-conditioned samples at epoch 10 (no scheduler)" />
+          <div class="figure-row__label">Epoch&nbsp;10 samples</div>
+        </div>
+      </div>
+      <figcaption>
+        Samples from the class-conditioned UNet trained without a scheduler. The progression from
+        unstable early digits to sharp, label-accurate structures parallels the scheduler-trained
+        model, demonstrating that constant-step optimization reaches similar sample quality.
+      </figcaption>
+    </figure>
+
+    <p>
+      The training animation corroborates these findings. With a constant learning rate, trajectories
+      associated with fixed noise seeds evolve smoothly from ambiguous glyphs into stable,
+      class-correct digits. Motion is slightly less abrupt in the earliest epochs compared to the
+      scheduler-based run, but the long-term attractor structure—clean digit manifolds with consistent
+      labeling—is effectively unchanged. Taken together, these observations show that the scheduler can
+      be removed without degrading the expressive or generative behavior of the learned flow.
+    </p>
+
+    <figure>
+      <div class="figure-row">
+        <div>
+          <img src="media/b/2.5/class_unet_training.gif" alt="Scheduler-trained class-conditioned UNet" />
+          <div class="figure-row__label">With scheduler</div>
+        </div>
+        <div>
+          <img src="media/b/2.6/class_unet_training.gif" alt="Class-conditioned UNet without scheduler" />
+          <div class="figure-row__label">No scheduler</div>
+        </div>
+      </div>
+      <figcaption>
+        Comparison of training dynamics for scheduler and no-scheduler regimes. Both models converge to
+        stable, high-fidelity digit manifolds, with nearly indistinguishable trajectories after the
+        early epochs.
+      </figcaption>
+    </figure>
+
   </section>
 
 

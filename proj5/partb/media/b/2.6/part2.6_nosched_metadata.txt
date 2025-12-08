@@ -1,0 +1,8 @@
+run_id: part2.6_nosched_20251208-000307_aea60181
+device: cuda
+seed: 1234
+batch_size: 64
+hidden_dim: 64
+base_lr: 0.003
+class_num_epochs: 10
+elapsed_seconds: 142.65
