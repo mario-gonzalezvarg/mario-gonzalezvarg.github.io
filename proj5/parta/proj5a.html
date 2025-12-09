@@ -1146,18 +1146,17 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The “Last Sunset” row highlights how this interacts with the text conditioning. The prompt for all
-        runs is the generic phrase “a high quality photo,” without an explicit subject. At low
-        <em>i_start</em>, the model maps the circular sun and horizontal bench line onto familiar
-        photograph-like configurations while keeping a bright region over a darker base. Around
+        The bottom row doodle highlights the interaction with the text conditioning. All the images above share 
+        the same generic phrase “a high quality photo,” without an explicit subject as the prompt condition. At low
+        higher time steps, the model maps the circular sun and horizontal bench line onto familiar
+        photograph-like configurations while keeping a bright region over a darker base. At around
         <em>i_start</em> ≈ 5, the same geometry is interpreted as a sign in front of a bright background,
-        and one sample contains the literal text “HIGH QUALITY PHOTO.” In this case the model satisfies
+        containing the literal text “HIGH QUALITY PHOTO.” In this case the model satisfies
         the conditioning not only by making the image look photographic, but also by rendering the words
-        from the prompt as text inside the scene—an outcome that is common when the prompt describes image
+        from the prompt as text inside the scene, an outcome in which the model priortizes image
         quality rather than specific content. At higher noise levels, the forward process has largely
         erased the original strokes, so the sampler preserves only coarse layout and color and is free to
-        hallucinate alternative scenes that still match the prompt, such as different human figures or
-        silhouettes against a glowing sky.
+        hallucinate alternative scenes that still match the prompt to some degree.
       </p>
 
       
