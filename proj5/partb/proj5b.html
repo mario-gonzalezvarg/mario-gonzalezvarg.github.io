@@ -61,10 +61,10 @@
     </figure>
 
     <p>
-      In the MNIST setting, this template is instantiated at three resolution levels. A small vocabulary
-      of operations—convolutions with Batch Normalization and GELU activations, strided convolutions for
-      downsampling, transposed convolutions for upsampling, flattening via average pooling, and
-      channel-wise concatenation—is composed into the <code>ConvBlock</code>, <code>DownBlock</code>, and
+      In the MNIST setting, this template is instantiated at three resolution levels. The set of operations are,
+      convolutions with Batch Normalization and GELU activations; strided convolutions for
+      downsampling; transposed convolutions for upsampling; flattening via average pooling; and
+      channel-wise concatenation, which then are composed into the <code>ConvBlock</code>, <code>DownBlock</code>, and
       <code>UpBlock</code> modules shown below. During Part&nbsp;1, this UNet functions as a single-step
       denoiser: a clean 1×28×28 MNIST image is corrupted by Gaussian noise with standard deviation σ, and
       the network is trained with an MSE objective to predict the clean digit in a single forward pass.
@@ -541,7 +541,8 @@
       The training animation corroborates these findings. With a constant learning rate, trajectories
       associated with fixed noise seeds evolve smoothly from ambiguous glyphs into stable,
       class-correct digits. Motion is slightly less abrupt in the earliest epochs compared to the
-      scheduler-based run, but the long-term attractor structure is effectively unchanged. It's clearly evident, that the scheduler can
+      scheduler-based run, but the long-term attractor structure is effectively unchanged. It's clearly evident, that
+      the scheduler can
       be removed without degrading the expressive or generative behavior of the learned flow.
     </p>
 
