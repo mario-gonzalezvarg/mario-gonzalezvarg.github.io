@@ -107,10 +107,7 @@
         samples. A small bank of prompts is first encoded with the HuggingFace text encoder to obtain a
         fixed set of embeddings that are reused throughout the project. From this bank, several prompts
         are chosen as exemplars and are displayed side by side with their generated images, using a
-        single random seed and multiple values of <em>num_inference_steps</em>. The outputs are examined for whether the
-        core subject, viewpoint, and stylistic cues match the description, and whether more delicate
-        relational clauses—such as instructions about reflections, grids of windows, or localized
-        details—are preserved, softened, or ignored.
+        single random seed and multiple values of <em>num_inference_steps</em>.
       </p>
     </div>
 
@@ -1727,8 +1724,6 @@
         later frames sharpen edges, textures, and small-scale contrast contributed by the second prompt.
         The resulting static hybrids therefore encode two distinct descriptions in a single image, with
         the perceived interpretation shifting smoothly as the viewing distance or display scale changes.
-        This behavior provides direct evidence that the model correctly separates and recombines
-        low- and high-frequency information to produce perceptually convincing hybrid images.
       </p>
     </div>
 
