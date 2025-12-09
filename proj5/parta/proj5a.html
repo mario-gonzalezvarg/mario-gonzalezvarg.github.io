@@ -947,36 +947,42 @@
   <section class="content gold-glass iteration-belt iteration-belt--two-rows"
     aria-label="Editing web and hand-drawn images with SDEdit">
     <h2 class="section-heading">1.7.1 Editing Web and Hand-Drawn Images</h2>
-
     <div class="iteration-belt__intro">
-      <p>
-        This section tests SDEdit on images that do not come from the Campanile dataset. One image is
-        sourced from the web (Crab Nebula provided by NASA), and two are hand-drawn
-        doodles (“The Blue Bandit” and “Last Sunset”). For each input, the forward process is
-        run to noise levels <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20}, and the reverse sampler is then
-        applied under the prompt “a high quality photo.” At low noise levels, the procedure behaves
-        like a local enhancement operator that cleans and stylizes the input while preserving its
-        structure; at high noise levels, the model is forced to hallucinate more content from its
-        learned prior while still being anchored by the original image.
-      </p>
-    </div>
-<!-- 
+    <p>
+      This section tests SDEdit on images that originate from outside sources varying the initial starting step. For
+      each input, the forward process is run to noise levels <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20},
+      and the reverse sampler is then applied under the prompt “a high quality photo.” At low noise
+      levels, the procedure behaves like a local enhancement operator that cleans and stylizes the
+      input while preserving its structure; at high noise levels, the model is forced to hallucinate
+      more content from its learned prior while still being anchored by the original image.
+    </p>
+    <p>
+      One special image is the viral photograph of “The Dress,” perceived by some as white and gold (me)
+      and by others as blue and black (surely lies). The other two inputs are hand-drawn doodles.
+       The Dress row probes how the model resolves ambiguous
+      illumination and just like us, the sampler flips between “warm background, white dress”
+      and “cool background, blue dress,” and its choice depends on how much noise we inject before
+      denoising.
+    </p>
+  </div>
+
+    <!-- 
     <div class="iteration-belt__header">
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
     </div> -->
 
-    <!-- Row 1: Web image (Crab Nebula) -->
+    <!-- Row 1: Web image dress -->
     <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Web image: The Crab Nebula</h3>
+      <h3 class="iteration-belt__row-title">Web image: “The Dress” color illusion</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/web/orig.png"
+            <img class="iteration-belt__image" src="media/hand_web/web/dress.jpg"
               alt="Rescaled 64×64 Crab Nebula input image">
-            <figcaption class="iteration-belt__caption">Input Image - </figcaption>
+            <figcaption class="iteration-belt__caption">Input Image </figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
@@ -1020,147 +1026,150 @@
     </div>
 
     <div class="iteration-belt__outro">
-  
-
       <p>
-        The Crab Nebula sequence shows that, even for a complex astronomical scene, low noise levels
-        mostly sharpen existing filaments and contrast while preserving the overall color palette and
-        radial layout. As the initial starting time step increases, the sampler still produces nebula-like clouds but
-        is no longer constrained to the exact filament geometry of the input, instead drawing alternative
-        but visually consistent structures from the learned natural-image prior. The two doodles behave
-        similarly: at small noise levels, the edits stay close to the coarse silhouettes and color blocks
-        of the originals, whereas larger noise levels allow the model to replace sketchy strokes with
-        more photorealistic shading, textured backgrounds, and additional small-scale detail.
-      </p>
-    </div>
+      For The Dress, low <em>i_start</em> values mostly clean compression artifacts and keep a warm cast,
+      so the dress reads as white–gold. As the noise level increases and the corrupted input loses
+      reliable color cues, the reconstructions flip between warmer yellowish versions and cooler
+      blue-toned ones. In the region where the dress itself lives, the sequence gradually leans toward a
+      blue-and-black interpretation, while the background drifts toward brighter white and gold. This
+      mirrors one popular explanation of the illusion!!!! Different assumptions about scene lighting lead to
+      two equally stable color stories, and different re-entry points into the reverse diffusion chain
+      simply pick different stories.
+    </p>
 
 
-    <div class="iteration-belt__header">
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
+      <div class="iteration-belt__header">
+        <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+          Pause
+        </button>
+      </div>
 
-    <!-- Row 2: Doodle 1 – The Blue Bandit seed = 20171341215, gamma = 11.0 -->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Doodle 1: The Blue Bandit</h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
+      <!-- Row 2: Doodle 1 – The Blue Bandit seed = 20171341215, gamma = 11.0 -->
+      <div class="iteration-belt__row">
+        <h3 class="iteration-belt__row-title">Doodle 1: The Blue Bandit</h3>
+        <div class="iteration-belt__viewport">
+          <div class="iteration-belt__track">
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/orig.png" alt="Hand-drawn Blue Bandit input">
-            <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/orig.png"
+                alt="Hand-drawn Blue Bandit input">
+              <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif"
-              alt="Blue Bandit SDEdit i_start = 1">
-            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start1.gif"
+                alt="Blue Bandit SDEdit i_start = 1">
+              <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start3.gif"
-              alt="Blue Bandit SDEdit i_start = 3">
-            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start3.gif"
+                alt="Blue Bandit SDEdit i_start = 3">
+              <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start5.gif"
-              alt="Blue Bandit SDEdit i_start = 5">
-            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start5.gif"
+                alt="Blue Bandit SDEdit i_start = 5">
+              <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start7.gif"
-              alt="Blue Bandit SDEdit i_start = 7">
-            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start7.gif"
+                alt="Blue Bandit SDEdit i_start = 7">
+              <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start10.gif"
-              alt="Blue Bandit SDEdit i_start = 10">
-            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start10.gif"
+                alt="Blue Bandit SDEdit i_start = 10">
+              <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start20.gif"
-              alt="Blue Bandit SDEdit i_start = 20">
-            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle1/i_start20.gif"
+                alt="Blue Bandit SDEdit i_start = 20">
+              <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+            </figure>
 
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Row 3: Doodle 2 – The Little Prince seed = 12152000, gamma = 9.0-->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Doodle 2: Last Sunset</h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
+      <div class="iteration-belt__outro">
+        <p>
+          The doodles show the same mechanism at work when the geometry is also ambiguous. For The Blue
+      Bandit, small <em>i_start</em> values keep the rough mask outline and pose while turning marker
+      strokes into smooth skin, hair, and background shading; larger values redraw the figure with more
+      realistic proportions and textures that still follow the original silhouette.</p>
+      </div>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/orig.jpg"
-              alt="Hand-drawn Little Prince input">
-            <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
-          </figure>
+      <!-- Row 3: Doodle 2 – The Little Prince seed = 12152000, gamma = 9.0-->
+      <div class="iteration-belt__row">
+        <h3 class="iteration-belt__row-title">Doodle 2: Last Sunset</h3>
+        <div class="iteration-belt__viewport">
+          <div class="iteration-belt__track">
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start1.gif"
-              alt="Little Prince SDEdit i_start = 1">
-            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/orig.jpg"
+                alt="Hand-drawn Little Prince input">
+              <figcaption class="iteration-belt__caption">Rescaled input (64×64)</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start3.gif"
-              alt="Little Prince SDEdit i_start = 3">
-            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start1.gif"
+                alt="Little Prince SDEdit i_start = 1">
+              <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start5.gif"
-              alt="Little Prince SDEdit i_start = 5">
-            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start3.gif"
+                alt="Little Prince SDEdit i_start = 3">
+              <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start7.gif"
-              alt="Little Prince SDEdit i_start = 7">
-            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start5.gif"
+                alt="Little Prince SDEdit i_start = 5">
+              <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start10.gif"
-              alt="Little Prince SDEdit i_start = 10">
-            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start7.gif"
+                alt="Little Prince SDEdit i_start = 7">
+              <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+            </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start20.gif"
-              alt="Little Prince SDEdit i_start = 20">
-            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-          </figure>
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start10.gif"
+                alt="Little Prince SDEdit i_start = 10">
+              <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+            </figure>
 
+            <figure class="iteration-belt__item">
+              <img class="iteration-belt__image" src="media/hand_web/doodle2/i_start20.gif"
+                alt="Little Prince SDEdit i_start = 20">
+              <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+            </figure>
+
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="iteration-belt__outro">
-      <p>
-        The bottom row doodle highlights the interaction with the text conditioning. All the images above share 
-        the same generic phrase “a high quality photo,” without an explicit subject as the prompt condition. At low
-        higher time steps, the model maps the circular sun and horizontal bench line onto familiar
-        photograph-like configurations while keeping a bright region over a darker base. At around
-        <em>i_start</em> ≈ 5, the same geometry is interpreted as a sign in front of a bright background,
-        containing the literal text “HIGH QUALITY PHOTO.” In this case the model satisfies
-        the conditioning not only by making the image look photographic, but also by rendering the words
-        from the prompt as text inside the scene, an outcome in which the model priortizes image
-        quality rather than specific content. At higher noise levels, the forward process has largely
-        erased the original strokes, so the sampler preserves only coarse layout and color and is free to
-        hallucinate alternative scenes that still match the prompt to some degree.
-      </p>
 
-      
-    </div>
+      <div class="iteration-belt__outro">
+        <p>
+          In the last sketch, the
+      horizontal bar and bright disk are repeatedly reused but assigned new semantic roles: a bench and
+      two people at low noise, then a surfer on a wave, snow-covered rocks at sunrise, and finally a
+      tightly cropped view of a striped dress. One trajectory even passes through a flat yellow sign that
+      literally reads “HIGH QUALITY PHOTO,” because the sampler is conditioned on that exact phrase, and
+      drawing the words is one very literal way to satisfy it. As <em>i_start</em> increases, control
+      shifts from the original pixels to the model’s natural-image prior, so the edits move from cleaned-up
+      versions of the inputs to qualitatively new photographs that only loosely preserve the original
+      layout and color scheme.
+        </p>
+      </div>
   </section>
 
 
