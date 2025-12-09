@@ -414,7 +414,7 @@
 
     // Look up speed on the parent .iteration-belt (data-belt-speed)
     const belt = track.closest('.iteration-belt');
-    let speed = 16; // default px/s
+    let speed = 20; // default px/s
 
     if (belt && belt.dataset.beltSpeed) {
       const parsed = parseFloat(belt.dataset.beltSpeed);
