@@ -960,12 +960,12 @@
         learned prior while still being anchored by the original image.
       </p>
     </div>
-
+<!-- 
     <div class="iteration-belt__header">
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">
         Pause
       </button>
-    </div>
+    </div> -->
 
     <!-- Row 1: Web image (Crab Nebula) -->
     <div class="iteration-belt__row">
@@ -1019,7 +1019,29 @@
       </div>
     </div>
 
-    <!-- Row 2: Doodle 1 – The Blue Bandit -->
+    <div class="iteration-belt__outro">
+  
+
+      <p>
+        The Crab Nebula sequence shows that, even for a complex astronomical scene, low noise levels
+        mostly sharpen existing filaments and contrast while preserving the overall color palette and
+        radial layout. As the initial starting time step increases, the sampler still produces nebula-like clouds but
+        is no longer constrained to the exact filament geometry of the input, instead drawing alternative
+        but visually consistent structures from the learned natural-image prior. The two doodles behave
+        similarly: at small noise levels, the edits stay close to the coarse silhouettes and color blocks
+        of the originals, whereas larger noise levels allow the model to replace sketchy strokes with
+        more photorealistic shading, textured backgrounds, and additional small-scale detail.
+      </p>
+    </div>
+
+
+    <div class="iteration-belt__header">
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+        Pause
+      </button>
+    </div>
+
+    <!-- Row 2: Doodle 1 – The Blue Bandit seed = 20171341215, gamma = 11.0 -->
     <div class="iteration-belt__row">
       <h3 class="iteration-belt__row-title">Doodle 1: The Blue Bandit</h3>
       <div class="iteration-belt__viewport">
@@ -1070,7 +1092,7 @@
       </div>
     </div>
 
-    <!-- Row 3: Doodle 2 – The Little Prince -->
+    <!-- Row 3: Doodle 2 – The Little Prince seed = 12152000, gamma = 9.0-->
     <div class="iteration-belt__row">
       <h3 class="iteration-belt__row-title">Doodle 2: Last Sunset</h3>
       <div class="iteration-belt__viewport">
@@ -1124,18 +1146,21 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The Crab Nebula sequence shows that, even for a complex astronomical scene, low noise levels
-        allow the sampler to clean and sharpen filaments while preserving the overall color palette and
-        radial structure. At higher noise, the model still reconstructs a nebula-like cloud but freely
-        adjusts fine filament geometry and local lighting. For the hand-drawn input images, low <em>i_start</em> values
-        produced results which deviated from the input medium but somewhat was able to closely follow the original
-        silhouettes, while higher values
-        gradually replace sketchy strokes with richer shading, textured backgrounds, and new
-        high-frequency detail. Across all three inputs, the SDEdit edits confirm that the diffusion
-        model can project both photographic and non-photographic images onto its learned natural image
-        manifold, controlling the strength of the transformation through a single noise-level
-        parameter.
+        The “Last Sunset” row highlights how this interacts with the text conditioning. The prompt for all
+        runs is the generic phrase “a high quality photo,” without an explicit subject. At low
+        <em>i_start</em>, the model maps the circular sun and horizontal bench line onto familiar
+        photograph-like configurations while keeping a bright region over a darker base. Around
+        <em>i_start</em> ≈ 5, the same geometry is interpreted as a sign in front of a bright background,
+        and one sample contains the literal text “HIGH QUALITY PHOTO.” In this case the model satisfies
+        the conditioning not only by making the image look photographic, but also by rendering the words
+        from the prompt as text inside the scene—an outcome that is common when the prompt describes image
+        quality rather than specific content. At higher noise levels, the forward process has largely
+        erased the original strokes, so the sampler preserves only coarse layout and color and is free to
+        hallucinate alternative scenes that still match the prompt, such as different human figures or
+        silhouettes against a glowing sky.
       </p>
+
+      
     </div>
   </section>
 
