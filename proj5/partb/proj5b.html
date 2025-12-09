@@ -91,7 +91,7 @@
     <h2 class="section-heading">1.2 Using the UNet to Train a Denoiser</h2>
 
     <p>
-      The first visualization surveys how a fixed handwritten “7” responds to increasing noise levels.
+      The first visualization surveys how a fixed handwritten digit responds to increasing noise levels.
       As σ moves from 0.0 to 1.0, sparse perturbations evolve into dense, irregular patterns that
       progressively obscure stroke geometry. Mid-range σ values maintain enough brightness structure for
       the digit to remain identifiable, whereas high σ values leave only faint residual cues. This
@@ -111,7 +111,7 @@
       A more detailed study compares the noisy input, the UNet’s reconstruction, and a pixelwise
       absolute-error heatmap at each σ. When σ is small, the reconstruction nearly matches the clean
       digit, and the error map is almost blank. At moderate σ, the network restores a coherent and
-      well-formed “7” even though the input is heavily degraded, with remaining error concentrated
+      well-formed seven even though the input is heavily degraded, with remaining error concentrated
       around stroke boundaries where handwritten digits naturally vary. At the highest σ levels,
       reconstruction becomes increasingly speculative, and the error maps broaden to reflect the loss of
       reliable structure in the input.
@@ -128,13 +128,13 @@
     </figure>
 
     <p>
-      The final visualization extends this analysis from a single “7” to a small batch of digits. For
+      The final visualization extends this analysis from a single digit to a small batch of digits. For
       each σ, columns correspond to different MNIST examples, while rows show aligned views such as
       noisy inputs and their corresponding denoised outputs. At low σ the three rows are nearly
       indistinguishable from the clean targets, confirming that mild corruption is corrected with
       minimal distortion. As σ increases, the noisy row becomes dominated by noise, yet the denoised
       row continues to display sharp and legible digits across a range of classes, illustrating that the
-      behavior observed on the single “7” generalizes to a broader subset of the dataset.
+      behavior observed on the single digit seven generalizes to a broader subset of the dataset.
     </p>
 
     <figure>
@@ -174,7 +174,7 @@
     <p>
       The class-wise MSE curves provide a complementary view. For each digit class, the test MSE rises
       monotonically with σ, producing a family of smooth, upward-sloping curves. Simple digits with a
-      single dominant stroke, such as “1”, incur the lowest error across the range, while more complex
+      single dominant stroke, such as the digit one, incur the lowest error across the range, while more complex
       shapes show higher error, especially at large σ. This pattern reflects the fact that recovering a
       simple vertical stroke from noise is easier than reconstructing multi-stroke digits whose
       structure is more sensitive to small perturbations.
@@ -183,7 +183,7 @@
     <figure>
       <img src="media/one/1.2/classwise_mse_vs_sigma.png" alt="Class-wise MSE as a function of sigma" />
       <figcaption>
-        Class-wise MSE vs σ: errors increase smoothly with noise level, with simple digits such as “1”
+        Class-wise MSE vs σ: errors increase smoothly with noise level, with simple digits like 1
         remaining easiest to reconstruct and more complex digits accumulating higher error at large σ.
       </figcaption>
     </figure>
@@ -231,7 +231,7 @@
     </figure>
 
     <p>
-      Finally, the internal representation learned by the network is visualized by projecting
+      Therefore, the internal representation learned by the network is visualized by projecting
       bottleneck features onto their first two principal components. Points corresponding to different
       digit classes form overlapping but structured clusters, with certain digits (notably “1”) forming
       well-separated lobes. Together with a panel contrasting the lowest- and highest-error examples,
@@ -354,7 +354,7 @@
       epoch&nbsp;20 using the same sampling schedule. After one epoch, most digits are only partially
       formed: strokes are broken, many shapes are ambiguous, and some samples resemble textured
       noise more than digits. By epoch&nbsp;20, the samples have somewhat sharp, continuous strokes, clear
-      digit identities, and far fewer artifacts. This progression mirrors the behavior of the loss
+      digit identities, and far fewer artifacts. The closley resembles the behavior of the loss
       curve: once the coarse flow has been learned, continued training primarily improves local
       geometry and stroke-level detail.
     </p>
@@ -381,10 +381,10 @@
 
 
     <p>
-      The illsutration below makes this evolution more explicit by tracking a fixed batch of noise seeds
+      The illsutration below demonstrates the evolution more clearly by tracking a fixed batch of noise seeds
       across epochs. Early in training, trajectories wander and often collapse to distorted or
       inconsistent shapes. As the flow improves, the same seeds converge reliably to stable,
-      recognizable digits, illustrating how the learned dynamics gradually carve out the MNIST
+      recognizable digits, showing how the learned dynamics gradually carve out the MNIST
       manifold from an initially random latent space.
     </p>
 
@@ -459,7 +459,7 @@
     </figure>
 
     <p>
-      The training animation further highlights how class conditioning sculpts the digit manifold over
+      The training gif demonstrates how class conditioning sculpts the digit manifold over
       time. For a fixed grid of noise seeds and target labels, early frames show unstable, flickering
       shapes that occasionally jump between classes. As optimization proceeds, trajectories settle into
       stable attractors: each seed consistently produces the same digit, strokes become crisp, and
@@ -503,7 +503,7 @@
     </figure>
 
     <p>
-      Sampling performance mirrors this behavior. Four samples of each digit are generated from pure
+      Four samples of each digit are generated from pure
       noise at epochs&nbsp;1, 5, and 10. After a single epoch, the digits are fragmentary and only
       loosely aligned with labels. By epoch&nbsp;5, the rows settle into clean, class-consistent
       structure, and by epoch&nbsp;10 the digits sharpen further, exhibiting nearly identical fidelity
