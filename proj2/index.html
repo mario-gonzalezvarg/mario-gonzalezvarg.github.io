@@ -34,15 +34,14 @@
 
     <div class="iteration-belt__intro">
       <p>
-        Let us demonstarte a 2D convolution implementations by applying a 9×9 box
-        filter to a grayscale self-portrait. A discrete convolution can be viewed as sliding a
+        A discrete convolution can be viewed as sliding a
         small kernel over the image and, at each location, computing a weighted sum of the local
         neighborhood with zero-padding so that the output has the same spatial size as the input.
       </p>
       <p>
         Three implementations are compared: a naïve four-loop baseline, a partially vectorized
         two-loop NumPy version, and SciPy’s optimized <code>convolve2d</code>. The resulting
-        blurred portraits are visually indistinguishable, which confirms that all three
+        blurred images are visually indistinguishable, which confirms that all three
         implementations realize the same filter while differing only in efficiency and internal
         optimization.
       </p>
@@ -78,20 +77,33 @@
             SciPy <code>convolve2d</code> reference implementation
           </figcaption>
         </figure>
-
-
       </div>
     </div>
 
     <div class="iteration-belt__outro">
       <p>
-        All three filtered selfies smooth high-frequency detail in the hair, pavement, and jacket
-        while preserving coarse structure such as the outline of the face and bike rack. This
-        confirms that the custom NumPy convolutions are numerically consistent with the library
+        A benchmark on the 9×9 box filter, averaged over five runs,
+        quantifies these differences. The naïve four-loop implementation takes about
+        9066.8&nbsp;ms per image, the two-loop implementation 1634.2&nbsp;ms, and the SciPy
+        reference 70.5&nbsp;ms. Moving from four loops to two loops yields a speedup of roughly
+        5.5×, while switching from four loops to SciPy gives a speedup of about 129×; SciPy is
+        still roughly 23× faster than the partially vectorized version. These measurements show
+        that writing convolution in terms of large array operations rather than explicit Python
+        loops is essential for scaling image filtering to realistic workloads.
+      </p>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        All three filtered selfies smooth high-frequency detail in fine details like hair, pavement, and jacket
+        while preserving coarse structure such as the outline of my face and bike rack. It is therefore true
+        that the custom NumPy convolutions are numerically consistent with the library
         routine and differ primarily in runtime, with increasing vectorization yielding faster
         execution for the same visual effect.
       </p>
     </div>
+
+
   </section>
 
   <div class="code-snippets">
@@ -173,19 +185,25 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     </details>
   </div>
 
-
   <!-- ============================================ 1.2 Finite Difference Operator ==================================== -->
   <section class="content gold-glass iteration-belt" id="part1-2">
     <h2 class="section-heading">1.2 Finite Difference Operator</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        This section uses finite difference filters to approximate the image gradient of the
-        standard cameraman image. A horizontal difference kernel measures how intensities change
-        left-to-right, while a vertical difference kernel measures changes top-to-bottom. These
-        directional responses are then combined into a gradient magnitude and thresholded to
-        produce a binary edge map, and the gradient orientation is visualized in color to reveal
-        how edge directions vary across the scene.
+        We also study how simple finite difference filters approximate image gradients on the
+        standard cameraman photograph. A horizontal difference kernel measures changes in intensity
+        from left to right, while a vertical difference kernel measures changes from top to bottom.
+        Applying these kernels yields directional derivatives that respond strongly where the image
+        contains vertical or horizontal edges and remain near zero in smooth, slowly varying regions.
+      </p>
+      <p>
+        The directional responses are combined into a gradient magnitude image that summarizes edge
+        strength independently of direction, and a global threshold is used to convert this
+        continuous signal into a binary edge map. Furthermore, two color visualizations of gradient
+        orientation are produced: one using a fast approximation and one using a more expensive
+        arctangent computation. Comparing these views reveals both the structure of the cameraman
+        scene and the extent to which the approximate orientation method matches the reference.
       </p>
     </div>
 
@@ -264,15 +282,18 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__outro">
       <p>
-        Together, these views show how simple finite difference filters extract rich geometric
-        structure from a single grayscale image. The partial derivatives differentiate vertical and
-        horizontal content, the gradient magnitude highlights where edges are strongest, the
-        thresholded map isolates clean structural contours, and the orientation visualizations add
-        directional information that is essential for downstream tasks such as corner detection and
-        feature description.
+        Taken together, these visualizations explain how finite difference operators extract an abudance of
+        geometric information from a single grayscale image. The directional derivatives separate
+        vertical and horizontal content, while gradient magnitude emphasizes where edges are strongest
+        Thresholded map allow isolation of clean structural contours, and the orientation fields add
+        directional information which are crucial for tasks pretaining to corner detection and feature
+        description. The close match between the fast and reference orientation images demonstrates
+        that the approximate computation is accurate enough for downstream use while being more
+        efficient.
       </p>
     </div>
   </section>
+
 
   <!-- =============================== 1.3 Derivative of Gaussian Filter ================================= -->
   <section class="content gold-glass iteration-belt" id="part1-3">
@@ -280,11 +301,20 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__intro">
       <p>
-        This section compares two equivalent ways of computing image gradients while suppressing
-        noise: (1) smoothing the image with a Gaussian and then applying finite difference
-        operators, and (2) convolving once with <em>derivative-of-Gaussian</em> (DoG) kernels.
-        Because convolution is linear and shift-invariant, differentiating the Gaussian and then
-        convolving should closely match convolving with the Gaussian first and then differentiating.
+        This section compares two strategies for computing smoothed image gradients: first blurring
+        the image with a Gaussian and then applying finite difference filters, versus convolving
+        once with derivative-of-Gaussian kernels. Because convolution is linear and shift-invariant,
+        differentiating the Gaussian and convolving the result with the image should be equivalent
+        to convolving with the Gaussian and differentiating afterward, up to numerical details and
+        boundary effects.
+      </p>
+      <p>
+        The experiment constructs horizontal and vertical derivative-of-Gaussian kernels and applies
+        them to the cameraman image. The resulting directional derivatives and gradient magnitudes
+        are compared against those obtained from the “smooth then difference” pipeline. The
+        comparison tests whether the one-step derivative-of-Gaussian approach reproduces the same
+        cleaned-up edges and suppressed noise as the two-stage method that explicitly separates
+        smoothing and differentiation.
       </p>
     </div>
 
@@ -372,12 +402,13 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__outro">
       <p>
-        The side-by-side comparison shows that Gaussian smoothing before finite differencing and
-        direct convolution with derivative-of-Gaussian kernels produce almost identical gradients
-        and edge magnitudes. Any small residual differences are due to numerical details rather
-        than the underlying operators. This validates the use of DoG filters as a compact,
-        one-step implementation of “blur then differentiate,” which is a standard building block
-        for robust edge detection.
+        The side-by-side comparison shows that Gaussian smoothing followed by finite differencing
+        and direct convolution with derivative-of-Gaussian kernels produce almost identical gradient
+        fields and edge magnitudes. Any remaining discrepancies are subtle and attributable to
+        numerical precision or padding choices rather than to the operators themselves. This
+        validates derivative-of-Gaussian filters as a compact, one-step implementation of the
+        “blur then differentiate” pipeline, making them a convenient and robust building block for
+        edge detection and feature extraction.
       </p>
     </div>
   </section>
@@ -389,11 +420,20 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__intro">
       <p>
-        This section applies unsharp masking to enhance fine detail in a photograph of the Taj Mahal.
-        The method first builds a smoothed version of the image, subtracts it from the original to
-        isolate high-frequency structure, and then adds a scaled version of this high-pass signal back
-        to the original. The result is a sharpened image in which edges and textures are more crisp,
-        while large-scale brightness and color remain stable.
+        This section uses unsharp masking to enhance fine detail in a photograph of the Taj Mahal.
+        The procedure first forms a smoothed version of the image by convolving with a Gaussian
+        blur kernel, then subtracts this low-pass version from the original to isolate a high-pass
+        component that contains edges and textures. A scaled copy of this high-pass signal is added
+        back to the original image, producing a sharpened result in which local contrast near
+        boundaries is increased while global brightness and color are largely preserved.
+      </p>
+      <p>
+        Interpreted in terms of kernels, unsharp masking combines an impulse-like identity kernel
+        with a negative Gaussian to create an effective filter that has a strong positive center and
+        a weaker negative surround. This structure boosts rapid spatial changes and slightly
+        suppresses slowly varying regions. The deliverables show each stage of this pipeline—the
+        blur, the extracted high-pass component, the sharpened output, and the equivalent single
+        unsharp kernel—to make clear how the operation redistributes contrast across spatial scales.
       </p>
     </div>
 
@@ -453,22 +493,14 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
       </div>
     </div>
 
-    <div class="iteration-belt__outro">
-      <p>
-        The sequence illustrates how unsharp masking sharpens edges by boosting high-frequency
-        structure rather than uniformly increasing global contrast. The Gaussian blur controls which
-        spatial scales are treated as detail, the high-pass component encodes that detail explicitly,
-        and the final weighting determines how aggressively edges and textures are emphasized while
-        keeping the overall appearance of the photograph natural.
-      </p>
-    </div>
-
     <div class="iteration-belt__intro">
       <p>
-        The same unsharp masking pipeline is applied to a scanned photograph of a grandfather as a
-        second example. Here the blur uses a larger 21×21 Gaussian with σ = 4.75 so that the
-        high-pass component captures mid-scale structure such as facial features, clothing folds,
-        and plant outlines while averaging over film grain and digitization noise.
+        The same unsharp masking pipeline is then applied to a scanned vintage family photograph as
+        a second case study. Here the blur uses a broader Gaussian with a larger kernel size and
+        standard deviation so that the high-pass component captures mid-scale structures such as
+        facial features, clothing folds, and plant outlines while averaging over film grain and
+        digitization noise. The deliverables again include the blur, the extracted high-frequency
+        content, the sharpened image, and the effective kernel.
       </p>
     </div>
 
@@ -483,8 +515,9 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
           <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/unsharp_kernel.png"
             alt="Gaussian blur kernel used to smooth the vintage photo">
           <figcaption class="iteration-belt__caption">
-            21×21 Gaussian blur kernel (σ = 4.75) used to define the low-pass component for the
-            vintage photograph.
+            Gaussian blur kernel used to define the low-pass component for the vintage photograph,
+            tuned to treat facial features and clothing folds as detail while smoothing over finer
+            grain.
           </figcaption>
         </figure>
 
@@ -520,9 +553,9 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
           <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/sharpened.png"
             alt="Sharpened vintage family photograph after unsharp masking">
           <figcaption class="iteration-belt__caption">
-            Sharpened result: adding the high-pass signal back (amount = 1.0) restores crispness to
-            facial features and the surrounding vegetation, making the photograph feel clearer
-            without introducing strong halos or amplifying background noise.
+            Sharpened result: adding the high-pass signal back restores crispness to facial
+            features and surrounding vegetation, making the photograph feel clearer without
+            introducing strong halos or emphasizing noise artifacts.
           </figcaption>
         </figure>
 
@@ -531,7 +564,8 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
             alt="Effective unsharp masking kernel for the vintage family photograph">
           <figcaption class="iteration-belt__caption">
             Effective unsharp kernel: the central impulse and negative Gaussian surround together
-            implement the entire “original + scaled high-pass” operation as a single convolution.
+            implement the entire “original plus scaled high-pass” operation as a single convolution,
+            tuned to the softer focus and lower resolution of the scan.
           </figcaption>
         </figure>
       </div>
@@ -539,13 +573,17 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__outro">
       <p>
-        Compared with the Taj Mahal example, this setting uses a broader blur to respect the softer
-        focus and lower resolution of the scan. The unsharp mask selectively boosts mid-frequency
-        detail that carries important semantic structure—such as the subject’s expression and
-        outline—while keeping film grain and age-related artifacts from becoming visually dominant.
+        Comparing the Taj Mahal and vintage photograph examples highlights how the unsharp masking
+        parameters control the notion of “detail” being enhanced. A narrower blur sharpens fine
+        architectural edges in a high-resolution scene, while a broader blur reserved for the scan
+        targets mid-scale structure and prevents film grain from becoming visually dominant. In both
+        cases, the method operates by selectively boosting high-frequency content relative to a
+        smooth background, yielding images that appear clearer and more focused without relying on a
+        simple global contrast stretch.
       </p>
     </div>
   </section>
+
 
 
 

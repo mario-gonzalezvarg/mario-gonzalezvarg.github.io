@@ -645,14 +645,14 @@ body.top-title {
 ------------------------------ */
 
 .code-snippets {
-  margin-top: 0;
+  margin-top: .5rem;
   z-index: 10;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 5.0rem;
+  gap: 2.5rem;
 }
 
 /* title spans full row above the buttons */
@@ -665,13 +665,12 @@ body.top-title {
   text-transform: uppercase;
   font-weight: 360;
   color: #ffeac7;
-  margin-bottom: 0.25rem; /* small space before row of buttons */
+  margin-bottom: 0.05rem; /* small space before row of buttons */
 }
 
 /* Each <details> wrapper becomes a flex item */
 .code-snippet {
-  flex: 1 0 248ox;      /* tweak width as you like */
-  margin-bottom: 0;     /* spacing handled by gap now */
+  flex: 1 0 264px;      /* tweak width as you like */
   border-radius: 0.5rem;
   border: 1px solid rgba(241, 222, 170, 0.7);
   background: radial-gradient(circle at 0% 0%,
