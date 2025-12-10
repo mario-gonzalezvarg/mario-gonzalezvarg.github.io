@@ -1,790 +1,556 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS180 – Project 2 · Convolution and Filtering · Mario Gonzalez</title>
-
-  <!-- Site styles (already in your repo root) -->
+  <title>Diffusion Models – Visualizations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css" />
-
-  <!-- MathJax for LaTeX rendering -->
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['\\(','\\)'], ['$', '$']],
-        displayMath: [['\\[','\\]']]
-      },
-      svg: { fontCache: 'global' }
-    };
-  </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-  <style>
-    /* Page-local niceties */
-    .hero h1 { margin-bottom: .25rem; }
-    .hero p.part-note { opacity:.8 }
-    figure.media { margin: 1rem auto; }
-    figure.media img { width: 100%; height: auto; display:block; }
-    figure.media figcaption { text-align:center; font-size:.95rem; opacity:.85; margin-top:.5rem }
-    .kpi { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin:.5rem 0 1.25rem; }
-    .kpi div { background: var(--card); padding:.75rem 1rem; border-radius:10px; }
-    .section h3 { margin-top: 1.25rem; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    .small { font-size: .92rem; }
-    .callout { background: var(--card); border-left: 4px solid var(--accent); padding:.9rem 1rem; border-radius:8px; }
-    .refs li { margin-bottom: .4rem; }
-    .deliverables li { margin-bottom:.35rem; }
-  </style>
 </head>
 
-<body>
-  <!-- Navbar -->
-  <header class="nav-band">
-    <nav class="nav container" aria-label="Primary">
-      <a href="../index.html">Home</a>
-      <a href="index.html" class="active" aria-current="page">Project 2</a>
-    </nav>
+<body class="top-title">
+
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <header class="site-header">
+    <div class="content">
+      <nav class="top-nav" aria-label="Project navigation">
+        <a href="../../index.html" class="nav-logo">
+          Home
+        </a>
+      </nav>
+    </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1>Convolution and Filtering</h1>
-      <p class="part-note">CS180 · Fall 2025 · Mario Gonzalez</p>
-      <a class="btn" href="../index.html">Back to Home <span class="chev" aria-hidden="true">›</span></a>
-    </div>
-  </section>
+  <div class="content big-title">
+    <h1 class="title">Filters and Frequencies</h1>
+  </div>
 
-  <!-- Abstract -->
-  <section class="section" id="abstract">
-    <div class="container">
-      <h2 class="section-title">Abstract</h2>
+  <!-- ============================================ 1.1 Convolutions from Scratch ===================================== -->
+  <section class="content gold-glass iteration-belt" id="part1.1">
+    <h2 class="section-heading">1.1 Convolutions from Scratch</h2>
+
+    <div class="iteration-belt__intro">
       <p>
-      This project investigates linear, shift‑invariant filtering as a common substrate for edge detection, detail
-      manipulation, and seamless compositing. I implement discrete two‑dimensional convolution from first principles
-      (four‑loop and two‑loop variants) and validate functional parity with <code>scipy.signal.convolve2d</code> under
-      matched padding semantics. 
-      
-      Building on finite differences, I examine the derivative‑of‑Gaussian (DoG) formulation to
-      suppress noise amplification, contrast its behavior with raw differencing, and verify the expected frequency response.
-      I then apply frequency‑selective processing to three applications: unsharp masking (high‑frequency gain), hybrid
-      images (low/high spectral fusion following Oliva–Torralba), and multi‑resolution analysis via Gaussian/Laplacian
-      stacks, culminating in Burt–Adelson blending for artifact‑reduced compositing. Across parts, I justify design choices,
-      report qualitative outcomes with diagnostics (Fourier magnitude and reconstruction checks), and discuss limitations and
-      failure modes.
+        Let us demonstarte a 2D convolution implementations by applying a 9×9 box
+        filter to a grayscale self-portrait. A discrete convolution can be viewed as sliding a
+        small kernel over the image and, at each location, computing a weighted sum of the local
+        neighborhood with zero-padding so that the output has the same spatial size as the input.
       </p>
-    
+      <p>
+        Three implementations are compared: a naïve four-loop baseline, a partially vectorized
+        two-loop NumPy version, and SciPy’s optimized <code>convolve2d</code>. The resulting
+        blurred portraits are visually indistinguishable, which confirms that all three
+        implementations realize the same filter while differing only in efficiency and internal
+        optimization.
+      </p>
+    </div>
+
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">9×9 box filter on self-portrait</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_four_loops.png"
+            alt="Self-portrait blurred with four-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            Four-loop convolution (direct discrete implementation)
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_two_loops.png"
+            alt="Self-portrait blurred with two-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            Two-loop convolution (window extraction + vectorized sum)
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_scipy.png"
+            alt="Self-portrait blurred with SciPy convolve2d">
+          <figcaption class="iteration-belt__caption">
+            SciPy <code>convolve2d</code> reference implementation
+          </figcaption>
+        </figure>
+
+
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        All three filtered selfies smooth high-frequency detail in the hair, pavement, and jacket
+        while preserving coarse structure such as the outline of the face and bike rack. This
+        confirms that the custom NumPy convolutions are numerically consistent with the library
+        routine and differ primarily in runtime, with increasing vectorization yielding faster
+        execution for the same visual effect.
+      </p>
     </div>
   </section>
 
-   <!-- ====================== PART 1A ====================== -->
-  <section id="part1a" class="section">
-    <div class="container">
-      <h2 class="section-title">1A · Discrete Convolution</h2>
+  <div class="code-snippets">
+    <h3 class="code-snippets__title">Convolution implementations (Python)</h3>
 
-       <p>
-  Let \(I\in\mathbb{R}^{H\times W}\) and \(K\in\mathbb{R}^{(2r+1)\times(2c+1)}\). I implement the discrete convolution
-  \((I*K)[x,y]=\sum_{u=-r}^{r}\sum_{v=-c}^{c}I[x-u,y-v]\,K[u,v]\) with kernel flipping and “same” zero padding to match
-  the course reference implementation. A didactic four‑loop version mirrors the mathematical summation and boundary
-  handling exactly; an optimized two‑loop version collapses the inner multiply–accumulate into vectorized row/column
-  slices to reduce Python overhead while preserving identical semantics.
-</p>
+    <!-- 1. pad_zero -->
+    <details class="code-snippet">
+      <summary>pad_zero</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code class="language-python">import numpy as np
 
-<h3>Validation</h3>
-<p>
-  I verify numerical equivalence against <code>scipy.signal.convolve2d</code> using absolute/relative tolerances at
-  float precision and by spot‑checking DC‑preserving kernels (e.g., normalized box filters). Boundary conditions are
-  held fixed (“same + zero”) so that downstream differences can be attributed to algorithmic choices rather than padding
-  artifacts. I also include the 9×9 box‑filter result on a self portrait, as required, alongside finite‑difference
-  responses for comparison.
-</p>
+def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
+    """Zero-pad a 2D image by (pad_h, pad_w) on all sides."""
+    assert img.ndim == 2
+    H, W = img.shape
+    out = np.zeros((H + 2 * pad_h, W + 2 * pad_w), dtype=img.dtype)
+    out[pad_h: pad_h + H, pad_w: pad_w + W] = img
+    return out</code></pre>
+      </div>
+    </details>
 
-<h3>Notes on efficiency</h3>
-<p>
-  The two‑loop variant is measurably faster on megapixel inputs due to vectorized inner products, while producing the
-  same output as both the four‑loop and SciPy baselines. I report qualitative runtime observations and keep the
-  four‑loop reference for correctness regression tests.
-</p>
+    <!-- 2. conv2d_four_loops -->
+    <details class="code-snippet">
+      <summary>conv2d_four_loops</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code class="language-python">def conv2d_four_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
+    """
+    Naive 2D convolution using 4 nested loops and zero padding.
+
+    img:    2D grayscale image
+    kernel: 2D filter kernel
+    """
+    assert img.ndim == 2
+    # flip kernel for convolution
+    k = np.flipud(np.fliplr(kernel))
+    kh, kw = k.shape
+    ph, pw = kh // 2, kw // 2
+
+    padded = pad_zero(img, ph, pw)
+    H, W = img.shape
+    out = np.zeros_like(img, dtype=np.float32)
+
+    for y in range(H):
+        for x in range(W):
+            acc = 0.0
+            for j in range(kh):
+                for i in range(kw):
+                    acc += padded[y + j, x + i] * k[j, i]
+            out[y, x] = acc
+    return out</code></pre>
+      </div>
+    </details>
+
+    <!-- 3. conv2d_two_loops -->
+    <details class="code-snippet">
+      <summary>conv2d_two_loops</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code class="language-python">def conv2d_two_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
+    """
+    More efficient convolution: 2 loops over pixels, inner sum done by NumPy.
+    """
+    assert img.ndim == 2
+    k = np.flipud(np.fliplr(kernel))
+    kh, kw = k.shape
+    ph, pw = kh // 2, kw // 2
+
+    padded = pad_zero(img, ph, pw)
+    H, W = img.shape
+    out = np.zeros_like(img, dtype=np.float32)
+
+    for y in range(H):
+        # slice the relevant "row band" once per y
+        row = padded[y: y + kh, :]
+        for x in range(W):
+            patch = row[:, x: x + kw]
+            out[y, x] = float(np.sum(patch * k))
+    return out</code></pre>
+      </div>
+    </details>
+  </div>
 
 
-      <div class="card" style="padding:16px"> <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px"> <label><strong>Dataset:</strong> <select id="a-dataset"></select></label> <strong>k = <span id="a-kval">3</span></strong> <input id="a-kIdx" type="range" min="0" max="0" step="1" value="0" style="width:240px" aria-label="kernel size"> <label><input type="radio" name="a-impl" value="fourloops" checked> From scratch</label> <label><input type="radio" name="a-impl" value="scipy"> SciPy</label> </div>
+  <!-- ============================================ 1.2 Finite Difference Operator ==================================== -->
+  <section class="content gold-glass iteration-belt" id="part1-2">
+    <h2 class="section-heading">1.2 Finite Difference Operator</h2>
 
-      <figure class="media media--narrow" style="margin:0 auto"> <img id="a-img" alt="1A result"> <figcaption id="a-cap" style="text-align:center; margin-top:8px"></figcaption> </figure> </div>
-              <figure class="media">
-  <img src="media/part1/box/11_dx.png">
-  <figcaption>dx </figcaption>
-</figure>
-
-<figure class="media">
-  <img src="media/part1/box/11_dy.png">
-  <figcaption>dy</figcaption>
-</figure>  
+    <div class="iteration-belt__intro">
+      <p>
+        This section uses finite difference filters to approximate the image gradient of the
+        standard cameraman image. A horizontal difference kernel measures how intensities change
+        left-to-right, while a vertical difference kernel measures changes top-to-bottom. These
+        directional responses are then combined into a gradient magnitude and thresholded to
+        produce a binary edge map, and the gradient orientation is visualized in color to reveal
+        how edge directions vary across the scene.
+      </p>
     </div>
-  </section>
 
-  <!-- ====================== PART 1B ====================== -->
-  <section id="part1b" class="section">
-    <div class="container">
-      <h2 class="section-title">1B – Finite Difference Operator</h2>
-<p>
-  I estimate first‑order derivatives with forward‑difference stencils \(D_x=[-1,1]\) and \(D_y=D_x^\top\),
-  computing \(I_x=I*D_x\), \(I_y=I*D_y\), and the gradient magnitude \(\|\nabla I\|=\sqrt{I_x^2+I_y^2}\).
-  Thresholding \(\|\nabla I\|\) yields a binarized edge map. All processing occurs on linear‑intensity grayscale to
-  avoid gamma bias, and uses the same “same + zero” padding adopted in 1A for consistent border support.
-</p>
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Cameraman gradients, magnitudes, and edges</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
 
-<h3>Threshold selection</h3>
-<p>
-  To trade off noise rejection and edge completeness, I select thresholds by percentile heuristics (≈85–95th percentile
-  of \(\|\nabla I\|\)) and report the resulting qualitative differences. This makes the decision scale‑free with respect
-  to global intensity while remaining faithful to fine structure in the <em>cameraman</em> image.
-</p>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/cameraman.png"
+            alt="Original cameraman image">
+          <figcaption class="iteration-belt__caption">
+            Original cameraman image (grayscale reference for all derivative visualizations).
+          </figcaption>
+        </figure>
 
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/Ix.png"
+            alt="Horizontal derivative of the cameraman image">
+          <figcaption class="iteration-belt__caption">
+            Horizontal derivative: vertical structures such as the tripod legs and building edges
+            appear as bright responses where intensity changes strongly left-to-right.
+          </figcaption>
+        </figure>
 
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/Iy.png"
+            alt="Vertical derivative of the cameraman image">
+          <figcaption class="iteration-belt__caption">
+            Vertical derivative: horizontal structures such as the horizon and rooftop lines
+            dominate the response, while sky and grass remain near zero.
+          </figcaption>
+        </figure>
 
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><input type="radio" name="b-mode" value="Ix" checked> Ix</label>
-          <label><input type="radio" name="b-mode" value="Iy"> Iy</label>
-          <label><input type="radio" name="b-mode" value="gradmag"> |∇I|</label>
-          <label><input type="radio" name="b-mode" value="edges"> Edges</label>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/grad_mag.png"
+            alt="Gradient magnitude of the cameraman image">
+          <figcaption class="iteration-belt__caption">
+            Gradient magnitude: combines horizontal and vertical changes into a single measure of
+            edge strength, concentrating high values along object boundaries.
+          </figcaption>
+        </figure>
 
-          <span id="b-thr-wrap" style="display:none; gap:10px; align-items:center;">
-            <strong>t = <span id="b-tval">10</span></strong>
-            <input id="b-tIdx" type="range" min="0" max="4" step="1" value="0" style="width:220px" aria-label="edge threshold">
-          </span>
-        </div>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/edges.png"
+            alt="Binary edge map from thresholded gradient magnitude">
+          <figcaption class="iteration-belt__caption">
+            Binary edge map: thresholded gradient magnitude retains the main contours of the
+            cameraman, tripod, and skyline while suppressing small noisy responses.
+          </figcaption>
+        </figure>
 
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="b-img" alt="1B result">
-          <figcaption id="b-cap" style="text-align:center; margin-top:8px"></figcaption>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/orientation_fast.png"
+            alt="Gradient orientation visualization using fast approximation">
+          <figcaption class="iteration-belt__caption">
+            Orientation visualization (fast approximation): edge direction is encoded as hue, with
+            saturation driven by gradient strength, revealing how directions vary smoothly along
+            curved contours.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/2_finitie_difference_operator/orientation_atan.png"
+            alt="Gradient orientation visualization using arctangent reference">
+          <figcaption class="iteration-belt__caption">
+            Orientation visualization (arctangent reference): produces almost identical color
+            patterns, confirming that the approximate method recovers the same underlying
+            orientation field at lower computational cost.
+          </figcaption>
         </figure>
       </div>
     </div>
-  </section>
 
-  <!-- ====================== PART 1C ====================== -->
-  <section id="part1c" class="section">
-    <div class="container">
-      <h2 class="section-title">1C – Derivative of Gaussian (DoG)</h2>
-
+    <div class="iteration-belt__outro">
       <p>
-        Noise amplification from plain differencing is mitigated by smoothing with a Gaussian \(G_\sigma\).
-        Two equivalent pipelines are compared:
-      </p>
-      <div class="callout small">
-        (i) <em>Smooth–then–difference</em>:
-        \(\;I_x = (I * G_\sigma) * D_x,\; I_y = (I * G_\sigma) * D_y.\)<br/>
-        (ii) <em>Derivative of Gaussian</em>:
-        \(\;I_x = I * \tfrac{\partial G_\sigma}{\partial x},\; I_y = I * \tfrac{\partial G_\sigma}{\partial y}.\)
-      </div>
-
-      <h3>Procedure</h3>
-      <p>
-        The Gaussian kernel uses support \(k = 2\lfloor 3\sigma \rfloor + 1\), capturing over 99% of the mass and
-        minimizing truncation bias. For the DoG path, \(\partial_x G_\sigma\) and \(\partial_y G_\sigma\) are formed by
-        convolving the Gaussian with the difference stencils and used directly as filters. With matched \(\sigma\) and
-        support, \(\{I_x, I_y, \|\nabla I\|\}\) from both paths agree numerically and visually.
-      </p>
-
-      <h3>Fourier Perspective</h3>
-      <p>
-        The Gaussian acts as a low-pass with transfer \(\hat G(\omega)=e^{-\sigma^2\|\omega\|^2/2}\).
-        Differencing corresponds to multiplication by \(j\omega\) in the frequency domain. Hence DoG yields
-        \(j\omega\,\hat G(\omega)\), attenuating high-frequency noise while preserving edge localization.
-      </p>
-
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><input type="radio" name="c-impl" value="smoothdiff" checked> Smooth → Diff</label>
-          <label><input type="radio" name="c-impl" value="DoG"> DoG (∂G ⊗ I)</label>
-
-          <span style="margin-left:12px"></span>
-
-          <label><input type="radio" name="c-mode" value="Ix" checked> Ix</label>
-          <label><input type="radio" name="c-mode" value="Iy"> Iy</label>
-          <label><input type="radio" name="c-mode" value="gradmag"> |∇I|</label>
-        </div>
-
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="c-img" alt="1C result">
-          <figcaption id="c-cap" style="text-align:center; margin-top:8px"></figcaption>
-        </figure>
-      </div>
-
-      <p>
-        I ended up replacing the raw differences with derivatives of a Gaussian. A normalized Gaussian kernel
-        <code>G<sub>σ</sub></code> is constructed using
-        <code>ksize ≈ 6σ + 1</code> to capture sufficient support. Two pipelines are compared: (i) smoothing the image
-        with <code>G<sub>σ</sub></code> and then applying <code>Dx</code>/<code>Dy</code>; and (ii) forming the DoG
-        filters <code>∂G/∂x</code>, <code>∂G/∂y</code> (by convolving <code>G</code> with the difference stencils) and
-        applying a single convolution per axis. Both methods yield near-identical <code>Ix</code>, <code>Iy</code>, and
-        <code>|∇I|</code> when σ and support are matched, but the DoG route is computationally attractive and conceptually
-        cleaner.
+        Together, these views show how simple finite difference filters extract rich geometric
+        structure from a single grayscale image. The partial derivatives differentiate vertical and
+        horizontal content, the gradient magnitude highlights where edges are strongest, the
+        thresholded map isolates clean structural contours, and the orientation visualizations add
+        directional information that is essential for downstream tasks such as corner detection and
+        feature description.
       </p>
     </div>
   </section>
 
-  <!-- ====================== PART 2A ====================== -->
-  <section id="part2a" class="section">
-    <div class="container">
-      <h2 class="section-title">2A – Unsharp Masking / Sharpening</h2>
+  <!-- =============================== 1.3 Derivative of Gaussian Filter ================================= -->
+  <section class="content gold-glass iteration-belt" id="part1-3">
+    <h2 class="section-heading">1.3 Derivative of Gaussian Filter</h2>
 
+    <div class="iteration-belt__intro">
       <p>
-  I implement unsharp masking by adding a scaled high‑frequency residue to the input:
-  \[\text{blur}=I*G_\sigma,\;\text{high}=I-\text{blur},\;I'=\operatorname{clip}(I+\alpha\,\text{high})\]
-  The parameter \(\sigma\) sets the transition between “detail” and “structure,” while \(\alpha\) controls contrast gain
-  within that band. A soft threshold on <code>high</code> optionally suppresses sensor noise.
-</p>
+        This section compares two equivalent ways of computing image gradients while suppressing
+        noise: (1) smoothing the image with a Gaussian and then applying finite difference
+        operators, and (2) convolving once with <em>derivative-of-Gaussian</em> (DoG) kernels.
+        Because convolution is linear and shift-invariant, differentiating the Gaussian and then
+        convolving should closely match convolving with the Gaussian first and then differentiating.
+      </p>
+    </div>
 
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Gaussian smoothing vs. derivative-of-Gaussian</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
 
-  
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/DoGx_kernel.png"
+            alt="Horizontal derivative-of-Gaussian kernel">
+          <figcaption class="iteration-belt__caption">
+            Horizontal DoG kernel: a smoothed, antisymmetric pattern that responds to vertical
+            edges while attenuating high-frequency noise.
+          </figcaption>
+        </figure>
 
-      <h3>Procedure</h3>
-      <p>
-        All operations are performed in linear intensity; sRGB gamma is applied only for display. A two-pass schedule is
-        effective for historic/low-contrast photographs: a fine pass \((\sigma\!\approx\!1\!-\!1.5,\;\alpha\!\approx\!1.2\!-\!1.6)\)
-        to restore micro-contrast, followed by a gentle mid-radius pass
-        \((\sigma\!\approx\!3\!-\!4,\;\alpha\!\approx\!0.2\!-\!0.4)\) to crispen contours while avoiding halos.
-        Clamping is applied last to maintain valid display range.
-    </p>
-    <p>
-  For the Taj Mahal and the additional image of my granpda, I show the blurred, high‑pass, and sharpened results, and vary \(\alpha\)
-  to illustrate the sharpening–halo trade‑off. I also blur a sharp image and attempt to restore it, comparing the
-  restored image to the original to highlight the information loss incurred by low‑pass filtering.
-</p>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/DoGy_kernel.png"
+            alt="Vertical derivative-of-Gaussian kernel">
+          <figcaption class="iteration-belt__caption">
+            Vertical DoG kernel: rotated counterpart used to detect horizontal edges with the same
+            built-in smoothing.
+          </figcaption>
+        </figure>
 
-      <h3>Observations</h3>
-<p>
-  Fine‑scale sharpening (\(\sigma\approx 1\!-\!1.5\)) restores micro‑contrast effectively. Larger \(\sigma\) values can
-  introduce halos near strong edges; this is mitigated by reducing \(\alpha\), operating in linear intensity, and
-  applying clamping only at the end of the pipeline.
-</p>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/Ix_smooth_then_diff.png"
+            alt="Horizontal derivative after Gaussian smoothing then finite difference">
+          <figcaption class="iteration-belt__caption">
+            Horizontal gradient from “smooth then difference”: vertical contours of the tripod,
+            coat, and buildings remain sharp, but background noise is strongly reduced.
+          </figcaption>
+        </figure>
 
-<p>
-  <em>Summary:</em> <code>blur = G<sub>σ</sub> ⊗ I</code>, <code>high = I − blur</code>,
-  <code>I′ = clip(I + α·high)</code>.
-</p>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/Iy_smooth_then_diff.png"
+            alt="Vertical derivative after Gaussian smoothing then finite difference">
+          <figcaption class="iteration-belt__caption">
+            Vertical gradient from “smooth then difference”: horizontal structures such as the
+            horizon and rooftops dominate the response with fewer speckles in the sky and grass.
+          </figcaption>
+        </figure>
 
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><strong>Dataset:</strong>
-            <select id="ua-dataset">
-              <option value="taj" selected>Taj</option>
-              <option value="Grandpa">Grandpa</option>
-            </select>
-          </label>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/grad_smooth_then_diff.png"
+            alt="Gradient magnitude after Gaussian smoothing then finite difference">
+          <figcaption class="iteration-belt__caption">
+            Gradient magnitude for “smooth then difference”: a clean edge map where strong
+            contours are preserved and fine-grained noise has been suppressed by the initial blur.
+          </figcaption>
+        </figure>
 
-          <label><input type="radio" name="ua-view" value="src" checked> Source</label>
-          <label><input type="radio" name="ua-view" value="blur"> Blurred (low-pass)</label>
-          <label><input type="radio" name="ua-view" value="high"> High-pass</label>
-          <label><input type="radio" name="ua-view" value="sharp"> Sharpened</label>
-        </div>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/Ix_DoG.png"
+            alt="Horizontal derivative from derivative-of-Gaussian convolution">
+          <figcaption class="iteration-belt__caption">
+            Horizontal gradient from DoG convolution: closely matches the smooth-then-differentiate
+            result, confirming that the DoG kernel embeds both smoothing and differentiation.
+          </figcaption>
+        </figure>
 
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="ua-img" alt="2A result">
-          <figcaption id="ua-cap" style="text-align:center; margin-top:8px"></figcaption>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/Iy_DoG.png"
+            alt="Vertical derivative from derivative-of-Gaussian convolution">
+          <figcaption class="iteration-belt__caption">
+            Vertical gradient from DoG convolution: edge strengths and locations align with the
+            corresponding smooth-then-difference vertical derivative.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/3_derivative_of_gaussian_filter/grad_DoG.png"
+            alt="Gradient magnitude from derivative-of-Gaussian convolution">
+          <figcaption class="iteration-belt__caption">
+            Gradient magnitude from DoG convolution: nearly indistinguishable from the
+            smooth-then-difference magnitude, demonstrating the equivalence of the two pipelines in
+            both structure and edge strength.
+          </figcaption>
         </figure>
       </div>
+    </div>
 
+    <div class="iteration-belt__outro">
       <p>
-        Unsharp masking: <code>blur = G<sub>σ</sub> ⊗ I</code>, <code>high = I − blur</code>, <code>I′ = clip(I + α·high)</code>.
+        The side-by-side comparison shows that Gaussian smoothing before finite differencing and
+        direct convolution with derivative-of-Gaussian kernels produce almost identical gradients
+        and edge magnitudes. Any small residual differences are due to numerical details rather
+        than the underlying operators. This validates the use of DoG filters as a compact,
+        one-step implementation of “blur then differentiate,” which is a standard building block
+        for robust edge detection.
       </p>
     </div>
   </section>
 
-  <!-- ====================== PART 2B ====================== -->
-  <section id="part2b" class="section">
-    <div class="container">
-      <h2 class="section-title">2B – Hybrid Images</h2>
 
+  <!-- ============================================ 2.1 Image Sharpening (Unsharp Masking) =========================== -->
+  <section class="content gold-glass iteration-belt" id="part2-1">
+    <h2 class="section-heading">2.1 Image Sharpening with Unsharp Masking</h2>
+
+    <div class="iteration-belt__intro">
       <p>
-        Hybrid images juxtapose low-frequency structure from one source with high-frequency detail from another:
-        \[
-          A_{\text{low}} = A * G_{\sigma_\ell},\qquad
-          B_{\text{high}} = B - (B * G_{\sigma_h}),\qquad
-          H = A_{\text{low}} + \beta\,B_{\text{high}}.
-        \]
-        Perception depends on viewing distance: close inspection reveals the high-frequency subject; at a distance, the
-        low-frequency subject dominates.
+        This section applies unsharp masking to enhance fine detail in a photograph of the Taj Mahal.
+        The method first builds a smoothed version of the image, subtracts it from the original to
+        isolate high-frequency structure, and then adds a scaled version of this high-pass signal back
+        to the original. The result is a sharpened image in which edges and textures are more crisp,
+        while large-scale brightness and color remain stable.
       </p>
+    </div>
 
-      <h3>Procedure</h3>
-      <p>
-        Spatial alignment is performed with the provided click-based utility (two corresponding points per image) that
-        recenters, rescales, and rotates one image to match the other, then crops to a shared field of view.
-        High-frequency content is injected in luminance to prevent chromatic fringes; the gray high-band is replicated
-        across RGB. Energy is balanced by setting \(\beta\) so that \(\operatorname{std}(\beta B_{\text{high}})\) equals
-        a conservative fraction of \(\operatorname{std}(A_{\text{low}})\) measured within a central window to avoid
-        border bias.
-      </p>
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Unsharp masking pipeline on the Taj Mahal</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
 
-      <h3>Diagnostics</h3>
-      <p>
-        Log-magnitude Fourier spectra confirm spectral separation: \(A_{\text{low}}\) concentrates energy near the DC
-        lobe; \(B_{\text{high}}\) has attenuated DC with bright mid-to-high frequencies. The hybrid spectrum combines
-        these patterns without introducing aliasing or band gaps.
-      </p>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/unsharp_kernel.png"
+            alt="Gaussian blur kernel used for unsharp masking">
+          <figcaption class="iteration-belt__caption">
+            Gaussian blur kernel: a small, isotropic low-pass filter that produces a softened version
+            of the image and suppresses high-frequency noise.
+          </figcaption>
+        </figure>
 
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><strong>Set:</strong>
-            <select id="hy-set">
-              <option value="example" selected>Derek and Nutmeg</option>
-              <option value="maga">Jump Scare</option>
-              <option value="life">Life Magazine</option>
-            </select>
-          </label>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/blurred.png" alt="Blurred Taj Mahal image">
+          <figcaption class="iteration-belt__caption">
+            Blurred image: large-scale structure of the Taj Mahal is preserved, but fine architectural
+            details and textures in the trees and walkway are noticeably washed out.
+          </figcaption>
+        </figure>
 
-          <label><input type="radio" name="hy-view" value="A" checked> Image A</label>
-          <label><input type="radio" name="hy-view" value="low"> Low-Pass (A)</label>
-          <label><input type="radio" name="hy-view" value="a_fourier"> Fourier Series (A)</label>
-          <label><input type="radio" name="hy-view" value="B"> Image B</label>
-          <label><input type="radio" name="hy-view" value="high"> High-pass(B)</label>
-          <label><input type="radio" name="hy-view" value="b_fourier"> Fourier Series (B)</label>
-          <label><input type="radio" name="hy-view" value="hybrid_fourier"> Hybrid Fourier</label>
-          <label><input type="radio" name="hy-view" value="hybrid"> Hybrid</label>
-        </div>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/highpass.png"
+            alt="High-pass component obtained by subtracting blur from the original">
+          <figcaption class="iteration-belt__caption">
+            High-pass component: subtraction of the blurred image from the original isolates edges and
+            fine detail. The building outline, ornamental patterns, and strong intensity transitions
+            appear as bright responses on a dark background.
+          </figcaption>
+        </figure>
 
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="hy-img" alt="2B result">
-          <figcaption id="hy-cap" style="text-align:center; margin-top:8px"></figcaption>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/sharpened.png"
+            alt="Sharpened Taj Mahal image after unsharp masking">
+          <figcaption class="iteration-belt__caption">
+            Sharpened result: adding a scaled high-pass signal back to the original yields a crisper
+            image. The dome ridges, facade carvings, and tree silhouettes gain local contrast without
+            creating strong halos or amplifying background noise.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/sharpened_kernel.png"
+            alt="Effective unsharp masking kernel">
+          <figcaption class="iteration-belt__caption">
+            Effective unsharp kernel: combining the impulse (identity) with a negative Gaussian blur
+            produces a single convolution kernel whose positive center and negative surround implement
+            “original plus scaled high-pass” in one step.
+          </figcaption>
         </figure>
       </div>
     </div>
-  </section>
 
-  <!-- ====================== PART 2C ====================== -->
-  <section id="part2c" class="section">
-    <div class="container">
-      <h2 class="section-title">2C – Gaussian & Laplacian Stacks</h2>
+    <div class="iteration-belt__outro">
       <p>
-        A fixed-resolution Gaussian stack \(\{G^0,\ldots,G^{L-1}\}\) is constructed by repeated convolution with a
-        Gaussian kernel; the Laplacian stack isolates band-pass structure:
-        \[
-          L^i = G^i - (G^i * G_\sigma),\quad i=0,\ldots,L-2,\qquad
-          L^{L-1}=G^{L-1}.
-        \]
-        Reconstruction verifies correctness:
-        \[
-          G^0 \;\approx\; \sum_{i=0}^{L-1} L^i.
-        \]
+        The sequence illustrates how unsharp masking sharpens edges by boosting high-frequency
+        structure rather than uniformly increasing global contrast. The Gaussian blur controls which
+        spatial scales are treated as detail, the high-pass component encodes that detail explicitly,
+        and the final weighting determines how aggressively edges and textures are emphasized while
+        keeping the overall appearance of the photograph natural.
       </p>
+    </div>
 
-      <h3>Procedure</h3>
+    <div class="iteration-belt__intro">
       <p>
-        Kernels follow \(k=2\lfloor 3\sigma\rfloor+1\) per level. To visualize signed band responses, each \(L^i\) is
-        mapped to \(V^i = 0.5 + 0.5\,(L^i/m_i)\) with \(m_i = \operatorname{percentile}_{99}(|L^i|)\), ensuring that
-        both positive and negative lobes remain visible without saturation. Grids show progressive attenuation of detail
-        as the level index increases.
+        The same unsharp masking pipeline is applied to a scanned photograph of a grandfather as a
+        second example. Here the blur uses a larger 21×21 Gaussian with σ = 4.75 so that the
+        high-pass component captures mid-scale structure such as facial features, clothing folds,
+        and plant outlines while averaging over film grain and digitization noise.
       </p>
+    </div>
 
-      <h3>Use in Later Sections</h3>
-      <p>
-        The Laplacian stack provides a natural handle for frequency-aware operations: blending becomes a convex
-        combination of band-limited coefficients (2D), and sharpening can be interpreted as a gain change on low-index
-        bands (2A).
-      </p>
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Unsharp masking on a vintage family scan</h3>
+      <!-- <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button> -->
+    </div>
 
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><strong>Image:</strong>
-            <select id="st-img">
-              <option value="apple" selected>Apple</option>
-              <option value="orange">Orange</option>
-            </select>
-          </label>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/unsharp_kernel.png"
+            alt="Gaussian blur kernel used to smooth the vintage photo">
+          <figcaption class="iteration-belt__caption">
+            21×21 Gaussian blur kernel (σ = 4.75) used to define the low-pass component for the
+            vintage photograph.
+          </figcaption>
+        </figure>
 
-          <label><input type="radio" name="st-type" value="gauss" checked> Gaussian Stack</label>
-          <label><input type="radio" name="st-type" value="lap"> Laplacian Stack</label>
-        </div>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/gp.jpeg"
+            alt="Original vintage family photograph before sharpening">
+          <figcaption class="iteration-belt__caption">
+            Original scan: a slightly faded, low-contrast family photograph with modest blur and
+            visible texture from aging and digitization.
+          </figcaption>
+        </figure>
 
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="st-view" alt="2C result">
-          <figcaption id="st-cap" style="text-align:center; margin-top:8px"></figcaption>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/blurred.png"
+            alt="Blurred version of the vintage family photograph">
+          <figcaption class="iteration-belt__caption">
+            Blurred image: large shapes such as the figure and background plants remain, but fine
+            details in the face, shirt, and foliage are smoothed away by the Gaussian filter.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/highpass.png"
+            alt="High-pass component of the vintage family photograph">
+          <figcaption class="iteration-belt__caption">
+            High-pass component: subtraction of the blur from the original isolates edges and local
+            contrast changes, outlining the figure, clothing seams, and wire fence while largely
+            suppressing uniform regions.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/sharpened.png"
+            alt="Sharpened vintage family photograph after unsharp masking">
+          <figcaption class="iteration-belt__caption">
+            Sharpened result: adding the high-pass signal back (amount = 1.0) restores crispness to
+            facial features and the surrounding vegetation, making the photograph feel clearer
+            without introducing strong halos or amplifying background noise.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/1_sharpening/grandpa/sharpened_kernel.png"
+            alt="Effective unsharp masking kernel for the vintage family photograph">
+          <figcaption class="iteration-belt__caption">
+            Effective unsharp kernel: the central impulse and negative Gaussian surround together
+            implement the entire “original + scaled high-pass” operation as a single convolution.
+          </figcaption>
         </figure>
       </div>
     </div>
-  </section>
 
-  <!-- ====================== PART 2D ====================== -->
-  <section id="part2d" class="section">
-    <div class="container">
-      <h2 class="section-title">2D – Multiresolution Blending</h2>
-
-
+    <div class="iteration-belt__outro">
       <p>
-        Burt–Adelson compositing blends images \(A,B\) under a soft mask \(M\in[0,1]\) by mixing their Laplacian stacks
-        with a Gaussianized mask stack:
-        \[
-          \tilde{L}^i = M^i \odot L_A^i + (1-M^i)\odot L_B^i,\qquad
-          R = \sum_{i=0}^{L-1} \tilde{L}^i.
-        \]
-        A wide pre-feather on \(M\) removes seams at level \(i=0\); deeper levels allow global color and illumination to
-        interpolate smoothly.
+        Compared with the Taj Mahal example, this setting uses a broader blur to respect the softer
+        focus and lower resolution of the scan. The unsharp mask selectively boosts mid-frequency
+        detail that carries important semantic structure—such as the subject’s expression and
+        outline—while keeping film grain and age-related artifacts from becoming visually dominant.
       </p>
-
-      <h3>Procedure</h3>
-      <p>
-        The workflow is: (1) prepare \(A\) and \(B\) to a common resolution, (2) obtain a user mask (vertical or freehand),
-        (3) pre-feather \(M\) by convolving with a broad Gaussian (tens of pixels) and normalize to \([0,1]\),
-        (4) build \(\{L_A^i\}, \{L_B^i\}, \{M^i\}\) with shared \(\sigma\) and depth \(L\), (5) blend per level and
-        reconstruct. All operations occur in linear-RGB to preserve energy relationships across bands; conversion to sRGB
-        is applied for display assets.
-      </p>
-
-      <h3>Design Choices and Failure Modes</h3>
-      <p>
-        Depth \(L\in[6,10]\) balances runtime and coverage of coarse structures; insufficient depth leaves illumination
-        mismatches. A narrow feather on \(M\) causes stair-step artifacts at level 0; a very broad feather may erase
-        intended boundaries. Artifacts are reduced by increasing \(L\), aligning photometric statistics, and verifying
-        that mask stacks are monotone across scales.
-      </p>
-
-
-      <div class="card" style="padding:16px">
-        <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
-          <label><strong>Mask:</strong>
-            <select id="blend-mask">
-              <option value="vertical" selected>Vertical</option>
-              <option value="irregular">Irregular</option>
-            </select>
-          </label>
-
-          <label><input type="radio" name="blend-view" value="result" checked> Result</label>
-          <label><input type="radio" name="blend-view" value="mask_stack"> Mask Stack</label>
-          <label><input type="radio" name="blend-view" value="lap_blended"> Laplacian Blended Stack</label>
-        </div>
-      </div>
-
-        <figure class="media media--narrow" style="margin:0 auto">
-          <img id="blend-img" alt="2D result">
-          <figcaption id="blend-cap" style="text-align:center; margin-top:8px"></figcaption>
-        </figure>
-        <div class="callout small">
-        <strong>Implementation notes.</strong> Gaussian stack kernel sizes follow \(k=2\lfloor 3\sigma\rfloor+1\).
-        Depth \(L\) is increased when large-scale replacement (e.g., sky/landmark) is required. Mask feather
-        \(\sigma_M \approx \tfrac{\text{feather px}}{6}\) is a reliable heuristic.
-      </div>
     </div>
   </section>
-  
 
-  <!-- ====================== Shared JS helpers ====================== -->
-  <script>
-  (function(){
-    const EXTS = ['png','jpg','jpeg'];
-    const $ = s => document.querySelector(s);
 
-    function tryLoad(imgEl, paths, i=0){
-      if(i >= paths.length){ imgEl.removeAttribute('src'); return; }
-      imgEl.onerror = () => tryLoad(imgEl, paths, i+1);
-      imgEl.src = paths[i];
-    }
-    function onRadios(name, cb){
-      document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', cb));
-    }
-    window.UI = {EXTS, $, tryLoad, onRadios};
-  })();
-  </script>
 
-  <!-- ====================== 1A viewer ====================== -->
-  <script>
-  (function () {
-    const {EXTS, $, tryLoad, onRadios} = UI;
-    const CONFIG = {
-      base: 'media/part1',
-      datasets: [{ id: 'box', label: 'Box Filter', ks: [3,5,9,15] }]
-    };
 
-    const dsSel = $('#a-dataset'), kIdx = $('#a-kIdx'), kval = $('#a-kval'),
-          img = $('#a-img'), cap = $('#a-cap');
-
-    CONFIG.datasets.forEach(d => {
-      const o = document.createElement('option'); o.value = d.id; o.textContent = d.label;
-      dsSel.appendChild(o);
-    });
-
-    const curDS = () => CONFIG.datasets.find(d => d.id === dsSel.value);
-    const curImpl = () => document.querySelector('input[name="a-impl"]:checked').value;
-
-    function setSlider(ds){
-      kIdx.min = 0; kIdx.max = ds.ks.length - 1;
-      if(+kIdx.value > +kIdx.max) kIdx.value = 0;
-    }
-
-    function update(){
-      const ds = curDS(), k = ds.ks[+kIdx.value], impl = curImpl();
-      kval.textContent = k;
-      cap.textContent = `${ds.label} — ${impl==='fourloops'?'From scratch':'SciPy'} (k=${k})`;
-      const paths = EXTS.map(ext => `${CONFIG.base}/${ds.id}/${ds.id}_${impl}_k${k}.${ext}`);
-      tryLoad(img, paths);
-    }
-
-    dsSel.addEventListener('change', () => { setSlider(curDS()); update(); });
-    kIdx.addEventListener('input', update);
-    onRadios('a-impl', update);
-
-    setSlider(curDS()); update();
-  })();
-  </script>
-
-  <!-- ====================== 1B viewer ====================== -->
-  <script>
-  (function () {
-    const {EXTS, $, tryLoad, onRadios} = UI;
-    const BASE = 'media/part1_2';
-    const THRESH = [10,15,20,25,30];
-
-    const mode = () => document.querySelector('input[name="b-mode"]:checked').value;
-    const tIdx = $('#b-tIdx'), tVal = $('#b-tval'), thrWrap = $('#b-thr-wrap'),
-          img = $('#b-img'), cap = $('#b-cap');
-
-    function candidates(){
-      const m = mode();
-      if(m==='edges'){
-        const t = THRESH[+tIdx.value];
-        tVal.textContent = t;
-        return EXTS.map(ext => `${BASE}/p1_2_edges_t${t}.${ext}`);
-      }
-      const file = m==='Ix' ? 'p1_2_Ix' : m==='Iy' ? 'p1_2_Iy' : 'p1_2_gradmag';
-      return EXTS.map(ext => `${BASE}/${file}.${ext}`);
-    }
-
-    function update(){
-      thrWrap.style.display = (mode()==='edges') ? 'inline-flex' : 'none';
-      const label = (mode()==='gradmag') ? '|∇I|' : mode();
-      cap.textContent = `Finite difference — ${label}` + (mode()==='edges' ? ` (t=${THRESH[+tIdx.value]})` : '');
-      tryLoad(img, candidates());
-    }
-
-    onRadios('b-mode', update);
-    tIdx.addEventListener('input', update);
-    update();
-  })();
-  </script>
-
-  <!-- ====================== 1C viewer ====================== -->
-  <script>
-  (function () {
-    const {EXTS, $, tryLoad, onRadios} = UI;
-    const BASE = 'media/part1_3';
-
-    const impl = () => document.querySelector('input[name="c-impl"]:checked').value;
-    const mode = () => document.querySelector('input[name="c-mode"]:checked').value;
-    const img  = $('#c-img'), cap = $('#c-cap');
-
-    function update() {
-      const m = mode();
-      const i = impl() === 'smoothdiff' ? 'Smooth → Diff' : 'DoG';
-      cap.textContent = `1C — ${i}, ${m === 'gradmag' ? '|∇I|' : m}`;
-      const file = `p1_3_${m}_${impl()}`;
-      tryLoad(img, EXTS.map(ext => `${BASE}/${file}.${ext}`));
-    }
-
-    onRadios('c-impl', update);
-    onRadios('c-mode', update);
-    update();
-  })();
-  </script>
-
-  <!-- ====================== Config for Part 2D datasets ====================== -->
-  <script id="blend-config" type="application/json">
-  {
-    "base": "media/part2_4",
-    "exts": ["png","jpg","jpeg"],
-    "datasets": [
-      {
-        "id": "oraple",
-        "label": "Oraple ",
-        "stems": {
-          "result": "{id}_{mask}",
-          "mask_stack": "mask_stack_{mask}",
-          "lap_blended": "lap_blended_{mask}"
-        }
-      },
-      {
-        "id": "sbrainer",
-        "label": "Santa Barbara ⊕ Rainer (irregular mask)",
-        "stems": {
-          "result": "sbrainer",
-          "mask_stack": "stacks_rainer_sb_rainer_mask_L10_k17_s8.0_f65_lin_Gmask_grid",
-          "lap_blended": "stacks_rainer_sb_rainer_mask_L10_k17_s8.0_f65_lin_Ls_grid"
-        }
-      },
-      {
-
-      "id": "bell_clouds",
-      "label": "Campanile ⊕ Nighttime Clouds",
-      "stems": {
-        "result": "bell_clouds",
-        "mask_stack": "stacks_clouds_bell_night_cloud_mask_L6_k17_s16.0_f65_lin_Gmask_grid",
-        "lap_blended": "stacks_clouds_bell_night_cloud_mask_L6_k17_s16.0_f65_lin_Ls_grid"
-      }
-    }
-    ]
-  }
-  </script>
-
-  <!-- === Single driver for ALL Part 2 viewers (2A/2B/2C/2D) === -->
-  <script>
-  (function(){
-    const EXTS = (window.UI && UI.EXTS) || ['png','jpg','jpeg'];
-    const $    = (window.UI && UI.$)    || (s => document.querySelector(s));
-    const tryLoad = (window.UI && UI.tryLoad) || function(imgEl, paths, i=0){
-      if(i>=paths.length){ imgEl.removeAttribute('src'); return; }
-      imgEl.onerror = () => tryLoad(imgEl, paths, i+1);
-      imgEl.src = paths[i];
-    };
-
-    function makePart2Viewer({base, imgSel, capSel, watch, resolve, exts=EXTS}) {
-      const img = $(imgSel), cap = $(capSel);
-
-      function readState() {
-        const s = {};
-        for (const w of watch) {
-          if (w.kind === 'radio') {
-            const el = document.querySelector(`input[name="${w.name}"]:checked`);
-            s[w.as] = el ? el.value : undefined;
-          } else if (w.kind === 'select') {
-            const el = document.getElementById(w.id);
-            s[w.as] = el ? el.value : undefined;
-          }
-        }
-        return s;
-      }
-
-      function update() {
-        const state = readState();
-        const { stem, stems, label } = resolve(state) || {};
-        const list = stems || (stem ? [stem] : []);
-        if (label) cap.textContent = label;
-        if (!list.length) { img.removeAttribute('src'); return; }
-        const paths = [];
-        for (const s of list) for (const ext of exts) paths.push(`${base}/${s}.${ext}`);
-        tryLoad(img, paths);
-      }
-
-      for (const w of watch) {
-        if (w.kind === 'radio') {
-          document.querySelectorAll(`input[name="${w.name}"]`).forEach(r => r.addEventListener('change', update));
-        } else if (w.kind === 'select') {
-          const el = document.getElementById(w.id);
-          if (el) el.addEventListener('change', update);
-        }
-      }
-      update();
-      return update;
-    }
-
-    // ---------- 2A ----------
-    makePart2Viewer({
-      base: 'media/part2_1',
-      imgSel: '#ua-img',
-      capSel: '#ua-cap',
-      watch: [
-        {kind:'select', id:'ua-dataset', as:'ds'},
-        {kind:'radio',  name:'ua-view',  as:'view'}
-      ],
-      resolve: ({ds, view}) => {
-        const nice = {src:'Source', blur:'Blurred (LPF)', high:'High-pass', sharp:'Sharpened'}[view] || view;
-        const stemBy = {
-          taj:  {src:'taj', blur:'taj_blur', high:'taj_high', sharp:'taj_sharp'},
-          Grandpa: {src:'gp', blur:'gp_blurred', high:'gp_high', sharp:'gp_4_final'}
-        };
-        const stem = stemBy[ds]?.[view] || null;
-        return { stem, label: `${ds==='taj'?'Taj':'Grandpa'} • ${nice}` };
-      }
-    });
-
-    // ---------- 2B ----------
-    makePart2Viewer({
-      base: 'media/part2_2',
-      imgSel: '#hy-img',
-      capSel: '#hy-cap',
-      watch: [
-        {kind:'select', id:'hy-set',   as:'set'},
-        {kind:'radio',  name:'hy-view',as:'view'}
-      ],
-      resolve: ({set, view}) => {
-        // Map stems per dataset
-        const stemsBySet = {
-          example: { A:'A', low:'low', a_fourier:'fft_A',B:'B', high:'high', b_fourier: 'fft_B', hybrid_fourier: 'fft_hybrid', hybrid:'hybrid' },
-          maga:    { A:'vance', low:'low_vance', a_fourier: 'fft_A_t', B:'trump', b_fourier: 'fft_B_t', high:'high_trump', hybrid_fourier: 'fft_hybrid_t',hybrid:'tj_hybrid' },
-          life: {A: 'life3', low: 'low_life', a_fourier: 'fft_low_life', B: 'life2', b_fourier: 'fft_high_life', high: 'high_life', hybrid_fourier: 'fft_hybrid_life', hybrid: 'hybrid_life'}
-        };
-        const names = {
-          A:'(low-freq detial)', low:'Low-pass', fourier: 'Fourier',
-          B:'(high-freq detail)', high:'High-pass(B)', hybrid:'Hybrid'
-        };
-        const stem = (stemsBySet[set] || stemsBySet.example)[view] || null;
-        return { stem, label: `${set==='example'?'Example':'Jump Scare'} • ${names[view]||view}` };
-      }
-    });
-
-    // ---------- 2C ----------
-    makePart2Viewer({
-      base: 'media/part2_3',
-      imgSel: '#st-view',
-      capSel: '#st-cap',
-      watch: [
-        {kind:'select', id:'st-img',    as:'img'},
-        {kind:'radio',  name:'st-type', as:'type'}
-      ],
-      resolve: ({img, type}) => {
-        const name = img==='apple' ? 'Apple' : 'Orange';
-        return { stem: `${type}_${img}`, label: `2C — ${type==='gauss'?'Gaussian':'Laplacian'} stack • ${name}` };
-      }
-    });
-
-    // ---------- 2D ----------
-    makePart2Viewer({
-      base: (function(){
-        const el = document.querySelector('#blend-config');
-        if (!el) return 'media/part2_4';
-        try { return JSON.parse(el.textContent).base || 'media/part2_4'; }
-        catch (_) { return 'media/part2_4'; }
-      })(),
-      imgSel: '#blend-img',
-      capSel: '#blend-cap',
-      watch: [
-        {kind:'select', id:'blend-ds',  as:'ds'},
-        {kind:'select', id:'blend-mask',as:'mask'},
-        {kind:'radio',  name:'blend-view', as:'view'}
-      ],
-      resolve: ({ds, mask, view}) => {
-        const el = document.querySelector('#blend-config');
-        let CFG = null;
-        if (el) { try { CFG = JSON.parse(el.textContent); } catch(_){} }
-        const datasets = CFG?.datasets || [{id:'oraple', label:'Oraple', stems:{
-          result:'{id}_{mask}', mask_stack:'mask_stack_{mask}', lap_blended:'lap_blended_{mask}'
-        }}];
-
-        // Ensure a dataset selector exists; create if missing
-        let dsSel = document.querySelector('#blend-ds');
-        if (!dsSel) {
-          const controls = document.querySelector('#blend-mask').closest('div');
-          const lab = document.createElement('label');
-          lab.innerHTML = '<strong>Pair:</strong> <select id="blend-ds"></select>';
-          controls.insertBefore(lab, controls.firstChild);
-          dsSel = lab.querySelector('select');
-          dsSel.innerHTML = datasets.map(d=>`<option value="${d.id}">${d.label||d.id}</option>`).join('');
-          dsSel.addEventListener('change', () => document.querySelector('input[name="blend-view"]:checked').dispatchEvent(new Event('change')));
-        }
-
-        const active = datasets.find(d => d.id === (ds || dsSel.value)) || datasets[0];
-        if (dsSel && dsSel.value !== active.id) dsSel.value = active.id;
-
-        const tpl = active.stems?.[view];
-        const rel = tpl ? tpl.replace(/\{(\w+)\}/g, (_,k)=>({id:active.id,mask}[k]??'')) : `${active.id}_${mask}`;
-        const vname = view==='result' ? 'Result' : (view==='mask_stack' ? 'Mask stack' : 'Laplacian blended stack');
-        const mname = mask==='vertical' ? 'vertical' : 'Irregular';
-        return { stem: rel, label: `${active.label||active.id}` };
-      }
-    });
-
-  })();
-  </script>
+  <script src="../script.js"></script>
 </body>
+
 </html>
