@@ -268,48 +268,6 @@ body.top-title {
   opacity: 0.8;
 }
 
-/* ------------------------------
-   Static panels with 1–3 images
------------------------------- */
-
-/* Wrapper (already defined earlier) */
-.static-panel {
-  width: 100%;
-  max-width: 100rem;
-  margin: 1.75rem auto 0;
-  text-align: center;
-}
-
-/* Row layout for 2–3 images */
-.static-panel--row {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-}
-
-/* Each item in the row */
-.static-panel__item {
-  flex: 0 1 18rem;   /* shrink/grow as needed; tweak width */
-}
-
-/* Image and caption (same style as before) */
-.static-panel__image {
-  display: block;
-  max-width: 100%;
-  width: 25%;
-  margin: 0 auto;
-  height: auto;
-  border-radius: 0.5rem;
-  border: none;
-}
-
-.static-panel__caption {
-  margin-top: 0.45rem;
-  font-size: 0.8rem;
-  color: #c9cfde;
-}
 
 
 /* ------------------------------
@@ -368,7 +326,7 @@ body.top-title {
 
 .iteration-belt__item {
   flex: 0 0 auto;
-  width: var(--belt-item-width, 26rem);
+  width: var(--belt-item-width, 24rem);
 }
 
 .iteration-belt__image {
@@ -451,6 +409,60 @@ body.top-title {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+/* ------------------------------
+   Static panels with 1–3 images
+------------------------------ */
+
+/* Wrapper (already defined earlier) */
+.static-panel {
+  width: 100%;
+  max-width: 100rem;
+  margin: 1.75rem auto 0;
+  text-align: center;
+}
+
+/* Row layout for 2–3 images */
+.static-panel--row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Each item in the row */
+.static-panel__item {
+  flex: 0 1 18rem;   /* shrink/grow as needed; tweak width */
+}
+
+/* Image and caption (same style as before) */
+.static-panel__image {
+  display: block;
+  width: 100%;    
+  max-width: 36rem; 
+  margin: 1.25rem 0 1.25rem;
+  height: auto;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+/* When a static panel sits directly in an iteration-belt, keep it tight */
+.iteration-belt > .static-panel,
+.iteration-belt > .static-panel--row {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+
+.static-panel__caption {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: #c9cfde;
+}
+
+
+
 
 
 /* ------------------------------
@@ -783,10 +795,7 @@ body.top-title {
 .code-block code {
   background: transparent;
 }
-/* Smaller belt items only inside the stacks section */
-#part2-3, #part2-4 {
-  --belt-item-width: 16rem;  /* pick any width you like */
-}
+
 
 
 
