@@ -34,16 +34,17 @@
 
     <div class="iteration-belt__intro">
       <p>
-        A discrete convolution can be viewed as sliding a
-        small kernel over the image and, at each location, computing a weighted sum of the local
-        neighborhood with zero-padding so that the output has the same spatial size as the input.
+        A discrete convolution is defined by sliding a small kernel across an image and, at each
+        location, computing a weighted sum of the local neighborhood with zero-padding so that the
+        output retains the spatial dimensions of the input. This operation implements a linear,
+        shift-invariant filter whose effect is determined entirely by the choice of kernel.
       </p>
       <p>
-        Three implementations are compared: a naïve four-loop baseline, a partially vectorized
-        two-loop NumPy version, and SciPy’s optimized <code>convolve2d</code>. The resulting
-        blurred images are visually indistinguishable, which confirms that all three
-        implementations realize the same filter while differing only in efficiency and internal
-        optimization.
+        The experiment compares three concrete realizations of this definition: a naïve four-loop
+        baseline, a partially vectorized two-loop NumPy implementation, and SciPy’s optimized
+        <code>convolve2d</code>. All three are applied to the same self-portrait with a 9×9 box
+        filter, so any differences in outcome can be attributed to numerical or implementation
+        details rather than to the underlying operator.
       </p>
     </div>
 
@@ -82,108 +83,25 @@
 
     <div class="iteration-belt__outro">
       <p>
-        A benchmark on the 9×9 box filter, averaged over five runs,
-        quantifies these differences. The naïve four-loop implementation takes about
-        9066.8&nbsp;ms per image, the two-loop implementation 1634.2&nbsp;ms, and the SciPy
-        reference 70.5&nbsp;ms. Moving from four loops to two loops yields a speedup of roughly
-        5.5×, while switching from four loops to SciPy gives a speedup of about 129×; SciPy is
-        still roughly 23× faster than the partially vectorized version. These measurements show
-        that writing convolution in terms of large array operations rather than explicit Python
-        loops is essential for scaling image filtering to realistic workloads.
+        A benchmark on the 9×9 box filter, averaged over multiple runs, yields runtimes of
+        approximately 9066.8&nbsp;ms for the four-loop implementation, 1634.2&nbsp;ms for the
+        two-loop implementation, and 70.5&nbsp;ms for the SciPy routine. The partially vectorized
+        version is therefore faster than the naïve one by a factor of about 5.5, while SciPy
+        achieves a speedup of roughly 129 over the four-loop baseline and about 23 over the
+        two-loop method. The timing data establish that expressing convolution in terms of large
+        array operations, rather than explicit Python loops, is decisive for efficiency.
       </p>
-    </div>
-
-    <div class="iteration-belt__outro">
       <p>
-        All three filtered selfies smooth high-frequency detail in fine details like hair, pavement, and jacket
-        while preserving coarse structure such as the outline of my face and bike rack. It is therefore true
-        that the custom NumPy convolutions are numerically consistent with the library
-        routine and differ primarily in runtime, with increasing vectorization yielding faster
-        execution for the same visual effect.
+        The three filtered selfies smooth high-frequency detail in the hair, pavement, and jacket
+        while preserving coarse structure such as the outline of the face and the bike rack. The
+        outputs are visually indistinguishable, and any discrepancies are below the level of
+        perceptual relevance. Together with the timing measurements, this shows that the custom
+        NumPy implementations are numerically consistent with the library routine and differ
+        principally in computational cost rather than in filtering behavior.
       </p>
     </div>
-
-
   </section>
 
-  <div class="code-snippets">
-    <h3 class="code-snippets__title">Convolution implementations (Python)</h3>
-
-    <!-- 1. pad_zero -->
-    <details class="code-snippet">
-      <summary>pad_zero</summary>
-      <div class="code-snippet__body">
-        <pre class="code-block"><code class="language-python">import numpy as np
-
-def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
-    """Zero-pad a 2D image by (pad_h, pad_w) on all sides."""
-    assert img.ndim == 2
-    H, W = img.shape
-    out = np.zeros((H + 2 * pad_h, W + 2 * pad_w), dtype=img.dtype)
-    out[pad_h: pad_h + H, pad_w: pad_w + W] = img
-    return out</code></pre>
-      </div>
-    </details>
-
-    <!-- 2. conv2d_four_loops -->
-    <details class="code-snippet">
-      <summary>conv2d_four_loops</summary>
-      <div class="code-snippet__body">
-        <pre class="code-block"><code class="language-python">def conv2d_four_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
-    """
-    Naive 2D convolution using 4 nested loops and zero padding.
-
-    img:    2D grayscale image
-    kernel: 2D filter kernel
-    """
-    assert img.ndim == 2
-    # flip kernel for convolution
-    k = np.flipud(np.fliplr(kernel))
-    kh, kw = k.shape
-    ph, pw = kh // 2, kw // 2
-
-    padded = pad_zero(img, ph, pw)
-    H, W = img.shape
-    out = np.zeros_like(img, dtype=np.float32)
-
-    for y in range(H):
-        for x in range(W):
-            acc = 0.0
-            for j in range(kh):
-                for i in range(kw):
-                    acc += padded[y + j, x + i] * k[j, i]
-            out[y, x] = acc
-    return out</code></pre>
-      </div>
-    </details>
-
-    <!-- 3. conv2d_two_loops -->
-    <details class="code-snippet">
-      <summary>conv2d_two_loops</summary>
-      <div class="code-snippet__body">
-        <pre class="code-block"><code class="language-python">def conv2d_two_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
-    """
-    More efficient convolution: 2 loops over pixels, inner sum done by NumPy.
-    """
-    assert img.ndim == 2
-    k = np.flipud(np.fliplr(kernel))
-    kh, kw = k.shape
-    ph, pw = kh // 2, kw // 2
-
-    padded = pad_zero(img, ph, pw)
-    H, W = img.shape
-    out = np.zeros_like(img, dtype=np.float32)
-
-    for y in range(H):
-        # slice the relevant "row band" once per y
-        row = padded[y: y + kh, :]
-        for x in range(W):
-            patch = row[:, x: x + kw]
-            out[y, x] = float(np.sum(patch * k))
-    return out</code></pre>
-      </div>
-    </details>
-  </div>
 
   <!-- ============================================ 1.2 Finite Difference Operator ==================================== -->
   <section class="content gold-glass iteration-belt" id="part1-2">
@@ -191,19 +109,21 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__intro">
       <p>
-        We also study how simple finite difference filters approximate image gradients on the
-        standard cameraman photograph. A horizontal difference kernel measures changes in intensity
-        from left to right, while a vertical difference kernel measures changes from top to bottom.
-        Applying these kernels yields directional derivatives that respond strongly where the image
-        contains vertical or horizontal edges and remain near zero in smooth, slowly varying regions.
+        This section studies how simple finite-difference filters approximate image gradients on
+        the standard cameraman photograph. A horizontal difference kernel measures local changes in
+        intensity from left to right, while a vertical difference kernel measures changes from top
+        to bottom. The corresponding derivative images respond strongly where the scene contains
+        vertical or horizontal edges and remain close to zero in regions where intensity varies
+        slowly.
       </p>
       <p>
-        The directional responses are combined into a gradient magnitude image that summarizes edge
-        strength independently of direction, and a global threshold is used to convert this
-        continuous signal into a binary edge map. Furthermore, two color visualizations of gradient
-        orientation are produced: one using a fast approximation and one using a more expensive
-        arctangent computation. Comparing these views reveals both the structure of the cameraman
-        scene and the extent to which the approximate orientation method matches the reference.
+        The directional derivatives are combined into a gradient-magnitude image that summarizes
+        edge strength independently of direction, and a global threshold converts this continuous
+        field into a binary edge map. In addition, two visualizations of gradient orientation are
+        produced in color space: one relies on a fast approximation to the angle, and the other
+        uses an explicit arctangent computation. Their comparison reveals both the geometric
+        structure of the cameraman scene and the accuracy of the approximate orientation method
+        relative to the reference.
       </p>
     </div>
 
@@ -282,14 +202,15 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__outro">
       <p>
-        Taken together, these visualizations explain how finite difference operators extract an abudance of
-        geometric information from a single grayscale image. The directional derivatives separate
-        vertical and horizontal content, while gradient magnitude emphasizes where edges are strongest
-        Thresholded map allow isolation of clean structural contours, and the orientation fields add
-        directional information which are crucial for tasks pretaining to corner detection and feature
-        description. The close match between the fast and reference orientation images demonstrates
-        that the approximate computation is accurate enough for downstream use while being more
-        efficient.
+        The derivative images, gradient magnitude, edge map, and orientation fields together
+        specify the geometric information extracted by finite differences from a single grayscale
+        image. The directional derivatives separate vertical and horizontal content, the gradient
+        magnitude emphasizes locations where intensity varies most rapidly, and the thresholded map
+        isolates a set of clean structural contours. The orientation visualizations add directional
+        structure to these contours, which is essential for tasks such as corner detection and
+        feature description. The close agreement between the fast and reference orientation images
+        indicates that the approximate computation is sufficiently accurate for downstream use
+        while retaining a lower computational cost.
       </p>
     </div>
   </section>
@@ -301,20 +222,19 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__intro">
       <p>
-        This section compares two strategies for computing smoothed image gradients: first blurring
-        the image with a Gaussian and then applying finite difference filters, versus convolving
-        once with derivative-of-Gaussian kernels. Because convolution is linear and shift-invariant,
-        differentiating the Gaussian and convolving the result with the image should be equivalent
-        to convolving with the Gaussian and differentiating afterward, up to numerical details and
-        boundary effects.
+        We now explore two strategies for computing smoothed image gradients: first blurring
+        the image with a Gaussian filter and then applying finite-difference kernels, versus
+        convolving once with derivative-of-Gaussian (DoG) kernels. Since convolution is linear and
+        shift-invariant, differentiating the Gaussian and then convolving the result with the image
+        should be equivalent, up to numerical and boundary effects, to convolving with the Gaussian
+        followed by discrete differentiation.
       </p>
       <p>
-        The experiment constructs horizontal and vertical derivative-of-Gaussian kernels and applies
-        them to the cameraman image. The resulting directional derivatives and gradient magnitudes
-        are compared against those obtained from the “smooth then difference” pipeline. The
-        comparison tests whether the one-step derivative-of-Gaussian approach reproduces the same
-        cleaned-up edges and suppressed noise as the two-stage method that explicitly separates
-        smoothing and differentiation.
+        Horizontal and vertical derivative-of-Gaussian kernels are constructed and applied to the
+        cameraman image. The resulting directional derivatives and gradient magnitudes are
+        juxtaposed with those obtained from the “smooth then difference” pipeline. The comparison
+        tests whether the one-step DoG approach reproduces the same sharpened edges and reduced
+        noise as the two-stage method that explicitly separates smoothing and differentiation.
       </p>
     </div>
 
@@ -403,12 +323,12 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     <div class="iteration-belt__outro">
       <p>
         The side-by-side comparison shows that Gaussian smoothing followed by finite differencing
-        and direct convolution with derivative-of-Gaussian kernels produce almost identical gradient
-        fields and edge magnitudes. Any remaining discrepancies are subtle and attributable to
-        numerical precision or padding choices rather than to the operators themselves. This
-        validates derivative-of-Gaussian filters as a compact, one-step implementation of the
-        “blur then differentiate” pipeline, making them a convenient and robust building block for
-        edge detection and feature extraction.
+        and direct convolution with derivative-of-Gaussian kernels produce essentially the same
+        gradient fields and edge magnitudes. Residual discrepancies are minor and can be explained
+        by numerical precision and padding rather than by any substantive difference in the
+        underlying operators. Derivative-of-Gaussian filters therefore provide a compact, one-step
+        realization of the “blur then differentiate” pipeline and serve as a convenient and robust
+        building block for edge detection and feature extraction.
       </p>
     </div>
   </section>
@@ -420,20 +340,21 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__intro">
       <p>
-        This section uses unsharp masking to enhance fine detail in a photograph of the Taj Mahal.
-        The procedure first forms a smoothed version of the image by convolving with a Gaussian
-        blur kernel, then subtracts this low-pass version from the original to isolate a high-pass
-        component that contains edges and textures. A scaled copy of this high-pass signal is added
-        back to the original image, producing a sharpened result in which local contrast near
-        boundaries is increased while global brightness and color are largely preserved.
+        This section analyzes unsharp masking as a method for enhancing fine detail in a photograph
+        of the Taj Mahal. The procedure forms a smoothed version of the image by convolving with a
+        Gaussian blur kernel, subtracts this low-pass version from the original to isolate a
+        high-pass component containing edges and textures, and then adds a scaled copy of this
+        high-pass signal back to the original. The sharpened image exhibits increased local
+        contrast near boundaries while largely preserving the global brightness and coloration of
+        the scene.
       </p>
       <p>
         Interpreted in terms of kernels, unsharp masking combines an impulse-like identity kernel
-        with a negative Gaussian to create an effective filter that has a strong positive center and
-        a weaker negative surround. This structure boosts rapid spatial changes and slightly
-        suppresses slowly varying regions. The deliverables show each stage of this pipeline—the
-        blur, the extracted high-pass component, the sharpened output, and the equivalent single
-        unsharp kernel—to make clear how the operation redistributes contrast across spatial scales.
+        with a negative Gaussian to create an effective filter with a strong positive center and a
+        weaker negative surround. This structure amplifies rapid spatial changes and slightly
+        suppresses slowly varying regions. The intermediate visualizations of the blur, the
+        extracted high-pass component, the sharpened output, and the equivalent single unsharp
+        kernel clarify how the operation redistributes contrast across spatial scales.
       </p>
     </div>
 
@@ -496,11 +417,11 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     <div class="iteration-belt__intro">
       <p>
         The same unsharp masking pipeline is then applied to a scanned vintage family photograph as
-        a second case study. Here the blur uses a broader Gaussian with a larger kernel size and
-        standard deviation so that the high-pass component captures mid-scale structures such as
-        facial features, clothing folds, and plant outlines while averaging over film grain and
-        digitization noise. The deliverables again include the blur, the extracted high-frequency
-        content, the sharpened image, and the effective kernel.
+        a second example. In this case the blur uses a broader Gaussian with a larger kernel so
+        that the high-pass component captures mid-scale structures such as facial features,
+        clothing folds, and plant outlines, while averaging over film grain and digitization noise.
+        The visualizations again present the blur, the extracted high-frequency content, the
+        sharpened image, and the effective kernel.
       </p>
     </div>
 
@@ -554,8 +475,8 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
             alt="Sharpened vintage family photograph after unsharp masking">
           <figcaption class="iteration-belt__caption">
             Sharpened result: adding the high-pass signal back restores crispness to facial
-            features and surrounding vegetation, making the photograph feel clearer without
-            introducing strong halos or emphasizing noise artifacts.
+            features and surrounding vegetation, making the photograph clearer without introducing
+            strong halos or emphasizing noise artifacts.
           </figcaption>
         </figure>
 
@@ -573,22 +494,23 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__outro">
       <p>
-        Comparing the Taj Mahal and vintage photograph examples highlights how the unsharp masking
-        parameters control the notion of “detail” being enhanced. A narrower blur sharpens fine
-        architectural edges in a high-resolution scene, while a broader blur reserved for the scan
-        targets mid-scale structure and prevents film grain from becoming visually dominant. In both
-        cases, the method operates by selectively boosting high-frequency content relative to a
-        smooth background, yielding images that appear clearer and more focused without relying on a
-        simple global contrast stretch.
+        The Taj Mahal and vintage photograph examples together show how unsharp masking parameters
+        fix the notion of “detail” that is being enhanced. A narrower blur sharpens fine
+        architectural edges in a high-resolution scene, whereas a broader blur applied to the scan
+        targets mid-scale structure and prevents film grain from becoming visually dominant. In
+        both cases, the method operates by selectively boosting high-frequency content relative to
+        a smooth background, producing images that appear more focused without resorting to a
+        simple global contrast adjustment.
       </p>
     </div>
   </section>
+
 
   <!-- ============================================ 2.2 Hybrid Images ================================================ -->
   <section class="content gold-glass iteration-belt" id="part2-2">
     <h2 class="section-heading">2.2 Hybrid Images</h2>
 
-        <div class="iteration-belt__intro">
+    <div class="iteration-belt__intro">
       <p>
         A hybrid image combines the low frequencies of one photograph with the high frequencies of
         another so that perception changes with viewing distance. In this example, Derek’s face
@@ -600,7 +522,7 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
       <p>
         The portrait is heavily blurred with a Gaussian filter, producing a smooth low-pass image in
         which small-scale details are suppressed but the overall facial geometry and shading remain
-        intact. The cat image is transformed into a high-pass signal by subtracting a softened
+        intact. The image of Nutmeg is transformed into a high-pass signal by subtracting a softened
         version of itself, yielding an essentially zero-mean edge map dominated by sharp contours
         and texture. Before the two components are added, the high-pass layer is attenuated so that
         cat features are clearly visible at close range but do not overwhelm the underlying
@@ -706,18 +628,293 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
     <div class="iteration-belt__outro">
       <p>
-        The resulting hybrid behaves as expected: close inspection is dominated by Nutmeg’s
-        high-frequency texture, while increased viewing distance or downsampling removes these
-        frequencies and reveals the underlying Derek portrait. The Fourier visualizations tie this
-        perceptual effect directly to the frequency decomposition: the low-pass image occupies only
-        a compact region near the origin, the high-pass image populates outer bands with oriented
-        energy, and the hybrid spectrum exhibits both components simultaneously. Appropriate
-        choices of kernel size, standard deviation, and scaling factor therefore control which
-        spatial scales belong to each subject and how strongly each one contributes to the final
-        illusion.
+        The hybrid displays a clear dependence on viewing scale. At close range, the visual system
+        preserves high spatial frequencies, and the edge layer therefore asserts itself through
+        sharp textures and fine contours. As the image is reduced or viewed from a greater distance,
+        these frequencies are progressively discarded, and the coarse structure of the underlying
+        portrait becomes the principal object of perception. The Fourier plots render this shift in
+        explicit form: the low-pass component gathers its energy near the spectral origin, the
+        high-pass component disperses it into outer bands with marked directional organization, and
+        the hybrid spectrum is nothing more than their superposition. The degree of blurring and the
+        weight granted to the edge layer thus fix the partition of spatial scales between the two
+        sources and determine which of them prevails in attention under different viewing
+        conditions.
       </p>
     </div>
   </section>
+
+  <!-- ============================================ 2.3 Gaussian and Laplacian Stacks ================================ -->
+  <section class="content gold-glass iteration-belt" id="part2-3">
+    <h2 class="section-heading">2.3 Gaussian and Laplacian Stacks</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        A Gaussian stack is obtained by repeatedly smoothing an image with a fixed Gaussian filter
+        and recording each intermediate level. Successive levels therefore form a sequence in which
+        high-frequency structure is progressively removed while coarse shading and shape are
+        retained. A Laplacian stack is derived from this sequence by subtracting adjacent Gaussian
+        levels; each Laplacian level then isolates a band of spatial frequencies, capturing
+        structure that is present at one blur scale but absent at the next coarser one. The pair of
+        stacks together decompose an image into a coarse base and a set of band-pass detail layers.
+      </p>
+
+      <!-- Gaussian stacks, side by side -->
+      <div class="pair">
+        <figure class="media">
+          <img
+            src="media/two/3_stacks/apple/gaussian_stack.png"
+            alt="Gaussian stack levels for the apple">
+          <figcaption>
+            Gaussian stack for the apple: increasingly strong blur removes fine grain while the
+            silhouette and highlight pattern remain fixed.
+          </figcaption>
+        </figure>
+
+        <figure class="media">
+          <img
+            src="media/two/3_stacks/orange/gaussian_stack.png"
+            alt="Gaussian stack levels for the orange">
+          <figcaption>
+            Gaussian stack for the orange: peel texture fades with scale, leaving only the smooth
+            spherical form and broad illumination.
+          </figcaption>
+        </figure>
+      </div>
+
+      <p>
+        These constructions are examined on two objects of similar shape but different texture and
+        coloration: an apple and an orange. The Gaussian stacks describe how each fruit’s large-scale
+        form and illumination emerge as small-scale variations are suppressed, while the Laplacian
+        stacks localize the edges and surface irregularities into distinct frequency bands that are
+        useful for blending and multi-resolution editing.
+      </p>
+    </div>
+
+    <!-- Gaussian level belts: apple row, orange row -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Gaussian stack levels across scale</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <!-- Apple Gaussian row -->
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_00.png"
+               alt="Fine-scale Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Gaussian level 0: original scale with small speckle, background texture, and a
+            crisp boundary between fruit and background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_05.png"
+               alt="Intermediate Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Gaussian level 5: mid-level blur suppresses much of the pixel-level noise while
+            keeping the stem, specular highlights, and broad shading across the surface.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_10.png"
+               alt="Coarser Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Gaussian level 10: only slow intensity variations remain; the object is described
+            mainly by its round silhouette and a small number of large highlights and shadows.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_15.png"
+               alt="Very coarse Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Gaussian level 15: most fine structure has disappeared and the fruit is
+            approximated by a smooth blob with gentle shading.
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Orange Gaussian row -->
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_00.png"
+               alt="Fine-scale Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Gaussian level 0: original scale with strong peel texture and crisp separation
+            between fruit, table, and background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_05.png"
+               alt="Intermediate Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Gaussian level 5: mid-level blur diminishes fine pore structure while preserving
+            the main highlight and shadow pattern around the volume.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_10.png"
+               alt="Coarser Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Gaussian level 10: the fruit is represented primarily by its smooth outline and
+            broad tonal regions; detailed texture is largely absent.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_15.png"
+               alt="Very coarse Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Gaussian level 15: only very low-frequency information remains; the fruit
+            resembles a soft, uniformly shaded disc.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Laplacian stacks, side by side -->
+    <div class="pair">
+      <figure class="media">
+        <img
+          src="media/two/3_stacks/apple/laplacian_stack.png"
+          alt="Laplacian stack levels for the apple">
+        <figcaption>
+          Laplacian stack for the apple: each level isolates detail at a specific scale, from fine
+          noise and edge fragments to coarse transitions along the contour.
+        </figcaption>
+      </figure>
+
+      <figure class="media">
+        <img
+          src="media/two/3_stacks/orange/laplacian_stack.png"
+          alt="Laplacian stack levels for the orange">
+        <figcaption>
+          Laplacian stack for the orange: high-frequency bands emphasize peel texture; coarser
+          bands carry only broad contrast changes between fruit, table, and background.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Laplacian level belts: apple row, orange row -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Laplacian stack levels across scale</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <!-- Apple Laplacian row -->
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_00.png"
+               alt="Fine-scale Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian level 0: highest-frequency band dominated by sensor noise, background
+            fabric, and the thinnest edges around the boundary.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_05.png"
+               alt="Intermediate Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian level 5: mid-frequency band capturing the main contour and sharper
+            portions of the specular highlights, with much of the fine noise removed.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_10.png"
+               alt="Coarser Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian level 10: coarse band describing broad transitions between fruit and
+            background and large-scale shading variations across the body.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_15.png"
+               alt="Very coarse Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian level 15: lowest-frequency band with weak, diffuse responses; most
+            energy has migrated into the coarsest Gaussian level.
+          </figcaption>
+        </figure>
+      </div>
+
+      <!-- Orange Laplacian row -->
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_00.png"
+               alt="Fine-scale Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian level 0: highest-frequency band dominated by granular peel texture and
+            the sharpest edges along the rim of the fruit.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_05.png"
+               alt="Intermediate Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian level 5: mid-frequency band emphasizing the main outline and
+            intermediate-scale transitions between fruit and background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_10.png"
+               alt="Coarser Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian level 10: broad band where only large-scale contrast changes survive,
+            giving soft rims around fruit and table edge with little interior texture.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_15.png"
+               alt="Very coarse Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian level 15: lowest-frequency band with weak, diffuse structure; the
+            remaining content is captured by the coarsest Gaussian base.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The apple and orange stacks jointly exhibit how Gaussian and Laplacian decompositions
+        separate images into complementary descriptions across scale. Gaussian stacks record the
+        approach to a smooth, low-frequency representation as blur increases, whereas Laplacian
+        stacks distribute edges and texture into distinct band-pass layers. Because the construction
+        is linear and reconstructive—summing all Laplacian levels together with the coarsest
+        Gaussian recovers the original image—it supplies a principled basis for multi-resolution
+        operations such as blending, tone manipulation, and detail transfer that act selectively on
+        specified spatial scales.
+      </p>
+    </div>
+  </section>
+
 
 
 
@@ -727,3 +924,4 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 </body>
 
 </html>
+
