@@ -643,6 +643,53 @@
     </div>
   </section>
 
+  <!-- ======================= 2.2 Hybrid Images – Additional Examples ======================= -->
+  <section class="content gold-glass" id="part2-2-extra">
+    <h2 class="section-heading">2.2 Hybrid Images – Additional Examples</h2>
+
+    <div class="writing-section">
+      <p>
+        Additional hybrid pairs test whether the frequency-based separation used for the
+        Derek–Nutmeg example generalizes to other combinations of content and texture. In each
+        case, one source supplies the low-frequency structure—overall shape and illumination—while
+        the other supplies high-frequency detail such as edges and fine surface variations. The
+        construction is identical: a blurred version of the low-frequency source forms the base,
+        a high-pass version of the second source is extracted by subtracting its blur, and an
+        attenuated copy of this high-pass component is added to the base image.
+      </p>
+      <!-- <p>
+        The first hybrid illustrates a pairing in which the low-frequency image has strong
+        global geometry and the high-frequency image contributes localized detail that can be
+        inspected up close. The second hybrid uses a different pair with more pronounced texture
+        in the high-frequency source. In both cases, near viewing distances emphasize the edge
+        layer from the high-frequency source, whereas increased distance or downsampling suppresses
+        those components and reveals the low-frequency structure instead. The scale-dependent
+        change in appearance therefore persists across distinct image pairs and is not confined to
+        the original example.
+      </p> -->
+
+      <div class="static-panel static-panel--row">
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/my_hybrid_01.png"
+            alt="First additional hybrid image">
+          <figcaption class="static-panel__caption">
+            Hybrid example 1.
+          </figcaption>
+        </figure>
+
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/my_hybrid_02.png"
+            alt="Second additional hybrid image">
+          <figcaption class="static-panel__caption">
+            Hybrid example 2.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+
+
   <!-- ============================================ 2.3 Gaussian and Laplacian Stacks ================================ -->
   <section class="content gold-glass iteration-belt" id="part2-3">
     <h2 class="section-heading">2.3 Gaussian and Laplacian Stacks</h2>
@@ -657,40 +704,9 @@
         structure that is present at one blur scale but absent at the next coarser one. The pair of
         stacks together decompose an image into a coarse base and a set of band-pass detail layers.
       </p>
-
-      <!-- Gaussian stacks, side by side -->
-      <div class="pair pair--stacks">
-        <figure class="media media--narrow">
-          <img
-            src="media/two/3_stacks/apple/gaussian_stack.png"
-            alt="Gaussian stack levels for the apple">
-          <figcaption>
-            Gaussian stack for the apple: increasingly strong blur removes fine grain while the
-            silhouette and highlight pattern remain fixed.
-          </figcaption>
-        </figure>
-
-        <figure class="media media--narrow">
-          <img
-            src="media/two/3_stacks/orange/gaussian_stack.png"
-            alt="Gaussian stack levels for the orange">
-          <figcaption>
-            Gaussian stack for the orange: peel texture fades with scale, leaving only the smooth
-            spherical form and broad illumination.
-          </figcaption>
-        </figure>
-      </div>
-
-      <p>
-        These constructions are examined on two objects of similar shape but different texture and
-        coloration: an apple and an orange. The Gaussian stacks describe how each fruit’s large-scale
-        form and illumination emerge as small-scale variations are suppressed, while the Laplacian
-        stacks localize the edges and surface irregularities into distinct frequency bands that are
-        useful for blending and multi-resolution editing.
-      </p>
     </div>
 
-    <!-- Gaussian level belts: apple row, orange row -->
+    <!-- Gaussian stack belts -->
     <div class="iteration-belt__header">
       <h3 class="iteration-belt__title">Gaussian stack levels across scale</h3>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
@@ -700,42 +716,34 @@
       <!-- Apple Gaussian row -->
       <div class="iteration-belt__track">
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/gaussian_level_00.png"
-               alt="Fine-scale Gaussian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/gaussian_level_00.png"
+            alt="Fine-scale Gaussian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Gaussian level 0: original scale with small speckle, background texture, and a
-            crisp boundary between fruit and background.
+            Apple, level 0: original image with full texture and sharp boundary.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/gaussian_level_05.png"
-               alt="Intermediate Gaussian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/gaussian_level_05.png"
+            alt="Intermediate Gaussian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Gaussian level 5: mid-level blur suppresses much of the pixel-level noise while
-            keeping the stem, specular highlights, and broad shading across the surface.
+            Apple, level 5: moderate blur; texture reduced, shape and highlights intact.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/gaussian_level_10.png"
-               alt="Coarser Gaussian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/gaussian_level_10.png"
+            alt="Coarser Gaussian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Gaussian level 10: only slow intensity variations remain; the object is described
-            mainly by its round silhouette and a small number of large highlights and shadows.
+            Apple, level 10: strong blur; silhouette and broad shading remain.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/gaussian_level_15.png"
-               alt="Very coarse Gaussian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/gaussian_level_15.png"
+            alt="Very coarse Gaussian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Gaussian level 15: most fine structure has disappeared and the fruit is
-            approximated by a smooth blob with gentle shading.
+            Apple, level 15: extreme blur; fruit approximated by a smooth blob.
           </figcaption>
         </figure>
       </div>
@@ -743,71 +751,51 @@
       <!-- Orange Gaussian row -->
       <div class="iteration-belt__track">
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/gaussian_level_00.png"
-               alt="Fine-scale Gaussian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/gaussian_level_00.png"
+            alt="Fine-scale Gaussian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Gaussian level 0: original scale with strong peel texture and crisp separation
-            between fruit, table, and background.
+            Orange, level 0: full peel texture and sharp object boundaries.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/gaussian_level_05.png"
-               alt="Intermediate Gaussian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/gaussian_level_05.png"
+            alt="Intermediate Gaussian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Gaussian level 5: mid-level blur diminishes fine pore structure while preserving
-            the main highlight and shadow pattern around the volume.
+            Orange, level 5: pores softened; main highlight and shadow preserved.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/gaussian_level_10.png"
-               alt="Coarser Gaussian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/gaussian_level_10.png"
+            alt="Coarser Gaussian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Gaussian level 10: the fruit is represented primarily by its smooth outline and
-            broad tonal regions; detailed texture is largely absent.
+            Orange, level 10: smooth outline and broad tonal regions dominate.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/gaussian_level_15.png"
-               alt="Very coarse Gaussian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/gaussian_level_15.png"
+            alt="Very coarse Gaussian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Gaussian level 15: only very low-frequency information remains; the fruit
-            resembles a soft, uniformly shaded disc.
+            Orange, level 15: very low-frequency version; nearly uniform disc.
           </figcaption>
         </figure>
       </div>
     </div>
 
-    <!-- Laplacian stacks, side by side -->
-    <div class="pair pair--stacks">
-      <figure class="media media--narrow">
-        <img
-          src="media/two/3_stacks/apple/laplacian_stack.png"
-          alt="Laplacian stack levels for the apple">
-        <figcaption>
-          Laplacian stack for the apple: each level isolates detail at a specific scale, from fine
-          noise and edge fragments to coarse transitions along the contour.
-        </figcaption>
-      </figure>
-
-      <figure class="media media--narrow">
-        <img
-          src="media/two/3_stacks/orange/laplacian_stack.png"
-          alt="Laplacian stack levels for the orange">
-        <figcaption>
-          Laplacian stack for the orange: high-frequency bands emphasize peel texture; coarser
-          bands carry only broad contrast changes between fruit, table, and background.
-        </figcaption>
-      </figure>
+    <div class="iteration-belt__outro">
+      <p>
+        The apple and orange stacks jointly demonstrate how Gaussian and Laplacian decompositions
+        separate images into complementary descriptions across scale. Gaussian stacks record the
+        approach to a smooth, low-frequency representation as blur increases, whereas Laplacian
+        stacks distribute edges and texture into distinct band-pass layers. Because the construction
+        is linear and reconstructive, summing all Laplacian levels together with the coarsest
+        Gaussian recovers the original image and supports multi-resolution manipulation of detail.
+      </p>
     </div>
 
-    <!-- Laplacian level belts: apple row, orange row -->
+    <!-- Laplacian stack belts -->
     <div class="iteration-belt__header">
       <h3 class="iteration-belt__title">Laplacian stack levels across scale</h3>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
@@ -817,42 +805,34 @@
       <!-- Apple Laplacian row -->
       <div class="iteration-belt__track">
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/laplacian_level_00.png"
-               alt="Fine-scale Laplacian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/laplacian_level_00.png"
+            alt="Fine-scale Laplacian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Laplacian level 0: highest-frequency band dominated by sensor noise, background
-            fabric, and the thinnest edges around the boundary.
+            Apple, Laplacian 0: highest frequencies—noise and razor-thin edges.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/laplacian_level_05.png"
-               alt="Intermediate Laplacian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/laplacian_level_05.png"
+            alt="Intermediate Laplacian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Laplacian level 5: mid-frequency band capturing the main contour and sharper
-            portions of the specular highlights, with much of the fine noise removed.
+            Apple, Laplacian 5: mid-scale edges along contour and highlights.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/laplacian_level_10.png"
-               alt="Coarser Laplacian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/laplacian_level_10.png"
+            alt="Coarser Laplacian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Laplacian level 10: coarse band describing broad transitions between fruit and
-            background and large-scale shading variations across the body.
+            Apple, Laplacian 10: coarse transitions between fruit interior and background.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/apple/laplacian_level_15.png"
-               alt="Very coarse Laplacian level of the apple">
+          <img class="iteration-belt__image" src="media/two/3_stacks/apple/laplacian_level_15.png"
+            alt="Very coarse Laplacian level of the apple">
           <figcaption class="iteration-belt__caption">
-            Apple, Laplacian level 15: lowest-frequency band with weak, diffuse responses; most
-            energy has migrated into the coarsest Gaussian level.
+            Apple, Laplacian 15: very low-frequency residual contrast only.
           </figcaption>
         </figure>
       </div>
@@ -860,59 +840,452 @@
       <!-- Orange Laplacian row -->
       <div class="iteration-belt__track">
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/laplacian_level_00.png"
-               alt="Fine-scale Laplacian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/laplacian_level_00.png"
+            alt="Fine-scale Laplacian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Laplacian level 0: highest-frequency band dominated by granular peel texture and
-            the sharpest edges along the rim of the fruit.
+            Orange, Laplacian 0: finest peel texture and rim edges.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/laplacian_level_05.png"
-               alt="Intermediate Laplacian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/laplacian_level_05.png"
+            alt="Intermediate Laplacian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Laplacian level 5: mid-frequency band emphasizing the main outline and
-            intermediate-scale transitions between fruit and background.
+            Orange, Laplacian 5: mid-scale boundary and surface variations.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/laplacian_level_10.png"
-               alt="Coarser Laplacian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/laplacian_level_10.png"
+            alt="Coarser Laplacian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Laplacian level 10: broad band where only large-scale contrast changes survive,
-            giving soft rims around fruit and table edge with little interior texture.
+            Orange, Laplacian 10: broad contrast around fruit and table edge.
           </figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image"
-               src="media/two/3_stacks/orange/laplacian_level_15.png"
-               alt="Very coarse Laplacian level of the orange">
+          <img class="iteration-belt__image" src="media/two/3_stacks/orange/laplacian_level_15.png"
+            alt="Very coarse Laplacian level of the orange">
           <figcaption class="iteration-belt__caption">
-            Orange, Laplacian level 15: lowest-frequency band with weak, diffuse structure; the
-            remaining content is captured by the coarsest Gaussian base.
+            Orange, Laplacian 15: weak, diffuse structure at the lowest band.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 2.4 Multiresolution Blend ======================================= -->
+  <section class="content gold-glass iteration-belt" id="part2-4">
+    <h2 class="section-heading">2.4 Multiresolution Blend</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        Multiresolution blending constructs a composite image by combining the Laplacian stacks of
+        two inputs under the control of a spatially varying mask. At each scale, the mask weights
+        the contribution of the apple on one side and the orange on the other; a blurred version of
+        the mask ensures that the transition between sources extends over a finite region rather
+        than being confined to a single column of pixels. The blending is performed level-wise for
+        all bands and for the coarsest Gaussian residual.
+      </p>
+
+      <p>
+        Each Laplacian level of the apple is multiplied by the corresponding mask level, each
+        Laplacian level of the orange by one minus that level, and the weighted bands are added.
+        The same operation is applied to the coarsest Gaussian level. The blended bands are then
+        summed to reconstruct the final composite.
+      </p>
+    </div>
+
+    <!-- Level 0 belt -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Fine-scale contributions</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/LA_level_0.png"
+            alt="Fine-scale Laplacian of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian 0: finest edges and noise on the left side.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/LB_level_0.png"
+            alt="Fine-scale Laplacian of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian 0: finest peel texture and rim edges on the right.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/Ls_level_0.png" alt="Fine-scale mask level">
+          <figcaption class="iteration-belt__caption">
+            Mask, level 0: sharp left–right weighting for high-frequency bands.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/GA_level_0.png"
+            alt="Fine-scale blended band">
+          <figcaption class="iteration-belt__caption">
+            Blend, level 0: high-frequency detail from apple (left) and orange (right).
           </figcaption>
         </figure>
       </div>
     </div>
 
+    <!-- Level 5 belt -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Intermediate-scale contributions</h3>
+      <!-- <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button> -->
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/LA_level_5.png"
+            alt="Intermediate Laplacian of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian 5: mid-scale contour and highlight structure.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/LB_level_5.png"
+            alt="Intermediate Laplacian of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian 5: mid-scale boundary and surface variations.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/Ls_level_5.png"
+            alt="Intermediate mask level">
+          <figcaption class="iteration-belt__caption">
+            Mask, level 5: broader transition band for mid frequencies.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/GA_level_5.png"
+            alt="Intermediate blended band">
+          <figcaption class="iteration-belt__caption">
+            Blend, level 5: mid-scale structure from each fruit with smooth handoff.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Level 10 belt -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Coarse-scale contributions</h3>
+      <!-- <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button> -->
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/LA_level_10.png"
+            alt="Coarse Laplacian of the apple">
+          <figcaption class="iteration-belt__caption">
+            Apple, Laplacian 10: coarse shading transitions on the left.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/LB_level_10.png"
+            alt="Coarse Laplacian of the orange">
+          <figcaption class="iteration-belt__caption">
+            Orange, Laplacian 10: coarse shading and background contrast on the right.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/Ls_level_10.png" alt="Coarse mask level">
+          <figcaption class="iteration-belt__caption">
+            Mask, level 10: very broad transition for low frequencies.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/oraple/GA_level_10.png" alt="Coarse blended band">
+          <figcaption class="iteration-belt__caption">
+            Blend, level 10: smooth alignment of large-scale brightness and tone.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Final result -->
+    <figure class="static-panel">
+      <img class="static-panel__image" src="media/two/4_blend/oraple/blend_result.png"
+        alt="Final multiresolution blend of apple and orange">
+      <figcaption class="static-panel__caption">
+        Final oraple: apple on the left, orange on the right with a seamless boundary.
+      </figcaption>
+    </figure>
+
     <div class="iteration-belt__outro">
       <p>
-        The apple and orange stacks jointly exhibit how Gaussian and Laplacian decompositions
-        separate images into complementary descriptions across scale. Gaussian stacks record the
-        approach to a smooth, low-frequency representation as blur increases, whereas Laplacian
-        stacks distribute edges and texture into distinct band-pass layers. Because the construction
-        is linear and reconstructive—summing all Laplacian levels together with the coarsest
-        Gaussian recovers the original image—it supplies a principled basis for multi-resolution
-        operations such as blending, tone manipulation, and detail transfer that act selectively on
-        specified spatial scales.
+        The band-wise visualizations show that the blending operation is distributed over the full
+        range of spatial scales. High-frequency bands enforce continuity of edges and texture,
+        intermediate bands control the handoff of medium-scale structure, and coarse bands align
+        global illumination and background tone. The mask stack governs the spatial extent of
+        mixing at each level, and the sum of all blended bands with the coarsest Gaussian level
+        reconstructs a composite that respects the local structure of both inputs while suppressing
+        the artifacts that would result from a hard cut between them.
       </p>
     </div>
+  </section>
+
+    <!-- ======================= 2.4 Multiresolution Blend – Moon and Charon ======================= -->
+  <section class="content gold-glass iteration-belt" id="part2-4-moon">
+    <h2 class="section-heading">2.4 Multiresolution Blend – Moon and Charon</h2>
+
+    <!-- Intro -->
+    <div class="writing-section">
+      <p>
+        The multiresolution blending pipeline is applied to Earth’s Moon and Pluto’s moon Charon.
+        Each image is decomposed into Gaussian and Laplacian stacks, and a vertical mask is lifted
+        to a stack so that, at each scale, the weights vary smoothly from the Charon side to the
+        Moon side across the disc.
+      </p>
+    </div>
+
+
+    <!-- Charon Laplacian (LA) -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Charon Laplacian bands (LA)</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LA_level_0.png"
+               alt="LA level 0">
+          <figcaption class="iteration-belt__caption">LA 0.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LA_level_1.png"
+               alt="LA level 1">
+          <figcaption class="iteration-belt__caption">LA 1.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LA_level_2.png"
+               alt="LA level 2">
+          <figcaption class="iteration-belt__caption">LA 2.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LA_level_3.png"
+               alt="LA level 3">
+          <figcaption class="iteration-belt__caption">LA 3.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LA_level_4.png"
+               alt="LA level 4">
+          <figcaption class="iteration-belt__caption">LA 4.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LA_level_5.png"
+               alt="LA level 5">
+          <figcaption class="iteration-belt__caption">LA 5.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="writing-section">
+      <p>
+        The LA bands contain Charon’s relief, from fine crater rims and ridges at the finest level
+        to broad albedo and limb-darkening variations at coarser levels. These structures will
+        occupy the left hemisphere of the final blend wherever the mask weight is close to one.
+      </p>
+    </div>
+
+    <!-- Moon Laplacian (LB) -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Moon Laplacian bands (LB)</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LB_level_0.png"
+               alt="LB level 0">
+          <figcaption class="iteration-belt__caption">LB 0.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LB_level_1.png"
+               alt="LB level 1">
+          <figcaption class="iteration-belt__caption">LB 1.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LB_level_2.png"
+               alt="LB level 2">
+          <figcaption class="iteration-belt__caption">LB 2.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LB_level_3.png"
+               alt="LB level 3">
+          <figcaption class="iteration-belt__caption">LB 3.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LB_level_4.png"
+               alt="LB level 4">
+          <figcaption class="iteration-belt__caption">LB 4.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/LB_level_5.png"
+               alt="LB level 5">
+          <figcaption class="iteration-belt__caption">LB 5.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="writing-section">
+      <p>
+        The LB bands play the same role for Earth’s Moon on the right hemisphere. High levels carry
+        its finest crater detail, lower levels carry mare–highland contrast and global illumination.
+        Blending LA and LB under the mask at each scale yields a sphere with spatially consistent
+        relief but different geology on each side.
+      </p>
+    </div>
+
+    <!-- Blended bands (GA) -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Blended bands (GA)</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/GA_level_0.png"
+               alt="GA level 0">
+          <figcaption class="iteration-belt__caption">GA 0.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/GA_level_1.png"
+               alt="GA level 1">
+          <figcaption class="iteration-belt__caption">GA 1.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/GA_level_2.png"
+               alt="GA level 2">
+          <figcaption class="iteration-belt__caption">GA 2.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/GA_level_3.png"
+               alt="GA level 3">
+          <figcaption class="iteration-belt__caption">GA 3.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/GA_level_4.png"
+               alt="GA level 4">
+          <figcaption class="iteration-belt__caption">GA 4.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/GA_level_5.png"
+               alt="GA level 5">
+          <figcaption class="iteration-belt__caption">GA 5.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="writing-section">
+      <p>
+        The GA bands show the effect of masking at each scale: fine bands already display a clean
+        left–right split in crater detail, and coarse bands show a smooth transition in shading and
+        background tone. Their sum, together with the coarsest Gaussian level, reconstructs the
+        final blended planet.
+      </p>
+    </div>
+
+        <!-- Mask and mask levels -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Mask stack across scales</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/mask.png"
+               alt="Binary vertical mask">
+          <figcaption class="iteration-belt__caption">Hard mask.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/Ls_level_0.png"
+               alt="Mask level 0">
+          <figcaption class="iteration-belt__caption">Ls level 0.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/Ls_level_1.png"
+               alt="Mask level 1">
+          <figcaption class="iteration-belt__caption">Ls level 1.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/Ls_level_2.png"
+               alt="Mask level 2">
+          <figcaption class="iteration-belt__caption">Ls level 2.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/Ls_level_3.png"
+               alt="Mask level 3">
+          <figcaption class="iteration-belt__caption">Ls level 3.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/Ls_level_4.png"
+               alt="Mask level 4">
+          <figcaption class="iteration-belt__caption">Ls level 4.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/4_blend/moon/Ls_level_5.png"
+               alt="Mask level 5">
+          <figcaption class="iteration-belt__caption">Ls level 5.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="writing-section">
+      <p>
+        The hard mask is progressively blurred as the level increases, so the transition band
+        widens at coarser scales. High-frequency bands therefore change sources over a narrow band
+        near the meridian, while low-frequency shading and background brightness change over a much
+        broader region.
+      </p>
+    </div>
+
+    <!-- Final result -->
+    <figure class="static-panel">
+      <img class="static-panel__image"
+           src="media/two/4_blend/moon/blend_result.png"
+           alt="Multiresolution blend of Earth’s Moon and Charon">
+      <figcaption class="static-panel__caption">
+        Final blend: Charon on the left, Earth’s Moon on the right, joined without a visible seam.
+      </figcaption>
+    </figure>
   </section>
 
 
@@ -924,4 +1297,3 @@
 </body>
 
 </html>
-

@@ -1,0 +1,262 @@
+  <!-- ============================================ 2.3 Gaussian and Laplacian Stacks ================================ -->
+  <section class="content gold-glass iteration-belt" id="part2-3">
+    <h2 class="section-heading">2.3 Gaussian and Laplacian Stacks</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        A Gaussian stack is obtained by repeatedly smoothing an image with a fixed Gaussian filter
+        and recording each intermediate level. Successive levels therefore form a sequence in which
+        high-frequency structure is progressively removed while coarse shading and shape are
+        retained. A Laplacian stack is derived from this sequence by subtracting adjacent Gaussian
+        levels; each Laplacian level then isolates a band of spatial frequencies, capturing
+        structure that is present at one blur scale but absent at the next coarser one. The pair of
+        stacks together decompose an image into a coarse base and a set of band-pass detail layers.
+      </p>
+      <p>
+        These constructions are examined on two objects of similar shape but different texture and
+        coloration: an apple and an orange. The Gaussian stacks describe how each fruit’s large-scale
+        form and illumination emerge as small-scale variations are suppressed, while the Laplacian
+        stacks localize the edges and surface irregularities into distinct frequency bands that are
+        useful for blending and multi-resolution editing.
+      </p>
+    </div>
+
+    <!-- Apple stacks -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Gaussian and Laplacian stacks for an apple</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_stack.png"
+               alt="Contact sheet of Gaussian stack levels for the apple">
+          <figcaption class="iteration-belt__caption">
+            Gaussian stack (all levels): the apple gradually loses fine grain and edge sharpness as
+            the blur level increases, while the overall silhouette and highlight pattern remain
+            stable.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_00.png"
+               alt="Fine-scale Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 0: the original scale retains small speckle, background texture, and a
+            crisp boundary between fruit and background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_05.png"
+               alt="Intermediate Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 5: mid-level blur suppresses much of the pixel-level noise while keeping
+            the stem, specular highlights, and broad shading across the apple’s surface.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_10.png"
+               alt="Coarser Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 10: only slow intensity variations remain; the object is described mainly
+            by its round silhouette and a small number of large highlights and shadows.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/gaussian_level_15.png"
+               alt="Very coarse Gaussian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 15: most fine structure has disappeared and the apple is approximated by
+            a smooth blob with gentle shading, illustrating the limit of the low-pass hierarchy.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_stack.png"
+               alt="Contact sheet of Laplacian stack levels for the apple">
+          <figcaption class="iteration-belt__caption">
+            Laplacian stack (all levels): each panel encodes detail at a particular scale; fine
+            levels emphasize sharp edges and noise, while coarser levels contain broad transitions
+            along the fruit’s contour and large highlight regions.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_00.png"
+               alt="Fine-scale Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 0: highest-frequency band dominated by sensor noise, fabric texture in
+            the background, and the thinnest edges around the apple’s boundary.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_05.png"
+               alt="Intermediate Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 5: mid-frequency band capturing the main contour of the apple and the
+            sharper components of the specular highlights, with much of the high-frequency noise
+            removed.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_10.png"
+               alt="Coarser Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 10: coarse band describing broad transitions between the apple and the
+            background, as well as large-scale shading variations across the fruit’s body.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/apple/laplacian_level_15.png"
+               alt="Very coarse Laplacian level of the apple">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 15: lowest-frequency band with only very smooth, low-contrast
+            structures; the apple appears almost as a ghosted outline, since most energy has shifted
+            into coarser Gaussian levels.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- Orange stacks -->
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Gaussian and Laplacian stacks for an orange</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_stack.png"
+               alt="Contact sheet of Gaussian stack levels for the orange">
+          <figcaption class="iteration-belt__caption">
+            Gaussian stack (all levels): as the blur increases, the characteristic pores of the
+            orange peel fade away, while the global spherical shape and large highlights remain
+            unchanged.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_00.png"
+               alt="Fine-scale Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 0: the original scale shows strong texture from the peel and crisp
+            separation between fruit, table, and background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_05.png"
+               alt="Intermediate Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 5: mid-level blur diminishes fine pore structure while preserving the
+            main highlight and shadow pattern around the orange’s volume.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_10.png"
+               alt="Coarser Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 10: the fruit is represented primarily by its smooth outline and a small
+            number of broad tonal regions; detailed texture is largely absent.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/gaussian_level_15.png"
+               alt="Very coarse Gaussian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Gaussian level 15: only very low-frequency information remains; the orange resembles a
+            soft, uniformly shaded disc, illustrating the limit of strong low-pass filtering.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_stack.png"
+               alt="Contact sheet of Laplacian stack levels for the orange">
+          <figcaption class="iteration-belt__caption">
+            Laplacian stack (all levels): small-scale bands capture the granular peel texture,
+            whereas coarser bands contain only the broad transitions between fruit, table, and
+            background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_00.png"
+               alt="Fine-scale Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 0: highest-frequency band dominated by pore-like texture and the
+            sharpest edges, with near-zero response in smooth interior regions.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_05.png"
+               alt="Intermediate Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 5: mid-frequency band emphasizing the main outline of the fruit and
+            intermediate-scale variations along the boundary between fruit and background.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_10.png"
+               alt="Coarser Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 10: broad band in which only large-scale contrast changes survive,
+            yielding soft rims around the fruit and table edge with minimal interior texture.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+               src="media/two/3_stacks/orange/laplacian_level_15.png"
+               alt="Very coarse Laplacian level of the orange">
+          <figcaption class="iteration-belt__caption">
+            Laplacian level 15: lowest-frequency band with weak, diffuse responses; most structure
+            has migrated into the coarsest Gaussian levels that act as the residual base image.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The apple and orange stacks together illustrate how Gaussian and Laplacian decompositions
+        separate images into complementary descriptions across scale. The Gaussian stacks record
+        how each object approaches a smooth, low-frequency representation as blur increases,
+        whereas the Laplacian stacks distribute edges and texture into distinct band-pass layers.
+        Because the construction is linear and reconstructive—summing all Laplacian levels plus the
+        coarsest Gaussian recovers the original image—it provides a principled basis for
+        multi-resolution operations such as blending, tone manipulation, and detail transfer that
+        act selectively on specific spatial scales.
+      </p>
+    </div>
+  </section>

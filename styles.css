@@ -268,6 +268,49 @@ body.top-title {
   opacity: 0.8;
 }
 
+/* ------------------------------
+   Static panels with 1–3 images
+------------------------------ */
+
+/* Wrapper (already defined earlier) */
+.static-panel {
+  width: 100%;
+  max-width: 100rem;
+  margin: 1.75rem auto 0;
+  text-align: center;
+}
+
+/* Row layout for 2–3 images */
+.static-panel--row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Each item in the row */
+.static-panel__item {
+  flex: 0 1 18rem;   /* shrink/grow as needed; tweak width */
+}
+
+/* Image and caption (same style as before) */
+.static-panel__image {
+  display: block;
+  max-width: 100%;
+  width: 25%;
+  margin: 0 auto;
+  height: auto;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+.static-panel__caption {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: #c9cfde;
+}
+
 
 /* ------------------------------
    Infinite iteration conveyor belt
@@ -394,6 +437,13 @@ body.top-title {
 .iteration-belt__toggle[aria-pressed="true"] {
   background: rgba(241, 222, 170, 0.15);
   box-shadow: 0 0 0 1px rgba(241, 222, 170, 0.6);
+}
+
+/* Smaller side-by-side contact sheets for Gaussian / Laplacian stacks */
+.pair--stacks .media--narrow {
+  max-width: 36rem;   /* shrink the multi-level charts */
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 /* conveyor animation */
@@ -733,6 +783,11 @@ body.top-title {
 .code-block code {
   background: transparent;
 }
+/* Smaller belt items only inside the stacks section */
+#part2-3, #part2-4 {
+  --belt-item-width: 16rem;  /* pick any width you like */
+}
+
 
 
 /* ------------------------------
@@ -829,5 +884,9 @@ body.top-title {
 
   .writing-section {
     padding-top: 1.25rem;
+  }
+
+  .pair--stacks {
+    flex-direction: column;
   }
 }
