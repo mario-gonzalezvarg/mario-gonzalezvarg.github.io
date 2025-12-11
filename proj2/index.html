@@ -584,6 +584,141 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     </div>
   </section>
 
+  <!-- ============================================ 2.2 Hybrid Images ================================================ -->
+  <section class="content gold-glass iteration-belt" id="part2-2">
+    <h2 class="section-heading">2.2 Hybrid Images</h2>
+
+        <div class="iteration-belt__intro">
+      <p>
+        A hybrid image combines the low frequencies of one photograph with the high frequencies of
+        another so that perception changes with viewing distance. In this example, Derek’s face
+        supplies the coarse, low-frequency structure, while Nutmeg contributes the fine,
+        high-frequency detail such as fur and whiskers. The filtering parameters control how sharply
+        these two bands are separated and how strongly the high-frequency content is reintroduced
+        into the final composition.
+      </p>
+      <p>
+        The portrait is heavily blurred with a Gaussian filter, producing a smooth low-pass image in
+        which small-scale details are suppressed but the overall facial geometry and shading remain
+        intact. The cat image is transformed into a high-pass signal by subtracting a softened
+        version of itself, yielding an essentially zero-mean edge map dominated by sharp contours
+        and texture. Before the two components are added, the high-pass layer is attenuated so that
+        cat features are clearly visible at close range but do not overwhelm the underlying
+        low-frequency portrait when the hybrid is viewed from farther away.
+      </p>
+    </div>
+
+
+
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Constructing a hybrid portrait–cat image</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/A_stage1_aligned_cropped.png"
+            alt="Aligned portrait used for low-pass component">
+          <figcaption class="iteration-belt__caption">
+            Aligned portrait (Derek): source for the low-frequency content of the hybrid. Only the
+            global layout of the face and illumination are intended to survive the subsequent blur.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/B_stage1_aligned_cropped.png"
+            alt="Aligned cat image used for high-pass component">
+          <figcaption class="iteration-belt__caption">
+            Aligned cat (Nutmeg): source for high-frequency detail. Whiskers, fur strands, and sharp
+            eye boundaries generate the high-pass structure that dominates close-up perception.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/lowpass.png" alt="Low-pass filtered portrait">
+          <figcaption class="iteration-belt__caption">
+            Low-pass portrait with <code>ksize = 53, sigma = 8.0</code>: the wide Gaussian blur
+            produces a very smooth image where fine texture is almost completely removed but the
+            coarse arrangement of facial features remains clearly visible.
+          </figcaption>
+        </figure>
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/lowpass_fft.png"
+            alt="Log-magnitude Fourier spectrum of low-pass portrait">
+          <figcaption class="iteration-belt__caption">
+            Low-pass Fourier magnitude: a bright blob concentrated at the center with horizontal and
+            vertical streaks. This indicates that energy is almost entirely in low frequencies,
+            matching the visually smooth low-pass portrait.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/highpass.png"
+            alt="High-pass filtered cat image">
+          <figcaption class="iteration-belt__caption">
+            High-pass cat with <code>ksize = 27, sigma = 3.1</code>: subtracting the blurred cat
+            isolates edges and mid–high-frequency texture, yielding an almost embossed appearance
+            with strong responses on whiskers and fur.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/highpass_fft.png"
+            alt="Log-magnitude Fourier spectrum of high-pass cat image">
+          <figcaption class="iteration-belt__caption">
+            High-pass Fourier magnitude: the central region is darkened, while energy appears in a
+            ring and diagonal streaks further from the origin. These oriented bands correspond to
+            Nutmeg’s whiskers and fur, confirming that low frequencies have been suppressed while
+            edge-dominated components remain.
+          </figcaption>
+        </figure>
+
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/hybrid.png"
+            alt="Hybrid image combining low-pass portrait and high-pass cat">
+          <figcaption class="iteration-belt__caption">
+            Hybrid image: adding <code>alpha · high</code> to the low-pass portrait yields a face
+            that appears feline at close range but transitions to Derek’s portrait when the image is
+            viewed from far away or at reduced resolution. The chosen <code>alpha = 0.2</code>
+            balances visibility of Nutmeg’s detail with the stability of the large-scale portrait.
+          </figcaption>
+        </figure>
+
+
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/demo/hybrid_fft.png"
+            alt="Log-magnitude Fourier spectrum of hybrid image">
+          <figcaption class="iteration-belt__caption">
+            Hybrid Fourier magnitude: combines the bright central blob of the Derek low-pass
+            spectrum with the outer high-frequency streaks from the cat. The spectrum literally
+            appears as the sum of the previous two, mirroring how spatial low- and high-frequency
+            content coexist in the hybrid.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The resulting hybrid behaves as expected: close inspection is dominated by Nutmeg’s
+        high-frequency texture, while increased viewing distance or downsampling removes these
+        frequencies and reveals the underlying Derek portrait. The Fourier visualizations tie this
+        perceptual effect directly to the frequency decomposition: the low-pass image occupies only
+        a compact region near the origin, the high-pass image populates outer bands with oriented
+        energy, and the hybrid spectrum exhibits both components simultaneously. Appropriate
+        choices of kernel size, standard deviation, and scaling factor therefore control which
+        spatial scales belong to each subject and how strongly each one contributes to the final
+        illusion.
+      </p>
+    </div>
+  </section>
+
 
 
 
