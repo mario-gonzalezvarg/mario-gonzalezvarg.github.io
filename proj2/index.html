@@ -483,7 +483,7 @@
       </div>
     </div>
 
-    <div class="iteration-belt__outro">
+    <!-- <div class="iteration-belt__outro">
       <p>
         The Taj Mahal and vintage photograph examples together show how unsharp masking parameters
         fix the notion of “detail” that is being enhanced. A narrower blur sharpens fine
@@ -493,7 +493,7 @@
         a smooth background, producing images that appear more focused without resorting to a
         simple global contrast adjustment.
       </p>
-    </div>
+    </div> -->
   </section>
 
 
@@ -765,8 +765,7 @@
         Together, the Gaussian and Laplacian stacks provide a complete account of how image
         information is distributed across scale. The Gaussian stack describes the state of the
         image after progressively discarding detail; the Laplacian stack specifies, level by level,
-        which detail has been discarded. Later multiresolution procedures—such as the oraple blend
-        and the planetary composites—operate by manipulating or mixing selected Laplacian bands
+        which detail has been discarded. Later multiresolution procedures operate by manipulating or mixing selected Laplacian bands
         while leaving others fixed, thereby changing the allocation of structure across scales
         without violating the reconstruction identity.
       </p>
@@ -1022,7 +1021,7 @@
     </div>
   </section>
 
-    <!-- ======================= 2.4 Multiresolution Blend – Jupiter and Infrared ======================= -->
+  <!-- ======================= 2.4 Multiresolution Blend – Jupiter and Infrared ======================= -->
   <section class="content gold-glass iteration-belt" id="part2-4-jupiter" style="--belt-item-width: 16rem;">
     <h2 class="section-heading">2.4 Multiresolution Blend – Jupiter and Infrared</h2>
 
@@ -1172,7 +1171,7 @@
       </div>
     </div>
 
-    <div class="writing-section">
+    <div class="iteration-belt__outro">
       <p>
         The GA bands show the effect of combining sources at each scale under the mask. High-frequency GA levels already
         exhibit infrared-bright structures embedded in visible cloud detail, while coarse GA levels show a smooth
@@ -1226,7 +1225,7 @@
       </div>
     </div>
 
-    <div class="writing-section">
+    <div class="iteration-belt__outro">
       <p>
         The Ls stack illustrates how the circular mask is softened as the level index increases.
         Near the finest level, the weighting changes over a narrow annulus, so only a thin region
@@ -1237,16 +1236,33 @@
     </div>
 
     <!-- Final result -->
-    <figure class="static-panel">
+    <!-- <figure class="static-panel">
       <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result.png"
         alt="Multiresolution blend of visible and infrared Jupiter">
       <figcaption class="static-panel__caption">
         Final blend: Jupiter with visible cloud structure modulated by infrared emission in the
         central belts.
       </figcaption>
-    </figure>
-  </section>
+    </figure> -->
 
+    <div class="static-panel static-panel--row">
+      <figure class="static-panel__item">
+        <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result.png"
+        alt="Multiresolution blend of visible and infrared Jupiter">
+      <figcaption class="static-panel__caption">
+        Final blend: Jupiter with visible cloud structure modulated by infrared emission in the
+        central belts.
+      </figcaption>
+      </figure>
+
+      <figure class="static-panel__item">
+       <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result.png"
+        alt="Multiresolution blend of visible and infrared Jupiter">
+      <figcaption class="static-panel__caption">
+        Inisde out blend.
+      </figcaption>
+    </div>
+  </section>
 
 
   <!-- ======================= 2.4 Multiresolution Blend – Moon and Charon ======================= -->

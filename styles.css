@@ -433,7 +433,7 @@ body.top-title {
 
 /* Each item in the row */
 .static-panel__item {
-  flex: 0 1 18rem;   /* shrink/grow as needed; tweak width */
+  flex: 0 1 22rem;   /* shrink/grow as needed; tweak width */
 }
 
 /* Image and caption (same style as before) */
