@@ -34,17 +34,19 @@
 
     <div class="iteration-belt__intro">
       <p>
-        A discrete convolution is defined by sliding a small kernel across an image and, at each
-        location, computing a weighted sum of the local neighborhood with zero-padding so that the
-        output retains the spatial dimensions of the input. This operation implements a linear,
-        shift-invariant filter whose effect is determined entirely by the choice of kernel.
+        A discrete convolution applies a fixed kernel to every pixel location and replaces the
+        pixel by a weighted sum of its neighborhood, using zero-padding so that the output has the
+        same extent as the input. Because the same weights are used everywhere, the operation is
+        linear and shift-invariant; any change in behavior must come from the kernel rather than
+        from the particular implementation.
       </p>
       <p>
-        The experiment compares three concrete realizations of this definition: a naïve four-loop
-        baseline, a partially vectorized two-loop NumPy implementation, and SciPy’s optimized
-        <code>convolve2d</code>. All three are applied to the same self-portrait with a 9×9 box
-        filter, so any differences in outcome can be attributed to numerical or implementation
-        details rather than to the underlying operator.
+        The experiment implements this same operator in three ways: a direct four-loop version that
+        mirrors the mathematical definition, a two-loop NumPy version that vectorizes the inner
+        products over image patches, and SciPy’s optimized <code>convolve2d</code>. Each is applied
+        to a self-portrait using an identical 9×9 box kernel, so agreement or disagreement in the
+        results measures numerical consistency and computational efficiency rather than any
+        difference in the underlying filter.
       </p>
     </div>
 
@@ -83,23 +85,23 @@
 
     <div class="iteration-belt__outro">
       <p>
-        A benchmark on the 9×9 box filter, averaged over multiple runs, yields runtimes of
-        approximately 9066.8&nbsp;ms for the four-loop implementation, 1634.2&nbsp;ms for the
-        two-loop implementation, and 70.5&nbsp;ms for the SciPy routine. The partially vectorized
-        version is therefore faster than the naïve one by a factor of about 5.5, while SciPy
-        achieves a speedup of roughly 129 over the four-loop baseline and about 23 over the
-        two-loop method. The timing data establish that expressing convolution in terms of large
-        array operations, rather than explicit Python loops, is decisive for efficiency.
+        Timing the 9×9 box filter shows the effect of how the computation is expressed: the
+        naïve four-loop code is slowest, the partially vectorized two-loop version is faster by
+        roughly one order of magnitude, and the SciPy routine is faster still by more than two
+        orders of magnitude. The difference arises from shifting work from Python loops to
+        contiguous array operations that can be optimized at a lower level; the mathematical
+        operator is the same in all three cases.
       </p>
       <p>
-        The three filtered selfies smooth high-frequency detail in the hair, pavement, and jacket
-        while preserving coarse structure such as the outline of the face and the bike rack. The
-        outputs are visually indistinguishable, and any discrepancies are below the level of
-        perceptual relevance. Together with the timing measurements, this shows that the custom
-        NumPy implementations are numerically consistent with the library routine and differ
-        principally in computational cost rather than in filtering behavior.
+        The three blurred selfies are visually indistinguishable: high-frequency structure in the
+        hair, pavement, and jacket is suppressed, while large-scale shape is preserved. Any
+        remaining discrepancies are at the level of rounding error. The comparison therefore
+        separates two questions: what the convolution does to the image, determined by the kernel,
+        and how efficiently the same operation can be realized in code, determined by the chosen
+        implementation strategy.
       </p>
     </div>
+
   </section>
 
 
@@ -109,12 +111,11 @@
 
     <div class="iteration-belt__intro">
       <p>
-        This section studies how simple finite-difference filters approximate image gradients on
-        the standard cameraman photograph. A horizontal difference kernel measures local changes in
-        intensity from left to right, while a vertical difference kernel measures changes from top
-        to bottom. The corresponding derivative images respond strongly where the scene contains
-        vertical or horizontal edges and remain close to zero in regions where intensity varies
-        slowly.
+        Simple finite-difference kernels approximate the partial derivatives of an image. A
+        horizontal difference filter estimates changes in intensity along the x-direction, and a
+        vertical difference filter does the same along y. Applied to the cameraman image, these
+        operators produce derivative images that respond where the scene contains strong
+        horizontal or vertical contrast and remain near zero where intensity varies slowly.
       </p>
     </div>
 
@@ -193,15 +194,14 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The derivative images, gradient magnitude, edge map, and orientation fields together
-        specify the geometric information extracted by finite differences from a single grayscale
-        image. The directional derivatives separate vertical and horizontal content, the gradient
-        magnitude emphasizes locations where intensity varies most rapidly, and the thresholded map
-        isolates a set of clean structural contours. The orientation visualizations add directional
-        structure to these contours, which is essential for tasks such as corner detection and
-        feature description. The close agreement between the fast and reference orientation images
-        indicates that the approximate computation is sufficiently accurate for downstream use
-        while retaining a lower computational cost.
+        Taken together, the directional derivatives, gradient magnitude, thresholded edge map, and
+        orientation visualizations provide a first-order geometric description of the image. The
+        derivatives separate vertical from horizontal structure, the gradient magnitude identifies
+        locations of maximal change, and the binary map selects a subset of those locations as
+        edges. The orientation fields attach a direction to each edge pixel, information required
+        for later constructions such as corners or oriented descriptors. The close match between
+        the approximate and arctangent-based orientation images shows that a cheaper numerical
+        scheme can recover essentially the same orientation field for subsequent processing.
       </p>
     </div>
   </section>
@@ -680,7 +680,7 @@
   </section>
 
   <!-- ============================================ 2.3 Gaussian and Laplacian Stacks ================================ -->
-  <section class="content gold-glass iteration-belt" style="--belt-item-width: 16rem;" id="part2-3">
+  <section class="content gold-glass iteration-belt" style="--belt-item-width: 16rem; " id="part2-3">
     <h2 class="section-heading">2.3 Gaussian and Laplacian Stacks</h2>
 
     <div class="iteration-belt__intro">
@@ -704,7 +704,7 @@
     </div>
 
     <!-- Gaussian stacks: apple and orange -->
-    <div class="static-panel static-panel--row">
+    <div class="static-panel static-panel--row" style="--static-panel-width: 32rem; --static-panel-image-max: auto;">
       <figure class="static-panel__item">
         <img class="static-panel__image" src="media/two/3_stacks/apple/gaussian_stack.png"
           alt="Gaussian stack for the apple">
@@ -733,7 +733,7 @@
     </p>
 
     <!-- Laplacian stacks: apple and orange -->
-    <div class="static-panel static-panel--row">
+    <div class="static-panel static-panel--row" style="--static-panel-width: 32rem; --static-panel-image-max: auto;">
       <figure class="static-panel__item">
         <img class="static-panel__image" src="media/two/3_stacks/apple/laplacian_stack.png"
           alt="Laplacian stack for the apple">
@@ -765,7 +765,8 @@
         Together, the Gaussian and Laplacian stacks provide a complete account of how image
         information is distributed across scale. The Gaussian stack describes the state of the
         image after progressively discarding detail; the Laplacian stack specifies, level by level,
-        which detail has been discarded. Later multiresolution procedures operate by manipulating or mixing selected Laplacian bands
+        which detail has been discarded. Later multiresolution procedures operate by manipulating or mixing selected
+        Laplacian bands
         while leaving others fixed, thereby changing the allocation of structure across scales
         without violating the reconstruction identity.
       </p>
@@ -1025,15 +1026,17 @@
   <section class="content gold-glass iteration-belt" id="part2-4-jupiter" style="--belt-item-width: 16rem;">
     <h2 class="section-heading">2.4 Multiresolution Blend – Jupiter and Infrared</h2>
 
-    <!-- Intro -->
     <div class="iteration-belt__intro">
       <p>
-        This blend uses a visible-light image of Jupiter as one input and an infrared composite as the other. Each image
-        is decomposed into a Gaussian stack and a corresponding Laplacian stack. A circular mask centered on the disc is
-        also expanded into a stack, so that at every scale the weights move smoothly from the infrared image in the
-        interior of the planet to the visible image toward the limb.
+        This blend takes a visible-light image of Jupiter (image A) and an infrared composite
+        (image B). Each is decomposed into a Gaussian stack and a corresponding Laplacian stack.
+        A circular mask centred on the disc is likewise expanded into a stack, so that, at every
+        scale, the weights vary smoothly from the infrared data in the interior to the visible
+        image near the limb. The construction therefore fixes, level by level, how much of each
+        modality contributes at each radius.
       </p>
     </div>
+
 
     <!-- Infrared Laplacian (LA) -->
     <div class="iteration-belt__header">
@@ -1076,13 +1079,14 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The LA bands encode contrast from the infrared image. At the finest levels they highlight compact bright knots
-        and sharp boundaries inside the storm belts; at intermediate levels they emphasize the broader banded emission;
-        at the coarsest level they retain only the slow variation of infrared brightness across the disc. Wherever the
-        mask stack gives high weight to the center, these bands supply most of the high-frequency and mid-frequency
-        structure.
+        The LA bands encode contrast from the infrared image B. Finest levels isolate compact
+        bright structures and sharp boundaries within the storm belts; intermediate levels
+        represent the broader banded emission; the coarsest level retains only slow variation of
+        infrared brightness across the disc. Where the mask stack assigns high weight to the
+        centre, these bands supply most of the high- and mid-frequency content of the blend.
       </p>
     </div>
+
 
     <!-- Visible Laplacian (LB) -->
     <div class="iteration-belt__header">
@@ -1125,12 +1129,14 @@
 
     <div class="iteration-belt__outro">
       <p>
-        The LB bands play the same role for the visible-light image. Fine levels contain sharp edges around small
-        vortices and cloud filaments, middle levels describe the familiar zonal bands and major storms, and coarse
-        levels capture only gradual changes in albedo and limb darkening. Near the outer parts of the disc, where the
-        mask favors the visible image, these bands provide the dominant contribution.
+        The LB bands play the same role for the visible-light image A. Fine levels contain sharp
+        edges around vortices and filaments, middle levels describe the familiar zonal bands and
+        major storms, and coarse levels capture gradual changes in albedo and limb darkening.
+        Towards the outer parts of the disc, where the mask favours the visible image, these
+        bands dominate the reconstruction.
       </p>
     </div>
+
 
     <!-- Blended bands (GA) -->
     <div class="iteration-belt__header">
@@ -1171,15 +1177,18 @@
       </div>
     </div>
 
-    <div class="iteration-belt__outro">
+    <div class="writing-section">
       <p>
-        The GA bands show the effect of combining sources at each scale under the mask. High-frequency GA levels already
-        exhibit infrared-bright structures embedded in visible cloud detail, while coarse GA levels show a smooth
-        transition from an infrared-dominated core to a visible-dominated periphery. Adding all GA levels together with
-        the coarsest Gaussian residual reconstructs a single fused view of Jupiter in which central emission follows the
-        infrared data and the outer atmosphere follows the visible data, without discontinuities across scale.
+        The GA bands show the combined effect of the mask at each scale. At high frequencies,
+        they already display infrared-bright structures embedded in visible cloud patterns; at
+        intermediate scales the belts mix smoothly, and at the coarsest scales the overall
+        brightening of the central region and the visible-dominated limb are both evident. Adding
+        all GA levels together with the coarsest Gaussian residual reconstructs a single view in
+        which the core follows the infrared measurement and the periphery follows the visible
+        image, without introducing seams across radius or scale.
       </p>
     </div>
+
 
     <!-- Mask levels (Ls) -->
     <div class="iteration-belt__header">
@@ -1225,42 +1234,33 @@
       </div>
     </div>
 
-    <div class="iteration-belt__outro">
+    <div class="writing-section">
       <p>
-        The Ls stack illustrates how the circular mask is softened as the level index increases.
-        Near the finest level, the weighting changes over a narrow annulus, so only a thin region
-        of small-scale structure is mixed. At coarse levels, the weights vary over most of the
-        disc, enforcing a gentle transition between infrared and visible brightness at large
-        spatial scales.
+        The Ls stack records how the circular mask is smoothed as the level index increases.
+        Near the finest level, the weighting changes only across a narrow annulus, so mixing is
+        confined to a thin band of fine-scale structure. At coarser levels the transition region
+        occupies most of the disc, ensuring that low-frequency brightness and background tone
+        change gradually from the infrared-dominated interior to the visible-dominated limb.
       </p>
     </div>
 
-    <!-- Final result -->
-    <!-- <figure class="static-panel">
-      <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result.png"
-        alt="Multiresolution blend of visible and infrared Jupiter">
-      <figcaption class="static-panel__caption">
-        Final blend: Jupiter with visible cloud structure modulated by infrared emission in the
-        central belts.
-      </figcaption>
-    </figure> -->
 
-    <div class="static-panel static-panel--row">
+    <div class="static-panel static-panel--row" style="--static-panel-width: 32rem;">
       <figure class="static-panel__item">
         <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result.png"
-        alt="Multiresolution blend of visible and infrared Jupiter">
-      <figcaption class="static-panel__caption">
-        Final blend: Jupiter with visible cloud structure modulated by infrared emission in the
-        central belts.
-      </figcaption>
+          alt="Multiresolution blend of visible and infrared Jupiter">
+        <figcaption class="static-panel__caption">
+          Final blend: Jupiter with visible cloud structure modulated by infrared emission in the
+          central belts.
+        </figcaption>
       </figure>
 
       <figure class="static-panel__item">
-       <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result.png"
-        alt="Multiresolution blend of visible and infrared Jupiter">
-      <figcaption class="static-panel__caption">
-        Inisde out blend.
-      </figcaption>
+        <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result_reverse.png"
+          alt="Multiresolution blend of visible and infrared Jupiter">
+        <figcaption class="static-panel__caption">
+          Final blend: Dense emission can be observed in the cloud formations.
+        </figcaption>
     </div>
   </section>
 
@@ -1477,7 +1477,7 @@
     </div>
 
 
-    <div class="static-panel static-panel--row">
+    <div class="static-panel static-panel--row" style="--static-panel-width: 32rem;">
       <figure class="static-panel__item">
         <img class="static-panel__image" src="media/two/4_blend/moon/blend_result.png"
           alt="Blend with Charon on the left, Moon on the right">

@@ -9,6 +9,8 @@
   --space: clamp(16px, 2.2vw, 28px);
   --radius: 14px;
   --shadow: 0 12px 30px rgba(0, 0, 0, .35);
+  --static-panel-width: 18rem;
+  --static-panel-image-max: 36rem;
 }
 
 /* ------------------------------
@@ -431,16 +433,15 @@ body.top-title {
   gap: 1.5rem;
 }
 
-/* Each item in the row */
 .static-panel__item {
-  flex: 0 1 22rem;   /* shrink/grow as needed; tweak width */
+  flex: 0 1 var(--static-panel-width, 18rem);
 }
 
-/* Image and caption (same style as before) */
+/* Image and caption */
 .static-panel__image {
   display: block;
-  width: 100%;    
-  max-width: 36rem; 
+  width: 100%;
+  max-width: var(--static-panel-image-max, 36rem);
   margin: 1.25rem 0 1.25rem;
   height: auto;
   border-radius: 0.5rem;
