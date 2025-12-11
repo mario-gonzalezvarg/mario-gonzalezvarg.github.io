@@ -634,50 +634,115 @@
     </div>
   </section>
 
-  <!-- ======================= 2.2 Hybrid Images – Additional Examples ======================= -->
+  <!-- ============================================ 2.2.1 Hybrid Images ================================================ -->
+
   <section class="content gold-glass" id="part2-2-extra">
     <h2 class="section-heading">2.2 Hybrid Images – Additional Examples</h2>
 
     <div class="writing-section">
       <p>
-        Additional hybrid pairs test whether the frequency-based separation used for the
-        Derek–Nutmeg example generalizes to other combinations of content and texture. In each
-        case, one source supplies the low-frequency structure—overall shape and illumination—while
-        the other supplies high-frequency detail such as edges and fine surface variations. The
-        construction is identical: a blurred version of the low-frequency source forms the base,
-        a high-pass version of the second source is extracted by subtracting its blur, and an
-        attenuated copy of this high-pass component is added to the base image.
+        These additional examples show how the same low– and high–frequency decomposition
+        used for the above images appears in other engineering dispclines. In each case
+        the original image is split into a smooth low-pass background, a high-pass detail
+        layer, and their sum, the hybrid. Remote sensing and medical imaging routinely
+        use this kind of separation to enhance structure without changing the overall
+        brightness pattern of the data.
       </p>
-      <!-- <p>
-        The first hybrid illustrates a pairing in which the low-frequency image has strong
-        global geometry and the high-frequency image contributes localized detail that can be
-        inspected up close. The second hybrid uses a different pair with more pronounced texture
-        in the high-frequency source. In both cases, near viewing distances emphasize the edge
-        layer from the high-frequency source, whereas increased distance or downsampling suppresses
-        those components and reveals the low-frequency structure instead. The scale-dependent
-        change in appearance therefore persists across distinct image pairs and is not confined to
-        the original example.
-      </p> -->
 
-      <div class="static-panel static-panel--row">
+      <!-- San Francisco hybrid ------------------------------------------------>
+      <h3 class="iteration-belt__title">
+        San Francisco Bay Area – low-pass background + high-pass urban detail
+      </h3>
+      
+
+      <div class="static-panel static-panel--row" style="--static-panel-width: 64rem; --static-panel-image-max: 64rem;">
         <figure class="static-panel__item">
-          <img class="static-panel__image" src="media/two/2_hybrid/my_hybrid_01.png"
-            alt="First additional hybrid image">
+          <img class="static-panel__image" src="media/two/2_hybrid/sf/orig.png"
+            alt="Original satellite image of the San Francisco Bay Area">
           <figcaption class="static-panel__caption">
-            Hybrid example 1.
+            Original satellite image: a high-resolution panchromatic view of San Francisco,
+            the Bay, and the surrounding terrain.
           </figcaption>
         </figure>
 
         <figure class="static-panel__item">
-          <img class="static-panel__image" src="media/two/2_hybrid/my_hybrid_02.png"
-            alt="Second additional hybrid image">
+          <img class="static-panel__image" src="media/two/2_hybrid/sf/sf_low.png"
+            alt="Low-pass version of the San Francisco satellite image">
           <figcaption class="static-panel__caption">
-            Hybrid example 2.
+            Low-pass component: heavy Gaussian blurring suppresses block-by-block detail
+            but preserves the large-scale shoreline, hills, and harbor geometry that matter
+            at regional planning scales.
+          </figcaption>
+        </figure>
+
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/sf/sf_highpass.png"
+            alt="High-pass component of the San Francisco satellite image">
+          <figcaption class="static-panel__caption">
+            High-pass component: subtracting a blur isolates roads, piers, runways, and
+            building edges as an almost zero-mean detail layer. Similar high-pass
+            products are used in change detection and feature extraction pipelines.
+          </figcaption>
+        </figure>
+
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/sf/sf_hybrid.png"
+            alt="Hybrid San Francisco image combining low-pass and high-pass components">
+          <figcaption class="static-panel__caption">
+            Hybrid image: adding a scaled copy of the high-pass layer back to the low-pass
+            background yields a map where coastlines and topography remain smooth, while
+            man‑made structures stand out with enhanced contrast.
           </figcaption>
         </figure>
       </div>
+
+      <!-- MRI hybrid ---------------------------------------------------------->
+      <h3 class="iteration-belt__title">
+        Brain MRI – low-pass anatomy + high-pass edge enhancement
+      </h3>
+
+      <div class="static-panel static-panel--row" style="--static-panel-width: 32rem; --static-panel-image-max: 84rem;">
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/mri/orig.jpeg" alt="Original axial brain MRI slice">
+          <figcaption class="static-panel__caption">
+            Original MRI slice: a T1‑weighted axial brain image showing gray matter,
+            white matter, and cerebrospinal fluid with modest scanner noise.
+          </figcaption>
+        </figure>
+
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/mri/low.png" alt="Low-pass filtered brain MRI">
+          <figcaption class="static-panel__caption">
+            Low-pass component: Gaussian blurring removes fine cortical folds and grain
+            while preserving overall brain shape and intensity falloff. This kind of
+            smoothing is standard before segmentation or registration.
+          </figcaption>
+        </figure>
+
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/mri/high.png" alt="High-pass component of brain MRI">
+          <figcaption class="static-panel__caption">
+            High-pass component: subtracting the blur produces an edge map that highlights
+            tissue boundaries between gray matter, white matter, CSF, and skull. Similar
+            high-frequency maps underlie many edge‑based MRI analysis methods.
+          </figcaption>
+        </figure>
+
+        <figure class="static-panel__item">
+          <img class="static-panel__image" src="media/two/2_hybrid/mri/hybrid.png"
+            alt="Hybrid brain MRI combining low-pass anatomy and high-pass edges">
+          <figcaption class="static-panel__caption">
+            Hybrid MRI: the low-pass anatomy is combined with a scaled high-pass layer to
+            sharpen sulci and ventricles while keeping intensities realistic. This mirrors
+            unsharp masking and “edge‑enhanced” reconstructions used to make subtle
+            structures easier to read.
+          </figcaption>
+        </figure>
+      </div>
+
     </div>
   </section>
+
 
   <!-- ============================================ 2.3 Gaussian and Laplacian Stacks ================================ -->
   <section class="content gold-glass iteration-belt" style="--belt-item-width: 16rem; " id="part2-3">
@@ -1259,7 +1324,7 @@
         <img class="static-panel__image" src="media/two/4_blend/jupiter/blend_result_reverse.png"
           alt="Multiresolution blend of visible and infrared Jupiter">
         <figcaption class="static-panel__caption">
-          Final blend: Dense emission can be observed in the cloud formations.
+          Reverse blend: visible bands in the core, infrared structure emphasized toward the limb.
         </figcaption>
     </div>
   </section>
