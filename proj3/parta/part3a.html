@@ -306,7 +306,8 @@
 
     <div class="iteration-belt__outro">
       <p>
-        It's crucial to understand that homographies are exact only under restricted imaging conditions. The model assumes that the observed
+        It's crucial to understand that homographies are exact only under restricted imaging conditions. The model
+        assumes that the observed
         correspondences
         arise from either a single planar surface or a pure camera rotation about a fixed center; when the scene
         contains
@@ -314,26 +315,6 @@
         often
         producing double edges and “ghosted” structures near depth discontinuities.
       </p>
-<!-- 
-      <p>
-        Numerical stability depends on the geometry of the selected points. If correspondences cluster in a small area
-        or
-        lie close to a line, the linear system becomes ill-conditioned and small clicking errors amplify into large
-        projective
-        distortions, especially in the corners. Better behavior follows from distributing points broadly across the
-        overlap
-        and including strong 2D structure (corners and junctions) rather than ambiguous texture.
-      </p> -->
-
-      <!-- <p>
-        Residual error is also shaped by outliers and coordinate scaling. A few incorrect matches can dominate least
-        squares,
-        so robust estimation (e.g., RANSAC) becomes necessary once correspondences are automatic. In addition, solving
-        in raw
-        pixel coordinates can bias the fit toward large-magnitude entries; normalizing coordinates before least squares
-        and
-        then denormalizing <em>H</em> improves conditioning and yields more reliable warps.
-      </p> -->
     </div>
 
 
@@ -342,36 +323,21 @@
       aria-label="Selected correspondences for homography estimation">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Image A</div>
-        <img class="viz-pair__image" src="media/2_homography/imgA_homography_points.png"
+        <img class="viz-pair__image" src="media/2_homography/imgA.png"
           alt="Image A with selected correspondence points marked" loading="lazy">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Image B</div>
-        <img class="viz-pair__image" src="media/2_homography/imgB_homography_points.png"
+        <img class="viz-pair__image" src="media/2_homography/imgB.png"
           alt="Image B with selected correspondence points marked" loading="lazy">
       </figure>
     </div>
 
     <div class="iteration-belt__outro">
-      <!-- <p>
-        Homographies are exact only under restricted imaging conditions. The model assumes that the observed
-        correspondences
-        arise from either a single planar surface or a pure camera rotation about a fixed center; when the scene
-        contains
-        strong depth variation, parallax causes one global <em>H</em> to align some regions while misaligning others,
-        often
-        producing double edges and “ghosted” structures near depth discontinuities. Furthermore Numerical stability depends on the geometry of the selected points. If correspondences cluster in a small area
-        or
-        lie close to a line, the linear system becomes ill-conditioned and small clicking errors amplify into large
-        projective
-        distortions, especially in the corners. Better behavior follows from distributing points broadly across the
-        overlap
-        and including strong 2D structure (corners and junctions) rather than ambiguous texture.
-      </p> -->
-
       <p>
-        Furthermore, numerical stability depends on the geometry of the selected points. If correspondences cluster in a small area
+        Nnumerical stability also depends on the geometry of the selected points. If correspondences cluster in a small
+        area
         or
         lie close to a line, the linear system becomes ill-conditioned and small clicking errors amplify into large
         projective
@@ -379,16 +345,6 @@
         overlap
         and including strong 2D structure (corners and junctions) rather than ambiguous texture.
       </p>
-<!-- 
-      <p>
-        Residual error is also shaped by outliers and coordinate scaling. A few incorrect matches can dominate least
-        squares,
-        so robust estimation (e.g., RANSAC) becomes necessary once correspondences are automatic. In addition, solving
-        in raw
-        pixel coordinates can bias the fit toward large-magnitude entries; normalizing coordinates before least squares
-        and
-        then denormalizing <em>H</em> improves conditioning and yields more reliable warps.
-      </p> -->
     </div>
 
 
@@ -396,16 +352,260 @@
 
   </section>
 
-
-  <!-- ========== A.3: Warp the images (20 pts) ========== -->
   <section class="content gold-glass iteration-belt" id="a3">
     <h2 class="section-heading">A.3 Warp the Images</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Produce at least two examples of rectified images (show source + warped result).
+        Image warping can be reduced to an inverse mapping from the output canvas back into the source image. For each
+        output
+        pixel, the inverse homography predicts a continuous source coordinate, and interpolation supplies a color
+        estimate
+        without leaving holes in the result.
       </p>
     </div>
+
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Rectification correspondences for the frame example">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Source (selected corners)</div>
+        <img class="viz-pair__image" src="media/3_warp/frame/frame_points_imgA.png"
+          alt="Source photo with four selected corner points on the frame" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Target (ideal rectangle)</div>
+        <img class="viz-pair__image" src="media/3_warp/frame/frame_points_imgB.png"
+          alt="Target rectangle with four corresponding corner points" loading="lazy">
+      </figure>
+    </div>
+
+
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Alpha mask comparison by interpolation method">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">NN mask</div>
+        <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped_mask.png"
+          alt="Alpha mask for the nearest-neighbor rectification" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Bilinear mask</div>
+        <img class="viz-pair__image" src="media/3_warp/frame/warp_bilinear/redFrame_warped_mask.png"
+          alt="Alpha mask for the bilinear rectification" loading="lazy">
+      </figure>
+    </div>
+
+    <div class="iteration-belt__intro">
+      <p>
+        Nearest-neighbor interpolation selects the closest sampled pixel and therefore preserves speed at the cost of
+        jagged
+        edges and staircase artifacts. Bilinear interpolation averages the four surrounding samples, which reduces
+        aliasing
+        along strong edges but increases computation per output pixel.
+      </p>
+    </div>
+
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Rectified output comparison by interpolation method">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Nearest neighbor</div>
+        <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped.png"
+          alt="Rectified frame using nearest-neighbor interpolation" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Bilinear</div>
+        <img class="viz-pair__image" src="media/3_warp/frame/warp_bilinear/redFrame_warped.png"
+          alt="Rectified frame using bilinear interpolation" loading="lazy">
+      </figure>
+    </div>
+
+    <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
+      <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
+      <img class="viz-pair__image" src="media/3_warp/frame/diff_x10.png"
+        alt="Amplified absolute difference between bilinear and nearest-neighbor warped outputs (scaled by 10)"
+        loading="lazy">
+    </figure>
+
+    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor outputs">
+      <div class="code-snippets__title">Numeric difference (bilinear vs NN)</div>
+
+      <details class="code-snippet" open>
+        <summary>diff statistics</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>max abs diff: 255
+mean abs diff: 1.8730802495987138
+pct nonzero: 0.6836324854811999</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The amplified difference map visualizes where interpolation changes pixel values under the same inverse warp.
+        Most
+        deviations concentrate along high-contrast boundaries and diagonal edges, where nearest-neighbor introduces
+        staircase
+        quantization while bilinear mixes neighboring samples and smooths the transition. The interior of large, slowly
+        varying regions remains comparatively stable because both samplers draw from similar source values. A maximum
+        absolute difference of 255 indicates that some pixels
+        disagree strongly (typically at thin edges or near invalid-region boundaries), while the mean absolute
+        difference of
+        1.87 shows that the average per-channel deviation is small relative to the 8-bit intensity range. The nonzero
+        rate
+        (about 68%) indicates that many pixels change by at least one intensity level, but most changes are minor and
+        are
+        therefore easy to miss at normal viewing scale or after browser downsampling.
+      </p>
+    </div>
+
+    <div class="code-snippets" aria-label="Runtime comparison for warping">
+      <div class="code-snippets__title">Runtime comparison</div>
+
+      <details class="code-snippet" open>
+        <summary>redFrame → form (inverse warping)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>Nearest neighbor:
+  time_warp_s  = 15.629
+  time_total_s = 20.828
+
+Bilinear:
+  time_warp_s  = 16.519
+  time_total_s = 21.954
+
+Δ warp  = +0.889 s  (+5.69%)
+Δ total = +1.126 s  (+5.41%)</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The speed difference follows directly from arithmetic density: nearest neighbor performs one fetch per output
+        pixel,
+        while bilinear performs four fetches and a weighted blend. The quality difference concentrates along
+        high-contrast
+        edges, where bilinear suppresses blocky discontinuities but can slightly blur fine texture.
+      </p>
+      <p>
+        The remaining failure modes are geometric rather than interpolative. If the output bounds are underestimated,
+        valid
+        content is clipped; if they are overestimated, large empty regions appear and must be carried by an alpha mask.
+        Small
+        inconsistencies in point placement also manifest as shear or residual perspective in the rectified result, since
+        the
+        warp propagates corner error across the entire plane.
+      </p>
+    </div>
+
+    <!-- ---------- Rectification example 2: Sticker / “pink” ---------- -->
+<h3 class="iteration-belt__row-title" style="margin-top: 2.0rem;">Rectification example: Sticker surface</h3>
+
+<p class="iteration-belt__intro" style="margin-top: 0.75rem;">
+  A second rectification instance isolates a dense, high-frequency surface (stickers + paint) where interpolation
+  differences appear as small, spatially localized changes. The inverse mapping is held fixed; only the interpolation
+  operator varies.
+</p>
+
+<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+     aria-label="Rectification correspondences for the sticker example">
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Source (selected corners)</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png"
+         alt="Sticker photo with selected corner points on the planar region" loading="lazy">
+  </figure>
+
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Target (ideal rectangle)</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png"
+         alt="Target rectangle with corresponding corner points" loading="lazy">
+  </figure>
+</div>
+
+<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+     aria-label="Rectified output comparison for the sticker example">
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Nearest neighbor</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_rgba.png"
+         alt="Sticker rectification using nearest-neighbor interpolation" loading="lazy">
+  </figure>
+
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Bilinear</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_rgba.png"
+         alt="Sticker rectification using bilinear interpolation" loading="lazy">
+  </figure>
+</div>
+
+<!-- <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+     aria-label="Alpha mask comparison for the sticker example">
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">NN mask</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_mask.png"
+         alt="Alpha mask for nearest-neighbor sticker rectification" loading="lazy">
+  </figure>
+
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Bilinear mask</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_mask.png"
+         alt="Alpha mask for bilinear sticker rectification" loading="lazy">
+  </figure>
+</div> -->
+
+<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+     aria-label="RGBA outputs and difference visualization for the sticker example">
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">RGBA (bilinear)</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_rgba.png"
+         alt="Sticker rectification RGBA output using bilinear interpolation" loading="lazy">
+  </figure>
+
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">|bilinear − NN| × 10 (clipped)</div>
+    <img class="viz-pair__image" src="media/3_warp/pink/diff_x10.png"
+         alt="Per-pixel difference visualization between bilinear and nearest neighbor, amplified by 10" loading="lazy">
+  </figure>
+</div>
+
+<div class="code-snippets" aria-label="Sticker rectification runtime comparison">
+  <div class="code-snippets__title">Runtime comparison (sticker)</div>
+
+  <details class="code-snippet" open>
+    <summary>pink.JPG → form (inverse warping)</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code>Nearest neighbor:
+  time_warp_s  = 50.703
+  time_total_s = 59.054
+
+Bilinear:
+  time_warp_s  = 47.676
+  time_total_s = 56.579
+
+Δ warp  = −3.026 s  (bilinear faster by 5.97%)
+Δ total = −2.475 s  (bilinear faster by 4.19%)</code></pre>
+    </div>
+  </details>
+</div>
+
+<div class="iteration-belt__outro">
+  <p>
+    The amplified difference map shows that most disagreements are confined to edges and small texture transitions: bilinear
+    modifies values by distributing weight across neighboring samples, while nearest neighbor commits to one discrete sample.
+    At normal viewing scale the outputs remain visually consistent, but bilinear more reliably suppresses staircase artifacts
+    along diagonal boundaries.
+  </p>
+
+  <p>
+    The runtime ordering in this instance favors bilinear despite its higher arithmetic density. This outcome indicates that
+    end-to-end cost is dominated by implementation factors beyond the interpolation stencil (indexing strategy, branching, mask
+    bookkeeping, and Python overhead), so the speed–quality trade-off should be reported from measured timings rather than
+    theoretical per-pixel counts.
+  </p>
+</div>
+
+
+    
   </section>
 
   <!-- ========== A.4: Blend images into a mosaic (20 pts) ========== -->
