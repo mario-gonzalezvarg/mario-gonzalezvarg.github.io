@@ -1,9 +1,9 @@
-timestamp: 2025-12-12T04:15:31
+timestamp: 2025-12-12T04:45:17
 command: mosaic-seq
-n_imgs: 3
-ref_idx: 1
+n_imgs: 4
+ref_idx: 2
 pairs_per_neighbor: 12
 feather_px: 60
 points_dir: out/points/catalina
-time_total_s: 26.211595
+time_total_s: 26.394442
 out: out/4_mosaic/catalinaa/mosaic_seq.png

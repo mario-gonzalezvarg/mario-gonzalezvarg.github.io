@@ -487,44 +487,45 @@ Bilinear:
     <!-- ============================ Rectification example 2: Sticker (pink) ============================ -->
     <h2 class="iteration-belt__row-title" style="margin-top: 2.0rem;">Rectification example: Sticker surface</h3>
 
-    <div class="iteration-belt__intro">
-      <p>
-        A second rectification instance isolates a dense, high-frequency surface (stickers + paint), where interpolation
-        differences appear as small but spatially widespread changes. The inverse mapping is held fixed; only the
-        interpolation operator varies.
-      </p>
-    </div>
+      <div class="iteration-belt__intro">
+        <p>
+          A second rectification instance isolates a dense, high-frequency surface (stickers + paint), where
+          interpolation
+          differences appear as small but spatially widespread changes. The inverse mapping is held fixed; only the
+          interpolation operator varies.
+        </p>
+      </div>
 
-    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-      aria-label="Rectification correspondences for the sticker example">
-      <figure class="viz-pair__panel">
-        <div class="viz-pair__title">Source (selected corners)</div>
-        <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png"
-          alt="Sticker photo with selected corner points on the planar region" loading="lazy">
-      </figure>
+      <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+        aria-label="Rectification correspondences for the sticker example">
+        <figure class="viz-pair__panel">
+          <div class="viz-pair__title">Source (selected corners)</div>
+          <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png"
+            alt="Sticker photo with selected corner points on the planar region" loading="lazy">
+        </figure>
 
-      <figure class="viz-pair__panel">
-        <div class="viz-pair__title">Target (ideal rectangle)</div>
-        <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png"
-          alt="Target rectangle with corresponding corner points" loading="lazy">
-      </figure>
-    </div>
+        <figure class="viz-pair__panel">
+          <div class="viz-pair__title">Target (ideal rectangle)</div>
+          <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png"
+            alt="Target rectangle with corresponding corner points" loading="lazy">
+        </figure>
+      </div>
 
-    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-      aria-label="Rectified output comparison for the sticker example">
-      <figure class="viz-pair__panel">
-        <div class="viz-pair__title">Nearest neighbor</div>
-        <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped.png"
-          alt="Sticker rectification using nearest-neighbor interpolation" loading="lazy">
-      </figure>
+      <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+        aria-label="Rectified output comparison for the sticker example">
+        <figure class="viz-pair__panel">
+          <div class="viz-pair__title">Nearest neighbor</div>
+          <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped.png"
+            alt="Sticker rectification using nearest-neighbor interpolation" loading="lazy">
+        </figure>
 
-      <figure class="viz-pair__panel">
-        <div class="viz-pair__title">Bilinear</div>
-        <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped.png"
-          alt="Sticker rectification using bilinear interpolation" loading="lazy">
-      </figure>
-    </div>
-    <!-- 
+        <figure class="viz-pair__panel">
+          <div class="viz-pair__title">Bilinear</div>
+          <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped.png"
+            alt="Sticker rectification using bilinear interpolation" loading="lazy">
+        </figure>
+      </div>
+      <!-- 
   <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
        aria-label="Alpha mask comparison for the sticker example">
     <figure class="viz-pair__panel">
@@ -540,65 +541,69 @@ Bilinear:
     </figure>
   </div> -->
 
-    <div class="iteration-belt__outro">
-      <p>
-        End-to-end time is the composition of two distinct costs: the warping kernel itself (the inner loop that
-        evaluates
-        <em>H</em><sup>−1</sup>, performs bounds checks, and interpolates), and the surrounding pipeline overhead
-        (output
-        buffer allocation, alpha-mask bookkeeping, image encoding, and filesystem writes). The measurements in this
-        section
-        show that <code>time_warp_s</code> is on the order of 0.05–0.19s, while <code>time_total_s</code> is ~5–6s; the
-        latter
-        therefore dominates the wall-clock outcome, and small variations in overhead can exceed the interpolation gap.
-      </p>
-    </div>
+      <div class="iteration-belt__outro">
+        <p>
+          End-to-end time is the composition of two distinct costs: the warping kernel itself (the inner loop that
+          evaluates
+          <em>H</em><sup>−1</sup>, performs bounds checks, and interpolates), and the surrounding pipeline overhead
+          (output
+          buffer allocation, alpha-mask bookkeeping, image encoding, and filesystem writes). The measurements in this
+          section
+          show that <code>time_warp_s</code> is on the order of 0.05–0.19s, while <code>time_total_s</code> is ~5–6s;
+          the
+          latter
+          therefore dominates the wall-clock outcome, and small variations in overhead can exceed the interpolation gap.
+        </p>
+      </div>
 
 
-    <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
-      <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
-      <img class="viz-pair__image" src="media/3_warp/pink/diff_x10.png"
-        alt="Amplified absolute difference between bilinear and nearest-neighbor sticker warps (scaled by 10)"
-        loading="lazy">
-    </figure>
+      <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
+        <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
+        <img class="viz-pair__image" src="media/3_warp/pink/diff_x10.png"
+          alt="Amplified absolute difference between bilinear and nearest-neighbor sticker warps (scaled by 10)"
+          loading="lazy">
+      </figure>
 
-    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor outputs (sticker)">
-      <div class="code-snippets__title">Numeric difference (sticker)</div>
-      <details class="code-snippet" open>
-        <summary>diff statistics</summary>
-        <div class="code-snippet__body">
-          <pre class="code-block"><code>max abs diff: 122
+      <div class="code-snippets"
+        aria-label="Numeric difference between bilinear and nearest neighbor outputs (sticker)">
+        <div class="code-snippets__title">Numeric difference (sticker)</div>
+        <details class="code-snippet" open>
+          <summary>diff statistics</summary>
+          <div class="code-snippet__body">
+            <pre class="code-block"><code>max abs diff: 122
 mean abs diff: 2.350457083333333
 pct nonzero:   0.78648625</code></pre>
-        </div>
-      </details>
-    </div>
+          </div>
+        </details>
+      </div>
 
-    <div class="iteration-belt__outro">
+      <div class="iteration-belt__outro">
 
-      <p>
-        This separation explains why “faster interpolation” is not guaranteed to produce a faster run. Nearest neighbor
-        is
-        cheaper per pixel, yet the implementation can still spend most of its time outside the interpolator: PNG writing
-        and
-        repeated visualization dumps introduce large fixed costs; repeated allocations and dtype conversions introduce
-        memory
-        bandwidth costs; and branch-heavy bounds checks can reduce the advantage of a simpler stencil. When the kernel
-        is a
-        small fraction of total time, cache state, OS scheduling, and disk throughput variability can invert the
-        ordering
-        between methods across runs without contradicting the per-pixel arithmetic expectation.
-      </p>
-    </div>
+        <p>
+          This separation explains why “faster interpolation” is not guaranteed to produce a faster run. Nearest
+          neighbor
+          is
+          cheaper per pixel, yet the implementation can still spend most of its time outside the interpolator: PNG
+          writing
+          and
+          repeated visualization dumps introduce large fixed costs; repeated allocations and dtype conversions introduce
+          memory
+          bandwidth costs; and branch-heavy bounds checks can reduce the advantage of a simpler stencil. When the kernel
+          is a
+          small fraction of total time, cache state, OS scheduling, and disk throughput variability can invert the
+          ordering
+          between methods across runs without contradicting the per-pixel arithmetic expectation.
+        </p>
+      </div>
 
 
-    <div class="code-snippets" aria-label="Sticker rectification runtime comparison">
-      <div class="code-snippets__title">Runtime comparison (sticker)</div>
+      <div class="code-snippets" aria-label="Sticker rectification runtime comparison">
+        <div class="code-snippets__title">Runtime comparison (sticker)</div>
 
-      <details class="code-snippet" open>
-        <summary>pink → form (inverse warping)</summary>
-        <div class="code-snippet__body">
-          <pre class="code-block"><code>Nearest neighbor:
+        <details class="code-snippet" open>
+          <summary>pink → form (inverse warping)</summary>
+          <div class="code-snippet__body">
+            <pre class="code-block"><code>Nearest neighbor:
                 time_warp_s  = 0.053140
                 time_total_s = 5.575044
 
@@ -609,121 +614,126 @@ pct nonzero:   0.78648625</code></pre>
               Δ warp  = +0.118997 s  (+223.93%)
               Δ total = +0.155153 s  (+2.78%)
             </code></pre>
-        </div>
-      </details>
-    </div>
+          </div>
+        </details>
+      </div>
 
-    <div class="iteration-belt__outro">
-      
-      <p>
-        Optimization therefore decomposes cleanly into two targets. Kernel speed improves by reducing Python overhead
-        and
-        memory traffic: precompute <em>H</em><sup>−1</sup> once; compute the output bounding box once; reuse
-        preallocated
-        output/alpha buffers across runs; avoid per-pixel Python branching by vectorizing bounds checks where possible;
-        and
-        minimize temporaries and dtype casts. Pipeline speed improves by amortizing I/O: write fewer intermediate
-        images,
-        prefer lossless outputs only when needed for the deliverable, and batch or disable expensive debug
-        visualizations when
-        benchmarking. Reporting both <code>time_warp_s</code> and <code>time_total_s</code> makes these two regimes
-        explicit:
-        changes that accelerate the interpolator may only be visible in <code>time_warp_s</code> unless I/O and
-        allocation
-        overhead are also reduced.
-      </p>
-    </div>
+      <div class="iteration-belt__outro">
+
+        <p>
+          Optimization therefore decomposes cleanly into two targets. Kernel speed improves by reducing Python overhead
+          and
+          memory traffic: precompute <em>H</em><sup>−1</sup> once; compute the output bounding box once; reuse
+          preallocated
+          output/alpha buffers across runs; avoid per-pixel Python branching by vectorizing bounds checks where
+          possible;
+          and
+          minimize temporaries and dtype casts. Pipeline speed improves by amortizing I/O: write fewer intermediate
+          images,
+          prefer lossless outputs only when needed for the deliverable, and batch or disable expensive debug
+          visualizations when
+          benchmarking. Reporting both <code>time_warp_s</code> and <code>time_total_s</code> makes these two regimes
+          explicit:
+          changes that accelerate the interpolator may only be visible in <code>time_warp_s</code> unless I/O and
+          allocation
+          overhead are also reduced.
+        </p>
+      </div>
 
   </section>
 
 
-<!-- =============================================================== A.4: Blend images into a mosaic =============================================================== -->
-<section class="content gold-glass iteration-belt" id="a4">
-  <h2 class="section-heading">A.4 Blend into a Mosaic</h2>
+  <!-- =============================================================== A.4: Blend images into a mosaic =============================================================== -->
+  <section class="content gold-glass iteration-belt" id="a4">
+    <h2 class="section-heading">A.4 Blend into a Mosaic</h2>
 
-  <div class="iteration-belt__intro">
-    <p>
-      Mosaic construction can be decomposed into (1) defining a common output canvas, (2) warping the source view into that
-      canvas using the recovered homography, and (3) blending the overlapping region to suppress a visible seam. The seam
-      is governed by a spatial mask; feathering converts a hard boundary into a gradual transition so that exposure and
-      sampling differences do not localize into a single edge.
-    </p>
-  </div>
-
-  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Mosaic example: Catalina (IMG_1694 → IMG_1696)</h3>
-
-  <div class="iteration-belt__header">
-    <h3 class="iteration-belt__title">Warp diagnostics, masks, and overlay</h3>
-    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
-  </div>
-
-  <div class="iteration-belt__viewport">
-    <div class="iteration-belt__track">
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_tgt_canvas.png"
-             alt="Target image placed on the panorama canvas" loading="lazy">
-        <figcaption class="iteration-belt__caption">Target canvas</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_src_warp.png"
-             alt="Source image warped into the panorama canvas" loading="lazy">
-        <figcaption class="iteration-belt__caption">Warped source</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_overlay.png"
-             alt="Overlay of warped source and target on the panorama canvas" loading="lazy">
-        <figcaption class="iteration-belt__caption">Overlay (alignment check)</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_src.png"
-             alt="Source mask on the panorama canvas" loading="lazy">
-        <figcaption class="iteration-belt__caption">Source mask</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_tgt.png"
-             alt="Target mask on the panorama canvas" loading="lazy">
-        <figcaption class="iteration-belt__caption">Target mask</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_src.png"
-             alt="Feathered blending weights for the source contribution" loading="lazy">
-        <figcaption class="iteration-belt__caption">Feather weights (source)</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_tgt.png"
-             alt="Feathered blending weights for the target contribution" loading="lazy">
-        <figcaption class="iteration-belt__caption">Feather weights (target)</figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_seam_ratio.png"
-             alt="Visualization of seam ratio or blending boundary diagnostics" loading="lazy">
-        <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
-      </figure>
-
+    <div class="iteration-belt__intro">
+      <p>
+        Mosaic construction can be decomposed into (1) defining a common output canvas, (2) warping the source view into
+        that
+        canvas using the recovered homography, and (3) blending the overlapping region to suppress a visible seam. The
+        seam
+        is governed by a spatial mask; feathering converts a hard boundary into a gradual transition so that exposure
+        and
+        sampling differences do not localize into a single edge.
+      </p>
     </div>
-  </div>
 
-  <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
-    <div class="viz-pair__title">Final panorama</div>
-    <img class="viz-pair__image" src="media/4_mosaic/catalina/pano.png"
-         alt="Final blended panorama mosaic" loading="lazy">
-  </figure>
+    <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Mosaic example: Catalina (IMG_1694 → IMG_1696)
+    </h3>
 
-  <div class="code-snippets" aria-label="Mosaic runtime and parameters">
-    <div class="code-snippets__title">Runtime and parameters</div>
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Warp diagnostics, masks, and overlay</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
 
-    <details class="code-snippet" open>
-      <summary>Catalina mosaic (points + H + stitch + write)</summary>
-      <div class="code-snippet__body">
-        <pre class="code-block"><code>pairs: 8
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_tgt_canvas.png"
+            alt="Target image placed on the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Target canvas</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_src_warp.png"
+            alt="Source image warped into the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Warped source</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_overlay.png"
+            alt="Overlay of warped source and target on the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Overlay (alignment check)</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_src.png"
+            alt="Source mask on the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Source mask</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_tgt.png"
+            alt="Target mask on the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Target mask</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_src.png"
+            alt="Feathered blending weights for the source contribution" loading="lazy">
+          <figcaption class="iteration-belt__caption">Feather weights (source)</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_tgt.png"
+            alt="Feathered blending weights for the target contribution" loading="lazy">
+          <figcaption class="iteration-belt__caption">Feather weights (target)</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_seam_ratio.png"
+            alt="Visualization of seam ratio or blending boundary diagnostics" loading="lazy">
+          <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
+        </figure>
+
+      </div>
+    </div>
+
+    <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
+      <div class="viz-pair__title">Final panorama</div>
+      <img class="viz-pair__image" src="media/4_mosaic/catalina/pano.png" alt="Final blended panorama mosaic"
+        loading="lazy">
+    </figure>
+
+    <div class="code-snippets" aria-label="Mosaic runtime and parameters">
+      <div class="code-snippets__title">Runtime and parameters</div>
+
+      <details class="code-snippet" open>
+        <summary>Catalina mosaic (points + H + stitch + write)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>pairs: 8
 feather_px: 40
 src_shape: (4032, 3024, 3)
 tgt_shape: (4032, 3024, 3)
@@ -733,26 +743,137 @@ time_load_points_s: 0.001236
 time_computeH_s:     0.000384
 time_stitch_s:       9.233653
 time_total_s:       30.981731</code></pre>
-      </div>
-    </details>
-  </div>
+        </div>
+      </details>
+    </div>
 
-  <div class="iteration-belt__outro">
-    <p>
-      Seam quality is controlled more by scene validity than by arithmetic detail. Parallax (depth variation), moving
-      objects, and exposure changes violate the single-homography assumption and create double edges or brightness steps
-      that no feather mask can fully erase. The overlay and seam diagnostic are therefore treated as tests of model fit:
-      clean alignment indicates a planar/rotation-compatible scene, while structured ghosting indicates geometry or motion
-      mismatch.
-    </p>
-    <p>
-      Feather width sets a trade-off between hiding a seam and spreading blur. A narrow transition preserves local detail
-      but can leave a hard edge when colors disagree; a wide transition conceals exposure differences but can “wash” fine
-      texture across the overlap. The mask/weight visualizations make that trade-off explicit and provide a direct handle
-      for adjusting blend behavior without changing the recovered homography.
-    </p>
-  </div>
-</section>
+    <div class="iteration-belt__outro">
+      <p>
+        Seam quality is controlled more by scene validity than by arithmetic detail. Parallax (depth variation), moving
+        objects, and exposure changes violate the single-homography assumption and create double edges or brightness
+        steps
+        that no feather mask can fully erase. The overlay and seam diagnostic are therefore treated as tests of model
+        fit:
+        clean alignment indicates a planar/rotation-compatible scene, while structured ghosting indicates geometry or
+        motion
+        mismatch.
+      </p>
+      <p>
+        Feather width sets a trade-off between hiding a seam and spreading blur. A narrow transition preserves local
+        detail
+        but can leave a hard edge when colors disagree; a wide transition conceals exposure differences but can “wash”
+        fine
+        texture across the overlap. The mask/weight visualizations make that trade-off explicit and provide a direct
+        handle
+        for adjusting blend behavior without changing the recovered homography.
+      </p>
+    </div>
+
+    <!-- ============================ Mosaic example 2: Grand Canyon (IMG_7140 → IMG_7141) ============================ -->
+    <h3 class="iteration-belt__row-title" style="margin-top: 2.25rem;">Mosaic example: Grand Canyon (IMG_7140 →
+      IMG_7141)</h3>
+
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Warp diagnostics, masks, and overlay</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_tgt_canvas.png"
+            alt="Target canyon image placed on the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Target canvas</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_src_warp.png"
+            alt="Source canyon image warped into the panorama canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Warped source</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_overlay.png"
+            alt="Overlay of warped source and target for alignment checking" loading="lazy">
+          <figcaption class="iteration-belt__caption">Overlay (alignment check)</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_src.png"
+            alt="Binary mask of valid pixels for the warped source on the canvas" loading="lazy">
+          <figcaption class="iteration-belt__caption">Source mask</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_tgt.png"
+            alt="Binary mask of valid pixels for the target canvas image" loading="lazy">
+          <figcaption class="iteration-belt__caption">Target mask</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_src.png"
+            alt="Feather blending weights for the source contribution" loading="lazy">
+          <figcaption class="iteration-belt__caption">Feather weights (source)</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_tgt.png"
+            alt="Feather blending weights for the target contribution" loading="lazy">
+          <figcaption class="iteration-belt__caption">Feather weights (target)</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_seam_ratio.png"
+            alt="Seam diagnostic / blending boundary visualization" loading="lazy">
+          <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
+        </figure>
+
+      </div>
+    </div>
+
+    <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
+      <div class="viz-pair__title">Final panorama</div>
+      <img class="viz-pair__image" src="media/4_mosaic/canyon/pair/pano.png"
+        alt="Final blended Grand Canyon panorama mosaic" loading="lazy">
+    </figure>
+
+    <div class="code-snippets" aria-label="Grand Canyon mosaic runtime and parameters">
+      <div class="code-snippets__title">Runtime and parameters (Grand Canyon)</div>
+
+      <details class="code-snippet" open>
+        <summary>Grand Canyon mosaic (points + H + stitch + write)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>command: mosaic-pair
+src: data/canyon/IMG_7140.JPG
+tgt: data/canyon/IMG_7141.JPG
+pairs: 12
+feather_px: 40
+src_shape: (4032, 3024, 3)
+tgt_shape: (4032, 3024, 3)
+pano_shape: (4261, 3890, 3)
+
+time_load_points_s: 0.000689
+time_computeH_s:     0.000216
+time_stitch_s:       4.106578
+time_total_s:       17.222547</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The canyon pair exhibits a broad overlap with relatively smooth appearance changes, so feathering primarily
+        suppresses
+        low-frequency exposure differences rather than compensating for strong parallax. The seam diagnostic is treated
+        as a
+        proxy for model fit: coherent structures should stay single under overlay, while doubled contours indicate
+        depth-driven
+        parallax that cannot be represented by one homography.
+      </p>
+    </div>
+
+  </section>
 
 
   <script src="../../script.js" defer></script>
