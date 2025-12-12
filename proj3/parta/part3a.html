@@ -637,16 +637,123 @@ pct nonzero:   0.78648625</code></pre>
   </section>
 
 
-  <!-- =============================================================== A.4: Blend images into a mosaic  =============================================================== -->
-  <section class="content gold-glass iteration-belt" id="a4">
-    <h2 class="section-heading">A.4 Blend into a Mosaic</h2>
+<!-- =============================================================== A.4: Blend images into a mosaic =============================================================== -->
+<section class="content gold-glass iteration-belt" id="a4">
+  <h2 class="section-heading">A.4 Blend into a Mosaic</h2>
 
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: Show source images and results for three mosaics (include blending/masking details).
-      </p>
+  <div class="iteration-belt__intro">
+    <p>
+      Mosaic construction can be decomposed into (1) defining a common output canvas, (2) warping the source view into that
+      canvas using the recovered homography, and (3) blending the overlapping region to suppress a visible seam. The seam
+      is governed by a spatial mask; feathering converts a hard boundary into a gradual transition so that exposure and
+      sampling differences do not localize into a single edge.
+    </p>
+  </div>
+
+  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Mosaic example: Catalina (IMG_1694 → IMG_1696)</h3>
+
+  <div class="iteration-belt__header">
+    <h3 class="iteration-belt__title">Warp diagnostics, masks, and overlay</h3>
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+  </div>
+
+  <div class="iteration-belt__viewport">
+    <div class="iteration-belt__track">
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_tgt_canvas.png"
+             alt="Target image placed on the panorama canvas" loading="lazy">
+        <figcaption class="iteration-belt__caption">Target canvas</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_src_warp.png"
+             alt="Source image warped into the panorama canvas" loading="lazy">
+        <figcaption class="iteration-belt__caption">Warped source</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_overlay.png"
+             alt="Overlay of warped source and target on the panorama canvas" loading="lazy">
+        <figcaption class="iteration-belt__caption">Overlay (alignment check)</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_src.png"
+             alt="Source mask on the panorama canvas" loading="lazy">
+        <figcaption class="iteration-belt__caption">Source mask</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_tgt.png"
+             alt="Target mask on the panorama canvas" loading="lazy">
+        <figcaption class="iteration-belt__caption">Target mask</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_src.png"
+             alt="Feathered blending weights for the source contribution" loading="lazy">
+        <figcaption class="iteration-belt__caption">Feather weights (source)</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_tgt.png"
+             alt="Feathered blending weights for the target contribution" loading="lazy">
+        <figcaption class="iteration-belt__caption">Feather weights (target)</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_seam_ratio.png"
+             alt="Visualization of seam ratio or blending boundary diagnostics" loading="lazy">
+        <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
+      </figure>
+
     </div>
-  </section>
+  </div>
+
+  <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
+    <div class="viz-pair__title">Final panorama</div>
+    <img class="viz-pair__image" src="media/4_mosaic/catalina/pano.png"
+         alt="Final blended panorama mosaic" loading="lazy">
+  </figure>
+
+  <div class="code-snippets" aria-label="Mosaic runtime and parameters">
+    <div class="code-snippets__title">Runtime and parameters</div>
+
+    <details class="code-snippet" open>
+      <summary>Catalina mosaic (points + H + stitch + write)</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code>pairs: 8
+feather_px: 40
+src_shape: (4032, 3024, 3)
+tgt_shape: (4032, 3024, 3)
+pano_shape: (6168, 5800, 3)
+
+time_load_points_s: 0.001236
+time_computeH_s:     0.000384
+time_stitch_s:       9.233653
+time_total_s:       30.981731</code></pre>
+      </div>
+    </details>
+  </div>
+
+  <div class="iteration-belt__outro">
+    <p>
+      Seam quality is controlled more by scene validity than by arithmetic detail. Parallax (depth variation), moving
+      objects, and exposure changes violate the single-homography assumption and create double edges or brightness steps
+      that no feather mask can fully erase. The overlay and seam diagnostic are therefore treated as tests of model fit:
+      clean alignment indicates a planar/rotation-compatible scene, while structured ghosting indicates geometry or motion
+      mismatch.
+    </p>
+    <p>
+      Feather width sets a trade-off between hiding a seam and spreading blur. A narrow transition preserves local detail
+      but can leave a hard edge when colors disagree; a wide transition conceals exposure differences but can “wash” fine
+      texture across the overlap. The mask/weight visualizations make that trade-off explicit and provide a direct handle
+      for adjusting blend behavior without changing the recovered homography.
+    </p>
+  </div>
+</section>
+
 
   <script src="../../script.js" defer></script>
 </body>
