@@ -9,6 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../styles.css" />
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+    };
+  </script>
+  <script async id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
 </head>
 
 <body class="top-title">
@@ -21,6 +29,7 @@
         <a href="../../index.html" class="nav-logo">Home</a>
       </nav>
     </div>
+
   </header>
 
   <div class="content big-title">
@@ -199,6 +208,7 @@
         in viewpoint. Under the projective camera model, these assertions imply a 3×3 mapping <em>H</em> such that
         <em>p′</em> is proportional to <em>H p</em>.
       </p>
+
       <p>
         The mapping is recovered by stacking the linear constraints induced by all correspondences into a single system
         and
@@ -207,7 +217,129 @@
       </p>
     </div>
 
-    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Selected correspondences for homography estimation">
+    <div class="math-derivation" style="--math-max: 70rem;">
+      <div class="math-derivation__title">Constraint stacking as a linear system</div>
+
+      <div class="math-derivation__body">
+        <p>Take the homography as</p>
+        <div class="math-derivation__eq">
+          \[
+          H =
+          \begin{bmatrix}
+          h_1 & h_2 & h_3 \\
+          h_4 & h_5 & h_6 \\
+          h_7 & h_8 & 1
+          \end{bmatrix},
+          \quad
+          \mathbf{h} =
+          \begin{bmatrix}
+          h_1 & h_2 & h_3 & h_4 & h_5 & h_6 & h_7 & h_8
+          \end{bmatrix}^{\top}.
+          \]
+        </div>
+
+        <p>
+          For each correspondence \((x_i, y_i)\) in <code>view 1</code> and \((x'_i, y'_i)\) in <code>view 5</code>,
+          in homogeneous coordinates,
+        </p>
+        <div class="math-derivation__eq">
+          \[
+          \begin{bmatrix}
+          x'_i \\[2pt] y'_i \\[2pt] 1
+          \end{bmatrix}
+          \sim
+          H
+          \begin{bmatrix}
+          x_i \\[2pt] y_i \\[2pt] 1
+          \end{bmatrix}.
+          \]
+        </div>
+
+        <p>This gives</p>
+        <div class="math-derivation__eq">
+          \[
+          x'_i = \frac{h_1 x_i + h_2 y_i + h_3}{h_7 x_i + h_8 y_i + 1},
+          \quad
+          y'_i = \frac{h_4 x_i + h_5 y_i + h_6}{h_7 x_i + h_8 y_i + 1}.
+          \]
+        </div>
+
+        <p>
+          Rearranging to be linear in \(\mathbf{h}\), each point pair contributes two rows to a system
+          \(A\mathbf{h}=\mathbf{b}\):
+        </p>
+        <div class="math-derivation__eq">
+          \[
+          \begin{bmatrix}
+          x_i & y_i & 1 & 0 & 0 & 0 & -x_i x'_i & -y_i x'_i \\
+          0 & 0 & 0 & x_i & y_i & 1 & -x_i y'_i & -y_i y'_i
+          \end{bmatrix}
+          \mathbf{h}
+          =
+          \begin{bmatrix}
+          x'_i \\[2pt] y'_i
+          \end{bmatrix}.
+          \]
+        </div>
+
+        <p>
+          Stack these \(2N\) rows from all \(N\) correspondences into a big matrix \(A\) and vector \(\mathbf{b}\), then
+          solve
+          \(A\mathbf{h}\approx \mathbf{b}\) in least squares to recover \(H\).
+        </p>
+      </div>
+    </div>
+
+    <div class="code-snippets" aria-label="Recovered homography matrix">
+      <div class="code-snippets__title">Recovered homography</div>
+
+      <details class="code-snippet" open>
+        <summary>H (Catalina View 1 → Catalina View 5)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>[[ 1.77486435e+00  4.04361609e-02 -2.77535848e+03]
+              [ 4.42547768e-01  1.61873526e+00 -1.14219166e+03]
+              [ 2.37956041e-04  1.77379109e-05  1.00000000e+00]]</code></pre>
+        </div>
+      </details>
+    </div>
+
+
+    <div class="iteration-belt__outro">
+      <p>
+        It's crucial to understand that homographies are exact only under restricted imaging conditions. The model assumes that the observed
+        correspondences
+        arise from either a single planar surface or a pure camera rotation about a fixed center; when the scene
+        contains
+        strong depth variation, parallax causes one global <em>H</em> to align some regions while misaligning others,
+        often
+        producing double edges and “ghosted” structures near depth discontinuities.
+      </p>
+<!-- 
+      <p>
+        Numerical stability depends on the geometry of the selected points. If correspondences cluster in a small area
+        or
+        lie close to a line, the linear system becomes ill-conditioned and small clicking errors amplify into large
+        projective
+        distortions, especially in the corners. Better behavior follows from distributing points broadly across the
+        overlap
+        and including strong 2D structure (corners and junctions) rather than ambiguous texture.
+      </p> -->
+
+      <!-- <p>
+        Residual error is also shaped by outliers and coordinate scaling. A few incorrect matches can dominate least
+        squares,
+        so robust estimation (e.g., RANSAC) becomes necessary once correspondences are automatic. In addition, solving
+        in raw
+        pixel coordinates can bias the fit toward large-magnitude entries; normalizing coordinates before least squares
+        and
+        then denormalizing <em>H</em> improves conditioning and yields more reliable warps.
+      </p> -->
+    </div>
+
+
+
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Selected correspondences for homography estimation">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Image A</div>
         <img class="viz-pair__image" src="media/2_homography/imgA_homography_points.png"
@@ -221,18 +353,47 @@
       </figure>
     </div>
 
-    <div class="code-snippets" aria-label="Recovered homography matrix">
-      <div class="code-snippets__title">Recovered homography</div>
+    <div class="iteration-belt__outro">
+      <!-- <p>
+        Homographies are exact only under restricted imaging conditions. The model assumes that the observed
+        correspondences
+        arise from either a single planar surface or a pure camera rotation about a fixed center; when the scene
+        contains
+        strong depth variation, parallax causes one global <em>H</em> to align some regions while misaligning others,
+        often
+        producing double edges and “ghosted” structures near depth discontinuities. Furthermore Numerical stability depends on the geometry of the selected points. If correspondences cluster in a small area
+        or
+        lie close to a line, the linear system becomes ill-conditioned and small clicking errors amplify into large
+        projective
+        distortions, especially in the corners. Better behavior follows from distributing points broadly across the
+        overlap
+        and including strong 2D structure (corners and junctions) rather than ambiguous texture.
+      </p> -->
 
-      <details class="code-snippet" open>
-        <summary>H (Catalina View 1 → Catalina View 5)</summary>
-        <div class="code-snippet__body">
-          <pre class="code-block"><code>[[ 1.77486435e+00  4.04361609e-02 -2.77535848e+03]
- [ 4.42547768e-01  1.61873526e+00 -1.14219166e+03]
- [ 2.37956041e-04  1.77379109e-05  1.00000000e+00]]</code></pre>
-        </div>
-      </details>
+      <p>
+        Furthermore, numerical stability depends on the geometry of the selected points. If correspondences cluster in a small area
+        or
+        lie close to a line, the linear system becomes ill-conditioned and small clicking errors amplify into large
+        projective
+        distortions, especially in the corners. Better behavior follows from distributing points broadly across the
+        overlap
+        and including strong 2D structure (corners and junctions) rather than ambiguous texture.
+      </p>
+<!-- 
+      <p>
+        Residual error is also shaped by outliers and coordinate scaling. A few incorrect matches can dominate least
+        squares,
+        so robust estimation (e.g., RANSAC) becomes necessary once correspondences are automatic. In addition, solving
+        in raw
+        pixel coordinates can bias the fit toward large-magnitude entries; normalizing coordinates before least squares
+        and
+        then denormalizing <em>H</em> improves conditioning and yields more reliable warps.
+      </p> -->
     </div>
+
+
+
+
   </section>
 
 
