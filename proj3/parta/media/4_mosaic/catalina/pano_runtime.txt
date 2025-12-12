@@ -1,0 +1,30 @@
+timestamp: 2025-12-12T02:04:38
+command: mosaic-pair (A.4)
+src: data/catalina/IMG_1694.JPG
+tgt: data/catalina/IMG_1695.JPG
+points: im1_im2_points.npz
+pairs: 8
+feather_px: 40
+src_shape: (4032, 3024, 3)
+tgt_shape: (4032, 3024, 3)
+pano_shape: (6168, 5800, 3)
+
+time_load_points_s: 0.000815
+time_computeH_s: 0.000244
+time_stitch_s: 10.184894
+time_total_s: 29.788385
+
+out_mosaic: out/4_mosaic/catalina/pano.png
+out_src_warp: out/4_mosaic/catalina/pano_src_warp.png
+out_tgt_canvas: out/4_mosaic/catalina/pano_tgt_canvas.png
+out_overlay: out/4_mosaic/catalina/pano_overlay.png
+out_mask_src: out/4_mosaic/catalina/pano_mask_src.png
+out_mask_tgt: out/4_mosaic/catalina/pano_mask_tgt.png
+out_w_src: out/4_mosaic/catalina/pano_w_src.png
+out_w_tgt: out/4_mosaic/catalina/pano_w_tgt.png
+out_seam_ratio: out/4_mosaic/catalina/pano_seam_ratio.png
+
+H:
+[[ 1.77486435e+00  4.04361609e-02 -2.77535848e+03]
+ [ 4.42547768e-01  1.61873526e+00 -1.14219166e+03]
+ [ 2.37956041e-04  1.77379109e-05  1.00000000e+00]]

@@ -500,81 +500,53 @@ Bilinear:
     </div>
 
     <!-- ---------- Rectification example 2: Sticker / “pink” ---------- -->
-<h3 class="iteration-belt__row-title" style="margin-top: 2.0rem;">Rectification example: Sticker surface</h3>
+    <h3 class="iteration-belt__row-title" style="margin-top: 2.0rem;">Rectification example: Sticker surface</h3>
 
-<p class="iteration-belt__intro" style="margin-top: 0.75rem;">
-  A second rectification instance isolates a dense, high-frequency surface (stickers + paint) where interpolation
-  differences appear as small, spatially localized changes. The inverse mapping is held fixed; only the interpolation
-  operator varies.
-</p>
+    <p class="iteration-belt__intro" style="margin-top: 0.75rem;">
+      A second rectification instance isolates a dense, high-frequency surface (stickers + paint) where interpolation
+      differences appear as small, spatially localized changes. The inverse mapping is held fixed; only the
+      interpolation
+      operator varies.
+    </p>
 
-<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-     aria-label="Rectification correspondences for the sticker example">
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">Source (selected corners)</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png"
-         alt="Sticker photo with selected corner points on the planar region" loading="lazy">
-  </figure>
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Rectification correspondences for the sticker example">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Source (selected corners)</div>
+        <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png"
+          alt="Sticker photo with selected corner points on the planar region" loading="lazy">
+      </figure>
 
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">Target (ideal rectangle)</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png"
-         alt="Target rectangle with corresponding corner points" loading="lazy">
-  </figure>
-</div>
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Target (ideal rectangle)</div>
+        <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png"
+          alt="Target rectangle with corresponding corner points" loading="lazy">
+      </figure>
+    </div>
 
-<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-     aria-label="Rectified output comparison for the sticker example">
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">Nearest neighbor</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_rgba.png"
-         alt="Sticker rectification using nearest-neighbor interpolation" loading="lazy">
-  </figure>
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Rectified output comparison for the sticker example">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Nearest neighbor</div>
+        <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_rgba.png"
+          alt="Sticker rectification using nearest-neighbor interpolation" loading="lazy">
+      </figure>
 
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">Bilinear</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_rgba.png"
-         alt="Sticker rectification using bilinear interpolation" loading="lazy">
-  </figure>
-</div>
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Bilinear</div>
+        <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_rgba.png"
+          alt="Sticker rectification using bilinear interpolation" loading="lazy">
+      </figure>
+    </div>
 
-<!-- <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-     aria-label="Alpha mask comparison for the sticker example">
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">NN mask</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_mask.png"
-         alt="Alpha mask for nearest-neighbor sticker rectification" loading="lazy">
-  </figure>
 
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">Bilinear mask</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_mask.png"
-         alt="Alpha mask for bilinear sticker rectification" loading="lazy">
-  </figure>
-</div> -->
+    <div class="code-snippets" aria-label="Sticker rectification runtime comparison">
+      <div class="code-snippets__title">Runtime comparison (sticker)</div>
 
-<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-     aria-label="RGBA outputs and difference visualization for the sticker example">
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">RGBA (bilinear)</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_rgba.png"
-         alt="Sticker rectification RGBA output using bilinear interpolation" loading="lazy">
-  </figure>
-
-  <figure class="viz-pair__panel">
-    <div class="viz-pair__title">|bilinear − NN| × 10 (clipped)</div>
-    <img class="viz-pair__image" src="media/3_warp/pink/diff_x10.png"
-         alt="Per-pixel difference visualization between bilinear and nearest neighbor, amplified by 10" loading="lazy">
-  </figure>
-</div>
-
-<div class="code-snippets" aria-label="Sticker rectification runtime comparison">
-  <div class="code-snippets__title">Runtime comparison (sticker)</div>
-
-  <details class="code-snippet" open>
-    <summary>pink.JPG → form (inverse warping)</summary>
-    <div class="code-snippet__body">
-      <pre class="code-block"><code>Nearest neighbor:
+      <details class="code-snippet" open>
+        <summary>pink.JPG → form (inverse warping)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>Nearest neighbor:
   time_warp_s  = 50.703
   time_total_s = 59.054
 
@@ -584,28 +556,57 @@ Bilinear:
 
 Δ warp  = −3.026 s  (bilinear faster by 5.97%)
 Δ total = −2.475 s  (bilinear faster by 4.19%)</code></pre>
+        </div>
+      </details>
     </div>
-  </details>
-</div>
 
-<div class="iteration-belt__outro">
-  <p>
-    The amplified difference map shows that most disagreements are confined to edges and small texture transitions: bilinear
-    modifies values by distributing weight across neighboring samples, while nearest neighbor commits to one discrete sample.
-    At normal viewing scale the outputs remain visually consistent, but bilinear more reliably suppresses staircase artifacts
-    along diagonal boundaries.
-  </p>
+    <div class="iteration-belt__outro">
+      <p>
+        The runtime ordering in this instance favors bilinear despite its higher arithmetic density. This outcome
+        indicates that
+        end-to-end cost is dominated by implementation factors beyond the interpolation stencil (indexing strategy,
+        branching, mask
+        bookkeeping, and Python overhead), so the speed–quality trade-off should be reported from measured timings
+        rather than
+        theoretical per-pixel counts.
+      </p>
+    </div>
 
-  <p>
-    The runtime ordering in this instance favors bilinear despite its higher arithmetic density. This outcome indicates that
-    end-to-end cost is dominated by implementation factors beyond the interpolation stencil (indexing strategy, branching, mask
-    bookkeeping, and Python overhead), so the speed–quality trade-off should be reported from measured timings rather than
-    theoretical per-pixel counts.
-  </p>
-</div>
+    <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
+      <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
+      <img class="viz-pair__image" src="media/3_warp/pink/diff_x10.png"
+        alt="Amplified absolute difference between bilinear and nearest-neighbor sticker warps (scaled by 10)"
+        loading="lazy">
+    </figure>
 
 
-    
+    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor sticker outputs">
+      <div class="code-snippets__title">Numeric difference (bilinear vs NN)</div>
+
+      <details class="code-snippet" open>
+        <summary>diff statistics</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>max abs diff: 122
+mean abs diff: 2.350457083333333
+pct nonzero: 0.78648625</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The amplified difference map shows that most disagreements are confined to edges and small texture transitions:
+        bilinear
+        modifies values by distributing weight across neighboring samples, while nearest neighbor commits to one
+        discrete sample.
+        At normal viewing scale the outputs remain visually consistent, but bilinear more reliably suppresses staircase
+        artifacts
+        along diagonal boundaries.
+      </p>
+    </div>
+
+
+
   </section>
 
   <!-- ========== A.4: Blend images into a mosaic (20 pts) ========== -->
