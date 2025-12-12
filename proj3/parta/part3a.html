@@ -769,109 +769,126 @@ time_total_s:       30.981731</code></pre>
       </p>
     </div>
 
-    <!-- ============================ Mosaic example 2: Grand Canyon (IMG_7140 → IMG_7141) ============================ -->
-    <h3 class="iteration-belt__row-title" style="margin-top: 2.25rem;">Mosaic example: Grand Canyon (IMG_7140 →
-      IMG_7141)</h3>
+   <!-- ============================ Mosaic example 2: Grand Canyon ============================ -->
+<h3 class="iteration-belt__row-title" style="margin-top: 2.25rem;">Mosaic example: Grand Canyon</h3>
 
-    <div class="iteration-belt__header">
-      <h3 class="iteration-belt__title">Warp diagnostics, masks, and overlay</h3>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
-    </div>
+<div class="iteration-belt__header">
+  <h3 class="iteration-belt__title">Pair vs. multi-stitch outputs</h3>
+  <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+</div>
 
-    <div class="iteration-belt__viewport">
-      <div class="iteration-belt__track">
+<!-- Pair (two-image) vs Multi-stitch (sequence) -->
+<div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Grand Canyon pair vs multi-stitch comparison">
+  <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Pair example 1</div>
+    <img class="viz-pair__image" src="media/4_mosaic/canyon/pair/pano.png"
+         alt="Grand Canyon panorama from a single pair of images" loading="lazy">
+  </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_tgt_canvas.png"
-            alt="Target canyon image placed on the panorama canvas" loading="lazy">
-          <figcaption class="iteration-belt__caption">Target canvas</figcaption>
-        </figure>
+    <figure class="viz-pair__panel">
+    <div class="viz-pair__title">Pair Example 2</div>
+    <img class="viz-pair__image" src="media/4_mosaic/canyon/pair2.png"
+         alt="Grand Canyon panorama produced by stitching a sequence of multiple images" loading="lazy">
+  </figure>
+</div>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_src_warp.png"
-            alt="Source canyon image warped into the panorama canvas" loading="lazy">
-          <figcaption class="iteration-belt__caption">Warped source</figcaption>
-        </figure>
+<!-- Masks / overlays belt (diagnostics) -->
+<div class="iteration-belt__header" style="margin-top: 1.25rem;">
+  <h3 class="iteration-belt__title">Warp diagnostics, masks, and overlay (pair)</h3>
+  <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+</div>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_overlay.png"
-            alt="Overlay of warped source and target for alignment checking" loading="lazy">
-          <figcaption class="iteration-belt__caption">Overlay (alignment check)</figcaption>
-        </figure>
+<div class="iteration-belt__viewport">
+  <div class="iteration-belt__track">
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_src.png"
-            alt="Binary mask of valid pixels for the warped source on the canvas" loading="lazy">
-          <figcaption class="iteration-belt__caption">Source mask</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_tgt.png"
-            alt="Binary mask of valid pixels for the target canvas image" loading="lazy">
-          <figcaption class="iteration-belt__caption">Target mask</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_src.png"
-            alt="Feather blending weights for the source contribution" loading="lazy">
-          <figcaption class="iteration-belt__caption">Feather weights (source)</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_tgt.png"
-            alt="Feather blending weights for the target contribution" loading="lazy">
-          <figcaption class="iteration-belt__caption">Feather weights (target)</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_seam_ratio.png"
-            alt="Seam diagnostic / blending boundary visualization" loading="lazy">
-          <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
-        </figure>
-
-      </div>
-    </div>
-
-    <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
-      <div class="viz-pair__title">Final panorama</div>
-      <img class="viz-pair__image" src="media/4_mosaic/canyon/pair/pano.png"
-        alt="Final blended Grand Canyon panorama mosaic" loading="lazy">
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_tgt_canvas.png"
+           alt="Target canyon image placed on the panorama canvas" loading="lazy">
+      <figcaption class="iteration-belt__caption">Target canvas</figcaption>
     </figure>
 
-    <div class="code-snippets" aria-label="Grand Canyon mosaic runtime and parameters">
-      <div class="code-snippets__title">Runtime and parameters (Grand Canyon)</div>
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_src_warp.png"
+           alt="Source canyon image warped into the panorama canvas" loading="lazy">
+      <figcaption class="iteration-belt__caption">Warped source</figcaption>
+    </figure>
 
-      <details class="code-snippet" open>
-        <summary>Grand Canyon mosaic (points + H + stitch + write)</summary>
-        <div class="code-snippet__body">
-          <pre class="code-block"><code>command: mosaic-pair
-src: data/canyon/IMG_7140.JPG
-tgt: data/canyon/IMG_7141.JPG
-pairs: 12
-feather_px: 40
-src_shape: (4032, 3024, 3)
-tgt_shape: (4032, 3024, 3)
-pano_shape: (4261, 3890, 3)
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_overlay.png"
+           alt="Overlay of warped source and target for alignment checking" loading="lazy">
+      <figcaption class="iteration-belt__caption">Overlay</figcaption>
+    </figure>
 
-time_load_points_s: 0.000689
-time_computeH_s:     0.000216
-time_stitch_s:       4.106578
-time_total_s:       17.222547</code></pre>
-        </div>
-      </details>
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_src.png"
+           alt="Binary mask of valid pixels for the warped source on the canvas" loading="lazy">
+      <figcaption class="iteration-belt__caption">Source mask</figcaption>
+    </figure>
+
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_tgt.png"
+           alt="Binary mask of valid pixels for the target canvas image" loading="lazy">
+      <figcaption class="iteration-belt__caption">Target mask</figcaption>
+    </figure>
+
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_src.png"
+           alt="Feather blending weights for the source contribution" loading="lazy">
+      <figcaption class="iteration-belt__caption">Feather weights (src)</figcaption>
+    </figure>
+
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_tgt.png"
+           alt="Feather blending weights for the target contribution" loading="lazy">
+      <figcaption class="iteration-belt__caption">Feather weights (tgt)</figcaption>
+    </figure>
+
+    <figure class="iteration-belt__item">
+      <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_seam_ratio.png"
+           alt="Seam diagnostic / blending boundary visualization" loading="lazy">
+      <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
+    </figure>
+
+  </div>
+</div>
+
+  <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
+  <div class="viz-pair__title">Multi-stitch example (sequence)</div>
+    <img class="viz-pair__image" src="media/4_mosaic/canyon/mosaic_seq.png"
+       alt="Grand Canyon panorama produced by stitching a sequence of multiple images"loading="lazy">
+</figure>
+
+<!-- Final (clean) panorama panel: use the cropped bbox version if that's your “final” -->
+<figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
+  <div class="viz-pair__title">Final panorama (cropped)</div>
+  <img class="viz-pair__image" src="media/4_mosaic/canyon/mosaic_seq_cropped.png"
+       alt="Final Grand Canyon panorama after multi-stitch and cropping to the valid bounding box" loading="lazy">
+</figure>
+
+<div class="code-snippets" aria-label="Grand Canyon mosaic-seq runtime and parameters">
+  <div class="code-snippets__title">Runtime and parameters (mosaic-seq)</div>
+
+  <details class="code-snippet" open>
+    <summary>Grand Canyon sequence stitch</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code>
+n_imgs: 6
+pairs_per_neighbor: 12
+feather_px: 60
+time_total_s: 48.326331
+</code></pre>
     </div>
+  </details>
+</div>
 
-    <div class="iteration-belt__outro">
-      <p>
-        The canyon pair exhibits a broad overlap with relatively smooth appearance changes, so feathering primarily
-        suppresses
-        low-frequency exposure differences rather than compensating for strong parallax. The seam diagnostic is treated
-        as a
-        proxy for model fit: coherent structures should stay single under overlay, while doubled contours indicate
-        depth-driven
-        parallax that cannot be represented by one homography.
-      </p>
-    </div>
+<div class="iteration-belt__outro">
+  <p>
+    The pair mosaic isolates the homography-and-blend behavior for a single overlap, while the multi-stitch panorama
+    compounds the same operation across several neighbors. Runtime therefore scales with the number of warps, the amount
+    of canvas growth, and the cost of repeatedly constructing and feathering masks as additional images are merged.
+  </p>
+</div>
+
 
   </section>
 
