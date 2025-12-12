@@ -4,28 +4,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Diffusion Models – Visualizations</title>
+  <title>Project 3B – Stitching Photo Mosaics</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="../../styles.css" />
 </head>
 
 <body class="top-title">
-
   <canvas id="sky" aria-hidden="true"></canvas>
+
   <header class="site-header">
     <div class="content">
       <nav class="top-nav" aria-label="Project navigation">
-        <a href="../../index.html" class="nav-logo">
-          Home
-        </a>
+        <a href="../../index.html" class="nav-logo">Home</a>
       </nav>
     </div>
   </header>
 
   <div class="content big-title">
-    <h1 class="title">Image Warping and Mosacing</h1>
+    <h1 class="title">Stitching Photo Mosaics</h1>
+
     <div class="project-switcher" aria-label="Jump to project parts">
       <a href="../parta/part3a.html" class="project-switcher__button">
         Part A
@@ -36,57 +37,67 @@
     </div>
   </div>
 
-  <!-- ========== A.1: Shoot and digitize pictures (20 pts) ========== -->
-  <section class="content gold-glass iteration-belt" id="a2">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
-
+  <!-- ========== B.1: Harris Interest Points ========== -->
+  <section class="content gold-glass iteration-belt" id="b1">
+    <h2 class="section-heading">B.1 Harris Interest Points</h2>
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Show at least 2 sets of images with projective transformations between them (fixed center of
-        projection, rotate camera).
-      </p>
-
-    </div>
-  </section>
-
-  <!-- ========== A.2: Recover homographies (20 pts) ========== -->
-  <section class="content gold-glass iteration-belt" id="a2">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
-
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: Implement computeH(im1_pts, im2_pts) function. Show your correspondences visualized on the images,
-        system of equations, and recovered homography matrix.
-      </p>
-
-    </div>
-  </section>
-
-  <!-- ========== A.3: Warp the images (20 pts) [produce at least two examples of rectified images] ========== -->
-  <section class="content gold-glass iteration-belt" id="a3">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
-
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: Implement computeH(im1_pts, im2_pts) function. Show your correspondences visualized on the images,
-        system of equations, and recovered homography matrix.
+        Deliverables: visualize detected corners on at least two image pairs; include parameter choices and brief notes.
       </p>
     </div>
   </section>
 
-  <!-- ========== A.4: Blend images into a mosaic (20 pts) [show source images and results for three mosaics.]========== -->
-  <section class="content gold-glass iteration-belt" id="a4">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
-
+  <!-- ========== B.2: ANMS ========== -->
+  <section class="content gold-glass iteration-belt" id="b2">
+    <h2 class="section-heading">B.2 Adaptive Non-Maximal Suppression (ANMS)</h2>
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Implement computeH(im1_pts, im2_pts) function. Show your correspondences visualized on the images,
-        system of equations, and recovered homography matrix.
+        Deliverables: show corner distribution before/after ANMS; report number of retained points.
       </p>
     </div>
   </section>
 
-  <script src="../../script.js"></script>
+  <!-- ========== B.3: Feature Descriptors ========== -->
+  <section class="content gold-glass iteration-belt" id="b3">
+    <h2 class="section-heading">B.3 Feature Descriptors</h2>
+    <div class="iteration-belt__intro">
+      <p>
+        Deliverables: describe the descriptor construction and show a small visualization (e.g., sampled patches).
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== B.4: Feature Matching ========== -->
+  <section class="content gold-glass iteration-belt" id="b4">
+    <h2 class="section-heading">B.4 Feature Matching</h2>
+    <div class="iteration-belt__intro">
+      <p>
+        Deliverables: show raw matches and filtered matches (e.g., ratio test); include match count.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== B.5: RANSAC Homography ========== -->
+  <section class="content gold-glass iteration-belt" id="b5">
+    <h2 class="section-heading">B.5 RANSAC for Robust Homography</h2>
+    <div class="iteration-belt__intro">
+      <p>
+        Deliverables: show inlier vs. outlier matches; report inlier count and chosen thresholds.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== B.6: Automatic Mosaics ========== -->
+  <section class="content gold-glass iteration-belt" id="b6">
+    <h2 class="section-heading">B.6 Automatic Mosaics</h2>
+    <div class="iteration-belt__intro">
+      <p>
+        Deliverables: show at least two fully automatic mosaics (inputs + final blend).
+      </p>
+    </div>
+  </section>
+
+  <script src="../../script.js" defer></script>
 </body>
 
 </html>

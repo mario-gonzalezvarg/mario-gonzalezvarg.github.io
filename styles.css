@@ -603,6 +603,55 @@ body.top-title {
   border-radius: 8px;
 }
 
+/* ------------------------------
+   Viz pair (plot-like two-up panels)
+------------------------------ */
+
+.viz-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 1.25rem;
+}
+
+.viz-pair__panel {
+  margin: 0;
+  text-align: center;
+  max-width: var(--viz-pair-max, 100%);
+  margin-inline: auto;
+}
+
+.viz-pair__title {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(241, 222, 170, 0.7);
+  background: rgba(6, 16, 20, 0.85);
+  color: #ffeac7;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  box-shadow: 0 0 14px rgba(241, 222, 170, 0.35);
+}
+
+.viz-pair__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 900px) {
+  .viz-pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 /* Root home nav-bar style */
 .nav-band {
   position: fixed;

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Diffusion Models – Visualizations</title>
+  <title>Project 3A – Stitching Photo Mosaics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -14,20 +14,19 @@
 <body class="top-title">
 
   <canvas id="sky" aria-hidden="true"></canvas>
+
   <header class="site-header">
     <div class="content">
       <nav class="top-nav" aria-label="Project navigation">
-        <a href="../../index.html" class="nav-logo">
-          Home
-        </a>
+        <a href="../../index.html" class="nav-logo">Home</a>
       </nav>
     </div>
   </header>
 
   <div class="content big-title">
-    <h1 class="title">Image Warping and Mosacing</h1>
+    <h1 class="title">Image Warping and Mosaicing</h1>
     <div class="project-switcher" aria-label="Jump to project parts">
-      <a href="../parta/part3a.html" class="project-switcher__button project-switcher__button--primary">
+      <a href="./part3a.html" class="project-switcher__button project-switcher__button--primary">
         Part A
       </a>
       <a href="../partb/part3b.html" class="project-switcher__button">
@@ -36,57 +35,230 @@
     </div>
   </div>
 
+  <!-- =============================== Overview =============================== -->
+  <section class="content gold-glass writing-section" id="overview">
+    <h2 class="section-heading">Overview</h2>
+    <p>
+      Panoramic mosaicing can be generalized as a sequence of constrained transformations that converts multiple partial
+      views into a single consistent image. The pipeline separates into correspondence selection, homography estimation,
+      geometric warping into a common coordinate system, and photometric blending to suppress visible seams.
+    </p>
+    <p>
+      The evidence for each transformation is confined to repeated conjunctions of local appearances across overlapping
+      images. A correspondence asserts that two pixel neighborhoods are distinct appearances of one scene point; a
+      homography is accepted when it explains many such assertions while rejecting accidental alignments. The resulting
+      mosaic is therefore a stabilized representation: relations that persist across viewpoints are preserved, and
+      relations that fail under re-projection are treated as noise.
+    </p>
+  </section>
+
   <!-- ========== A.1: Shoot and digitize pictures (20 pts) ========== -->
-  <section class="content gold-glass iteration-belt" id="a2">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
+  <section class="content gold-glass iteration-belt iteration-belt--two-rows" id="a1">
+    <h2 class="section-heading">A.1 Shoot Photos</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Show at least 2 sets of images with projective transformations between them (fixed center of
-        projection, rotate camera).
+        Two overlapping sequences are captured under camera rotation about a fixed center of projection. This capture
+        condition makes the inter-image motion well-approximated by a single projective transform, providing the raw
+        constraints used later to recover a homography.
       </p>
-
     </div>
+
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Captured image sequences</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <!-- Row 1: Catalina -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Catalina Island, California</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1693.JPG"
+              alt="Catalina Island photo, view 1" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1694.JPG"
+              alt="Catalina Island photo, view 2" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 2</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1695.JPG"
+              alt="Catalina Island photo, view 3" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1696.JPG"
+              alt="Catalina Island photo, view 4" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 4</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1697.JPG"
+              alt="Catalina Island photo, view 5" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1698.JPG"
+              alt="Catalina Island photo, view 6" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 6</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1699.JPG"
+              alt="Catalina Island photo, view 7" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/catalina/IMG_1700.JPG"
+              alt="Catalina Island photo, view 8" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 8</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Grand Canyon -->
+    <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Grand Canyon, Arizona</h3>
+      <div class="iteration-belt__viewport">
+        <div class="iteration-belt__track">
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7135.JPG"
+              alt="Grand Canyon photo, view 1" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 1</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7136.JPG"
+              alt="Grand Canyon photo, view 2" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 2</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7137.JPG"
+              alt="Grand Canyon photo, view 3" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 3</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7138.JPG"
+              alt="Grand Canyon photo, view 4" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 4</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7140.JPG"
+              alt="Grand Canyon photo, view 5" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 5</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7141.JPG"
+              alt="Grand Canyon photo, view 6" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 6</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7142.JPG"
+              alt="Grand Canyon photo, view 7" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 7</figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7143.JPG"
+              alt="Grand Canyon photo, view 8" loading="lazy">
+            <figcaption class="iteration-belt__caption">View 8</figcaption>
+          </figure>
+
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- ========== A.2: Recover homographies (20 pts) ========== -->
   <section class="content gold-glass iteration-belt" id="a2">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
+    <h2 class="section-heading">A.2 Recover Homographies</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Implement computeH(im1_pts, im2_pts) function. Show your correspondences visualized on the images,
-        system of equations, and recovered homography matrix.
+        Homography estimation can be decomposed into constraint selection and parameter recovery. Each correspondence
+        asserts that a point in Image A and a point in Image B are two appearances of the same scene point under a
+        change
+        in viewpoint. Under the projective camera model, these assertions imply a 3×3 mapping <em>H</em> such that
+        <em>p′</em> is proportional to <em>H p</em>.
       </p>
+      <p>
+        The mapping is recovered by stacking the linear constraints induced by all correspondences into a single system
+        and
+        solving for <em>H</em> up to scale. The correspondence set is distributed across the overlap so the solution is
+        informed by global structure rather than a single local patch.
+      </p>
+    </div>
 
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Selected correspondences for homography estimation">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Image A</div>
+        <img class="viz-pair__image" src="media/2_homography/imgA_homography_points.png"
+          alt="Image A with selected correspondence points marked" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Image B</div>
+        <img class="viz-pair__image" src="media/2_homography/imgB_homography_points.png"
+          alt="Image B with selected correspondence points marked" loading="lazy">
+      </figure>
+    </div>
+
+    <div class="code-snippets" aria-label="Recovered homography matrix">
+      <div class="code-snippets__title">Recovered homography</div>
+
+      <details class="code-snippet" open>
+        <summary>H (Catalina View 1 → Catalina View 5)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>[[ 1.77486435e+00  4.04361609e-02 -2.77535848e+03]
+ [ 4.42547768e-01  1.61873526e+00 -1.14219166e+03]
+ [ 2.37956041e-04  1.77379109e-05  1.00000000e+00]]</code></pre>
+        </div>
+      </details>
     </div>
   </section>
 
-  <!-- ========== A.3: Warp the images (20 pts) [produce at least two examples of rectified images] ========== -->
+
+  <!-- ========== A.3: Warp the images (20 pts) ========== -->
   <section class="content gold-glass iteration-belt" id="a3">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
+    <h2 class="section-heading">A.3 Warp the Images</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Implement computeH(im1_pts, im2_pts) function. Show your correspondences visualized on the images,
-        system of equations, and recovered homography matrix.
+        Deliverables: Produce at least two examples of rectified images (show source + warped result).
       </p>
     </div>
   </section>
 
-  <!-- ========== A.4: Blend images into a mosaic (20 pts) [show source images and results for three mosaics.]========== -->
+  <!-- ========== A.4: Blend images into a mosaic (20 pts) ========== -->
   <section class="content gold-glass iteration-belt" id="a4">
-    <h2 class="section-heading">A2 Recovering Homographies</h2>
+    <h2 class="section-heading">A.4 Blend into a Mosaic</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: Implement computeH(im1_pts, im2_pts) function. Show your correspondences visualized on the images,
-        system of equations, and recovered homography matrix.
+        Deliverables: Show source images and results for three mosaics (include blending/masking details).
       </p>
     </div>
   </section>
 
-  <script src="../../script.js"></script>
+  <script src="../../script.js" defer></script>
 </body>
 
 </html>
