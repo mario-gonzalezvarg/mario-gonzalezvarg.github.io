@@ -61,7 +61,7 @@
     </p>
   </section>
 
-  <!-- ============================================================= A.1: Shoot and digitize pictures ============================================================= -->
+  <!-- ================================================================== A.1: Photoshot ============================================================= -->
   <section class="content gold-glass iteration-belt iteration-belt--two-rows" id="a1">
     <h2 class="section-heading">A.1 Shoot Photos</h2>
 
@@ -196,7 +196,7 @@
 
   </section>
 
-  <!-- =============================================================== A.2: Recover homographies =============================================================== -->
+  <!-- ================================================================== A.2: Homographies =============================================================== -->
   <section class="content gold-glass iteration-belt" id="a2">
     <h2 class="section-heading">A.2 Recover Homographies</h2>
 
@@ -352,19 +352,27 @@
 
   </section>
 
-  <!-- ================================================================== A.2: Image Warping ================================================================== -->
+  <!-- ================================================================== A.3 Image Warping ================================================================== -->
   <section class="content gold-glass iteration-belt" id="a3">
     <h2 class="section-heading">A.3 Warp the Images</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        Image warping can be reduced to an inverse mapping from the output canvas back into the source image. For each
+        Image warping can be reduced to an inverse mapping from the output canvas back into the source image. Each
         output
-        pixel, the inverse homography predicts a continuous source coordinate, and interpolation supplies a color
-        estimate
-        without leaving holes in the result.
+        pixel is mapped through <em>H</em><sup>−1</sup> to a continuous source coordinate, and an interpolation rule
+        produces a color estimate without leaving holes in the output.
+      </p>
+      <p>
+        Nearest-neighbor interpolation rounds to the closest sampled pixel and therefore preserves speed at the cost of
+        jagged edges and staircase artifacts. Bilinear interpolation blends the four neighboring samples, which improves
+        edge continuity but increases computation per output pixel. An alpha mask is carried alongside the warp to mark
+        pixels that received valid samples within the source bounds.
       </p>
     </div>
+
+    <!-- ============================ Rectification example 1: Frame ============================ -->
+    <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Rectification example: Red frame</h3>
 
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
       aria-label="Rectification correspondences for the frame example">
@@ -381,19 +389,8 @@
       </figure>
     </div>
 
-
-    <div class="iteration-belt__intro">
-      <p>
-        Nearest-neighbor interpolation selects the closest sampled pixel and therefore preserves speed at the cost of
-        jagged
-        edges and staircase artifacts. Bilinear interpolation averages the four surrounding samples, which reduces
-        aliasing
-        along strong edges but increases computation per output pixel.
-      </p>
-    </div>
-
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-      aria-label="Rectified output comparison by interpolation method">
+      aria-label="Rectified output comparison by interpolation method (frame)">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Nearest neighbor</div>
         <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped.png"
@@ -406,6 +403,21 @@
           alt="Rectified frame using bilinear interpolation" loading="lazy">
       </figure>
     </div>
+    <!-- 
+  <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+       aria-label="Alpha mask comparison by interpolation method (frame)">
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">NN mask</div>
+      <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped_mask.png"
+           alt="Alpha mask for the nearest-neighbor frame rectification" loading="lazy">
+    </figure>
+
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">Bilinear mask</div>
+      <img class="viz-pair__image" src="media/3_warp/frame/warp_bilinear/redFrame_warped_mask.png"
+           alt="Alpha mask for the bilinear frame rectification" loading="lazy">
+    </figure>
+  </div> -->
 
     <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
       <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
@@ -414,15 +426,35 @@
         loading="lazy">
     </figure>
 
-    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor outputs">
-      <div class="code-snippets__title">Numeric difference (bilinear vs NN)</div>
-
+    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor outputs (frame)">
+      <div class="code-snippets__title">Numeric difference (frame)</div>
       <details class="code-snippet" open>
         <summary>diff statistics</summary>
         <div class="code-snippet__body">
-          <pre class="code-block"><code>max abs diff: 255
-mean abs diff: 1.8730802495987138
-pct nonzero: 0.6836324854811999</code></pre>
+          <pre class="code-block"><code>max abs diff: 73
+mean abs diff: 2.67347125
+pct nonzero:   0.8768875</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="code-snippets" aria-label="Runtime comparison for warping (frame)">
+      <div class="code-snippets__title">Runtime comparison (frame)</div>
+
+      <details class="code-snippet" open>
+        <summary>redFrame → form (inverse warping)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>Nearest neighbor:
+  time_warp_s  = 0.058011
+  time_total_s = 5.208443
+
+Bilinear:
+  time_warp_s  = 0.192293
+  time_total_s = 5.058346
+
+Δ warp  = +0.134282 s  (+231.48%)
+Δ total = −0.150097 s  (−2.88%)
+</code></pre>
         </div>
       </details>
     </div>
@@ -430,70 +462,34 @@ pct nonzero: 0.6836324854811999</code></pre>
     <div class="iteration-belt__outro">
       <p>
         The amplified difference map visualizes where interpolation changes pixel values under the same inverse warp.
-        Most
-        deviations concentrate along high-contrast boundaries and diagonal edges, where nearest-neighbor introduces
-        staircase
-        quantization while bilinear mixes neighboring samples and smooths the transition. The interior of large, slowly
-        varying regions remains comparatively stable because both samplers draw from similar source values. A maximum
-        absolute difference of 255 indicates that some pixels
-        disagree strongly (typically at thin edges or near invalid-region boundaries), while the mean absolute
-        difference of
-        1.87 shows that the average per-channel deviation is small relative to the 8-bit intensity range. The nonzero
-        rate
-        (about 68%) indicates that many pixels change by at least one intensity level, but most changes are minor and
-        are
-        therefore easy to miss at normal viewing scale or after browser downsampling.
-      </p>
-    </div>
-
-    <div class="code-snippets" aria-label="Runtime comparison for warping">
-      <div class="code-snippets__title">Runtime comparison</div>
-
-      <details class="code-snippet" open>
-        <summary>redFrame → form (inverse warping)</summary>
-        <div class="code-snippet__body">
-          <pre class="code-block"><code>Nearest neighbor:
-  time_warp_s  = 15.629
-  time_total_s = 20.828
-
-Bilinear:
-  time_warp_s  = 16.519
-  time_total_s = 21.954
-
-Δ warp  = +0.889 s  (+5.69%)
-Δ total = +1.126 s  (+5.41%)</code></pre>
-        </div>
-      </details>
-    </div>
-
-    <div class="iteration-belt__outro">
-      <p>
-        The speed difference follows directly from arithmetic density: nearest neighbor performs one fetch per output
-        pixel,
-        while bilinear performs four fetches and a weighted blend. The quality difference concentrates along
-        high-contrast
-        edges, where bilinear suppresses blocky discontinuities but can slightly blur fine texture.
+        The
+        mean absolute difference remains small on an 8-bit scale, yet the nonzero rate is high because bilinear perturbs
+        a
+        large fraction of pixels by 1–3 intensity levels through weighted mixing. The maximum deviation concentrates
+        along
+        sharp boundaries and fine line structure where nearest neighbor can “jump” across an edge by one pixel while
+        bilinear blends across it.
       </p>
       <p>
-        The remaining failure modes are geometric rather than interpolative. If the output bounds are underestimated,
-        valid
-        content is clipped; if they are overestimated, large empty regions appear and must be carried by an alpha mask.
-        Small
-        inconsistencies in point placement also manifest as shear or residual perspective in the rectified result, since
-        the
-        warp propagates corner error across the entire plane.
+        The runtime gap follows arithmetic density: nearest neighbor performs one fetch per output pixel, while bilinear
+        performs four fetches and a weighted blend. Remaining artifacts are typically geometric rather than
+        interpolative:
+        insufficient output bounds clip content, overly generous bounds increase empty regions, and corner clicking
+        error
+        propagates as residual shear across the entire planar surface.
       </p>
     </div>
 
-    <!-- ---------- Rectification example 2: Sticker / “pink” ---------- -->
+    <!-- ============================ Rectification example 2: Sticker (pink) ============================ -->
     <h3 class="iteration-belt__row-title" style="margin-top: 2.0rem;">Rectification example: Sticker surface</h3>
 
-    <p class="iteration-belt__intro" style="margin-top: 0.75rem;">
-      A second rectification instance isolates a dense, high-frequency surface (stickers + paint) where interpolation
-      differences appear as small, spatially localized changes. The inverse mapping is held fixed; only the
-      interpolation
-      operator varies.
-    </p>
+    <div class="iteration-belt__intro">
+      <p>
+        A second rectification instance isolates a dense, high-frequency surface (stickers + paint), where interpolation
+        differences appear as small but spatially widespread changes. The inverse mapping is held fixed; only the
+        interpolation operator varies.
+      </p>
+    </div>
 
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
       aria-label="Rectification correspondences for the sticker example">
@@ -524,39 +520,21 @@ Bilinear:
           alt="Sticker rectification using bilinear interpolation" loading="lazy">
       </figure>
     </div>
+    <!-- 
+  <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+       aria-label="Alpha mask comparison for the sticker example">
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">NN mask</div>
+      <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_mask.png"
+           alt="Alpha mask for nearest-neighbor sticker rectification" loading="lazy">
+    </figure>
 
-
-    <div class="code-snippets" aria-label="Sticker rectification runtime comparison">
-      <div class="code-snippets__title">Runtime comparison (sticker)</div>
-
-      <details class="code-snippet" open>
-        <summary>pink.JPG → form (inverse warping)</summary>
-        <div class="code-snippet__body">
-          <pre class="code-block"><code>Nearest neighbor:
-  time_warp_s  = 50.703
-  time_total_s = 59.054
-
-Bilinear:
-  time_warp_s  = 47.676
-  time_total_s = 56.579
-
-Δ warp  = −3.026 s  (bilinear faster by 5.97%)
-Δ total = −2.475 s  (bilinear faster by 4.19%)</code></pre>
-        </div>
-      </details>
-    </div>
-
-    <div class="iteration-belt__outro">
-      <p>
-        The runtime ordering in this instance favors bilinear despite its higher arithmetic density. This outcome
-        indicates that
-        end-to-end cost is dominated by implementation factors beyond the interpolation stencil (indexing strategy,
-        branching, mask
-        bookkeeping, and Python overhead), so the speed–quality trade-off should be reported from measured timings
-        rather than
-        theoretical per-pixel counts.
-      </p>
-    </div>
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">Bilinear mask</div>
+      <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_mask.png"
+           alt="Alpha mask for bilinear sticker rectification" loading="lazy">
+    </figure>
+  </div> -->
 
     <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
       <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
@@ -565,35 +543,57 @@ Bilinear:
         loading="lazy">
     </figure>
 
-
-    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor sticker outputs">
-      <div class="code-snippets__title">Numeric difference (bilinear vs NN)</div>
-
+    <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor outputs (sticker)">
+      <div class="code-snippets__title">Numeric difference (sticker)</div>
       <details class="code-snippet" open>
         <summary>diff statistics</summary>
         <div class="code-snippet__body">
           <pre class="code-block"><code>max abs diff: 122
 mean abs diff: 2.350457083333333
-pct nonzero: 0.78648625</code></pre>
+pct nonzero:   0.78648625</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="code-snippets" aria-label="Sticker rectification runtime comparison">
+      <div class="code-snippets__title">Runtime comparison (sticker)</div>
+
+      <details class="code-snippet" open>
+        <summary>pink → form (inverse warping)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>Nearest neighbor:
+                time_warp_s  = 0.053140
+                time_total_s = 5.575044
+
+              Bilinear:
+                time_warp_s  = 0.172137
+                time_total_s = 5.730197
+
+              Δ warp  = +0.118997 s  (+223.93%)
+              Δ total = +0.155153 s  (+2.78%)
+            </code></pre>
         </div>
       </details>
     </div>
 
     <div class="iteration-belt__outro">
       <p>
-        The amplified difference map shows that most disagreements are confined to edges and small texture transitions:
-        bilinear
-        modifies values by distributing weight across neighboring samples, while nearest neighbor commits to one
-        discrete sample.
-        At normal viewing scale the outputs remain visually consistent, but bilinear more reliably suppresses staircase
-        artifacts
-        along diagonal boundaries.
+        The sticker surface produces a dense difference map because bilinear modifies many pixels by small amounts
+        through
+        neighborhood mixing, while nearest neighbor commits to a single rounded sample. The mean difference remains low,
+        which matches the visual impression that both rectifications are consistent at normal scale, despite widespread
+        1–3 level shifts in fine texture.
+      </p>
+      <p>
+        The runtime ordering can invert across implementations and image sizes. End-to-end cost includes indexing
+        strategy,
+        branching behavior, mask bookkeeping, and Python overhead, so speed should be reported from measured timings
+        rather
+        than inferred from the interpolation stencil alone.
       </p>
     </div>
-
-
-
   </section>
+
 
   <!-- =============================================================== A.4: Blend images into a mosaic  =============================================================== -->
   <section class="content gold-glass iteration-belt" id="a4">
