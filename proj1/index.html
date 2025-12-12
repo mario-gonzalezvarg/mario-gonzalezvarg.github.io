@@ -29,55 +29,180 @@
   <!-- hero -->
   <div class="content big-title">
     <h1 class="title">Images of the Russian Empire</h1>
+  </div>
 
-    <!-- use project-switcher as section jump pills -->
-    <div class="project-switcher" aria-label="Jump to sections">
-      <a href="#abstract" class="project-switcher__button project-switcher__button--primary">Abstract</a>
-      <a href="#method" class="project-switcher__button">Method</a>
-      <a href="#results" class="project-switcher__button">Results</a>
-      <a href="#discussion" class="project-switcher__button">Discussion</a>
-      <a href="#repro" class="project-switcher__button">Repro</a>
+
+<!-- =============================== Single-scale JPG plates (media/single_rgb) =============================== -->
+<section id="single_rgb" class="content gold-glass iteration-belt iteration-belt--two-rows"
+  aria-label="Single-scale JPG channel plates">
+
+  <h2 class="section-heading">Single-Scale Plates</h2>
+
+  <div class="iteration-belt__intro">
+    <p>
+      Color reconstruction from Prokudin-Gorskii plates can be reduced to a problem of identity across three
+      appearances. Each plate supplies three grayscale exposures of one scene, taken through blue, green, and red
+      filters, yet recorded at slightly different moments. The scene is therefore treated as the stable cause, and the
+      three bands are treated as its varying effects. Alignment is justified when the same geometric structures—edges,
+      contours, and repeated textures—recur in all three bands, though displaced by the motion of the camera or the
+      subject between exposures.
+    </p>
+    <p>
+      The reconstruction pipeline can be decomposed into three transformations. First, the plate is split into three
+      bands and the blue band is chosen as the reference frame. Second, each remaining band is shifted over a window of
+      candidate translations, and a similarity score is computed on an interior region so that colored borders and
+      scanner artifacts do not dominate the comparison. Third, the best shifts are applied, the valid overlap region is
+      cropped to the common intersection, and the result is stacked in red–green–blue order to form a single RGB image.
+      When the shifts are correct, structural features coincide; when they are wrong, colored fringes persist along
+      high-contrast boundaries.
+    </p>
+
+    <!-- Monastery viz panel (static) -->
+    <figure style="margin-top: 1.25rem;">
+      <div class="static-panel--row" role="group" aria-label="Monastery: raw B, G, R bands">
+        <div class="static-panel__item">
+          <img class="static-panel__image" src="media/single_rgb/monastery_B.png" alt="Monastery: blue band (B)">
+          <div class="static-panel__caption">B (blue band)</div>
+        </div>
+        <div class="static-panel__item">
+          <img class="static-panel__image" src="media/single_rgb/monastery_G.png" alt="Monastery: green band (G)">
+          <div class="static-panel__caption">G (green band)</div>
+        </div>
+        <div class="static-panel__item">
+          <img class="static-panel__image" src="media/single_rgb/monastery_R.png" alt="Monastery: red band (R)">
+          <div class="static-panel__caption">R (red band)</div>
+        </div>
+      </div>
+      <figcaption class="writing-section__caption">
+        Monastery — three raw exposures. The alignment step estimates the translations that place the G and R bands into
+        the B coordinate frame before stacking.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="iteration-belt__header">
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+  </div>
+
+  <div class="iteration-belt__viewport">
+
+    <!-- <div class="iteration-belt__row">
+      <h3 class="iteration-belt__row-title">Monastery: channel bands</h3>
+      <div class="iteration-belt__track">
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/single_rgb/monastery_B.png" alt="Monastery blue band (B)">
+          <figcaption class="iteration-belt__caption">B serves as the reference frame for scoring.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/single_rgb/monastery_G.png" alt="Monastery green band (G)">
+          <figcaption class="iteration-belt__caption">G is shifted to maximize agreement with B.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/single_rgb/monastery_R.png" alt="Monastery red band (R)">
+          <figcaption class="iteration-belt__caption">R is shifted to maximize agreement with B.</figcaption>
+        </figure>
+      </div>
+    </div> -->
+
+    <!-- Row 2: Other plates as triptychs (viz panels inside belt items) -->
+    <!-- Wider belt items so each triptych fits cleanly -->
+    <div class="iteration-belt__row" style="--belt-item-width: 58rem;">
+      <h3 class="iteration-belt__row-title">Other plates: raw triptychs</h3>
+      <div class="iteration-belt__track">
+
+        <figure class="iteration-belt__item">
+          <div class="static-panel--row" role="group" aria-label="Church: raw B, G, R bands">
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/church_B.png" alt="Church: blue band (B)">
+              <div class="static-panel__caption">B</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/church_G.png" alt="Church: green band (G)">
+              <div class="static-panel__caption">G</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/church_R.png" alt="Church: red band (R)">
+              <div class="static-panel__caption">R</div>
+            </div>
+          </div>
+          <figcaption class="iteration-belt__caption">Church — raw B/G/R before any translation correction.</figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <div class="static-panel--row" role="group" aria-label="Emir: raw B, G, R bands">
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/emir_B.png" alt="Emir: blue band (B)">
+              <div class="static-panel__caption">B</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/emir_G.png" alt="Emir: green band (G)">
+              <div class="static-panel__caption">G</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/emir_R.png" alt="Emir: red band (R)">
+              <div class="static-panel__caption">R</div>
+            </div>
+          </div>
+          <figcaption class="iteration-belt__caption">
+            Emir — strong exposure differences motivate similarity on structure (e.g., edges) rather than raw intensity.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <div class="static-panel--row" role="group" aria-label="Harvesters: raw B, G, R bands">
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/harvesters_B.png" alt="Harvesters: blue band (B)">
+              <div class="static-panel__caption">B</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/harvesters_G.png" alt="Harvesters: green band (G)">
+              <div class="static-panel__caption">G</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/harvesters_R.png" alt="Harvesters: red band (R)">
+              <div class="static-panel__caption">R</div>
+            </div>
+          </div>
+          <figcaption class="iteration-belt__caption">
+            Harvesters — alignment is judged by the coincidence of repeated edges and contours across bands.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <div class="static-panel--row" role="group" aria-label="Self portrait: raw B, G, R bands">
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/self_portrait_B.png" alt="Self portrait: blue band (B)">
+              <div class="static-panel__caption">B</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/self_portrait_G.png" alt="Self portrait: green band (G)">
+              <div class="static-panel__caption">G</div>
+            </div>
+            <div class="static-panel__item">
+              <img class="static-panel__image" src="media/single_rgb/self_portrait_R.png" alt="Self portrait: red band (R)">
+              <div class="static-panel__caption">R</div>
+            </div>
+          </div>
+          <figcaption class="iteration-belt__caption">
+            Self portrait — fine facial edges provide strong constraints on the translation.
+          </figcaption>
+        </figure>
+
+      </div>
     </div>
   </div>
 
-  <!-- =============================== Abstract =============================== -->
-  <section class="content gold-glass writing-section" id="abstract">
-    <h2 class="section-heading">Abstract</h2>
+  <div class="iteration-belt__outro">
     <p>
-      <strong>TODO:</strong> 5–8 sentences stating the task (split plate → align channels → compose RGB),
-      the core model (translation), and the acceleration strategy (pyramid / coarse-to-fine).
+      The two displays serve different epistemic roles. The Monastery belt isolates the three observations of a single
+      cause and makes the need for translation explicit. The multi-plate belt exhibits variation in exposure, texture,
+      and border artifacts, and therefore clarifies why the similarity score is restricted to an interior region and why
+      structural features provide a more stable basis for agreement than raw brightness.
     </p>
-  </section>
-
-  <!-- =============================== Method =============================== -->
-  <section class="content gold-glass writing-section" id="method">
-    <h2 class="section-heading">Method</h2>
-
-    <h3>Plate Splitting</h3>
-    <p>
-      <strong>TODO:</strong> Describe how the glass plate is split into three bands (B, G, R), and how borders are cropped.
-    </p>
-
-    <h3>Alignment Objective</h3>
-    <p>
-      <strong>TODO:</strong> Define the scoring function (e.g., SSD/NCC) and the evaluation window (interior crop to avoid borders).
-    </p>
-
-    <h3>Single-Scale Search (Small JPGs)</h3>
-    <p>
-      <strong>TODO:</strong> Describe exhaustive search over (dx, dy), search range, and how the best shift is selected.
-    </p>
-
-    <h3>Coarse-to-Fine Pyramid (Full-Res TIFFs)</h3>
-    <p>
-      <strong>TODO:</strong> Describe the pyramid levels, how shifts are scaled between levels, and the refinement window at each level.
-    </p>
-
-    <h3>Bells &amp; Whistles (Optional)</h3>
-    <p>
-      <strong>TODO:</strong> Add edge-based alignment, automatic cropping, white balance, contrast normalization, etc.
-    </p>
-  </section>
+  </div>
+</section>
 
   <!-- =============================== Results =============================== -->
   <section class="content gold-glass iteration-belt" id="results">

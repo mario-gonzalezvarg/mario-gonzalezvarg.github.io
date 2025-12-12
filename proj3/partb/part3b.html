@@ -37,25 +37,70 @@
     </div>
   </div>
 
-  <!-- ========== B.1: Harris Interest Points ========== -->
-  <section class="content gold-glass iteration-belt" id="b1">
-    <h2 class="section-heading">B.1 Harris Interest Points</h2>
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: visualize detected corners on at least two image pairs; include parameter choices and brief notes.
-      </p>
-    </div>
-  </section>
+<!-- ========== B.1: Corner Detection (Harris + ANMS) ========== -->
+<section class="content gold-glass iteration-belt" id="b1">
+  <h2 class="section-heading">B.1 Corner Detection</h2>
 
-  <!-- ========== B.2: ANMS ========== -->
-  <section class="content gold-glass iteration-belt" id="b2">
-    <h2 class="section-heading">B.2 Adaptive Non-Maximal Suppression (ANMS)</h2>
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: show corner distribution before/after ANMS; report number of retained points.
-      </p>
-    </div>
-  </section>
+  <div class="iteration-belt__intro">
+    <p>
+      Corner selection can be treated as identifying pixels whose local gradient structure is two-dimensional. The Harris
+      response operationalizes this idea by scoring locations where intensity changes strongly along two independent
+      directions, producing a dense set of candidate interest points.
+    </p>
+    <p>
+      Raw Harris detections typically cluster in high-texture regions, because nearby pixels can share similarly high
+      scores. Adaptive Non-Maximal Suppression (ANMS) converts this clustered set into a spatially diverse subset by
+      retaining points that remain locally strong while maximizing their separation from stronger neighbors. The resulting
+      distribution improves downstream matching because correspondence hypotheses are spread across the overlap rather
+      than concentrated in a single patch.
+    </p>
+  </div>
+
+  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Example 1 (g2)</h3>
+  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="Harris vs ANMS corner distribution (g2)">
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">Harris (raw)</div>
+      <img class="viz-pair__image" src="media/1_corner/g2/corners_harris.png"
+           alt="Harris corners for g2 (raw detections)" loading="lazy">
+    </figure>
+
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">ANMS (suppressed)</div>
+      <img class="viz-pair__image" src="media/1_corner/g2/corners_anms.png"
+           alt="ANMS-selected corners for g2 (spatially distributed subset)" loading="lazy">
+    </figure>
+  </div>
+
+  <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1)</h3>
+  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="Harris vs ANMS corner distribution (r1)">
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">Harris (raw)</div>
+      <img class="viz-pair__image" src="media/1_corner/r1/corners_harris.png"
+           alt="Harris corners for r1 (raw detections)" loading="lazy">
+    </figure>
+
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">ANMS (suppressed)</div>
+      <img class="viz-pair__image" src="media/1_corner/r1/corners_anms.png"
+           alt="ANMS-selected corners for r1 (spatially distributed subset)" loading="lazy">
+    </figure>
+  </div>
+
+  <div class="iteration-belt__outro">
+    <p>
+      The qualitative difference between the two methods is distributional rather than semantic: Harris identifies many
+      correct “corner-like” locations but over-represents regions with repeated micro-texture, whereas ANMS explicitly
+      trades quantity for coverage. This trade improves robustness in later stages because descriptor matching is less
+      sensitive to a single textured area dominating the correspondence set.
+    </p>
+    <p>
+      The main failure mode of ANMS is under-representation in low-texture regions: if few points have high Harris scores,
+      the suppression radius can eliminate potentially useful candidates. Practical behavior therefore depends on coupling
+      ANMS parameters (target count and suppression criterion) to the scene and to the descriptor scale used downstream.
+    </p>
+  </div>
+</section>
+
 
   <!-- ========== B.3: Feature Descriptors ========== -->
   <section class="content gold-glass iteration-belt" id="b3">
