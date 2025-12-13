@@ -380,13 +380,15 @@ matches kept = 112</code></pre>
 
     <div class="iteration-belt__intro">
       <p>
-        Robust alignment can be decomposed into hypothesis generation and hypothesis selection. A homography hypothesis
-        is
-        produced from a minimal correspondence subset, then evaluated by counting how many matches agree with that
-        hypothesis
-        within a geometric tolerance. RANSAC operationalizes this selection rule by repeating the process many times and
-        retaining the hypothesis supported by the largest inlier set.
+        Outliers are inevitable once correspondences are produced automatically: repeated texture, specular highlights,
+        and
+        translucent structure can yield plausible descriptor matches that are geometrically inconsistent. RANSAC
+        addresses this
+        by fitting the homography to the largest self-consistent subset of matches, treating the remaining
+        correspondences as
+        evidence against a candidate warp rather than evidence for it.
       </p>
+
     </div>
 
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
@@ -444,6 +446,21 @@ time_total_s:     9.231406</code></pre>
       </details>
     </div>
 
+    <div class="iteration-belt__outro">
+      <p>
+        Runtime comparison separates interactive cost from compute cost. The manual method is dominated by point
+        selection
+        (≈ 246 s), while the numerical solve itself is negligible once points exist. The automatic method pays the cost
+        in
+        computation (feature processing + 2000 RANSAC hypotheses), yet finishes in ≈ 9.23 s because it removes human
+        time and
+        can amortize work over vectorized operations. For benchmarking, the meaningful comparison is therefore
+        <em>compute-only</em> time rather than click time; for usability, the relevant comparison is end-to-end wall
+        clock,
+        where automation dominates.
+      </p>
+    </div>
+
     <!-- Manual vs Auto (two-panel comparison) -->
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
       aria-label="Manual vs automatic mosaic comparison">
@@ -464,7 +481,8 @@ time_total_s:     9.231406</code></pre>
 
     <div class="iteration-belt__outro">
       <p>
-        The seam difference is primarily geometric. A visible “hard line” is expected when the alignment error is on the
+        The seam difference is primarily geometric. A visible merging line is expected when the alignment error is on
+        the
         order of several pixels: the overlap contains two slightly shifted copies of the same edge structure, so
         blending
         cannot hide the duplication and instead reveals a boundary. The manual reprojection statistics (mean ≈ 7.7 px,
@@ -479,10 +497,10 @@ time_total_s:     9.231406</code></pre>
         more
         tightly (mean inlier error ≈ 1.33 px), and feathering then spreads residual exposure differences across a wide
         band
-        instead of localizing them to one edge. The resulting mosaic looks “better blended” because the overlap is
+        instead of localizing them to one edge. The resulting mosaic looks better blended because the overlap is
         geometrically coherent, not merely because the mask is smoother.
       </p>
-      <p>
+      <!-- <p>
         Runtime comparison separates interactive cost from compute cost. The manual method is dominated by point
         selection
         (≈ 246 s), while the numerical solve itself is negligible once points exist. The automatic method pays the cost
@@ -493,7 +511,7 @@ time_total_s:     9.231406</code></pre>
         <em>compute-only</em> time rather than click time; for usability, the relevant comparison is end-to-end wall
         clock,
         where automation dominates.
-      </p>
+      </p> -->
     </div>
   </section>
 
