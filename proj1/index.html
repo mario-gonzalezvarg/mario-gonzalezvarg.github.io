@@ -32,238 +32,307 @@
   </div>
 
 
-<!-- =============================== Single-scale JPG plates (media/single_rgb) =============================== -->
-<section id="single_rgb" class="content gold-glass iteration-belt iteration-belt--two-rows"
-  aria-label="Single-scale JPG channel plates">
+  <!-- =============================== Single-scale JPG plates (media/single_rgb) =============================== -->
+  <section id="single_rgb" class="content gold-glass iteration-belt iteration-belt--two-rows"
+    aria-label="Single-scale JPG channel plates">
 
-  <h2 class="section-heading">Single-Scale Plates</h2>
+    <h2 class="section-heading">Single-Scale Plates</h2>
 
-  <div class="iteration-belt__intro">
-    <p>
-      Color reconstruction from Prokudin-Gorskii plates can be reduced to a problem of identity across three
-      appearances. Each plate supplies three grayscale exposures of one scene, taken through blue, green, and red
-      filters, yet recorded at slightly different moments. The scene is therefore treated as the stable cause, and the
-      three bands are treated as its varying effects. Alignment is justified when the same geometric structures—edges,
-      contours, and repeated textures—recur in all three bands, though displaced by the motion of the camera or the
-      subject between exposures.
-    </p>
-    <p>
-      The reconstruction pipeline can be decomposed into three transformations. First, the plate is split into three
-      bands and the blue band is chosen as the reference frame. Second, each remaining band is shifted over a window of
-      candidate translations, and a similarity score is computed on an interior region so that colored borders and
-      scanner artifacts do not dominate the comparison. Third, the best shifts are applied, the valid overlap region is
-      cropped to the common intersection, and the result is stacked in red–green–blue order to form a single RGB image.
-      When the shifts are correct, structural features coincide; when they are wrong, colored fringes persist along
-      high-contrast boundaries.
-    </p>
 
-    <!-- Monastery viz panel (static) -->
-    <figure style="margin-top: 1.25rem;">
-      <div class="static-panel--row" role="group" aria-label="Monastery: raw B, G, R bands">
-        <div class="static-panel__item">
-          <img class="static-panel__image" src="media/single_rgb/monastery_B.png" alt="Monastery: blue band (B)">
-          <div class="static-panel__caption">B (blue band)</div>
-        </div>
-        <div class="static-panel__item">
-          <img class="static-panel__image" src="media/single_rgb/monastery_G.png" alt="Monastery: green band (G)">
-          <div class="static-panel__caption">G (green band)</div>
-        </div>
-        <div class="static-panel__item">
-          <img class="static-panel__image" src="media/single_rgb/monastery_R.png" alt="Monastery: red band (R)">
-          <div class="static-panel__caption">R (red band)</div>
-        </div>
-      </div>
-      <figcaption class="writing-section__caption">
-        Monastery — three raw exposures. The alignment step estimates the translations that place the G and R bands into
-        the B coordinate frame before stacking.
-      </figcaption>
-    </figure>
-  </div>
-
-  <div class="iteration-belt__header">
-    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
-  </div>
-
-  <div class="iteration-belt__viewport">
-
-    <!-- <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">Monastery: channel bands</h3>
-      <div class="iteration-belt__track">
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/single_rgb/monastery_B.png" alt="Monastery blue band (B)">
-          <figcaption class="iteration-belt__caption">B serves as the reference frame for scoring.</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/single_rgb/monastery_G.png" alt="Monastery green band (G)">
-          <figcaption class="iteration-belt__caption">G is shifted to maximize agreement with B.</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/single_rgb/monastery_R.png" alt="Monastery red band (R)">
-          <figcaption class="iteration-belt__caption">R is shifted to maximize agreement with B.</figcaption>
-        </figure>
-      </div>
-    </div> -->
-
-    <!-- Row 2: Other plates as triptychs (viz panels inside belt items) -->
-    <!-- Wider belt items so each triptych fits cleanly -->
-    <div class="iteration-belt__row" style="--belt-item-width: 58rem;">
-      <h3 class="iteration-belt__row-title">Other plates: raw triptychs</h3>
-      <div class="iteration-belt__track">
-
-        <figure class="iteration-belt__item">
-          <div class="static-panel--row" role="group" aria-label="Church: raw B, G, R bands">
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/church_B.png" alt="Church: blue band (B)">
-              <div class="static-panel__caption">B</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/church_G.png" alt="Church: green band (G)">
-              <div class="static-panel__caption">G</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/church_R.png" alt="Church: red band (R)">
-              <div class="static-panel__caption">R</div>
-            </div>
-          </div>
-          <figcaption class="iteration-belt__caption">Church — raw B/G/R before any translation correction.</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <div class="static-panel--row" role="group" aria-label="Emir: raw B, G, R bands">
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/emir_B.png" alt="Emir: blue band (B)">
-              <div class="static-panel__caption">B</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/emir_G.png" alt="Emir: green band (G)">
-              <div class="static-panel__caption">G</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/emir_R.png" alt="Emir: red band (R)">
-              <div class="static-panel__caption">R</div>
-            </div>
-          </div>
-          <figcaption class="iteration-belt__caption">
-            Emir — strong exposure differences motivate similarity on structure (e.g., edges) rather than raw intensity.
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <div class="static-panel--row" role="group" aria-label="Harvesters: raw B, G, R bands">
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/harvesters_B.png" alt="Harvesters: blue band (B)">
-              <div class="static-panel__caption">B</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/harvesters_G.png" alt="Harvesters: green band (G)">
-              <div class="static-panel__caption">G</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/harvesters_R.png" alt="Harvesters: red band (R)">
-              <div class="static-panel__caption">R</div>
-            </div>
-          </div>
-          <figcaption class="iteration-belt__caption">
-            Harvesters — alignment is judged by the coincidence of repeated edges and contours across bands.
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <div class="static-panel--row" role="group" aria-label="Self portrait: raw B, G, R bands">
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/self_portrait_B.png" alt="Self portrait: blue band (B)">
-              <div class="static-panel__caption">B</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/self_portrait_G.png" alt="Self portrait: green band (G)">
-              <div class="static-panel__caption">G</div>
-            </div>
-            <div class="static-panel__item">
-              <img class="static-panel__image" src="media/single_rgb/self_portrait_R.png" alt="Self portrait: red band (R)">
-              <div class="static-panel__caption">R</div>
-            </div>
-          </div>
-          <figcaption class="iteration-belt__caption">
-            Self portrait — fine facial edges provide strong constraints on the translation.
-          </figcaption>
-        </figure>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="iteration-belt__outro">
-    <p>
-      The two displays serve different epistemic roles. The Monastery belt isolates the three observations of a single
-      cause and makes the need for translation explicit. The multi-plate belt exhibits variation in exposure, texture,
-      and border artifacts, and therefore clarifies why the similarity score is restricted to an interior region and why
-      structural features provide a more stable basis for agreement than raw brightness.
-    </p>
-  </div>
-</section>
-
-  <!-- =============================== Results =============================== -->
-  <section class="content gold-glass iteration-belt" id="results">
-    <h2 class="section-heading">Results</h2>
 
     <div class="iteration-belt__intro">
       <p>
-        <strong>TODO:</strong> Briefly state what is shown below (final RGBs + (optional) overlays/shifts).
+        Single-scale plate alignment can be treated as an inference from multiple appearances to a single scene
+        geometry. A
+        Prokudin–Gorskii scan contains three grayscale exposures of the same subject, separated by a spectral filter and
+        a
+        small lapse of time; the task is to recover the spatial correspondence that makes these exposures comparable
+        within
+        one coordinate frame. For the low-resolution JPEG plates, the specification’s simplifying assumption is that
+        this
+        correspondence is adequately modeled by a two-dimensional translation.
       </p>
     </div>
 
+
+    <figure style="margin-top: 1.25rem;">
+    <div class="viz-pair viz-pair--three" role="group" aria-label="Monastery: raw B, G, R bands">
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">Monastery</div>
+        <img class="viz-pair__image" src="media/1_single_rgb/monastery.jpg" alt="Monastery: blue band (B)">
+      </div>
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">cathedral</div>
+        <img class="viz-pair__image" src="media/1_single_rgb/cathedral.jpg" alt="Monastery: green band (G)">
+      </div>
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">tobolsk</div>
+        <img class="viz-pair__image" src="media/1_single_rgb/tobolsk.jpg" alt="Monastery: red band (R)">
+      </div>
+    </div>
+    <figcaption class="iteration-belt__caption">
+      Three images all The alignment step estimates the translations that place the G and R bands
+      into the B coordinate frame before stacking.
+    </figcaption>
+  </figure>
+
+     <div class="iteration-belt__intro">
+      <p>
+        The procedure begins by splitting the scan into three equal bands in B–G–R order and selecting the blue band as
+        the
+        reference. Two displacement vectors are then estimated: one that maps the green band into the blue frame and one
+        that
+        maps the red band into the same frame. Each displacement is chosen by exhaustively testing a bounded window of
+        integer
+        shifts and scoring the shifted band against the reference with a simple matching metric such as L2 distance or
+        normalized cross-correlation, computed on interior pixels so that colored borders and scan artifacts do not
+        dominate
+        the comparison.
+      </p>
+    </div>
+
+    <figure style="margin-top: 1.25rem;">
+    <div class="viz-pair viz-pair--three" role="group" aria-label="Monastery: raw B, G, R bands">
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">B</div>
+        <img class="viz-pair__image" src="media/single_rgb/monastery_B.png" alt="Monastery: blue band (B)">
+      </div>
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">G</div>
+        <img class="viz-pair__image" src="media/single_rgb/monastery_G.png" alt="Monastery: green band (G)">
+      </div>
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">R</div>
+        <img class="viz-pair__image" src="media/single_rgb/monastery_R.png" alt="Monastery: red band (R)">
+      </div>
+    </div>
+    <figcaption class="iteration-belt__caption">
+      Monastery — three raw exposures. The alignment step estimates the translations that place the G and R bands
+      into the B coordinate frame before stacking.
+    </figcaption>
+  </figure>
+
     <div class="iteration-belt__header">
-      <h3 class="iteration-belt__title">Reconstructed RGB gallery</h3>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
     </div>
 
     <div class="iteration-belt__viewport">
-      <div class="iteration-belt__track">
-        <!-- TODO: duplicate this <figure> per result -->
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/results/PLACEHOLDER_rgb.jpg"
-               alt="Final reconstructed RGB image (placeholder)" loading="lazy">
-          <figcaption class="iteration-belt__caption">
-            <strong>TODO:</strong> filename + (dx, dy) for G and R, metric used.
-          </figcaption>
-        </figure>
+      <div class="iteration-belt__row" style="--belt-item-width: 58rem;">
+        <h3 class="iteration-belt__row-title">Other plates: raw triptychs</h3>
+        <div class="iteration-belt__track">
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/results/PLACEHOLDER_overlay.jpg"
-               alt="Alignment overlay visualization (placeholder)" loading="lazy">
-          <figcaption class="iteration-belt__caption">
-            <strong>TODO:</strong> overlay caption (what colors mean, what indicates good alignment).
-          </figcaption>
-        </figure>
+          <figure class="iteration-belt__item">
+            <div class="static-panel--row" role="group" aria-label="Church: raw B, G, R bands">
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/church_B.png" alt="Church: blue band (B)">
+                <div class="static-panel__caption">B</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/church_G.png" alt="Church: green band (G)">
+                <div class="static-panel__caption">G</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/church_R.png" alt="Church: red band (R)">
+                <div class="static-panel__caption">R</div>
+              </div>
+            </div>
+            <figcaption class="iteration-belt__caption">Church — raw B/G/R before any translation correction.
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <div class="static-panel--row" role="group" aria-label="Emir: raw B, G, R bands">
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/emir_B.png" alt="Emir: blue band (B)">
+                <div class="static-panel__caption">B</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/emir_G.png" alt="Emir: green band (G)">
+                <div class="static-panel__caption">G</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/emir_R.png" alt="Emir: red band (R)">
+                <div class="static-panel__caption">R</div>
+              </div>
+            </div>
+            <figcaption class="iteration-belt__caption">
+              Emir — strong exposure differences motivate similarity on structure (e.g., edges) rather than raw
+              intensity.
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <div class="static-panel--row" role="group" aria-label="Harvesters: raw B, G, R bands">
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/harvesters_B.png"
+                  alt="Harvesters: blue band (B)">
+                <div class="static-panel__caption">B</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/harvesters_G.png"
+                  alt="Harvesters: green band (G)">
+                <div class="static-panel__caption">G</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/harvesters_R.png" alt="Harvesters: red band (R)">
+                <div class="static-panel__caption">R</div>
+              </div>
+            </div>
+            <figcaption class="iteration-belt__caption">
+              Harvesters — alignment is judged by the coincidence of repeated edges and contours across bands.
+            </figcaption>
+          </figure>
+
+          <figure class="iteration-belt__item">
+            <div class="static-panel--row" role="group" aria-label="Self portrait: raw B, G, R bands">
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/self_portrait_B.png"
+                  alt="Self portrait: blue band (B)">
+                <div class="static-panel__caption">B</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/self_portrait_G.png"
+                  alt="Self portrait: green band (G)">
+                <div class="static-panel__caption">G</div>
+              </div>
+              <div class="static-panel__item">
+                <img class="static-panel__image" src="media/single_rgb/self_portrait_R.png"
+                  alt="Self portrait: red band (R)">
+                <div class="static-panel__caption">R</div>
+              </div>
+            </div>
+            <figcaption class="iteration-belt__caption">
+              Self portrait — fine facial edges provide strong constraints on the translation.
+            </figcaption>
+          </figure>
+
+        </div>
       </div>
     </div>
 
     <div class="iteration-belt__outro">
       <p>
-        <strong>TODO:</strong> 3–6 sentences summarizing what worked, what failed, and why.
+        The underlying issue is not peculiar to historical colorization; it is the general problem of registering
+        multiple
+        measurements to a shared coordinate system. When channels are captured simultaneously in a fixed geometry, this
+        alignment step is largely absent; when bands or modalities are acquired separately, registration becomes
+        necessary.
+        Astronomy and remote sensing often stack separately captured spectral bands into false-color composites,
+        microscopy
+        aligns multi-stain or multi-fluorescence channels, medical imaging registers multi-sequence scans (and even
+        cross-modality pairs), and industrial inspection aligns visible, infrared, and depth sensors to support
+        measurement
+        and control. The single-scale method is the simplest instance of this broader engineering practice: estimate the
+        transformation that best preserves shared structure while discounting unreliable borders and channel-dependent
+        intensity shifts.
       </p>
+
     </div>
   </section>
 
-  <!-- =============================== Discussion =============================== -->
-  <section class="content gold-glass writing-section" id="discussion">
-    <h2 class="section-heading">Discussion</h2>
-    <p>
-      <strong>TODO:</strong> Failure cases (exposure differences, motion), why borders hurt, when edges/NCC help,
-      and how pyramid settings trade speed vs accuracy.
-    </p>
-  </section>
+  <!-- =============================== Multi-scale pyramid alignment (media/2_multi_scale/ncc) =============================== -->
+<section id="multi_scale" class="content gold-glass iteration-belt"
+  aria-label="Multi-scale pyramid alignment results (NCC)" style="--belt-item-width: 36rem;">
 
-  <!-- =============================== Reproducibility =============================== -->
-  <section class="content gold-glass writing-section" id="repro">
-    <h2 class="section-heading">Reproducibility</h2>
+  <h2 class="section-heading">Multi-Scale Pyramid Alignment</h2>
+
+  <div class="iteration-belt__intro">
     <p>
-      <strong>TODO:</strong> Put the exact commands used to generate outputs (JPG pipeline + TIFF pyramid pipeline),
-      plus where outputs are saved.
+      Pyramid alignment can be characterized as a computational re-ordering of the same inferential task posed by the
+      single-scale method. The transformation model remains a two-dimensional translation, and the objective remains a
+      maximization of agreement between two channel images; what changes is the manner in which evidence is gathered.
+      Rather than searching for a large displacement directly on the full-resolution plate, the image is represented at
+      multiple scales, and the displacement is recovered by successive approximation from coarse to fine.
     </p>
-  </section>
+    <p>
+      The crucial fact is that downsampling contracts displacement. A translation that is hundreds of pixels at full
+      resolution becomes a modest shift on the coarsest level, where exhaustive search is cheap because both the image
+      area and the effective search radius are small. That coarse estimate is then treated as a provisional hypothesis:
+      it is scaled to the next resolution and corrected by a local refinement search. Repeating this update across the
+      pyramid yields a final shift that is accurate at the finest scale while avoiding the quadratic explosion in the
+      number of candidates that would occur if a single large window were searched on the original plate.
+    </p>
+  </div>
+
+  <div class="iteration-belt__header">
+    <h3 class="iteration-belt__title">Full-resolution reconstructions (NCC + pyramid)</h3>
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+  </div>
+
+  <div class="iteration-belt__viewport">
+    <div class="iteration-belt__track">
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/icon_rgb.jpg" alt="Icon — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Icon — G(dx,dy)=(17, 42), R(dx,dy)=(23, 90), 9.96s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/italil_rgb.jpg" alt="Italil — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Italil — G(dx,dy)=(22, 38), R(dx,dy)=(36, 77), 9.76s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/melons_rgb.jpg" alt="Melons — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Melons — G(dx,dy)=(10, 80), R(dx,dy)=(13, 177), 9.68s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/lugano_rgb.jpg" alt="Lugano — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Lugano — G(dx,dy)=(-17, 41), R(dx,dy)=(-29, 92), 9.54s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/church_rgb.jpg" alt="Church — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Church — G(dx,dy)=(4, 25), R(dx,dy)=(-4, 58), 9.01s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/lastochikino_rgb.jpg" alt="Lastochikino — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Lastochikino — G(dx,dy)=(-2, -3), R(dx,dy)=(-8, 76), 9.29s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/emir_rgb.jpg" alt="Emir — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Emir — G(dx,dy)=(23, 49), R(dx,dy)=(40, 107), 9.14s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/harvesters_rgb.jpg" alt="Harvesters — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Harvesters — G(dx,dy)=(17, 60), R(dx,dy)=(14, 124), 9.40s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/siren_rgb.jpg" alt="Siren — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Siren — G(dx,dy)=(-6, 49), R(dx,dy)=(-24, 96), 9.68s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/three_generations_rgb.jpg" alt="Three generations — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Three generations — G(dx,dy)=(12, 54), R(dx,dy)=(9, 111), 10.23s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/self_portrait_rgb.jpg" alt="Self portrait — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Self portrait — G(dx,dy)=(29, 78), R(dx,dy)=(37, 176), 9.93s.</figcaption>
+      </figure>
+
+    </div>
+  </div>
+
+  <div class="iteration-belt__outro">
+    <p>
+      Runtime exhibits the intended effect of the pyramid schedule: the mean time across the plates above is 9.60s
+      (min 9.01s, max 10.23s), despite displacements that reach well into the hundreds of pixels in the original
+      coordinate system. This stability follows from a modular organization of the pipeline at the level of ideas:
+      a single scoring-and-shift primitive is reused unchanged, while the multi-scale procedure supplies only an order of
+      evaluation and a rule for propagating estimates between resolutions. Such a separation preserves correctness
+      arguments (the same objective is optimized) while making the performance target in the specification achievable on
+      full-resolution scans. :contentReference[oaicite:2]{index=2} :contentReference[oaicite:3]{index=3}
+    </p>
+  </div>
+</section>
+
 
   <!-- script that drives sky + belt pause behavior (same as your other projects) -->
   <script src="../proj5/script.js" defer></script>
