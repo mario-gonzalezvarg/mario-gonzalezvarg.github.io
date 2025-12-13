@@ -67,27 +67,6 @@
     </div>
 
 
-    <!-- <figure style="margin-top: 1.25rem;">
-    <div class="viz-pair viz-pair--three" role="group" aria-label="Monastery: raw B, G, R bands">
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">Monastery</div>
-        <img class="viz-pair__image" src="media/1_single_rgb/monastery.jpg" alt="Monastery: blue band (B)">
-      </div>
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">cathedral</div>
-        <img class="viz-pair__image" src="media/1_single_rgb/cathedral.jpg" alt="Monastery: green band (G)">
-      </div>
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">tobolsk</div>
-        <img class="viz-pair__image" src="media/1_single_rgb/tobolsk.jpg" alt="Monastery: red band (R)">
-      </div>
-    </div>
-    <figcaption class="iteration-belt__caption">
-      Three images all The alignment step estimates the translations that place the G and R bands
-      into the B coordinate frame before stacking.
-    </figcaption>
-  </figure> -->
-
      <div class="iteration-belt__intro">
       <p>
         The procedure begins by splitting the scan into three equal bands in B–G–R order and selecting the blue band as
@@ -256,6 +235,21 @@
       Rather than searching for a large displacement directly on the full-resolution plate, the image is represented at
       multiple scales, and the displacement is recovered by successive approximation from coarse to fine.
     </p>
+  </div>
+
+  <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Final mosaic comparison (Catalina)">
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">Camel</div>
+        <img class="viz-pair__image" src="media/2_multi_scale/ssd/camel_rgb.jpg" alt="Monastery: blue band (B)">
+      </div>
+
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">Church</div>
+        <img class="viz-pair__image" src="media/2_multi_scale/ssd/castle_church_rgb.jpg" alt="Monastery: red band (R)">
+      </div>
+    </div>
+
+  <div class="iteration-belt__outro">
     <p>
       The crucial fact is that downsampling contracts displacement. A translation that is hundreds of pixels at full
       resolution becomes a modest shift on the coarsest level, where exhaustive search is cheap because both the image
@@ -331,6 +325,18 @@
 
     </div>
   </div>
+
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Final mosaic comparison (Catalina)">
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">Indoor Church</div>
+        <img class="viz-pair__image" src="media/2_multi_scale/ssd/indoor_chruch_rgb.jpg" alt="Monastery: blue band (B)">
+      </div>
+
+      <div class="viz-pair__panel">
+        <div class="viz-pair__title">Village</div>
+        <img class="viz-pair__image" src="media/2_multi_scale/ssd/village_rgb.jpg" alt="Monastery: red band (R)">
+      </div>
+    </div>
 
   <div class="iteration-belt__outro">
     <p>

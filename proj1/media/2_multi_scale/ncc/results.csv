@@ -1,0 +1,16 @@
+input,stem,method,metric,edges,crop_frac,radius,base_radius,refine_radius,min_side,autocrop,max_crop_frac,crop_k,autocontrast,white_balance,g_dx,g_dy,r_dx,r_dy,seconds,out_rgb,out_raw,out_before_after
+data/camel.tif,camel,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,-4,47,-20,97,16.74459936399944,out/camel_rgb.jpg,out/camel_raw.jpg,out/camel_before_after.png
+data/icon.tif,icon,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,17,42,23,90,17.972451112989802,out/icon_rgb.jpg,out/icon_raw.jpg,out/icon_before_after.png
+data/castle_church.tif,castle_church,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,13,43,22,109,16.975379793002503,out/castle_church_rgb.jpg,out/castle_church_raw.jpg,out/castle_church_before_after.png
+data/italil.tif,italil,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,22,38,36,77,18.348271805996774,out/italil_rgb.jpg,out/italil_raw.jpg,out/italil_before_after.png
+data/melons.tif,melons,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,10,80,13,177,17.63591755699599,out/melons_rgb.jpg,out/melons_raw.jpg,out/melons_before_after.png
+data/lugano.tif,lugano,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,-17,41,-29,92,17.246022486011498,out/lugano_rgb.jpg,out/lugano_raw.jpg,out/lugano_before_after.png
+data/village.tif,village,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,6,50,13,123,18.703325606009457,out/village_rgb.jpg,out/village_raw.jpg,out/village_before_after.png
+data/church.tif,church,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,4,25,-4,58,17.647239218000323,out/church_rgb.jpg,out/church_raw.jpg,out/church_before_after.png
+data/lastochikino.tif,lastochikino,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,-2,-3,-8,76,19.20382896499359,out/lastochikino_rgb.jpg,out/lastochikino_raw.jpg,out/lastochikino_before_after.png
+data/emir.tif,emir,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,23,49,40,107,17.635494276008103,out/emir_rgb.jpg,out/emir_raw.jpg,out/emir_before_after.png
+data/harvesters.tif,harvesters,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,17,60,14,124,17.215632417006418,out/harvesters_rgb.jpg,out/harvesters_raw.jpg,out/harvesters_before_after.png
+data/siren.tif,siren,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,-6,49,-24,96,16.561231393978233,out/siren_rgb.jpg,out/siren_raw.jpg,out/siren_before_after.png
+data/three_generations.tif,three_generations,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,12,54,9,111,19.562247897003544,out/three_generations_rgb.jpg,out/three_generations_raw.jpg,out/three_generations_before_after.png
+data/self_portrait.tif,self_portrait,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,29,78,37,176,16.32506286900025,out/self_portrait_rgb.jpg,out/self_portrait_raw.jpg,out/self_portrait_before_after.png
+data/indoor_chruch.tif,indoor_chruch,pyramid,ncc,True,0.08,0,20,3,300,True,0.15,1.5,True,grayworld,3,50,-5,108,19.802360955014592,out/indoor_chruch_rgb.jpg,out/indoor_chruch_raw.jpg,out/indoor_chruch_before_after.png

@@ -317,6 +317,12 @@ body.top-title {
 .iteration-belt__viewport {
   overflow: hidden;
   padding: 0.25rem 0;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.iteration-belt__viewport:active{
+  cursor: grabbing;
 }
 
 .iteration-belt__track {
@@ -337,6 +343,8 @@ body.top-title {
   height: auto;
   border-radius: 0.5rem;
   border: none;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .iteration-belt__caption {

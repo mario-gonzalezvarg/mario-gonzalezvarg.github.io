@@ -428,10 +428,122 @@
       loopWidth,
       x: 0,          // current offset in px
       v: speed,      // constant speed in px/s, from HTML or default
-      running: true  // controlled by Pause buttons
+      running: true,  // controlled by Pause buttons
+      holdUntil: 10  // auto-move blocked until this timestamp (ms)
     });
   });
 
+
+
+  // ------------------------------
+  // User scroll/scrub for belts + idle resume
+  // ------------------------------
+  const DEFAULT_BELT_IDLE_MS = 2000; // N ms with no interaction before auto movement resumes
+
+  const mod = (n, m) => ((n % m) + m) % m;
+
+  document.querySelectorAll('.iteration-belt').forEach(belt => {
+    // All tracks inside this belt (supports 1-row and 2-row belts)
+    const states = beltTrackStates.filter(s => belt.contains(s.track));
+    if (!states.length) return;
+
+    // optional per-belt override: <div class="iteration-belt" data-belt-idle="3000">
+    const idleMs = (() => {
+      const raw = belt.dataset.beltIdle;
+      const n = raw ? parseInt(raw, 10) : NaN;
+      return Number.isFinite(n) && n >= 0 ? n : DEFAULT_BELT_IDLE_MS;
+    })();
+
+    const holdAutoMove = () => {
+      const until = performance.now() + idleMs;
+      states.forEach(s => (s.holdUntil = until));
+    };
+
+    const applyDeltaPx = deltaPx => {
+      states.forEach(s => {
+        s.x = mod(s.x + deltaPx, s.loopWidth);
+        s.track.style.transform = `translateX(${-s.x}px)`;
+      });
+    };
+
+    // Attach handlers to each viewport (works for 1-row + 2-row belts)
+    belt.querySelectorAll('.iteration-belt__viewport').forEach(viewport => {
+      // Wheel to scrub (trackpad horizontal scroll or Shift+wheel). Vertical wheel still scrolls the page.
+      viewport.addEventListener(
+        'wheel',
+        e => {
+          const horizontalIntent =
+            Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
+          if (!horizontalIntent) return;
+
+          const dx = e.shiftKey ? e.deltaY : e.deltaX;
+          if (!dx) return;
+
+          e.preventDefault();
+          holdAutoMove();
+          applyDeltaPx(dx);
+        },
+        { passive: false }
+      );
+
+      // Drag to scrub (mouse + touch) with axis lock
+      let dragging = false;
+      let lockedHorizontal = null; // null until we decide user intent
+      let lastX = 0;
+      let lastY = 0;
+
+      viewport.addEventListener('pointerdown', e => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+        dragging = true;
+        lockedHorizontal = null;
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+        viewport.setPointerCapture?.(e.pointerId);
+        holdAutoMove();
+      });
+
+      viewport.addEventListener(
+        'pointermove',
+        e => {
+          if (!dragging) return;
+
+          const dx = e.clientX - lastX;
+          const dy = e.clientY - lastY;
+
+          if (lockedHorizontal === null) {
+            const THRESH = 4;
+            if (Math.abs(dx) < THRESH && Math.abs(dy) < THRESH) return;
+            lockedHorizontal = Math.abs(dx) > Math.abs(dy);
+          }
+
+          if (lockedHorizontal) {
+            e.preventDefault();
+            holdAutoMove();
+            // drag right => content right (reduce x)
+            applyDeltaPx(-dx);
+          }
+
+          lastX = e.clientX;
+          lastY = e.clientY;
+        },
+        { passive: false }
+      );
+
+      const endDrag = e => {
+        dragging = false;
+        lockedHorizontal = null;
+        try {
+          viewport.releasePointerCapture?.(e.pointerId);
+        } catch {}
+      };
+
+      viewport.addEventListener('pointerup', endDrag);
+      viewport.addEventListener('pointercancel', endDrag);
+      viewport.addEventListener('pointerleave', endDrag);
+    });
+  });
 
   // 2) Hook up Pause/Play buttons per belt
   document.querySelectorAll('.iteration-belt').forEach(belt => {
@@ -467,6 +579,8 @@
 
     beltTrackStates.forEach(state => {
       if (!state.running) return;
+
+      if (state.holdUntil && now < state.holdUntil) return;
 
       // x(t+dt) = x(t) + v * dt
       state.x += state.v * dt;
