@@ -1,0 +1,16 @@
+timestamp: 2025-12-12T18:56:07
+command: b4-autostitch-pair (B.4)
+src: data/catalina/IMG_1694.JPG
+tgt: data/catalina/IMG_1697.JPG
+out: out/b/4_ransac/catalina/IMG_1694_IMG_1697_auto.png
+feather_px: 60
+ransac_iters: 2000
+ransac_thresh_px: 3.0
+inliers_refined: 22
+mean_inlier_err: 1.7997516593852743
+H:
+[[ 1.97417998e+00 -5.55703727e-03 -3.87932694e+03]
+ [ 6.47645982e-01  1.74205965e+00 -1.52174493e+03]
+ [ 3.24043989e-04 -5.87852324e-06  1.00000000e+00]]
+time_total_s: 24.949266
+inlier_viz: out/b/4_ransac/catalina/IMG_1694_IMG_1697_auto_inlier_matches.png
