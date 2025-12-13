@@ -1,0 +1,16 @@
+timestamp: 2025-12-12T18:01:50
+command: b4-autostitch-pair (B.4)
+src: data/r1.png
+tgt: data/r2.png
+out: out/b/4_ransac/r2/pano.png
+feather_px: 40
+ransac_iters: 2000
+ransac_thresh_px: 3.0
+inliers_refined: 41
+mean_inlier_err: 1.3275822459865851
+H:
+[[ 1.01377605e+00 -5.03074209e-02 -5.27720824e+02]
+ [ 5.74141477e-02  9.95439341e-01  9.91173771e+02]
+ [ 4.11435425e-06 -6.77396483e-06  1.00000000e+00]]
+time_total_s: 9.231406
+inlier_viz: out/b/4_ransac/r2/pano_inlier_matches.png

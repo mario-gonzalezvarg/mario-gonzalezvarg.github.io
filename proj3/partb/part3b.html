@@ -260,35 +260,109 @@
 
 
 
-  <!-- ========== B.3: Feature Matching ========== -->
-  <section class="content gold-glass iteration-belt" id="b4">
-    <h2 class="section-heading">B.3 Feature Matching</h2>
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: show raw matches and filtered matches (e.g., ratio test); include match count.
-      </p>
-    </div>
-  </section>
+<!-- ========== B.3: Feature Matching ========== -->
+<section class="content gold-glass iteration-belt" id="b3">
+  <h2 class="section-heading">B.3 Feature Matching</h2>
+
+  <div class="iteration-belt__intro">
+    <p>
+      Feature matching can be treated as a test of whether the descriptor representation is sufficiently distinctive and
+      sufficiently repeatable to survive a viewpoint change. Each retained corner produces a descriptor vector; for every
+      descriptor in Image A, the nearest neighbors in Image B are queried in descriptor space, and a decision rule filters
+      ambiguous hypotheses before they become geometric constraints.
+    </p>
+    <p>
+      The diagnostic objective is twofold: (1) verify that the selected keypoints and descriptors for the second image
+      (r2) contain stable structure rather than highlight noise, and (2) verify that the accepted matches form a coherent
+      pattern across the overlap rather than a dense set of inconsistent crossings.
+    </p>
+  </div>
+
+  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Reference features (r2)</h3>
+
+  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="r2 corners: Harris vs ANMS">
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">r2 Harris (raw)</div>
+      <img class="viz-pair__image" src="media/1_corner/r2/corners_harris.png"
+           alt="Harris corner detections for r2 (raw candidates)" loading="lazy">
+    </figure>
+
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">r2 ANMS (suppressed)</div>
+      <img class="viz-pair__image" src="media/1_corner/r2/corners_anms.png"
+           alt="ANMS-selected corners for r2 (spatially distributed subset)" loading="lazy">
+    </figure>
+  </div>
+
+  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="r2 descriptors: points and patches">
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">r2 descriptor points</div>
+      <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_points.png"
+           alt="Keypoints where descriptors are extracted on r2" loading="lazy">
+    </figure>
+
+    <figure class="viz-pair__panel">
+      <div class="viz-pair__title">r2 descriptor patches</div>
+      <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_patches.png"
+           alt="Grid of normalized descriptor patches for r2" loading="lazy">
+    </figure>
+  </div>
+
+  <div class="code-snippets" aria-label="Matching rule and parameters">
+    <div class="code-snippets__title">Matching rule</div>
+
+    <details class="code-snippet" open>
+      <summary>ratio test (Lowe-style)</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code>For each descriptor in A:
+  find the best and second-best matches in B by L2 distance.
+  keep the best match only if (d1 / d2) < ratio.
+
+ratio = 0.8
+matches kept = 112</code></pre>
+      </div>
+    </details>
+  </div>
+
+  <figure class="viz-pair__panel" style="max-width: 80rem; margin: 1.5rem auto 0;">
+    <div class="viz-pair__title">Filtered feature matches (r1 ↔ r2)</div>
+    <img class="viz-pair__image" src="media/3_featureMatch/r12/matches.png"
+         alt="Visualization of filtered matches between r1 and r2 with correspondence lines" loading="lazy">
+  </figure>
+
+  <div class="iteration-belt__outro">
+    <p>
+      The match visualization encodes a set of correspondence hypotheses: each line asserts that two local neighborhoods,
+      one in r1 and one in r2, are similar under the chosen descriptor. Coherence is indicated when many lines connect
+      analogous geometric regions and share a consistent global trend (reflecting the dominant camera motion). Failure is
+      indicated by a large population of crisscrossing lines that jump between unrelated regions, which typically occurs
+      when descriptors are not distinctive (repeated texture) or not repeatable (specular / refractive changes).
+    </p>
+    <p>
+      The ratio test is a practical ambiguity filter. When the nearest and second-nearest candidates are nearly tied, the
+      descriptor does not supply strong evidence for a unique match, so the correspondence is rejected. This rejection is
+      desirable before geometry: even a small fraction of ambiguous matches can dominate later homography estimation.
+    </p>
+    <p>
+      The red glass pair (r1↔r2) is comparatively matchable because many corner neighborhoods are anchored to stable
+      surface boundaries and consistent gradient patterns. In contrast, the green translucent case tends to produce
+      view-dependent intensity rearrangements inside patches, so the “same” physical region can yield a different
+      descriptor and either fail the ratio test (no confident nearest neighbor) or pass spuriously (nearest neighbor is
+      driven by highlight coincidence rather than geometry).
+    </p>
+  </div>
+</section>
+
 
   <!-- ========== B.4: RANSAC Homography ========== -->
   <section class="content gold-glass iteration-belt" id="b5">
     <h2 class="section-heading">B.4 RANSAC for Robust Homography</h2>
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: show inlier vs. outlier matches; report inlier count and chosen thresholds.
       </p>
     </div>
   </section>
 
-  <!-- ========== B.5: Automatic Mosaics ========== -->
-  <section class="content gold-glass iteration-belt" id="b6">
-    <h2 class="section-heading">B.5 Automatic Mosaics</h2>
-    <div class="iteration-belt__intro">
-      <p>
-        Deliverables: show at least two fully automatic mosaics (inputs + final blend).
-      </p>
-    </div>
-  </section>
 
   <script src="../../script.js" defer></script>
 </body>
