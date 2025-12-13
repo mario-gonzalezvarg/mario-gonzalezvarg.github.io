@@ -268,12 +268,15 @@
 
     let resizeRaf = 0;
     window.addEventListener('resize', () => {
-      if (resizeRaf) return;
-      resizeRaf = requestAnimationFrame(() => {
-        resize();
-        resizeRaf = 0;
+      beltTrackStates.forEach(s => {
+        const maxX = Math.max(0, s.track.scrollWidth - s.viewport.clientWidth);
+        if (s.x > maxX) {
+          s.x = maxX;
+          s.track.style.transform = `translateX(${-s.x}px)`;
+        }
       });
     });
+
     resize();
 
     window.addEventListener(
@@ -395,43 +398,29 @@
   const beltTrackStates = [];
 
   document.querySelectorAll('.iteration-belt__track').forEach(track => {
-    // Turn off any CSS animation so JS fully controls movement
     track.style.animation = 'none';
 
-    // Only clone once
-    if (track.dataset.cloned === 'true') return;
-    track.dataset.cloned = 'true';
+    const viewport = track.closest('.iteration-belt__viewport');
+    if (!viewport) return;
 
-    const items = Array.from(track.children);
-    items.forEach(item => {
-      const clone = item.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true'); // don't double-announce
-      track.appendChild(clone);
-    });
-
-    // One logical loop = width of original sequence
-    const loopWidth = track.scrollWidth / 2;
-
-    // Look up speed on the parent .iteration-belt (data-belt-speed)
     const belt = track.closest('.iteration-belt');
-    let speed = 16; // default px/s
+    let speed = 16;
 
     if (belt && belt.dataset.beltSpeed) {
       const parsed = parseFloat(belt.dataset.beltSpeed);
-      if (!Number.isNaN(parsed) && parsed > 0) {
-        speed = parsed;
-      }
+      if (!Number.isNaN(parsed)) speed = parsed;
     }
 
     beltTrackStates.push({
       track,
-      loopWidth,
-      x: 0,          // current offset in px
-      v: speed,      // constant speed in px/s, from HTML or default
-      running: true,  // controlled by Pause buttons
-      holdUntil: 10  // auto-move blocked until this timestamp (ms)
+      viewport,
+      x: 0,
+      v: speed,
+      running: true,
+      holdUntil: 0
     });
   });
+
 
 
 
@@ -440,7 +429,9 @@
   // ------------------------------
   const DEFAULT_BELT_IDLE_MS = 2000; // N ms with no interaction before auto movement resumes
 
-  const mod = (n, m) => ((n % m) + m) % m;
+  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+  const getMaxX = s => Math.max(0, s.track.scrollWidth - s.viewport.clientWidth);
+
 
   document.querySelectorAll('.iteration-belt').forEach(belt => {
     // All tracks inside this belt (supports 1-row and 2-row belts)
@@ -460,10 +451,20 @@
     };
 
     const applyDeltaPx = deltaPx => {
+      let movedAny = false;
+
       states.forEach(s => {
-        s.x = mod(s.x + deltaPx, s.loopWidth);
-        s.track.style.transform = `translateX(${-s.x}px)`;
+        const maxX = getMaxX(s);
+        const next = clamp(s.x + deltaPx, 0, maxX);
+
+        if (next !== s.x) {
+          s.x = next;
+          s.track.style.transform = `translateX(${-s.x}px)`;
+          movedAny = true;
+        }
       });
+
+      return movedAny;
     };
 
     // Attach handlers to each viewport (works for 1-row + 2-row belts)
@@ -472,19 +473,18 @@
       viewport.addEventListener(
         'wheel',
         e => {
-          const horizontalIntent =
-            Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
-          if (!horizontalIntent) return;
-
+          // use whatever mapping you currently want (deltaX, deltaY, etc.)
           const dx = e.shiftKey ? e.deltaY : e.deltaX;
-          if (!dx) return;
+
+          const moved = applyDeltaPx(dx);
+          if (!moved) return; // at an edge => let the page scroll normally
 
           e.preventDefault();
           holdAutoMove();
-          applyDeltaPx(dx);
         },
         { passive: false }
       );
+
 
       // Drag to scrub (mouse + touch) with axis lock
       let dragging = false;
@@ -519,10 +519,11 @@
           }
 
           if (lockedHorizontal) {
-            e.preventDefault();
-            holdAutoMove();
-            // drag right => content right (reduce x)
-            applyDeltaPx(-dx);
+            const moved = applyDeltaPx(-dx);
+            if (moved) {
+              e.preventDefault();
+              holdAutoMove();
+            }
           }
 
           lastX = e.clientX;
@@ -536,7 +537,7 @@
         lockedHorizontal = null;
         try {
           viewport.releasePointerCapture?.(e.pointerId);
-        } catch {}
+        } catch { }
       };
 
       viewport.addEventListener('pointerup', endDrag);
@@ -579,26 +580,24 @@
 
     beltTrackStates.forEach(state => {
       if (!state.running) return;
-
       if (state.holdUntil && now < state.holdUntil) return;
 
-      // x(t+dt) = x(t) + v * dt
-      state.x += state.v * dt;
+      const maxX = Math.max(0, state.track.scrollWidth - state.viewport.clientWidth);
+      const next = clamp(state.x + state.v * dt, 0, maxX);
 
-      // Wrap so we stay within [0, loopWidth)
-      if (state.x >= state.loopWidth) {
-        state.x -= state.loopWidth * Math.floor(state.x / state.loopWidth);
+      if (next !== state.x) {
+        state.x = next;
+        state.track.style.transform = `translateX(${-state.x}px)`;
       }
-
-      state.track.style.transform = `translateX(${-state.x}px)`;
     });
+
 
     requestAnimationFrame(step);
   }
 
   requestAnimationFrame(step);
 
-    // ------------------------------
+  // ------------------------------
   // Sync all GIFs inside iteration belts
   // ------------------------------
   function syncAllBeltGifs() {
