@@ -221,7 +221,7 @@
     </div>
   </section>
 
-  <!-- =============================== Multi-scale pyramid alignment (media/2_multi_scale/ncc) =============================== -->
+<!-- =============================== Multi-scale pyramid alignment (media/2_multi_scale/ncc) =============================== -->
 <section id="multi_scale" class="content gold-glass iteration-belt"
   aria-label="Multi-scale pyramid alignment results (NCC)" style="--belt-item-width: 36rem;">
 
@@ -235,21 +235,6 @@
       Rather than searching for a large displacement directly on the full-resolution plate, the image is represented at
       multiple scales, and the displacement is recovered by successive approximation from coarse to fine.
     </p>
-  </div>
-
-  <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Final mosaic comparison (Catalina)">
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">Camel</div>
-        <img class="viz-pair__image" src="media/2_multi_scale/ssd/camel_rgb.jpg" alt="Monastery: blue band (B)">
-      </div>
-
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">Church</div>
-        <img class="viz-pair__image" src="media/2_multi_scale/ssd/castle_church_rgb.jpg" alt="Monastery: red band (R)">
-      </div>
-    </div>
-
-  <div class="iteration-belt__outro">
     <p>
       The crucial fact is that downsampling contracts displacement. A translation that is hundreds of pixels at full
       resolution becomes a modest shift on the coarsest level, where exhaustive search is cheap because both the image
@@ -260,8 +245,88 @@
     </p>
   </div>
 
-  <div class="iteration-belt__header">
-    <h3 class="iteration-belt__title">Full-resolution reconstructions (NCC + pyramid)</h3>
+
+    <!-- <div class="viz-pair__panel">
+      <div class="viz-pair__title">Measured behavior (15 plates)</div>
+      <ul>
+        <li><strong>Runtime:</strong> mean 17.84s (std 1.05s), range 16.33–19.80s</li>
+        <li><strong>Fastest:</strong> Self Portrait (16.33s)</li>
+        <li><strong>Slowest:</strong> Indoor Chruch (19.80s)</li>
+        <li><strong>Offset scale:</strong> max |dx| (G 29px, R 40px), max |dy| (G 80px, R 177px)</li>
+      </ul>
+    </div> -->
+  </div>
+
+  <div class="code-snippets" aria-label="Timing and offsets">
+  <div class="code-snippets__title">Logged timing</div>
+
+  <details class="code-snippet" open>
+    <summary>Runtime summary</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code>mean 17.84s (std 1.05s), range 16.33–19.80s
+fastest: self_portrait (16.33s)
+slowest: indoor_chruch (19.80s)</code></pre>
+    </div>
+  </details>
+
+  <details class="code-snippet" open>
+    <summary>Offset scale</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code>max |dx|:  G 29px  R 40px
+max |dy|:  G 80px  R 177px</code></pre>
+    </div>
+  </details>
+</div>
+
+
+  <!-- 2) Raw vs enhanced comparisons -->
+  <div class="iteration-belt__header" style="margin-top: 1.5rem;">
+    <h3 class="iteration-belt__title">Photometric correction (left: raw aligned composite, right: corrected)</h3>
+  </div>
+
+  <div class="viz-pair" style="--viz-pair-max: 58rem;" role="group" aria-label="Raw vs enhanced comparisons (set 1)">
+    <div class="viz-pair__panel">
+      <div class="viz-pair__title">Indoor Church</div>
+      <img class="viz-pair__image" src="media/2_multi_scale/ncc/indoor_chruch_before_after.png"
+        alt="Indoor Church: left raw aligned composite, right corrected composite" loading="lazy">
+      <div class="iteration-belt__caption">
+        Left: raw RGB stack after alignment. Right: autocontrast + gray-world white balance + autocrop.
+      </div>
+    </div>
+
+    <div class="viz-pair__panel">
+      <div class="viz-pair__title">Church</div>
+      <img class="viz-pair__image" src="media/2_multi_scale/ncc/church_before_after.png"
+        alt="Church: left raw aligned composite, right corrected composite" loading="lazy">
+      <div class="iteration-belt__caption">
+        Left: raw RGB stack after alignment. Right: autocontrast + gray-world white balance + autocrop.
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-pair" style="--viz-pair-max: 58rem;" role="group" aria-label="Raw vs enhanced comparisons (set 2)">
+    <div class="viz-pair__panel">
+      <div class="viz-pair__title">Emir</div>
+      <img class="viz-pair__image" src="media/2_multi_scale/ncc/emir_before_after.png"
+        alt="Emir: left raw aligned composite, right corrected composite" loading="lazy">
+      <div class="iteration-belt__caption">
+        Left: raw RGB stack after alignment. Right: autocontrast + gray-world white balance + autocrop.
+      </div>
+    </div>
+
+    <div class="viz-pair__panel">
+      <div class="viz-pair__title">Village</div>
+      <img class="viz-pair__image" src="media/2_multi_scale/ncc/village_before_after.png"
+        alt="Village: left raw aligned composite, right corrected composite" loading="lazy">
+      <div class="iteration-belt__caption">
+        Left: raw RGB stack after alignment. Right: autocontrast + gray-world white balance + autocrop.
+      </div>
+    </div>
+  </div>
+
+  <!-- 3) Full results -->
+  <div class="iteration-belt__header" style="margin-top: 1.5rem;">
+    <h3 class="iteration-belt__title">Full-resolution reconstructions (NCC + pyramid + enhancement)</h3>
     <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
   </div>
 
@@ -270,86 +335,98 @@
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/icon_rgb.jpg" alt="Icon — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Icon — G(dx,dy)=(17, 42), R(dx,dy)=(23, 90), 9.96s.</figcaption>
+        <figcaption class="iteration-belt__caption">Icon — G(dx,dy)=(17, 42), R(dx,dy)=(23, 90), 17.08s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/italil_rgb.jpg" alt="Italil — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Italil — G(dx,dy)=(22, 38), R(dx,dy)=(36, 77), 9.76s.</figcaption>
+        <figcaption class="iteration-belt__caption">Italil — G(dx,dy)=(22, 38), R(dx,dy)=(36, 77), 17.20s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/melons_rgb.jpg" alt="Melons — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Melons — G(dx,dy)=(10, 80), R(dx,dy)=(13, 177), 9.68s.</figcaption>
+        <figcaption class="iteration-belt__caption">Melons — G(dx,dy)=(10, 80), R(dx,dy)=(13, 177), 17.64s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/lugano_rgb.jpg" alt="Lugano — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Lugano — G(dx,dy)=(-17, 41), R(dx,dy)=(-29, 92), 9.54s.</figcaption>
+        <figcaption class="iteration-belt__caption">Lugano — G(dx,dy)=(-17, 41), R(dx,dy)=(-29, 92), 18.07s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/church_rgb.jpg" alt="Church — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Church — G(dx,dy)=(4, 25), R(dx,dy)=(-4, 58), 9.01s.</figcaption>
+        <figcaption class="iteration-belt__caption">Church — G(dx,dy)=(4, 25), R(dx,dy)=(-4, 58), 18.23s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/lastochikino_rgb.jpg" alt="Lastochikino — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Lastochikino — G(dx,dy)=(-2, -3), R(dx,dy)=(-8, 76), 9.29s.</figcaption>
+        <figcaption class="iteration-belt__caption">Lastochikino — G(dx,dy)=(-2, -3), R(dx,dy)=(-8, 76), 17.58s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/emir_rgb.jpg" alt="Emir — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Emir — G(dx,dy)=(23, 49), R(dx,dy)=(40, 107), 9.14s.</figcaption>
+        <figcaption class="iteration-belt__caption">Emir — G(dx,dy)=(23, 49), R(dx,dy)=(40, 107), 17.58s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/harvesters_rgb.jpg" alt="Harvesters — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Harvesters — G(dx,dy)=(17, 60), R(dx,dy)=(14, 124), 9.40s.</figcaption>
+        <figcaption class="iteration-belt__caption">Harvesters — G(dx,dy)=(17, 60), R(dx,dy)=(14, 124), 18.01s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
         <img class="iteration-belt__image" src="media/2_multi_scale/ncc/siren_rgb.jpg" alt="Siren — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Siren — G(dx,dy)=(-6, 49), R(dx,dy)=(-24, 96), 9.68s.</figcaption>
+        <figcaption class="iteration-belt__caption">Siren — G(dx,dy)=(-6, 49), R(dx,dy)=(-24, 96), 18.70s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/three_generations_rgb.jpg" alt="Three generations — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Three generations — G(dx,dy)=(12, 54), R(dx,dy)=(9, 111), 10.23s.</figcaption>
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/three_generations_rgb.jpg" alt="Three Generations — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Three Generations — G(dx,dy)=(12, 54), R(dx,dy)=(9, 111), 18.40s.</figcaption>
       </figure>
 
       <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/self_portrait_rgb.jpg" alt="Self portrait — reconstructed RGB" loading="lazy">
-        <figcaption class="iteration-belt__caption">Self portrait — G(dx,dy)=(29, 78), R(dx,dy)=(37, 176), 9.93s.</figcaption>
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/self_portrait_rgb.jpg" alt="Self Portrait — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Self Portrait — G(dx,dy)=(29, 78), R(dx,dy)=(37, 176), 16.33s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/camel_rgb.jpg" alt="Camel — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Camel — G(dx,dy)=(-4, 47), R(dx,dy)=(-20, 97), 16.74s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/castle_church_rgb.jpg" alt="Castle Church — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Castle Church — G(dx,dy)=(13, 43), R(dx,dy)=(22, 109), 16.98s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/indoor_chruch_rgb.jpg" alt="Indoor Chruch — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Indoor Chruch — G(dx,dy)=(3, 50), R(dx,dy)=(-5, 108), 19.80s.</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/2_multi_scale/ncc/village_rgb.jpg" alt="Village — reconstructed RGB" loading="lazy">
+        <figcaption class="iteration-belt__caption">Village — G(dx,dy)=(6, 50), R(dx,dy)=(13, 123), 18.70s.</figcaption>
       </figure>
 
     </div>
   </div>
 
-    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Final mosaic comparison (Catalina)">
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">Indoor Church</div>
-        <img class="viz-pair__image" src="media/2_multi_scale/ssd/indoor_chruch_rgb.jpg" alt="Monastery: blue band (B)">
-      </div>
-
-      <div class="viz-pair__panel">
-        <div class="viz-pair__title">Village</div>
-        <img class="viz-pair__image" src="media/2_multi_scale/ssd/village_rgb.jpg" alt="Monastery: red band (R)">
-      </div>
-    </div>
-
+  <!-- 4) Findings -->
   <div class="iteration-belt__outro">
     <p>
-      Runtime exhibits the intended effect of the pyramid schedule: the mean time across the plates above is 9.60s
-      (min 9.01s, max 10.23s), despite displacements that reach well into the hundreds of pixels in the original
-      coordinate system. This stability follows from a modular organization of the pipeline at the level of ideas:
-      a single scoring-and-shift primitive is reused unchanged, while the multi-scale procedure supplies only an order of
-      evaluation and a rule for propagating estimates between resolutions. Such a separation preserves correctness
-      arguments (the same objective is optimized) while making the performance target in the specification achievable on
-      full-resolution scans. :contentReference[oaicite:2]{index=2} :contentReference[oaicite:3]{index=3}
+      The runtime profile is governed by the pyramid schedule rather than by the magnitude of the final displacement.
+      Each level evaluates a fixed local search window (a coarse window at the smallest scale, then small refinement
+      windows thereafter), so the work remains bounded while still recovering shifts that are large at full resolution.
+    </p>
+    <p>
+      The raw outputs preserve the recovered geometry but can exhibit strong global channel imbalance due to unequal
+      exposures across bands. Gray-world white balance reduces this bias by scaling channels toward a common mean, while
+      autocontrast expands dynamic range; both operations act on appearance after alignment and therefore do not alter the
+      estimated offsets.
     </p>
   </div>
 </section>
+
 
 
   <!-- script that drives sky + belt pause behavior (same as your other projects) -->

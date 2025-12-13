@@ -191,7 +191,7 @@
 
 
     <p>
-      Distributional and spectral analyses tell a consistent story. Histograms of pixel intensities
+      Histograms of pixel intensities
       show that the noisy images spread mass across a broad range of gray levels, while the denoised
       outputs return mass to the sharp bimodal structure characteristic of clean MNIST digits
       (dominant peaks near 0 and 1). In the Fourier domain, magnitude spectra and radial profiles
@@ -259,14 +259,6 @@
         reconstruction discrepancies.
       </figcaption>
     </figure>
-
-    <p>
-      By epoch&nbsp;5, this behavior persists. The denoised digits retain the same prototype-like form
-      seen at epoch&nbsp;1, reflecting the limitations of pure-noise inputs: without class-specific
-      information in the observation, the model can sharpen the global silhouette only modestly and
-      cannot recover fine details unique to each target digit.
-    </p>
-
 
     <figure>
       <img src="media/one/1.2/pure_noise_epoch1.png"
@@ -409,7 +401,7 @@
       blocks, and injected alongside the time embedding at the bottleneck and early decoder layers.
       During training, the class signal is randomly dropped for a fraction of the batches so that the
       network learns both unconditional and class-guided flows. Using a hidden width of 64 channels,
-      batch size 64, learning rate 0.01 with exponential decay, and training for 10 epochs on a GPU
+      batch size 64, learning rate 0.01 with exponential decay, and training for 10 epochs on a 16GB RTX 5000 ADA GPU
       produces rapid convergence of the class-conditioned flow field.
     </p>
 
