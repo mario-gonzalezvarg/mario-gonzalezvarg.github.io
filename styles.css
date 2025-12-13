@@ -621,7 +621,7 @@ body.top-title {
 .viz-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
+  gap: var(--viz-pair-gap, 1.5rem);
   align-items: start;
   margin-top: 1.25rem;
 }

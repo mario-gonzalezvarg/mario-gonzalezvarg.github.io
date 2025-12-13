@@ -241,38 +241,7 @@
       Rather than searching for a large displacement directly on the full-resolution plate, the image is represented at
       multiple scales, and the displacement is recovered by successive approximation from coarse to fine.
     </p>
-    <p>
-      The crucial fact is that downsampling contracts displacement. A translation that is hundreds of pixels at full
-      resolution becomes a modest shift on the coarsest level, where exhaustive search is cheap because both the image
-      area and the effective search radius are small. That coarse estimate is then treated as a provisional hypothesis:
-      it is scaled to the next resolution and corrected by a local refinement search. Repeating this update across the
-      pyramid yields a final shift that is accurate at the finest scale while avoiding the quadratic explosion in the
-      number of candidates that would occur if a single large window were searched on the original plate.
-    </p>
-  </div>
-
-
-
-  <div class="code-snippets" aria-label="Timing and offsets">
-  <div class="code-snippets__title">Logged timing</div>
-
-  <details class="code-snippet" open>
-    <summary>Runtime summary</summary>
-    <div class="code-snippet__body">
-      <pre class="code-block"><code>mean 17.84s (std 1.05s), range 16.33–19.80s
-fastest: self_portrait (16.33s)
-slowest: indoor_chruch (19.80s)</code></pre>
-    </div>
-  </details>
-
-  <details class="code-snippet" open>
-    <summary>Offset scale</summary>
-    <div class="code-snippet__body">
-      <pre class="code-block"><code>max |dx|:  G 29px  R 40px
-max |dy|:  G 80px  R 177px</code></pre>
-    </div>
-  </details>
-</div>
+   </div>
 
 
   <!-- 2) Raw vs enhanced comparisons -->
@@ -298,6 +267,17 @@ max |dy|:  G 80px  R 177px</code></pre>
     </div>
   </div>
 
+  <div class="iteration-belt__outro">
+    <p>
+      The crucial fact is that downsampling contracts displacement. A translation that is hundreds of pixels at full
+      resolution becomes a modest shift on the coarsest level, where exhaustive search is cheap because both the image
+      area and the effective search radius are small. That coarse estimate is then treated as a provisional hypothesis:
+      it is scaled to the next resolution and corrected by a local refinement search. Repeating this update across the
+      pyramid yields a final shift that is accurate at the finest scale while avoiding the quadratic explosion in the
+      number of candidates that would occur if a single large window were searched on the original plate.
+    </p>
+  </div>
+
   <div class="viz-pair" style="--viz-pair-max: 58rem;" role="group" aria-label="Raw vs enhanced comparisons (set 2)">
     <div class="viz-pair__panel">
       <div class="viz-pair__title">Emir</div>
@@ -315,6 +295,8 @@ max |dy|:  G 80px  R 177px</code></pre>
       </div>
     </div>
   </div>
+
+  
 
   <!-- 3) Full results -->
   <div class="iteration-belt__header" style="margin-top: 1.5rem;">
@@ -402,6 +384,27 @@ max |dy|:  G 80px  R 177px</code></pre>
 
     </div>
   </div>
+
+  <div class="code-snippets" aria-label="Timing and offsets">
+  <div class="code-snippets__title">Logged timing</div>
+
+  <details class="code-snippet" open>
+    <summary>Runtime summary</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code>mean 17.84s (std 1.05s), range 16.33–19.80s
+fastest: self_portrait (16.33s)
+slowest: indoor_chruch (19.80s)</code></pre>
+    </div>
+  </details>
+
+  <details class="code-snippet" open>
+    <summary>Offset scale</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code>max |dx|:  G 29px  R 40px
+max |dy|:  G 80px  R 177px</code></pre>
+    </div>
+  </details>
+</div>
 
   <!-- 4) Findings -->
   <div class="iteration-belt__outro">
