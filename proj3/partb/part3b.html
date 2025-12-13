@@ -37,84 +37,247 @@
     </div>
   </div>
 
-<!-- ========== B.1: Corner Detection (Harris + ANMS) ========== -->
-<section class="content gold-glass iteration-belt" id="b1">
-  <h2 class="section-heading">B.1 Corner Detection</h2>
+  <!-- ========== B.1: Corner Detection (Harris + ANMS) ========== -->
+  <section class="content gold-glass iteration-belt" id="b1">
+    <h2 class="section-heading">B.1 Corner Detection</h2>
 
-  <div class="iteration-belt__intro">
-    <p>
-      Corner selection can be treated as identifying pixels whose local gradient structure is two-dimensional. The Harris
-      response operationalizes this idea by scoring locations where intensity changes strongly along two independent
-      directions, producing a dense set of candidate interest points.
-    </p>
-    <p>
-      Raw Harris detections typically cluster in high-texture regions, because nearby pixels can share similarly high
-      scores. Adaptive Non-Maximal Suppression (ANMS) converts this clustered set into a spatially diverse subset by
-      retaining points that remain locally strong while maximizing their separation from stronger neighbors. The resulting
-      distribution improves downstream matching because correspondence hypotheses are spread across the overlap rather
-      than concentrated in a single patch.
-    </p>
-  </div>
-
-  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Example 1 (g2)</h3>
-  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="Harris vs ANMS corner distribution (g2)">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Harris (raw)</div>
-      <img class="viz-pair__image" src="media/1_corner/g2/corners_harris.png"
-           alt="Harris corners for g2 (raw detections)" loading="lazy">
-    </figure>
-
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">ANMS (suppressed)</div>
-      <img class="viz-pair__image" src="media/1_corner/g2/corners_anms.png"
-           alt="ANMS-selected corners for g2 (spatially distributed subset)" loading="lazy">
-    </figure>
-  </div>
-
-  <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1)</h3>
-  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="Harris vs ANMS corner distribution (r1)">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Harris (raw)</div>
-      <img class="viz-pair__image" src="media/1_corner/r1/corners_harris.png"
-           alt="Harris corners for r1 (raw detections)" loading="lazy">
-    </figure>
-
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">ANMS (suppressed)</div>
-      <img class="viz-pair__image" src="media/1_corner/r1/corners_anms.png"
-           alt="ANMS-selected corners for r1 (spatially distributed subset)" loading="lazy">
-    </figure>
-  </div>
-
-  <div class="iteration-belt__outro">
-    <p>
-      The qualitative difference between the two methods is distributional rather than semantic: Harris identifies many
-      correct “corner-like” locations but over-represents regions with repeated micro-texture, whereas ANMS explicitly
-      trades quantity for coverage. This trade improves robustness in later stages because descriptor matching is less
-      sensitive to a single textured area dominating the correspondence set.
-    </p>
-    <p>
-      The main failure mode of ANMS is under-representation in low-texture regions: if few points have high Harris scores,
-      the suppression radius can eliminate potentially useful candidates. Practical behavior therefore depends on coupling
-      ANMS parameters (target count and suppression criterion) to the scene and to the descriptor scale used downstream.
-    </p>
-  </div>
-</section>
-
-
-  <!-- ========== B.3: Feature Descriptors ========== -->
-  <section class="content gold-glass iteration-belt" id="b3">
-    <h2 class="section-heading">B.3 Feature Descriptors</h2>
     <div class="iteration-belt__intro">
       <p>
-        Deliverables: describe the descriptor construction and show a small visualization (e.g., sampled patches).
+        Corner detection can be decomposed into two judgments: where the image contains two-directional variation, and
+        which
+        of those locations should be retained as a stable basis for later matching. The Harris response supplies the
+        first
+        judgment by measuring whether local gradients provide evidence of structure in more than one direction; a high
+        score
+        is interpreted as a location whose appearance is locally informative rather than edge-like or flat. The Harris
+        map, taken alone, does not enforce a useful distribution. Dense clusters occur whenever repeated texture
+        generates many neighboring pixels with similar scores, so the raw output is often an over-complete description
+        of a
+        single region. Adaptive Non-Maximal Suppression (ANMS) supplies the second judgment by trading quantity for
+        coverage:
+        points are retained when they remain strong while also being far from stronger competitors, which spreads the
+        set
+        across the object and reduces redundancy.
+      </p>
+      <!-- <p>
+      The Harris map, taken alone, does not enforce a useful distribution. Dense clusters occur whenever repeated texture
+      generates many neighboring pixels with similar scores, so the raw output is often an over-complete description of a
+      single region. Adaptive Non-Maximal Suppression (ANMS) supplies the second judgment by trading quantity for coverage:
+      points are retained when they remain strong while also being far from stronger competitors, which spreads the set
+      across the object and reduces redundancy.
+    </p>
+    <p>
+      The two images in each pair serve as a diagnostic. The Harris visualization indicates the underlying “evidence field”
+      (where the image claims to have corners), while the ANMS visualization indicates whether that evidence can be
+      converted into a spatially balanced set that will not collapse downstream matching into a single textured patch.
+    </p> -->
+    </div>
+
+    <!-- ---------------- Example: g2 (green glass) ---------------- -->
+    <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Example 1 (g2 — green glass)</h3>
+
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
+      aria-label="Harris vs ANMS corner distribution (g2)">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Harris (raw)</div>
+        <img class="viz-pair__image" src="media/1_corner/g2/corners_harris.png"
+          alt="Harris corners for g2 (raw detections)" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">ANMS (suppressed)</div>
+        <img class="viz-pair__image" src="media/1_corner/g2/corners_anms.png"
+          alt="ANMS-selected corners for g2 (spatially distributed subset)" loading="lazy">
+      </figure>
+    </div>
+
+    <div class="iteration-belt__intro">
+      <p>
+        The two images in each pair serve as a diagnostic. The Harris visualization indicates the underlying “evidence
+        field”
+        (where the image claims to have corners), while the ANMS visualization indicates whether that evidence can be
+        converted into a spatially balanced set that will not collapse downstream matching into a single textured patch.
+      </p>
+      
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The green glass sculpture is a difficult corner source because local appearance is less stable. Translucency and
+        internal refraction generate view-dependent highlights and low-frequency intensity drift, and darker regions
+        reduce
+        signal-to-noise; both effects weaken the gradient evidence that Harris relies on. Increasing
+        <code>max-harris</code>
+        to 10000 preserves more marginal candidates so that ANMS can still extract a reasonably distributed set of 450
+        points
+        without collapsing onto a few bright highlight boundaries.
+      </p>
+    </div>
+
+    <!-- ---------------- Example: r1 (red glass) ---------------- -->
+    <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1 — red glass)</h3>
+
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
+      aria-label="Harris vs ANMS corner distribution (r1)">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Harris (raw)</div>
+        <img class="viz-pair__image" src="media/1_corner/r1/corners_harris.png"
+          alt="Harris corners for r1 (raw detections)" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">ANMS (suppressed)</div>
+        <img class="viz-pair__image" src="media/1_corner/r1/corners_anms.png"
+          alt="ANMS-selected corners for r1 (spatially distributed subset)" loading="lazy">
+      </figure>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        The red glass sculpture provides stronger, more repeatable corner evidence because the dominant cues are stable
+        surface boundaries and consistent shading transitions. The Harris field therefore contains more clearly
+        separated
+        maxima, so fewer raw candidates (<code>max-harris</code> = 6000) are sufficient, and ANMS can retain a smaller
+        set
+        (350) while still maintaining broad coverage across the structure.
+      </p>
+      <p>
+        Failures concentrate where the premise of “corner stability” is violated. Specular highlights can create corners
+        that move with viewpoint rather than with geometry; repeated micro-texture can produce many near-duplicates that
+        remain locally strong but do not add new information; and low-texture regions can leave ANMS with little
+        evidence to
+        distribute. Success is most reliable when the selected points lie on rigid, high-contrast geometry whose
+        gradient
+        structure persists under small viewpoint changes.
       </p>
     </div>
   </section>
 
-  <!-- ========== B.4: Feature Matching ========== -->
+
+
+  <!-- ========== B.2: Feature Descriptors ========== -->
+  <section class="content gold-glass iteration-belt" id="b2">
+    <h2 class="section-heading">B.2 Feature Descriptors</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        A feature descriptor can be decomposed into a local sampling rule and a normalization rule. Given a selected
+        corner,
+        a square neighborhood is extracted, reduced to a compact template, and normalized so that comparisons depend on
+        local structure rather than global brightness. The resulting vector is treated as a fingerprint: two points are
+        plausible matches when their fingerprints have small distance.
+      </p>
+      <!-- <p>
+        The visualizations below report two “messages” about descriptor quality. The <em>points</em> image indicates
+        where
+        descriptors were sampled and whether the samples cover the object broadly. The <em>patch grid</em> indicates
+        what
+        information the descriptor actually encodes: high-contrast edges produce distinctive tiles, while flat or noisy
+        tiles
+        produce ambiguous fingerprints that are prone to false matches.
+      </p> -->
+    </div>
+
+    <div class="code-snippets" aria-label="Descriptor construction summary">
+      <div class="code-snippets__title">Descriptor construction</div>
+      <details class="code-snippet" open>
+        <summary>patch → vector</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>1) Extract a square patch around each keypoint (grayscale).
+2) Apply mild smoothing (stabilizes against pixel noise / aliasing).
+3) Downsample to a small canonical grid (e.g., 8×8) to form a compact template.
+4) Normalize per patch (zero-mean, unit-variance) to reduce exposure sensitivity.
+5) Flatten to a descriptor vector; compare descriptors by L2 distance.</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <div class="iteration-belt__intro">
+      <!-- <p>
+        A feature descriptor can be decomposed into a local sampling rule and a normalization rule. Given a selected
+        corner,
+        a square neighborhood is extracted, reduced to a compact template, and normalized so that comparisons depend on
+        local structure rather than global brightness. The resulting vector is treated as a fingerprint: two points are
+        plausible matches when their fingerprints have small distance.
+      </p> -->
+      <p>
+        The visualizations below report two “messages” about descriptor quality. The <em>points</em> image indicates
+        where
+        descriptors were sampled and whether the samples cover the object broadly. The <em>patch grid</em> indicates
+        what
+        information the descriptor actually encodes: high-contrast edges produce distinctive tiles, while flat or noisy
+        tiles
+        produce ambiguous fingerprints that are prone to false matches.
+      </p>
+    </div>
+
+
+    <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Example 1 (g2 — green glass)</h3>
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
+      aria-label="Descriptor points and patches (green glass)">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor points</div>
+        <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_points.png"
+          alt="Keypoints where descriptors are extracted on the green glass sculpture" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor patches</div>
+        <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_patches.png"
+          alt="Grid of normalized descriptor patches extracted from the green glass sculpture" loading="lazy">
+      </figure>
+    </div>
+
+    <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1 — red glass)</h3>
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
+      aria-label="Descriptor points and patches (red glass)">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor points</div>
+        <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_points.png"
+          alt="Keypoints where descriptors are extracted on the red glass sculpture" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor patches</div>
+        <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_patches.png"
+          alt="Grid of normalized descriptor patches extracted from the red glass sculpture" loading="lazy">
+      </figure>
+    </div>
+
+
+    <div class="iteration-belt__outro">
+      <p>
+        The green glass case is harder because the appearance is less stable under viewpoint and illumination.
+        Translucency
+        introduces view-dependent highlights, internal refraction, and caustic-like intensity changes; dark regions also
+        reduce signal-to-noise, so normalization can amplify small sensor noise into large relative changes inside a
+        patch.
+        In the patch grid this manifests as tiles with weak or inconsistent structure, which are less distinctive and
+        more
+        likely to match multiple unrelated locations.
+      </p>
+      <p>
+        The red glass case is more cooperative because edges and shading are comparatively stable: the object is less
+        translucent, so the dominant cues are surface boundaries and consistent gradient patterns. The patch grid
+        therefore
+        contains more repeatable, high-contrast templates (strong oriented edges and corners), and the point
+        visualization
+        tends to include many keypoints that remain meaningful across views.
+      </p>
+      <p>
+        Failure modes concentrate in three situations: (1) low-texture patches where the normalized descriptor becomes
+        dominated by noise, (2) repeated micro-structure where many patches look alike and generate false matches, and
+        (3) specular or refractive regions where the “same” physical point does not preserve local intensity structure
+        between images. Success is most reliable when keypoints land on rigid, high-contrast geometry that produces
+        repeatable local gradients across viewpoints.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ========== B.3: Feature Matching ========== -->
   <section class="content gold-glass iteration-belt" id="b4">
-    <h2 class="section-heading">B.4 Feature Matching</h2>
+    <h2 class="section-heading">B.3 Feature Matching</h2>
     <div class="iteration-belt__intro">
       <p>
         Deliverables: show raw matches and filtered matches (e.g., ratio test); include match count.
@@ -122,9 +285,9 @@
     </div>
   </section>
 
-  <!-- ========== B.5: RANSAC Homography ========== -->
+  <!-- ========== B.4: RANSAC Homography ========== -->
   <section class="content gold-glass iteration-belt" id="b5">
-    <h2 class="section-heading">B.5 RANSAC for Robust Homography</h2>
+    <h2 class="section-heading">B.4 RANSAC for Robust Homography</h2>
     <div class="iteration-belt__intro">
       <p>
         Deliverables: show inlier vs. outlier matches; report inlier count and chosen thresholds.
@@ -132,9 +295,9 @@
     </div>
   </section>
 
-  <!-- ========== B.6: Automatic Mosaics ========== -->
+  <!-- ========== B.5: Automatic Mosaics ========== -->
   <section class="content gold-glass iteration-belt" id="b6">
-    <h2 class="section-heading">B.6 Automatic Mosaics</h2>
+    <h2 class="section-heading">B.5 Automatic Mosaics</h2>
     <div class="iteration-belt__intro">
       <p>
         Deliverables: show at least two fully automatic mosaics (inputs + final blend).
