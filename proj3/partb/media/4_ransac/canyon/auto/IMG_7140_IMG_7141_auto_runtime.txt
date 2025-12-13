@@ -1,0 +1,16 @@
+timestamp: 2025-12-12T19:28:26
+command: b4-autostitch-pair (B.4)
+src: data/canyon/IMG_7140.JPG
+tgt: data/canyon/IMG_7141.JPG
+out: out/b/4_ransac/canyon/auto/IMG_7140_IMG_7141_auto.png
+feather_px: 90
+ransac_iters: 20000
+ransac_thresh_px: 8.0
+inliers_refined: 44
+mean_inlier_err: 2.583540876480911
+H:
+[[ 1.03955036e+00  8.86131862e-03 -8.86641130e+02]
+ [ 1.17944692e-02  1.02003545e+00  1.25403928e+02]
+ [ 1.41069538e-05 -2.43493120e-06  1.00000000e+00]]
+time_total_s: 12.646754
+inlier_viz: out/b/4_ransac/canyon/auto/IMG_7140_IMG_7141_auto_inlier_matches.png

@@ -1,0 +1,30 @@
+timestamp: 2025-12-12T05:11:45
+command: mosaic-pair (A.4)
+src: data/canyon/IMG_7140.JPG
+tgt: data/canyon/IMG_7141.JPG
+points: out/points/canyon/IMG_7140_to_IMG_7141.npz
+pairs: 12
+feather_px: 40
+src_shape: (4032, 3024, 3)
+tgt_shape: (4032, 3024, 3)
+pano_shape: (4261, 3890, 3)
+
+time_load_points_s: 0.000689
+time_computeH_s: 0.000216
+time_stitch_s: 4.106578
+time_total_s: 17.222547
+
+out_mosaic: out/4_mosaic/canyon/pair/pano.png
+out_src_warp: out/4_mosaic/canyon/pair/pano_src_warp.png
+out_tgt_canvas: out/4_mosaic/canyon/pair/pano_tgt_canvas.png
+out_overlay: out/4_mosaic/canyon/pair/pano_overlay.png
+out_mask_src: out/4_mosaic/canyon/pair/pano_mask_src.png
+out_mask_tgt: out/4_mosaic/canyon/pair/pano_mask_tgt.png
+out_w_src: out/4_mosaic/canyon/pair/pano_w_src.png
+out_w_tgt: out/4_mosaic/canyon/pair/pano_w_tgt.png
+out_seam_ratio: out/4_mosaic/canyon/pair/pano_seam_ratio.png
+
+H:
+[[ 1.02506422e+00  2.57132302e-03 -8.60213183e+02]
+ [ 2.16132216e-03  9.97498990e-01  1.61911287e+02]
+ [ 9.61690629e-06 -4.49392378e-06  1.00000000e+00]]
