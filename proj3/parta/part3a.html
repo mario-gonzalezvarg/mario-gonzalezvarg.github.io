@@ -74,7 +74,6 @@
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
     </div>
 
-    <!-- Row 1: Catalina -->
     <div class="iteration-belt__row">
       <h3 class="iteration-belt__row-title">Catalina Island, California</h3>
       <div class="iteration-belt__viewport">
@@ -124,29 +123,29 @@
       </div>
     </div>
 
-    <!-- Row 2: Grand Canyon -->
+
     <div class="iteration-belt__row">
       <h3 class="iteration-belt__row-title">Grand Canyon, Arizona</h3>
       <div class="iteration-belt__viewport">
         <div class="iteration-belt__track">
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7135.JPG">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7136.JPG">
             <figcaption class="iteration-belt__caption">View 1</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7136.JPG">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7137.JPG">
             <figcaption class="iteration-belt__caption">View 2</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7137.JPG">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7138.JPG">
             <figcaption class="iteration-belt__caption">View 3</figcaption>
           </figure>
 
           <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7138.JPG">
+            <img class="iteration-belt__image" src="media/1_shootPhotos/canyon/IMG_7139.JPG">
             <figcaption class="iteration-belt__caption">View 4</figcaption>
           </figure>
 
@@ -304,13 +303,13 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Image A</div>
         <img class="viz-pair__image" src="media/2_homography/imgA.png"
-          alt="Image A with selected correspondence points marked" loading="lazy">
+          alt="Image A with selected correspondence points marked">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Image B</div>
         <img class="viz-pair__image" src="media/2_homography/imgB.png"
-          alt="Image B with selected correspondence points marked" loading="lazy">
+          alt="Image B with selected correspondence points marked">
       </figure>
     </div>
 
@@ -358,14 +357,12 @@
       aria-label="Rectification correspondences for the frame example">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Source (selected corners)</div>
-        <img class="viz-pair__image" src="media/3_warp/frame/frame_points_imgA.png"
-          alt="Source photo with four selected corner points on the frame" loading="lazy">
+        <img class="viz-pair__image" src="media/3_warp/frame/frame_points_imgA.png">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Target (ideal rectangle)</div>
-        <img class="viz-pair__image" src="media/3_warp/frame/frame_points_imgB.png"
-          alt="Target rectangle with four corresponding corner points" loading="lazy">
+        <img class="viz-pair__image" src="media/3_warp/frame/frame_points_imgB.png">
       </figure>
     </div>
 
@@ -373,37 +370,19 @@
       aria-label="Rectified output comparison by interpolation method (frame)">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Nearest neighbor</div>
-        <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped.png"
-          alt="Rectified frame using nearest-neighbor interpolation" loading="lazy">
+        <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped.png">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Bilinear</div>
-        <img class="viz-pair__image" src="media/3_warp/frame/warp_bilinear/redFrame_warped.png"
-          alt="Rectified frame using bilinear interpolation" loading="lazy">
+        <img class="viz-pair__image" src="media/3_warp/frame/warp_bilinear/redFrame_warped.png">
       </figure>
     </div>
-    <!-- 
-  <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-       aria-label="Alpha mask comparison by interpolation method (frame)">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">NN mask</div>
-      <img class="viz-pair__image" src="media/3_warp/frame/warp_nn/redFrame_warped_mask.png"
-           alt="Alpha mask for the nearest-neighbor frame rectification" loading="lazy">
-    </figure>
-
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Bilinear mask</div>
-      <img class="viz-pair__image" src="media/3_warp/frame/warp_bilinear/redFrame_warped_mask.png"
-           alt="Alpha mask for the bilinear frame rectification" loading="lazy">
-    </figure>
-  </div> -->
 
     <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
       <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
       <img class="viz-pair__image" src="media/3_warp/frame/diff_x10.png"
-        alt="Amplified absolute difference between bilinear and nearest-neighbor warped outputs (scaled by 10)"
-        loading="lazy">
+        alt="Amplified absolute difference between bilinear and nearest-neighbor warped outputs (scaled by 10)">
     </figure>
 
     <div class="code-snippets" aria-label="Numeric difference between bilinear and nearest neighbor outputs (frame)">
@@ -480,14 +459,12 @@ Bilinear:
         aria-label="Rectification correspondences for the sticker example">
         <figure class="viz-pair__panel">
           <div class="viz-pair__title">Source (selected corners)</div>
-          <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png"
-            alt="Sticker photo with selected corner points on the planar region" loading="lazy">
+          <img class="viz-pair__image" src="media/3_warp/pink/points_imgA.png">
         </figure>
 
         <figure class="viz-pair__panel">
           <div class="viz-pair__title">Target (ideal rectangle)</div>
-          <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png"
-            alt="Target rectangle with corresponding corner points" loading="lazy">
+          <img class="viz-pair__image" src="media/3_warp/pink/points_imgB.png">
         </figure>
       </div>
 
@@ -495,31 +472,14 @@ Bilinear:
         aria-label="Rectified output comparison for the sticker example">
         <figure class="viz-pair__panel">
           <div class="viz-pair__title">Nearest neighbor</div>
-          <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped.png"
-            alt="Sticker rectification using nearest-neighbor interpolation" loading="lazy">
+          <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped.png">
         </figure>
 
         <figure class="viz-pair__panel">
           <div class="viz-pair__title">Bilinear</div>
-          <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped.png"
-            alt="Sticker rectification using bilinear interpolation" loading="lazy">
+          <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped.png">
         </figure>
       </div>
-      <!-- 
-  <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
-       aria-label="Alpha mask comparison for the sticker example">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">NN mask</div>
-      <img class="viz-pair__image" src="media/3_warp/pink/nn/pink_warped_mask.png"
-           alt="Alpha mask for nearest-neighbor sticker rectification" loading="lazy">
-    </figure>
-
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Bilinear mask</div>
-      <img class="viz-pair__image" src="media/3_warp/pink/bilinear/pink_warped_mask.png"
-           alt="Alpha mask for bilinear sticker rectification" loading="lazy">
-    </figure>
-  </div> -->
 
       <div class="iteration-belt__outro">
         <p>
@@ -540,8 +500,7 @@ Bilinear:
       <figure class="viz-pair__panel" style="max-width: 60rem; margin: 1.25rem auto 0;">
         <div class="viz-pair__title">Difference map (|bilinear − NN| × 10)</div>
         <img class="viz-pair__image" src="media/3_warp/pink/diff_x10.png"
-          alt="Amplified absolute difference between bilinear and nearest-neighbor sticker warps (scaled by 10)"
-          loading="lazy">
+          alt="Amplified absolute difference between bilinear and nearest-neighbor sticker warps (scaled by 10)">
       </figure>
 
       <div class="code-snippets"
@@ -651,14 +610,12 @@ pct nonzero:   0.78648625</code></pre>
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Catalina pair comparisons">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Pair example 1</div>
-        <img class="viz-pair__image" src="media/4_mosaic/catalina/pano.png"
-          alt="Catalina panorama from a single pair of images" loading="lazy">
+        <img class="viz-pair__image" src="media/4_mosaic/catalina/pano.png">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Pair example 2</div>
-        <img class="viz-pair__image" src="media/4_mosaic/catalina/pair2.png"
-          alt="Catalina panorama from a second image pair" loading="lazy">
+        <img class="viz-pair__image" src="media/4_mosaic/catalina/pair2.png">
       </figure>
     </div>
 
@@ -672,68 +629,58 @@ pct nonzero:   0.78648625</code></pre>
       <div class="iteration-belt__track">
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_tgt_canvas.png"
-            alt="Target image placed on the panorama canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_tgt_canvas.png">
           <figcaption class="iteration-belt__caption">Target canvas</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_src_warp.png"
-            alt="Source image warped into the panorama canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_src_warp.png">
           <figcaption class="iteration-belt__caption">Warped source</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_overlay.png"
-            alt="Overlay of warped source and target on the panorama canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_overlay.png">
           <figcaption class="iteration-belt__caption">Overlay</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_src.png"
-            alt="Binary mask of valid pixels for the warped source on the canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_src.png">
           <figcaption class="iteration-belt__caption">Source mask</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_tgt.png"
-            alt="Binary mask of valid pixels for the target canvas image" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_mask_tgt.png">
           <figcaption class="iteration-belt__caption">Target mask</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_src.png"
-            alt="Feather blending weights for the source contribution" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_src.png">
           <figcaption class="iteration-belt__caption">Feather weights (src)</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_tgt.png"
-            alt="Feather blending weights for the target contribution" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_w_tgt.png">
           <figcaption class="iteration-belt__caption">Feather weights (tgt)</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_seam_ratio.png"
-            alt="Seam diagnostic / blending boundary visualization" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/catalina/pano_seam_ratio.png">
           <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
         </figure>
 
       </div>
     </div>
 
-    <!-- Multi-stitch example (sequence) -->
+
     <figure class="viz-pair__panel" style="max-width: 64rem; margin: 1.5rem auto 0;">
       <div class="viz-pair__title">Multi-stitch Uncropped</div>
-      <img class="viz-pair__image" src="media/4_mosaic/catalina/mosaic_seq_cropped_bbox.png"
-        alt="Catalina panorama produced by stitching a sequence of multiple images" loading="lazy">
+      <img class="viz-pair__image" src="media/4_mosaic/catalina/mosaic_seq_cropped_bbox.png">
     </figure>
 
-    <!-- Final (clean) panorama panel -->
+
     <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
       <div class="viz-pair__title">Final panorama (cropped)</div>
-      <img class="viz-pair__image" src="media/4_mosaic/catalina/mosaic_seq_cropped.png"
-        alt="Final Catalina panorama after multi-stitch and cropping to the valid bounding box" loading="lazy">
+      <img class="viz-pair__image" src="media/4_mosaic/catalina/mosaic_seq_cropped.png">
     </figure>
 
     <div class="code-snippets" aria-label="Catalina mosaic-seq runtime and parameters">
@@ -759,19 +706,17 @@ pct nonzero:   0.78648625</code></pre>
       <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
     </div>
 
-    <!-- Pair (two-image) vs Multi-stitch (sequence) -->
+
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
       aria-label="Grand Canyon pair vs multi-stitch comparison">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Pair example 1</div>
-        <img class="viz-pair__image" src="media/4_mosaic/canyon/pair/pano.png"
-          alt="Grand Canyon panorama from a single pair of images" loading="lazy">
+        <img class="viz-pair__image" src="media/4_mosaic/canyon/pair/pano.png">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Pair Example 2</div>
-        <img class="viz-pair__image" src="media/4_mosaic/canyon/pair2.png"
-          alt="Grand Canyon panorama produced by stitching a sequence of multiple images" loading="lazy">
+        <img class="viz-pair__image" src="media/4_mosaic/canyon/pair2.png">
       </figure>
     </div>
 
@@ -785,50 +730,42 @@ pct nonzero:   0.78648625</code></pre>
       <div class="iteration-belt__track">
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_tgt_canvas.png"
-            alt="Target canyon image placed on the panorama canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_tgt_canvas.png">
           <figcaption class="iteration-belt__caption">Target canvas</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_src_warp.png"
-            alt="Source canyon image warped into the panorama canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_src_warp.png">
           <figcaption class="iteration-belt__caption">Warped source</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_overlay.png"
-            alt="Overlay of warped source and target for alignment checking" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_overlay.png">
           <figcaption class="iteration-belt__caption">Overlay</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_src.png"
-            alt="Binary mask of valid pixels for the warped source on the canvas" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_src.png">
           <figcaption class="iteration-belt__caption">Source mask</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_tgt.png"
-            alt="Binary mask of valid pixels for the target canvas image" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_mask_tgt.png">
           <figcaption class="iteration-belt__caption">Target mask</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_src.png"
-            alt="Feather blending weights for the source contribution" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_src.png">
           <figcaption class="iteration-belt__caption">Feather weights (src)</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_tgt.png"
-            alt="Feather blending weights for the target contribution" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_w_tgt.png">
           <figcaption class="iteration-belt__caption">Feather weights (tgt)</figcaption>
         </figure>
 
         <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_seam_ratio.png"
-            alt="Seam diagnostic / blending boundary visualization" loading="lazy">
+          <img class="iteration-belt__image" src="media/4_mosaic/canyon/pair/pano_seam_ratio.png">
           <figcaption class="iteration-belt__caption">Seam diagnostic</figcaption>
         </figure>
 
@@ -838,20 +775,14 @@ pct nonzero:   0.78648625</code></pre>
 
     <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
       <div class="viz-pair__title">Multi-stitch example (sequence)</div>
-      <img class="viz-pair__image" src="media/4_mosaic/canyon/mosaic_seq.png"
-        alt="Grand Canyon panorama produced by stitching a sequence of multiple images" loading="lazy">
+      <img class="viz-pair__image" src="media/4_mosaic/canyon/mosaic_seq.png">
     </figure>
 
-    <!-- Final (clean) panorama panel: use the cropped bbox version if that's your “final” -->
+
     <figure class="viz-pair__panel" style="max-width: 72rem; margin: 1.5rem auto 0;">
       <div class="viz-pair__title">Final panorama (cropped)</div>
-      <img class="viz-pair__image" src="media/4_mosaic/canyon/mosaic_seq_cropped.png"
-        alt="Final Grand Canyon panorama after multi-stitch and cropping to the valid bounding box" loading="lazy">
+      <img class="viz-pair__image" src="media/4_mosaic/canyon/mosaic_seq_cropped.png">
     </figure>
-<!-- 
-    <div class="code-snippets" aria-label="Grand Canyon mosaic-seq runtime and parameters">
-      <div class="code-snippets__title">Runtime and parameters (mosaic-seq)</div>
-    </div> -->
 
     <div class="iteration-belt__outro">
       <p>

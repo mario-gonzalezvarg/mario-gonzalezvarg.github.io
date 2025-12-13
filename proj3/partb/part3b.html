@@ -66,13 +66,13 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Harris (raw)</div>
         <img class="viz-pair__image" src="media/1_corner/g2/corners_harris.png"
-          alt="Harris corners for g2 (raw detections)" loading="lazy">
+          alt="Harris corners for g2 (raw detections)">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">ANMS (suppressed)</div>
         <img class="viz-pair__image" src="media/1_corner/g2/corners_anms.png"
-          alt="ANMS-selected corners for g2 (spatially distributed subset)" loading="lazy">
+          alt="ANMS-selected corners for g2 (spatially distributed subset)">
       </figure>
     </div>
 
@@ -107,13 +107,13 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Harris (raw)</div>
         <img class="viz-pair__image" src="media/1_corner/r1/corners_harris.png"
-          alt="Harris corners for r1 (raw detections)" loading="lazy">
+          alt="Harris corners for r1 (raw detections)">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">ANMS (suppressed)</div>
         <img class="viz-pair__image" src="media/1_corner/r1/corners_anms.png"
-          alt="ANMS-selected corners for r1 (spatially distributed subset)" loading="lazy">
+          alt="ANMS-selected corners for r1 (spatially distributed subset)">
       </figure>
     </div>
 
@@ -186,13 +186,13 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Descriptor points</div>
         <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_points.png"
-          alt="Keypoints where descriptors are extracted on the green glass sculpture" loading="lazy">
+          alt="Keypoints where descriptors are extracted on the green glass sculpture">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Descriptor patches</div>
         <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_patches.png"
-          alt="Grid of normalized descriptor patches extracted from the green glass sculpture" loading="lazy">
+          alt="Grid of normalized descriptor patches extracted from the green glass sculpture">
       </figure>
     </div>
 
@@ -208,18 +208,6 @@
         not
         being stable.
       </p>
-      <!-- <p>
-      The red glass case is comparatively cooperative because a larger fraction of the neighborhood structure is anchored
-      to stable surface boundaries and consistent gradient patterns. The patch grid therefore contains more repeatable
-      edge/corner configurations, and the point distribution more often yields keypoints whose descriptors remain coherent
-      across viewpoint changes.
-    </p>
-    <p>
-      Descriptor failure concentrates in (1) low-texture neighborhoods that collapse to noise after normalization,
-      (2) repeated micro-structure where many patches are genuinely similar and therefore ambiguous, and
-      (3) specular/refractive regions where appearance is not attached to the surface. Descriptor success is most reliable
-      when the neighborhood contains rigid, high-contrast geometry that preserves its gradient structure across views.
-    </p> -->
     </div>
 
     <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1 — red glass)</h3>
@@ -228,24 +216,17 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Descriptor points</div>
         <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_points.png"
-          alt="Keypoints where descriptors are extracted on the red glass sculpture" loading="lazy">
+          alt="Keypoints where descriptors are extracted on the red glass sculpture">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Descriptor patches</div>
         <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_patches.png"
-          alt="Grid of normalized descriptor patches extracted from the red glass sculpture" loading="lazy">
+          alt="Grid of normalized descriptor patches extracted from the red glass sculpture">
       </figure>
     </div>
 
     <div class="iteration-belt__outro">
-      <!-- <p>
-      Again, we emphasize how the green glass case is systematically harder because the local evidence is less repeatable. Translucency introduces
-      view-dependent highlights and internal refraction, so a patch centered at the “same” geometric location can change its
-      intensity layout between views. Dark regions additionally reduce signal-to-noise; after per-patch normalization, small
-      sensor noise can be scaled into meaningful-looking contrast, which makes some templates appear distinctive while not
-      being stable.
-    </p> -->
       <p>
         The red glass case is comparatively cooperative because a larger fraction of the neighborhood structure is
         anchored
@@ -253,8 +234,7 @@
         edge/corner configurations, and the point distribution more often yields keypoints whose descriptors remain
         coherent
         across viewpoint changes.
-        <!-- </p>
-    <p> -->
+
         Descriptor failure concentrates in (1) low-texture neighborhoods that collapse to noise after normalization,
         (2) repeated micro-structure where many patches are genuinely similar and therefore ambiguous, and
         (3) specular/refractive regions where appearance is not attached to the surface. Descriptor success is most
@@ -294,13 +274,13 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">r2 Harris (raw)</div>
         <img class="viz-pair__image" src="media/1_corner/r2/corners_harris.png"
-          alt="Harris corner detections for r2 (raw candidates)" loading="lazy">
+          alt="Harris corner detections for r2 (raw candidates)">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">r2 ANMS (suppressed)</div>
         <img class="viz-pair__image" src="media/1_corner/r2/corners_anms.png"
-          alt="ANMS-selected corners for r2 (spatially distributed subset)" loading="lazy">
+          alt="ANMS-selected corners for r2 (spatially distributed subset)">
       </figure>
     </div>
 
@@ -308,13 +288,13 @@
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">r2 descriptor points</div>
         <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_points.png"
-          alt="Keypoints where descriptors are extracted on r2" loading="lazy">
+          alt="Keypoints where descriptors are extracted on r2">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">r2 descriptor patches</div>
         <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_patches.png"
-          alt="Grid of normalized descriptor patches for r2" loading="lazy">
+          alt="Grid of normalized descriptor patches for r2">
       </figure>
     </div>
 
@@ -337,7 +317,7 @@ matches kept = 112</code></pre>
     <figure class="viz-pair__panel" style="max-width: 80rem; margin: 1.5rem auto 0;">
       <div class="viz-pair__title">Filtered feature matches (r1 ↔ r2)</div>
       <img class="viz-pair__image" src="media/3_featureMatch/r12/matches.png"
-        alt="Visualization of filtered matches between r1 and r2 with correspondence lines" loading="lazy">
+        alt="Visualization of filtered matches between r1 and r2 with correspondence lines">
     </figure>
 
     <div class="iteration-belt__outro">
@@ -459,13 +439,13 @@ Return:
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual points (Image A)</div>
         <img class="viz-pair__image" src="media/4_ransac/r2/manual/a2b_points_imgA.png"
-          alt="Visualization of manually selected correspondence points in image A" loading="lazy">
+          alt="Visualization of manually selected correspondence points in image A">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual points (Image B)</div>
         <img class="viz-pair__image" src="media/4_ransac/r2/manual/a2b_points_imgB.png"
-          alt="Visualization of manually selected correspondence points in image B" loading="lazy">
+          alt="Visualization of manually selected correspondence points in image B">
       </figure>
     </div>
 
@@ -502,13 +482,13 @@ time_total_s:         9.231406</code></pre>
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual (hand correspondences)</div>
         <img class="viz-pair__image" src="media/4_ransac/r2/manual/r1_r2_mosaic.png"
-          alt="Manual mosaic from hand-picked correspondences" loading="lazy">
+          alt="Manual mosaic from hand-picked correspondences">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Automatic (matches + RANSAC + feather)</div>
         <img class="viz-pair__image" src="media/4_ransac/r2/auto/pano.png"
-          alt="Automatic mosaic from feature matches filtered by RANSAC with feather blending" loading="lazy">
+          alt="Automatic mosaic from feature matches filtered by RANSAC with feather blending">
       </figure>
     </div>
 
@@ -530,20 +510,20 @@ time_total_s:         9.231406</code></pre>
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual points (Image A)</div>
         <img class="viz-pair__image" src="media/4_ransac/catalina/manual/imgA.png"
-          alt="Visualization of manually selected correspondence points in the first Catalina image" loading="lazy">
+          alt="Visualization of manually selected correspondence points in the first Catalina image">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual points (Image B)</div>
         <img class="viz-pair__image" src="media/4_ransac/catalina/manual/imgB.png"
-          alt="Visualization of manually selected correspondence points in the second Catalina image" loading="lazy">
+          alt="Visualization of manually selected correspondence points in the second Catalina image">
       </figure>
     </div>
 
     <figure class="viz-pair__panel" style="max-width: 80rem; margin: 1.5rem auto 0;">
       <div class="viz-pair__title">RANSAC inlier matches (IMG_1694 ↔ IMG_1697)</div>
       <img class="viz-pair__image" src="media/4_ransac/catalina/auto/IMG_1694_IMG_1697_auto_inlier_matches.png"
-        alt="Visualization of RANSAC-filtered inlier matches between the Catalina image pair" loading="lazy">
+        alt="Visualization of RANSAC-filtered inlier matches between the Catalina image pair">
     </figure>
 
     <div class="code-snippets" aria-label="Catalina runtime comparison (manual sequence vs auto pair)">
@@ -577,14 +557,14 @@ time_total_s: 24.949266</code></pre>
     <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group" aria-label="Final mosaic comparison (Catalina)">
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual (hand correspondences)</div>
-        <img class="viz-pair__image" src="media/4_ransac/catalina/manual/pano.png"
-          alt="Manual mosaic from hand-picked correspondences (Catalina)" loading="lazy">
+        <img class="viz-pair__image" src="media/4_ransac/catalina/manual/mosaic_seq_cropped.png"
+          alt="Manual mosaic from hand-picked correspondences (Catalina)">
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Automatic (matches + RANSAC + feather)</div>
         <img class="viz-pair__image" src="media/4_ransac/catalina/auto/ransac_crop.png"
-          alt="Automatic mosaic from feature matches and RANSAC with feather blending (Catalina)" loading="lazy">
+          alt="Automatic mosaic from feature matches and RANSAC with feather blending (Catalina)">
       </figure>
     </div>
 
@@ -605,7 +585,7 @@ time_total_s: 24.949266</code></pre>
     <figure class="viz-pair__panel" style="max-width: 80rem; margin: 1.25rem auto 0;">
       <div class="viz-pair__title">RANSAC inlier matches (IMG_7140 ↔ IMG_7141)</div>
       <img class="viz-pair__image" src="media/4_ransac/canyon/auto/IMG_7140_IMG_7141_auto_inlier_matches.png"
-        alt="Visualization of RANSAC-filtered inlier matches between the canyon image pair" loading="lazy">
+        alt="Visualization of RANSAC-filtered inlier matches between the canyon image pair">
     </figure>
 
     <div class="code-snippets" aria-label="Canyon runtime comparison (manual vs auto)">
@@ -638,13 +618,13 @@ time_total_s: 12.646754</code></pre>
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Manual (hand correspondences)</div>
         <img class="viz-pair__image" src="media/4_ransac/canyon/manual/blended.png"
-          alt="Manual canyon mosaic produced from hand-picked correspondences" loading="lazy">
+          alt="Manual canyon mosaic produced from hand-picked correspondences" >
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Automatic (matches + RANSAC + feather)</div>
         <img class="viz-pair__image" src="media/4_ransac/canyon/auto/IMG_7140_IMG_7141_auto.png"
-          alt="Automatic canyon mosaic produced from feature matches filtered by RANSAC with feather blending" loading="lazy">
+          alt="Automatic canyon mosaic produced from feature matches filtered by RANSAC with feather blending">
       </figure>
     </div>
 
