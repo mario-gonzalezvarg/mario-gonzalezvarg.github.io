@@ -28,13 +28,10 @@
     <h1 class="title">Diffusion Models</h1>
 
     <div class="project-switcher" aria-label="Jump to project parts">
-      <a href="../parta/proj5a.html" class="project-switcher__button project-switcher__button--primary">
-        Part A
-      </a>
-      <a href="../partb/proj5b.html" class="project-switcher__button">
-        Part B
-      </a>
+      <a href="../parta/proj5a.html" class="project-switcher__button" aria-current="page">Part A</a>
+      <a href="../partb/proj5b.html" class="project-switcher__button">Part B</a>
     </div>
+
   </div>
 
   <!--============================================= HuggingFace Interface Introduction ============================================ -->
@@ -946,7 +943,8 @@
     <h2 class="section-heading">1.7.1 Editing Web and Hand-Drawn Images</h2>
     <div class="iteration-belt__intro">
       <p>
-        Let us now proceed by testing SDEdit on images that originate from outside sources varying the initial starting step. For
+        Let us now proceed by testing SDEdit on images that originate from outside sources varying the initial starting
+        step. For
         each input, the forward process is run to noise levels <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20},
         and the reverse sampler is then applied under the prompt “a high quality photo.” At low noise
         levels, the procedure behaves like a local enhancement operator that cleans and stylizes the
