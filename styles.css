@@ -11,6 +11,10 @@
   --shadow: 0 12px 30px rgba(0, 0, 0, .35);
   --static-panel-width: 18rem;
   --static-panel-image-max: 36rem;
+
+  /* Header clearance (prevents hero title from sitting under fixed nav) */
+  --hero-top-pad: 8rem;
+  --hero-top-pad-mobile: 6rem;
 }
 
 /* ------------------------------
@@ -27,15 +31,16 @@
 
 html {
   scrollbar-gutter: stable both-edges;
-  /* overflow-x: hidden; */
 }
 
-/* avoid layout jump on scrollbars */
 html:focus-within {
   scroll-behavior: smooth;
 }
 
-/* Canvas backdrop stays behind content, above body bg */
+/* ------------------------------
+   Canvas backdrops
+------------------------------ */
+
 #sky {
   position: fixed;
   inset: 0;
@@ -45,7 +50,6 @@ html:focus-within {
   pointer-events: none;
 }
 
-/* Optional firefly canvas for home page */
 #firefly-canvas {
   position: fixed;
   inset: 0;
@@ -58,6 +62,7 @@ html:focus-within {
 /* ------------------------------
    Page background / body layout
 ------------------------------ */
+
 body {
   margin: 0;
   color: var(--ink);
@@ -75,8 +80,75 @@ body.top-title {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 8.0rem;
+
+  /* critical: clear the fixed header (and iOS safe-area) */
+  padding-top: calc(var(--hero-top-pad) + env(safe-area-inset-top));
   gap: 5.5rem;
+}
+
+/* ------------------------------
+   Home: project grid cards
+------------------------------ */
+
+.project-grid {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  padding: 1rem 1.1rem;
+  border-radius: 0.9rem;
+  text-decoration: none;
+
+  background: rgba(7, 12, 36, 0.72);
+  border: 1px solid rgba(163, 255, 203, 0.22);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+
+  transition: transform 150ms ease, box-shadow 150ms ease,
+              background-color 150ms ease, border-color 150ms ease;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  background: rgba(7, 12, 40, 0.82);
+  border-color: rgba(163, 255, 203, 0.42);
+  box-shadow: 0 0 26px rgba(0, 0, 0, 0.55);
+}
+
+.project-card__kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 450;
+  color: #ffeac7;
+  opacity: 0.9;
+}
+
+.project-card__title {
+  font-size: 1.0rem;
+  font-weight: 520;
+  line-height: 1.35;
+  color: rgba(244, 241, 255, 0.96);
+}
+
+.project-card__meta {
+  margin-top: auto;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9cfde;
+  opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+  .project-grid { grid-template-columns: 1fr; }
 }
 
 
@@ -116,25 +188,23 @@ body.top-title {
     0 0 60px rgba(118, 255, 203, 0.18);
 }
 
-/* generic h1 inside content; main styling is on .title */
 .content h1 {
   margin-bottom: 0.25rem;
 }
 
-/* body text inside cards */
 .content p {
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
   color: #c9cfde;
 }
 
+/* header uses .content wrapper, but avoid double padding (top-nav already pads) */
 .site-header .content {
-  padding: 0.75rem 1.5rem;
+  padding: 0;
   background: transparent;
   border: none;
   border-radius: 0;
   backdrop-filter: none;
 }
-
 
 /* ------------------------------
    Main title states
@@ -155,7 +225,6 @@ body.top-title {
     0 0 120px rgba(255, 185, 120, 0.35);
 }
 
-/* flicker states (used by proj5 JS) */
 .title--dim {
   opacity: 0.6;
   text-shadow:
@@ -179,7 +248,6 @@ body.top-title {
     0 0 8px rgba(255, 190, 130, 0.25),
     0 0 16px rgba(116, 86, 59, 0.373);
 }
-
 
 /* ------------------------------
    Writing section
@@ -217,7 +285,6 @@ body.top-title {
   height: auto;
 }
 
-/* Generic multi-panel row inside writing-section figures */
 .writing-section .figure-row {
   display: flex;
   justify-content: center;
@@ -237,7 +304,7 @@ body.top-title {
   text-align: center;
 }
 
-/* subheading label: above top-left of border */
+/* section label: above border (desktop) */
 .section-heading {
   position: absolute;
   top: 0;
@@ -256,7 +323,6 @@ body.top-title {
     0 0 18px rgba(118, 255, 203, 0.55);
 }
 
-/* decorative line tying label to the border */
 .section-heading::before {
   content: "";
   position: absolute;
@@ -270,10 +336,8 @@ body.top-title {
   opacity: 0.8;
 }
 
-
-
 /* ------------------------------
-   Infinite iteration conveyor belt
+   Iteration belt
 ------------------------------ */
 
 .iteration-belt {
@@ -283,7 +347,6 @@ body.top-title {
   text-align: center;
 }
 
-/* optional text blocks above/below the belt */
 .iteration-belt__intro,
 .iteration-belt__outro {
   text-align: left;
@@ -294,7 +357,6 @@ body.top-title {
   margin-top: 1.5rem;
 }
 
-/* make intro/outro text match writing-section style */
 .iteration-belt__intro p,
 .iteration-belt__outro p {
   font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -321,7 +383,7 @@ body.top-title {
   touch-action: pan-y;
 }
 
-.iteration-belt__viewport:active{
+.iteration-belt__viewport:active {
   cursor: grabbing;
 }
 
@@ -353,13 +415,11 @@ body.top-title {
   color: #c9cfde;
 }
 
-/* two-row comparison belt: stack rows vertically */
 .iteration-belt--two-rows {
   display: flex;
   flex-direction: column;
 }
 
-/* each row = label + belt */
 .iteration-belt__row {
   display: flex;
   flex-direction: column;
@@ -407,14 +467,12 @@ body.top-title {
   box-shadow: 0 0 0 1px rgba(241, 222, 170, 0.6);
 }
 
-/* Smaller side-by-side contact sheets for Gaussian / Laplacian stacks */
 .pair--stacks .media--narrow {
-  max-width: 36rem;   /* shrink the multi-level charts */
+  max-width: 36rem;
   margin-bottom: 2rem;
   margin-top: 2rem;
 }
 
-/* conveyor animation */
 @keyframes iteration-belt-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -424,7 +482,6 @@ body.top-title {
    Static panels with 1–3 images
 ------------------------------ */
 
-/* Wrapper (already defined earlier) */
 .static-panel {
   width: 100%;
   max-width: 100rem;
@@ -432,7 +489,6 @@ body.top-title {
   text-align: center;
 }
 
-/* Row layout for 2–3 images */
 .static-panel--row {
   display: flex;
   justify-content: center;
@@ -445,7 +501,6 @@ body.top-title {
   flex: 0 1 var(--static-panel-width, 18rem);
 }
 
-/* Image and caption */
 .static-panel__image {
   display: block;
   width: 100%;
@@ -456,13 +511,11 @@ body.top-title {
   border: none;
 }
 
-/* When a static panel sits directly in an iteration-belt, keep it tight */
 .iteration-belt > .static-panel,
 .iteration-belt > .static-panel--row {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-
 
 .static-panel__caption {
   margin-top: 0.45rem;
@@ -470,12 +523,8 @@ body.top-title {
   color: #c9cfde;
 }
 
-
-
-
-
 /* ------------------------------
-   Project-5 style top nav bar
+   Fixed top nav bar
 ------------------------------ */
 
 .site-header {
@@ -487,6 +536,9 @@ body.top-title {
   backdrop-filter: blur(18px);
   background: rgba(4, 8, 24, 0.85);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* iOS notch */
+  padding-top: env(safe-area-inset-top);
 }
 
 .top-nav {
@@ -506,59 +558,11 @@ body.top-title {
   opacity: 0.9;
 }
 
-/* Part / project buttons under hero title */
-.project-switcher {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-}
 
-.project-switcher__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.6rem;
-  border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  text-decoration: none;
-  border: 1px solid rgba(244, 241, 255, 0.6);
-  background: rgba(7, 12, 36, 0.85);
-  color: rgba(244, 241, 255, 0.95);
-  box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(16px);
-  transition: transform 150ms ease, box-shadow 150ms ease,
-              background-color 150ms ease, border-color 150ms ease;
-}
-
-.project-switcher__button--primary {
-  background: linear-gradient(
-    135deg,
-    rgba(252, 219, 141, 0.16),
-    rgba(255, 248, 212, 0.06)
-  );
-  border-color: rgba(252, 219, 141, 0.85);
-}
-
-.project-switcher__button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
-  background: rgba(7, 12, 40, 0.95);
-}
-
-.project-switcher__button--primary:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(252, 219, 141, 0.25),
-    rgba(255, 248, 212, 0.14)
-  );
-}
 
 
 /* ------------------------------
-   Root index helpers (from old root CSS)
+   Root index helpers
 ------------------------------ */
 
 .container {
@@ -612,7 +616,7 @@ body.top-title {
 }
 
 /* ------------------------------
-   Viz pair (plot-like two-up panels)
+   Viz pair (two-up / three-up panels)
 ------------------------------ */
 
 .viz-pair {
@@ -628,21 +632,11 @@ body.top-title {
   text-align: center;
   max-width: var(--viz-pair-max, 100%);
   margin-inline: auto;
-}
 
-.viz-pair__title {
-  display: inline-block;
-  margin: 0 0 0.75rem;
-  padding: 0.35rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(241, 222, 170, 0.7);
-  background: rgba(6, 16, 20, 0.85);
-  color: #ffeac7;
-  font-size: 0.85rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-weight: 500;
-  box-shadow: 0 0 14px rgba(241, 222, 170, 0.35);
+  /* for ordering title/image/caption */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .viz-pair__image {
@@ -651,122 +645,36 @@ body.top-title {
   height: auto;
   border-radius: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
+  order: 1;
 }
 
-/* 3-up triptych grid (B/G/R) */
+.viz-pair__title {
+  order: 2;
+  margin: 0.65rem 0 0;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 360;
+  color: #ffeac7;
+}
+
+/* Fix: captions must come after the gold title (not above the image) */
+.viz-pair__panel .iteration-belt__caption {
+  order: 3;
+  margin-top: 0.45rem;
+  text-align: center;
+}
+
 .viz-pair--three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
-@media (max-width: 900px) {
-  .viz-pair {
-    grid-template-columns: 1fr;
-  }
-  .viz-pair--three {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-
-/* Root home nav-bar style */
-.nav-band {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: linear-gradient(to bottom,
-      rgba(4, 6, 13, 0.96),
-      rgba(4, 6, 13, 0.65));
-  border-bottom: 1px solid rgba(32, 44, 74, 0.95);
-  backdrop-filter: blur(14px);
-}
-
-.nav {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0.65rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.nav a {
-  color: var(--ink);
-  text-decoration: none;
-  font-weight: 520;
-  font-size: 0.9rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease,
-    transform 0.1s ease;
-}
-
-.nav a:hover {
-  background: rgba(18, 30, 60, 0.9);
-  border-color: rgba(163, 255, 203, 0.4);
-  transform: translateY(-1px);
-}
-
-.nav a.active {
-  color: var(--accent);
-  border-color: rgba(241, 222, 170, 0.9);
-  background: radial-gradient(circle at 0% 0%,
-      rgba(255, 249, 220, 0.16),
-      rgba(6, 10, 18, 0.96));
-}
-
-.nav a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Project link buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0.35rem 0.35rem 0;
-  padding: 0.5rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(241, 222, 170, 0.75);
-  background: radial-gradient(circle at 0% 0%,
-      rgba(255, 250, 230, 0.18),
-      rgba(6, 16, 22, 0.96));
-  color: #ffeac7;
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-decoration: none;
-  box-shadow: 0 0 12px rgba(241, 222, 170, 0.35);
-  white-space: nowrap;
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    background 0.12s ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 18px rgba(241, 222, 170, 0.6);
-  background: radial-gradient(circle at 0% 0%,
-      rgba(255, 252, 236, 0.25),
-      rgba(8, 20, 30, 0.98));
-}
-
-.btn:focus-visible {
-  outline: 2px solid #ffeac7;
-  outline-offset: 2px;
-}
-
-.chev {
-  font-size: 1.05em;
-}
-
 
 /* ------------------------------
    Generic code snippet dropdowns
@@ -783,7 +691,6 @@ body.top-title {
   gap: 2.5rem;
 }
 
-/* title spans full row above the buttons */
 .code-snippets__title {
   flex: 0 0 100%;
   text-align: center;
@@ -793,12 +700,11 @@ body.top-title {
   text-transform: uppercase;
   font-weight: 360;
   color: #ffeac7;
-  margin-bottom: 0.05rem; /* small space before row of buttons */
+  margin-bottom: 0.05rem;
 }
 
-/* Each <details> wrapper becomes a flex item */
 .code-snippet {
-  flex: 1 0 264px;      /* tweak width as you like */
+  flex: 1 0 264px;
   border-radius: 0.5rem;
   border: 1px solid rgba(241, 222, 170, 0.7);
   background: radial-gradient(circle at 0% 0%,
@@ -807,9 +713,6 @@ body.top-title {
   overflow: hidden;
 }
 
-
-
-/* Make summary look like one of your pill buttons */
 .code-snippet > summary {
   list-style: none;
   cursor: pointer;
@@ -826,12 +729,10 @@ body.top-title {
   user-select: none;
 }
 
-/* Hide the default marker */
 .code-snippet > summary::-webkit-details-marker {
   display: none;
 }
 
-/* Simple chevron using ::after */
 .code-snippet > summary::after {
   content: "▾";
   font-size: 0.75rem;
@@ -842,13 +743,11 @@ body.top-title {
   transform: rotate(180deg);
 }
 
-/* Panel body */
 .code-snippet__body {
   border-top: 1px solid rgba(241, 222, 170, 0.4);
   background: rgba(4, 8, 24, 0.96);
 }
 
-/* Generic code block style (reusable) */
 .code-block {
   margin: 0;
   padding: 0.85rem 1rem 1rem;
@@ -865,17 +764,17 @@ body.top-title {
 }
 
 /* ------------------------------
-   Math derivations (uses parent card background)
+   Math derivations
 ------------------------------ */
 
-.math-derivation{
+.math-derivation {
   width: 100%;
   max-width: var(--math-max, 70rem);
   margin: 1.5rem auto 0;
   text-align: left;
 }
 
-.math-derivation__title{
+.math-derivation__title {
   text-align: center;
   font-size: 0.9rem;
   letter-spacing: 0.18em;
@@ -885,7 +784,7 @@ body.top-title {
   margin-bottom: 0.9rem;
 }
 
-.math-derivation__body p{
+.math-derivation__body p {
   font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-weight: 450;
   font-size: clamp(1.0rem, 1.4vw, 1.1rem);
@@ -894,22 +793,17 @@ body.top-title {
   margin: 0 0 0.95rem;
 }
 
-.math-derivation__eq{
+.math-derivation__eq {
   text-align: center;
   overflow-x: auto;
   padding: 0.25rem 0 0.65rem;
   -webkit-overflow-scrolling: touch;
 }
 
-/* keep MathJax output scrollable on narrow screens */
-.math-derivation__eq mjx-container{
+.math-derivation__eq mjx-container {
   display: inline-block;
   max-width: 100%;
 }
-
-
-
-
 
 /* ------------------------------
    Motion reduction
@@ -929,9 +823,19 @@ body.top-title {
    Mobile tweaks
 ------------------------------ */
 
+@media (max-width: 900px) {
+  .viz-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .viz-pair--three {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 600px) {
   body.top-title {
-    padding-top: 2.5rem;
+    padding-top: calc(var(--hero-top-pad-mobile) + env(safe-area-inset-top));
     gap: 2.5rem;
   }
 
@@ -951,10 +855,8 @@ body.top-title {
   }
 
   .iteration-belt__viewport {
-    overflow-x: auto;
+
     overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
     padding-bottom: 0.25rem;
   }
 
