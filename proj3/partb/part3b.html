@@ -87,7 +87,7 @@
         (where the image claims to have corners), while the ANMS visualization indicates whether that evidence can be
         converted into a spatially balanced set that will not collapse downstream matching into a single textured patch.
       </p>
-      
+
     </div>
 
     <div class="iteration-belt__outro">
@@ -144,68 +144,75 @@
 
 
 
- <!-- ========== B.2: Feature Descriptors ========== -->
-<section class="content gold-glass iteration-belt" id="b2">
-  <h2 class="section-heading">B.2 Feature Descriptors</h2>
+  <!-- ========== B.2: Feature Descriptors ========== -->
+  <section class="content gold-glass iteration-belt" id="b2">
+    <h2 class="section-heading">B.2 Feature Descriptors</h2>
 
-  <div class="iteration-belt__intro">
-    <p>
-      Descriptor extraction can be reduced to three operations: sampling a neighborhood around each retained corner,
-      canonicalizing that neighborhood into a fixed-dimensional representation, and comparing representations by a
-      distance rule. The purpose of canonicalization is not aesthetic compression, but invariance: a match should be
-      driven by local structure that persists across views rather than by absolute exposure or global tone.
-    </p>
-  </div>
+    <div class="iteration-belt__intro">
+      <p>
+        Descriptor extraction can be reduced to three operations: sampling a neighborhood around each retained corner,
+        canonicalizing that neighborhood into a fixed-dimensional representation, and comparing representations by a
+        distance rule. The purpose of canonicalization is not aesthetic compression, but invariance: a match should be
+        driven by local structure that persists across views rather than by absolute exposure or global tone.
+      </p>
+    </div>
 
-  <div class="code-snippets" aria-label="Descriptor construction summary">
-    <div class="code-snippets__title">Descriptor construction</div>
-    <details class="code-snippet" open>
-      <summary>patch → vector</summary>
-      <div class="code-snippet__body">
-        <pre class="code-block"><code>1) Extract a square patch around each keypoint (grayscale).
+    <div class="code-snippets" aria-label="Descriptor construction summary">
+      <div class="code-snippets__title">Descriptor construction</div>
+      <details class="code-snippet" open>
+        <summary>patch → vector</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>1) Extract a square patch around each keypoint (grayscale).
 2) Apply mild smoothing (stabilizes against pixel noise / aliasing).
 3) Downsample to a small canonical grid (e.g., 8×8) to form a compact template.
 4) Normalize per patch (zero-mean, unit-variance) to reduce exposure sensitivity.
 5) Flatten to a descriptor vector; compare descriptors by L2 distance.</code></pre>
-      </div>
-    </details>
-  </div>
+        </div>
+      </details>
+    </div>
 
-  <div class="iteration-belt__intro">
-    <p>
-      Two diagnostic visualizations are used to judge whether the descriptor is behaving as intended. The <em>descriptor
-      points</em> image shows coverage, whether samples span the object and the overlap region instead of collapsing into a
-      single cluster. The <em>descriptor patches</em> grid shows discriminability, whether the encoded neighborhoods contain
-      stable edges/corners or instead devolve into flat, noisy, or highlight-dominated templates that cannot support
-      reliable matching.
-    </p>
-  </div>
+    <div class="iteration-belt__intro">
+      <p>
+        Two diagnostic visualizations are used to judge whether the descriptor is behaving as intended. The
+        <em>descriptor
+          points</em> image shows coverage, whether samples span the object and the overlap region instead of collapsing
+        into a
+        single cluster. The <em>descriptor patches</em> grid shows discriminability, whether the encoded neighborhoods
+        contain
+        stable edges/corners or instead devolve into flat, noisy, or highlight-dominated templates that cannot support
+        reliable matching.
+      </p>
+    </div>
 
-  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Example 1 (g2 — green glass)</h3>
-  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
-       aria-label="Descriptor points and patches (green glass)">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Descriptor points</div>
-      <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_points.png"
-           alt="Keypoints where descriptors are extracted on the green glass sculpture" loading="lazy">
-    </figure>
+    <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Example 1 (g2 — green glass)</h3>
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
+      aria-label="Descriptor points and patches (green glass)">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor points</div>
+        <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_points.png"
+          alt="Keypoints where descriptors are extracted on the green glass sculpture" loading="lazy">
+      </figure>
 
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Descriptor patches</div>
-      <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_patches.png"
-           alt="Grid of normalized descriptor patches extracted from the green glass sculpture" loading="lazy">
-    </figure>
-  </div>
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor patches</div>
+        <img class="viz-pair__image" src="media/2_descriptor/g2/descriptor_patches.png"
+          alt="Grid of normalized descriptor patches extracted from the green glass sculpture" loading="lazy">
+      </figure>
+    </div>
 
-  <div class="iteration-belt__outro">
-    <p>
-      Again, we emphasize how the green glass case is systematically harder because the local evidence is less repeatable. Translucency introduces
-      view-dependent highlights and internal refraction, so a patch centered at the “same” geometric location can change its
-      intensity layout between views. Dark regions additionally reduce signal-to-noise; after per-patch normalization, small
-      sensor noise can be scaled into meaningful-looking contrast, which makes some templates appear distinctive while not
-      being stable.
-    </p>
-    <!-- <p>
+    <div class="iteration-belt__outro">
+      <p>
+        Again, we emphasize how the green glass case is systematically harder because the local evidence is less
+        repeatable. Translucency introduces
+        view-dependent highlights and internal refraction, so a patch centered at the “same” geometric location can
+        change its
+        intensity layout between views. Dark regions additionally reduce signal-to-noise; after per-patch normalization,
+        small
+        sensor noise can be scaled into meaningful-looking contrast, which makes some templates appear distinctive while
+        not
+        being stable.
+      </p>
+      <!-- <p>
       The red glass case is comparatively cooperative because a larger fraction of the neighborhood structure is anchored
       to stable surface boundaries and consistent gradient patterns. The patch grid therefore contains more repeatable
       edge/corner configurations, and the point distribution more often yields keypoints whose descriptors remain coherent
@@ -217,151 +224,279 @@
       (3) specular/refractive regions where appearance is not attached to the surface. Descriptor success is most reliable
       when the neighborhood contains rigid, high-contrast geometry that preserves its gradient structure across views.
     </p> -->
-  </div>
+    </div>
 
-  <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1 — red glass)</h3>
-  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
-       aria-label="Descriptor points and patches (red glass)">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Descriptor points</div>
-      <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_points.png"
-           alt="Keypoints where descriptors are extracted on the red glass sculpture" loading="lazy">
-    </figure>
+    <h3 class="iteration-belt__row-title" style="margin-top: 1.75rem;">Example 2 (r1 — red glass)</h3>
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group"
+      aria-label="Descriptor points and patches (red glass)">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor points</div>
+        <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_points.png"
+          alt="Keypoints where descriptors are extracted on the red glass sculpture" loading="lazy">
+      </figure>
 
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">Descriptor patches</div>
-      <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_patches.png"
-           alt="Grid of normalized descriptor patches extracted from the red glass sculpture" loading="lazy">
-    </figure>
-  </div>
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Descriptor patches</div>
+        <img class="viz-pair__image" src="media/2_descriptor/r1/descriptor_patches.png"
+          alt="Grid of normalized descriptor patches extracted from the red glass sculpture" loading="lazy">
+      </figure>
+    </div>
 
-  <div class="iteration-belt__outro">
-    <!-- <p>
+    <div class="iteration-belt__outro">
+      <!-- <p>
       Again, we emphasize how the green glass case is systematically harder because the local evidence is less repeatable. Translucency introduces
       view-dependent highlights and internal refraction, so a patch centered at the “same” geometric location can change its
       intensity layout between views. Dark regions additionally reduce signal-to-noise; after per-patch normalization, small
       sensor noise can be scaled into meaningful-looking contrast, which makes some templates appear distinctive while not
       being stable.
     </p> -->
-    <p>
-      The red glass case is comparatively cooperative because a larger fraction of the neighborhood structure is anchored
-      to stable surface boundaries and consistent gradient patterns. The patch grid therefore contains more repeatable
-      edge/corner configurations, and the point distribution more often yields keypoints whose descriptors remain coherent
-      across viewpoint changes.
-    <!-- </p>
+      <p>
+        The red glass case is comparatively cooperative because a larger fraction of the neighborhood structure is
+        anchored
+        to stable surface boundaries and consistent gradient patterns. The patch grid therefore contains more repeatable
+        edge/corner configurations, and the point distribution more often yields keypoints whose descriptors remain
+        coherent
+        across viewpoint changes.
+        <!-- </p>
     <p> -->
-      Descriptor failure concentrates in (1) low-texture neighborhoods that collapse to noise after normalization,
-      (2) repeated micro-structure where many patches are genuinely similar and therefore ambiguous, and
-      (3) specular/refractive regions where appearance is not attached to the surface. Descriptor success is most reliable
-      when the neighborhood contains rigid, high-contrast geometry that preserves its gradient structure across views.
-    </p>
-  </div>
-</section>
+        Descriptor failure concentrates in (1) low-texture neighborhoods that collapse to noise after normalization,
+        (2) repeated micro-structure where many patches are genuinely similar and therefore ambiguous, and
+        (3) specular/refractive regions where appearance is not attached to the surface. Descriptor success is most
+        reliable
+        when the neighborhood contains rigid, high-contrast geometry that preserves its gradient structure across views.
+      </p>
+    </div>
+  </section>
 
 
 
-<!-- ========== B.3: Feature Matching ========== -->
-<section class="content gold-glass iteration-belt" id="b3">
-  <h2 class="section-heading">B.3 Feature Matching</h2>
+  <!-- ========== B.3: Feature Matching ========== -->
+  <section class="content gold-glass iteration-belt" id="b3">
+    <h2 class="section-heading">B.3 Feature Matching</h2>
 
-  <div class="iteration-belt__intro">
-    <p>
-      Feature matching can be treated as a test of whether the descriptor representation is sufficiently distinctive and
-      sufficiently repeatable to survive a viewpoint change. Each retained corner produces a descriptor vector; for every
-      descriptor in Image A, the nearest neighbors in Image B are queried in descriptor space, and a decision rule filters
-      ambiguous hypotheses before they become geometric constraints.
-    </p>
-    <p>
-      The diagnostic objective is twofold: (1) verify that the selected keypoints and descriptors for the second image
-      (r2) contain stable structure rather than highlight noise, and (2) verify that the accepted matches form a coherent
-      pattern across the overlap rather than a dense set of inconsistent crossings.
-    </p>
-  </div>
+    <div class="iteration-belt__intro">
+      <p>
+        Feature matching can be treated as a test of whether the descriptor representation is sufficiently distinctive
+        and
+        sufficiently repeatable to survive a viewpoint change. Each retained corner produces a descriptor vector; for
+        every
+        descriptor in Image A, the nearest neighbors in Image B are queried in descriptor space, and a decision rule
+        filters
+        ambiguous hypotheses before they become geometric constraints.
+      </p>
+      <p>
+        The diagnostic objective is twofold: (1) verify that the selected keypoints and descriptors for the second image
+        (r2) contain stable structure rather than highlight noise, and (2) verify that the accepted matches form a
+        coherent
+        pattern across the overlap rather than a dense set of inconsistent crossings.
+      </p>
+    </div>
 
-  <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Reference features (r2)</h3>
+    <h3 class="iteration-belt__row-title" style="margin-top: 0.25rem;">Reference features (r2)</h3>
 
-  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="r2 corners: Harris vs ANMS">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">r2 Harris (raw)</div>
-      <img class="viz-pair__image" src="media/1_corner/r2/corners_harris.png"
-           alt="Harris corner detections for r2 (raw candidates)" loading="lazy">
-    </figure>
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="r2 corners: Harris vs ANMS">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">r2 Harris (raw)</div>
+        <img class="viz-pair__image" src="media/1_corner/r2/corners_harris.png"
+          alt="Harris corner detections for r2 (raw candidates)" loading="lazy">
+      </figure>
 
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">r2 ANMS (suppressed)</div>
-      <img class="viz-pair__image" src="media/1_corner/r2/corners_anms.png"
-           alt="ANMS-selected corners for r2 (spatially distributed subset)" loading="lazy">
-    </figure>
-  </div>
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">r2 ANMS (suppressed)</div>
+        <img class="viz-pair__image" src="media/1_corner/r2/corners_anms.png"
+          alt="ANMS-selected corners for r2 (spatially distributed subset)" loading="lazy">
+      </figure>
+    </div>
 
-  <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="r2 descriptors: points and patches">
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">r2 descriptor points</div>
-      <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_points.png"
-           alt="Keypoints where descriptors are extracted on r2" loading="lazy">
-    </figure>
+    <div class="viz-pair" style="--viz-pair-max: 34rem;" role="group" aria-label="r2 descriptors: points and patches">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">r2 descriptor points</div>
+        <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_points.png"
+          alt="Keypoints where descriptors are extracted on r2" loading="lazy">
+      </figure>
 
-    <figure class="viz-pair__panel">
-      <div class="viz-pair__title">r2 descriptor patches</div>
-      <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_patches.png"
-           alt="Grid of normalized descriptor patches for r2" loading="lazy">
-    </figure>
-  </div>
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">r2 descriptor patches</div>
+        <img class="viz-pair__image" src="media/2_descriptor/r2/descriptor_patches.png"
+          alt="Grid of normalized descriptor patches for r2" loading="lazy">
+      </figure>
+    </div>
 
-  <div class="code-snippets" aria-label="Matching rule and parameters">
-    <div class="code-snippets__title">Matching rule</div>
+    <div class="code-snippets" aria-label="Matching rule and parameters">
+      <div class="code-snippets__title">Matching rule</div>
 
-    <details class="code-snippet" open>
-      <summary>ratio test (Lowe-style)</summary>
-      <div class="code-snippet__body">
-        <pre class="code-block"><code>For each descriptor in A:
+      <details class="code-snippet" open>
+        <summary>ratio test (Lowe-style)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>For each descriptor in A:
   find the best and second-best matches in B by L2 distance.
   keep the best match only if (d1 / d2) < ratio.
 
 ratio = 0.8
 matches kept = 112</code></pre>
-      </div>
-    </details>
-  </div>
+        </div>
+      </details>
+    </div>
 
-  <figure class="viz-pair__panel" style="max-width: 80rem; margin: 1.5rem auto 0;">
-    <div class="viz-pair__title">Filtered feature matches (r1 ↔ r2)</div>
-    <img class="viz-pair__image" src="media/3_featureMatch/r12/matches.png"
-         alt="Visualization of filtered matches between r1 and r2 with correspondence lines" loading="lazy">
-  </figure>
+    <figure class="viz-pair__panel" style="max-width: 80rem; margin: 1.5rem auto 0;">
+      <div class="viz-pair__title">Filtered feature matches (r1 ↔ r2)</div>
+      <img class="viz-pair__image" src="media/3_featureMatch/r12/matches.png"
+        alt="Visualization of filtered matches between r1 and r2 with correspondence lines" loading="lazy">
+    </figure>
 
-  <div class="iteration-belt__outro">
-    <p>
-      The match visualization encodes a set of correspondence hypotheses: each line asserts that two local neighborhoods,
-      one in r1 and one in r2, are similar under the chosen descriptor. Coherence is indicated when many lines connect
-      analogous geometric regions and share a consistent global trend (reflecting the dominant camera motion). Failure is
-      indicated by a large population of crisscrossing lines that jump between unrelated regions, which typically occurs
-      when descriptors are not distinctive (repeated texture) or not repeatable (specular / refractive changes).
-    </p>
-    <p>
-      The ratio test is a practical ambiguity filter. When the nearest and second-nearest candidates are nearly tied, the
-      descriptor does not supply strong evidence for a unique match, so the correspondence is rejected. This rejection is
-      desirable before geometry: even a small fraction of ambiguous matches can dominate later homography estimation.
-    </p>
-    <p>
-      The red glass pair (r1↔r2) is comparatively matchable because many corner neighborhoods are anchored to stable
-      surface boundaries and consistent gradient patterns. In contrast, the green translucent case tends to produce
-      view-dependent intensity rearrangements inside patches, so the “same” physical region can yield a different
-      descriptor and either fail the ratio test (no confident nearest neighbor) or pass spuriously (nearest neighbor is
-      driven by highlight coincidence rather than geometry).
-    </p>
-  </div>
-</section>
-
-
-  <!-- ========== B.4: RANSAC Homography ========== -->
-  <section class="content gold-glass iteration-belt" id="b5">
-    <h2 class="section-heading">B.4 RANSAC for Robust Homography</h2>
-    <div class="iteration-belt__intro">
+    <div class="iteration-belt__outro">
       <p>
+        The match visualization encodes a set of correspondence hypotheses: each line asserts that two local
+        neighborhoods,
+        one in r1 and one in r2, are similar under the chosen descriptor. Coherence is indicated when many lines connect
+        analogous geometric regions and share a consistent global trend (reflecting the dominant camera motion). Failure
+        is
+        indicated by a large population of crisscrossing lines that jump between unrelated regions, which typically
+        occurs
+        when descriptors are not distinctive (repeated texture) or not repeatable (specular / refractive changes).
+      </p>
+      <p>
+        The ratio test is a practical ambiguity filter. When the nearest and second-nearest candidates are nearly tied,
+        the
+        descriptor does not supply strong evidence for a unique match, so the correspondence is rejected. This rejection
+        is
+        desirable before geometry: even a small fraction of ambiguous matches can dominate later homography estimation.
+      </p>
+      <p>
+        The red glass pair (r1↔r2) is comparatively matchable because many corner neighborhoods are anchored to stable
+        surface boundaries and consistent gradient patterns. In contrast, the green translucent case tends to produce
+        view-dependent intensity rearrangements inside patches, so the “same” physical region can yield a different
+        descriptor and either fail the ratio test (no confident nearest neighbor) or pass spuriously (nearest neighbor
+        is
+        driven by highlight coincidence rather than geometry).
       </p>
     </div>
   </section>
+
+
+  <!-- ========== B.4: RANSAC for Robust Homography ========== -->
+  <section class="content gold-glass iteration-belt" id="b4">
+    <h2 class="section-heading">B.4 RANSAC for Robust Homography</h2>
+
+    <div class="iteration-belt__intro">
+      <p>
+        Robust alignment can be decomposed into hypothesis generation and hypothesis selection. A homography hypothesis
+        is
+        produced from a minimal correspondence subset, then evaluated by counting how many matches agree with that
+        hypothesis
+        within a geometric tolerance. RANSAC operationalizes this selection rule by repeating the process many times and
+        retaining the hypothesis supported by the largest inlier set.
+      </p>
+    </div>
+
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Manual vs automatic mosaic comparison">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Manual (hand correspondences)</div>
+        <img class="viz-pair__image" src="media/4_ransac/r2/manual/a2b_points_imgA.png">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Automatic (matches + RANSAC + feather)</div>
+        <img class="viz-pair__image" src="media/4_ransac/r2/manual/a2b_points_imgB.png">
+      </figure>
+    </div>
+
+    <div class="iteration-belt__intro">
+      <p>
+        The comparison below separates a manual pipeline (hand-picked correspondences and a direct least-squares solve)
+        from
+        an automatic pipeline (descriptor matches followed by RANSAC). The automatic result produces a substantially
+        cleaner
+        seam because it couples a more accurate alignment with feather blending, whereas the manual mosaic exhibits a
+        visible
+        boundary where small misregistration and a harder transition accumulate into a line.
+      </p>
+    </div>
+
+    <!-- Runtime + key numbers -->
+    <div class="code-snippets" aria-label="Runtime and fit statistics">
+      <div class="code-snippets__title">Runtime and fit statistics</div>
+
+      <details class="code-snippet" open>
+        <summary>Manual (hand correspondences)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>pairs clicked: 12
+time_click_s:  246.424675
+time_computeH_s: 0.000235
+time_total_s:  246.980528
+
+reprojection_mean_px: 7.730348
+reprojection_rms_px:  8.543990</code></pre>
+        </div>
+      </details>
+
+      <details class="code-snippet" open>
+        <summary>Automatic (matches + RANSAC)</summary>
+        <div class="code-snippet__body">
+          <pre class="code-block"><code>ransac_iters:     2000
+ransac_thresh_px: 3.0
+feather_px:       40
+inliers_refined:  41
+mean_inlier_err:  1.327582
+time_total_s:     9.231406</code></pre>
+        </div>
+      </details>
+    </div>
+
+    <!-- Manual vs Auto (two-panel comparison) -->
+    <div class="viz-pair" style="--viz-pair-max: 36rem;" role="group"
+      aria-label="Manual vs automatic mosaic comparison">
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Manual (hand correspondences)</div>
+        <img class="viz-pair__image" src="media/4_ransac/r2/manual/r1_r2_mosaic.png"
+          alt="Manual mosaic from hand-picked correspondences (visible seam)" loading="lazy">
+      </figure>
+
+      <figure class="viz-pair__panel">
+        <div class="viz-pair__title">Automatic (matches + RANSAC + feather)</div>
+        <img class="viz-pair__image" src="media/4_ransac/r2/auto/pano.png"
+          alt="Automatic mosaic from feature matches and RANSAC with feather blending" loading="lazy">
+      </figure>
+    </div>
+
+
+
+    <div class="iteration-belt__outro">
+      <p>
+        The seam difference is primarily geometric. A visible “hard line” is expected when the alignment error is on the
+        order of several pixels: the overlap contains two slightly shifted copies of the same edge structure, so
+        blending
+        cannot hide the duplication and instead reveals a boundary. The manual reprojection statistics (mean ≈ 7.7 px,
+        RMS ≈ 8.5 px) indicate exactly this regime, which explains why the boundary remains prominent even if the blend
+        is
+        nominally correct.
+      </p>
+      <p>
+        The automatic pipeline produces a cleaner composite because RANSAC concentrates the fit on a consistent subset
+        of
+        matches. By rejecting outliers before solving for <em>H</em>, the estimated warp aligns the dominant structure
+        more
+        tightly (mean inlier error ≈ 1.33 px), and feathering then spreads residual exposure differences across a wide
+        band
+        instead of localizing them to one edge. The resulting mosaic looks “better blended” because the overlap is
+        geometrically coherent, not merely because the mask is smoother.
+      </p>
+      <p>
+        Runtime comparison separates interactive cost from compute cost. The manual method is dominated by point
+        selection
+        (≈ 246 s), while the numerical solve itself is negligible once points exist. The automatic method pays the cost
+        in
+        computation (feature processing + 2000 RANSAC hypotheses), yet finishes in ≈ 9.23 s because it removes human
+        time and
+        can amortize work over vectorized operations. For benchmarking, the meaningful comparison is therefore
+        <em>compute-only</em> time rather than click time; for usability, the relevant comparison is end-to-end wall
+        clock,
+        where automation dominates.
+      </p>
+    </div>
+  </section>
+
 
 
   <script src="../../script.js" defer></script>
