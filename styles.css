@@ -111,7 +111,7 @@ body.top-title {
   backdrop-filter: blur(14px);
 
   transition: transform 150ms ease, box-shadow 150ms ease,
-              background-color 150ms ease, border-color 150ms ease;
+    background-color 150ms ease, border-color 150ms ease;
 }
 
 .project-card:hover {
@@ -147,7 +147,9 @@ body.top-title {
 }
 
 @media (max-width: 600px) {
-  .project-grid { grid-template-columns: 1fr; }
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 
@@ -292,7 +294,7 @@ body.top-title {
   align-items: flex-start;
 }
 
-.writing-section .figure-row > * {
+.writing-section .figure-row>* {
   flex: 0 1 24rem;
 }
 
@@ -473,8 +475,13 @@ body.top-title {
 }
 
 @keyframes iteration-belt-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* ------------------------------
@@ -510,8 +517,8 @@ body.top-title {
   border: none;
 }
 
-.iteration-belt > .static-panel,
-.iteration-belt > .static-panel--row {
+.iteration-belt>.static-panel,
+.iteration-belt>.static-panel--row {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
@@ -712,7 +719,7 @@ body.top-title {
   overflow: hidden;
 }
 
-.code-snippet > summary {
+.code-snippet>summary {
   list-style: none;
   cursor: pointer;
   padding: 0.1rem 0.9rem;
@@ -728,17 +735,17 @@ body.top-title {
   user-select: none;
 }
 
-.code-snippet > summary::-webkit-details-marker {
+.code-snippet>summary::-webkit-details-marker {
   display: none;
 }
 
-.code-snippet > summary::after {
+.code-snippet>summary::after {
   content: "▾";
   font-size: 0.75rem;
   opacity: 0.9;
 }
 
-.code-snippet[open] > summary::after {
+.code-snippet[open]>summary::after {
   transform: rotate(180deg);
 }
 
@@ -805,7 +812,7 @@ body.top-title {
 }
 
 /* === Part A / Part B switcher: pill style, no yellow === */
-.project-switcher{
+.project-switcher {
   margin-top: 1.25rem;
   display: flex;
   flex-wrap: wrap;
@@ -813,7 +820,7 @@ body.top-title {
   justify-content: center;
 }
 
-.project-switcher__button{
+.project-switcher__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -834,10 +841,10 @@ body.top-title {
   text-transform: uppercase;
 
   transition: transform 150ms ease, box-shadow 150ms ease,
-              border-color 150ms ease, background-color 150ms ease;
+    border-color 150ms ease, background-color 150ms ease;
 }
 
-.project-switcher__button:hover{
+.project-switcher__button:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 22px rgba(241, 222, 170, 0.35);
   border-color: rgba(241, 222, 170, 0.95);
@@ -845,15 +852,15 @@ body.top-title {
 }
 
 /* active page (replaces the old “primary” yellow idea) */
-.project-switcher__button[aria-current="page"]{
+.project-switcher__button[aria-current="page"] {
   border-color: rgba(241, 222, 170, 0.95);
   background: rgba(241, 222, 170, 0.10);
   box-shadow: 0 0 0 1px rgba(241, 222, 170, 0.45),
-              0 0 22px rgba(241, 222, 170, 0.22);
+    0 0 22px rgba(241, 222, 170, 0.22);
 }
 
 /* keep old class harmless if it exists anywhere */
-.project-switcher__button--primary{
+.project-switcher__button--primary {
   border-color: inherit;
   background: inherit;
 }
@@ -863,9 +870,11 @@ body.top-title {
    (index.html uses .nav-band/.nav) 
 ------------------------------ */
 
-.nav-band{
+.nav-band {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 40;
 
   backdrop-filter: blur(18px);
@@ -874,13 +883,13 @@ body.top-title {
   padding-top: env(safe-area-inset-top);
 }
 
-.nav{
+.nav {
   display: flex;
   justify-content: center;
   padding: 0.65rem 1.25rem;
 }
 
-.nav a{
+.nav a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -900,7 +909,7 @@ body.top-title {
   transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 }
 
-.nav a:hover{
+.nav a:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 18px rgba(241, 222, 170, 0.35);
   border-color: rgba(241, 222, 170, 0.95);
@@ -963,9 +972,10 @@ body.top-title {
   }
 
   .iteration-belt__track {
-    animation: none;
-    gap: 0.75rem;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
   }
+
 
   .iteration-belt {
     max-width: 100%;

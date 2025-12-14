@@ -293,33 +293,35 @@
       const x = clientX * state.dpr;
       const y = clientY * state.dpr;
 
-      const targetX =
-        x < state.width / 2
-          ? state.width + 200 * state.dpr
-          : -200 * state.dpr;
-      const targetY =
-        y < state.height / 2
-          ? state.height + 200 * state.dpr
-          : -200 * state.dpr;
+      const margin = 240 * state.dpr;
 
-      const dx = targetX - x;
-      const dy = targetY - y;
-      const distance = Math.hypot(dx, dy) || 1;
-      const angle = Math.atan2(dy, dx);
+      // Random direction
+      const angle = Math.random() * Math.PI * 2;
+      const dirX = Math.cos(angle);
+      const dirY = Math.sin(angle);
 
-      const travelSeconds = distance / METEOR_BASE_SPEED;
-      const lifeMs = travelSeconds * 1000 + 200;
+      // Expanded bounds so the tail fully leaves the screen
+      const minX = -margin;
+      const maxX = state.width + margin;
+      const minY = -margin;
+      const maxY = state.height + margin;
 
-      state.meteors.push(
-        new Meteor(
-          x,
-          y,
-          angle,
-          METEOR_BASE_SPEED * state.dpr,
-          lifeMs,
-          state.dpr
-        )
-      );
+      const tx =
+        dirX > 0 ? (maxX - x) / dirX :
+        dirX < 0 ? (minX - x) / dirX :
+        Number.POSITIVE_INFINITY;
+
+      const ty =
+        dirY > 0 ? (maxY - y) / dirY :
+        dirY < 0 ? (minY - y) / dirY :
+        Number.POSITIVE_INFINITY;
+
+      const distance = Math.max(200 * state.dpr, Math.min(tx, ty)); // keep it visible
+
+      const speed = METEOR_BASE_SPEED * (0.8 + Math.random() * 0.6) * state.dpr;
+      const lifeMs = (distance / speed) * 1000 + 200;
+
+      state.meteors.push(new Meteor(x, y, angle, speed, lifeMs, state.dpr));
     }
 
     function drawBackground() {
@@ -444,10 +446,11 @@
       track,
       originalCount,
       loopWidth,
-      x: 0,           // current offset in px
-      v: speed,       // constant speed in px/s, from HTML or default
-      running: true,  // controlled by Pause buttons
-      holdUntil: 0    // auto-move blocked until this timestamp (ms)
+      x: 0,              // current offset in px
+      vBase: speed,      // base speed in px/s (configured per belt)
+      vCurrent: speed,   // eased speed in px/s (ramps in after holds)
+      running: true,     // controlled by Pause buttons
+      holdUntil: 0       // auto-move blocked until this timestamp (ms)
     });
   });
 
@@ -460,7 +463,8 @@
 
     state.loopWidth = w;
     state.x = mod(state.x, state.loopWidth);
-    state.track.style.transform = `translateX(${-state.x}px)`;
+    state.track.style.transform = `translate3d(${-state.x}px, 0, 0)`;
+
   }
 
   // Keep the seam correct when layout changes (e.g., responsive breakpoints)
@@ -468,47 +472,71 @@
     beltTrackStates.forEach(recalcLoopWidth);
   });
 
+
   // ------------------------------
   // User scroll/scrub for belts + idle resume
   // ------------------------------
-  const DEFAULT_BELT_IDLE_MS = 2000; // N ms with no interaction before auto movement resumes
+  const DEFAULT_BELT_IDLE_MS = 2000; // ms with no interaction before auto movement resumes
 
   document.querySelectorAll('.iteration-belt').forEach(belt => {
-    // All tracks inside this belt (supports 1-row and 2-row belts)
-    const states = beltTrackStates.filter(s => belt.contains(s.track));
-    if (!states.length) return;
+    const beltStates = Array.from(belt.querySelectorAll('.iteration-belt__track'))
+      .map(track => beltTrackStates.find(s => s.track === track))
+      .filter(Boolean);
 
-    // optional per-belt override: <div class="iteration-belt" data-belt-idle="3000">
-    const idleMs = (() => {
-      const raw = belt.dataset.beltIdle;
-      const n = raw ? parseInt(raw, 10) : NaN;
-      return Number.isFinite(n) && n >= 0 ? n : DEFAULT_BELT_IDLE_MS;
-    })();
+    if (!beltStates.length) return;
 
     const holdAutoMove = () => {
-      const until = performance.now() + idleMs;
-      states.forEach(s => (s.holdUntil = until));
-    };
-
-    const applyDeltaPx = deltaPx => {
-      states.forEach(s => {
-        if (!s.loopWidth) return;
-        s.x = mod(s.x + deltaPx, s.loopWidth);
-        s.track.style.transform = `translateX(${-s.x}px)`;
+      const until = performance.now() + DEFAULT_BELT_IDLE_MS;
+      beltStates.forEach(s => {
+        s.holdUntil = until;
+        s.vCurrent = 0; // stop immediately while held
       });
     };
 
-    // Attach handlers to each viewport (works for 1-row + 2-row belts)
+    const applyDeltaPx = deltaPx => {
+      beltStates.forEach(s => {
+        if (!s.loopWidth) return;
+        s.x = mod(s.x + deltaPx, s.loopWidth);
+        s.track.style.transform = `translate3d(${-s.x}px, 0, 0)`;
+      });
+    };
+
     belt.querySelectorAll('.iteration-belt__viewport').forEach(viewport => {
-      // Wheel to scrub (trackpad horizontal scroll or Shift+wheel). Vertical wheel still scrolls the page.
+      // Wheel to scrub (horizontal only; vertical should scroll the page)
+      let wheelAxisLock = null; // null until decided for this wheel gesture
+      let wheelAxisLockUntil = 0;
+      const WHEEL_LOCK_MS = 120;
+
       viewport.addEventListener(
         'wheel',
         e => {
-          const horizontalIntent =
-            Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey;
-          if (!horizontalIntent) return;
+          const now = performance.now();
+          if (now > wheelAxisLockUntil) wheelAxisLock = null;
 
-          const dx = e.shiftKey ? e.deltaY : e.deltaX;
+          const absX = Math.abs(e.deltaX);
+          const absY = Math.abs(e.deltaY);
+
+          // Decide axis once per gesture to avoid diagonal/noisy trackpads
+          if (wheelAxisLock === null) {
+            const MIN_PX = 3;    // ignore tiny deltaX noise
+            const RATIO = 1.35;  // must be clearly more horizontal than vertical
+
+            const shiftHorizontal = e.shiftKey && absY >= absX; // Shift+wheel => horizontal intent
+            wheelAxisLock = shiftHorizontal || (absX > MIN_PX && absX > absY * RATIO);
+          }
+
+          wheelAxisLockUntil = now + WHEEL_LOCK_MS;
+
+          // If it's not a horizontal gesture, do nothing (let vertical scrolling happen)
+          if (!wheelAxisLock) return;
+
+          // Convert to a horizontal delta in px
+          let dx = (e.shiftKey && absY >= absX) ? e.deltaY : e.deltaX;
+
+          // Normalize non-pixel wheel modes (rare, but helps consistency)
+          if (e.deltaMode === 1) dx *= 16; // lines -> px
+          else if (e.deltaMode === 2) dx *= viewport.clientWidth; // pages -> px
+
           if (!dx) return;
 
           e.preventDefault();
@@ -518,9 +546,10 @@
         { passive: false }
       );
 
-      // Drag to scrub (mouse + touch) with axis lock
+      // Drag to scrub (only pause once we know it's horizontal)
       let dragging = false;
-      let lockedHorizontal = null; // null until we decide user intent
+      let lockedHorizontal = null; // null until intent is known
+      let hasCapture = false;
       let lastX = 0;
       let lastY = 0;
 
@@ -529,11 +558,9 @@
 
         dragging = true;
         lockedHorizontal = null;
+        hasCapture = false;
         lastX = e.clientX;
         lastY = e.clientY;
-
-        viewport.setPointerCapture?.(e.pointerId);
-        holdAutoMove();
       });
 
       viewport.addEventListener(
@@ -547,15 +574,24 @@
           if (lockedHorizontal === null) {
             const THRESH = 4;
             if (Math.abs(dx) < THRESH && Math.abs(dy) < THRESH) return;
+
             lockedHorizontal = Math.abs(dx) > Math.abs(dy);
+
+            // If it's vertical, stop handling so the page scroll feels normal.
+            if (!lockedHorizontal) {
+              dragging = false;
+              lockedHorizontal = null;
+              return;
+            }
+
+            // Only capture once committed to horizontal scrubbing
+            viewport.setPointerCapture?.(e.pointerId);
+            hasCapture = true;
           }
 
-          if (lockedHorizontal) {
-            e.preventDefault();
-            holdAutoMove();
-            // drag right => content right (reduce x)
-            applyDeltaPx(-dx);
-          }
+          e.preventDefault();
+          holdAutoMove();
+          applyDeltaPx(-dx); // drag right => belt moves right
 
           lastX = e.clientX;
           lastY = e.clientY;
@@ -566,9 +602,11 @@
       const endDrag = e => {
         dragging = false;
         lockedHorizontal = null;
-        try {
-          viewport.releasePointerCapture?.(e.pointerId);
-        } catch {}
+
+        if (hasCapture) {
+          try { viewport.releasePointerCapture?.(e.pointerId); } catch {}
+        }
+        hasCapture = false;
       };
 
       viewport.addEventListener('pointerup', endDrag);
@@ -576,6 +614,7 @@
       viewport.addEventListener('pointerleave', endDrag);
     });
   });
+
 
   // 2) Hook up Pause/Play buttons per belt
   document.querySelectorAll('.iteration-belt').forEach(belt => {
@@ -597,27 +636,39 @@
       // Flip running flag for all tracks inside this belt
       belt.querySelectorAll('.iteration-belt__track').forEach(track => {
         const state = beltTrackStates.find(s => s.track === track);
-        if (state) state.running = shouldRun;
+        if (state) {
+          state.running = shouldRun;
+          if (!shouldRun) state.vCurrent = 0;
+        }
       });
     });
   });
 
-  // 3) Global animation loop at constant speed
+  // 3) Global animation loop (smooth ramp-up on resume)
   let lastTime = performance.now();
 
   function step(now) {
-    const dt = (now - lastTime) / 1000; // seconds
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
     lastTime = now;
 
     beltTrackStates.forEach(state => {
-      if (!state.running) return;
-
-      if (state.holdUntil && now < state.holdUntil) return;
-
       if (!state.loopWidth) return;
 
-      state.x = mod(state.x + state.v * dt, state.loopWidth);
-      state.track.style.transform = `translateX(${-state.x}px)`;
+      const held = state.holdUntil && now < state.holdUntil;
+      const target = (state.running && !held) ? state.vBase : 0;
+
+      if (target === 0) {
+        state.vCurrent = 0; // stop immediately
+        return;
+      }
+
+      // Smooth ramp-up (only noticeable when resuming)
+      const RAMP = 10; // bigger = faster ramp
+      const t = 1 - Math.exp(-RAMP * dt);
+      state.vCurrent += (target - state.vCurrent) * t;
+
+      state.x = mod(state.x + state.vCurrent * dt, state.loopWidth);
+      state.track.style.transform = `translate3d(${-state.x}px, 0, 0)`;
     });
 
     requestAnimationFrame(step);
@@ -625,7 +676,7 @@
 
   requestAnimationFrame(step);
 
-    // ------------------------------
+  // ------------------------------
   // Sync all GIFs inside iteration belts
   // ------------------------------
   function syncAllBeltGifs() {
