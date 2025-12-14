@@ -1367,194 +1367,235 @@
   </section>
 
 
-   <!-- ==================================================== 1.7.3 Text-Conditional Image-to-image Translation ===================== -->
-  <section class="content gold-glass iteration-belt iteration-belt--two-rows"
-    aria-label="Text-conditional image-to-image translation">
-    <h2 class="section-heading">1.7.3 Text-Conditional Image-to-image Translation</h2>
+  <!-- ==================================================== 1.7.3 Text-Conditional Image-to-image Translation ===================== -->
+<section class="content gold-glass iteration-belt iteration-belt--two-rows"
+  aria-label="Text-conditional image-to-image translation">
+  <h2 class="section-heading">1.7.3 Text-Conditional Image-to-image Translation</h2>
 
-    <div class="iteration-belt__intro">
-      <p>
-        This part extends SDEdit by replacing the generic prompt “a high quality photo” with richer
-        text descriptions. For each input image, the forward process is run to noise levels
-        <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20}, and the reverse sampler is guided by a specific prompt.
-        The Campanile image is edited with the prompt “a rocketship launching into space,” while two
-        additional images are edited with Renaissance-style prompts: “a Renaissance painting of a
-        knight and a dragon” and “a Renaissance painting of a celestial choir of angels.”
-      </p>
-    </div>
+  <div class="iteration-belt__intro">
+    <p>
+      This part extends SDEdit by replacing the generic prompt “a high quality photo” with richer
+      text descriptions. For each input image, the forward process is run to noise levels
+      <em>i_start</em> ∈ {1, 3, 5, 7, 10, 20}, and the reverse sampler is guided by a specific prompt.
+      The Campanile image is edited with the prompt “a rocketship launching into space,” while two
+      additional images are edited with Renaissance-style prompts: “a Renaissance painting of a
+      knight and a dragon” and “a Renaissance painting of a celestial choir of angels.”
+    </p>
+  </div>
 
-    <div class="iteration-belt__header">
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
-    </div>
+  <div class="iteration-belt__header">
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">
+      Pause
+    </button>
+  </div>
 
-    <!-- Row 1: Campanile with rocketship prompt -->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">
-        Campanile – prompt: “a rocketship launching into space”
-      </h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
+  <!-- Row 1: Campanile with rocketship prompt -->
+  <div class="iteration-belt__row">
+    <h3 class="iteration-belt__row-title">
+      Campanile – prompt: “a rocketship launching into space”
+    </h3>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png"
-              alt="Original Campanile image for text-conditional editing">
-            <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png"
+            alt="Original Campanile image for text-conditional editing">
+          <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start1.png">
-            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start1.png">
+          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start3.png">
-            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start3.png">
+          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start5.png">
-            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start5.png">
+          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start7.png">
-            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start7.png">
+          <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start10.png">
-            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start10.png">
+          <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start20.png">
-            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/campanile/i_start20.png">
+          <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+        </figure>
 
-        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Row 2: Web / photo image – knight and dragon prompt -->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">
-        Prompt: “a Renaissance painting of a knight and a dragon”
-      </h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
+  <div class="iteration-belt__outro">
+    <p>
+      The noise level controls a balance between input fidelity and prompt compliance. At low noise
+      (<em>i_start</em> ≤ 5), the edits remain conservative: straight architectural edges and the original
+      perspective are preserved, while the prompt emerges mainly as color shifts, streaks in the sky, and
+      localized “exhaust-like” texture overlays. As <em>i_start</em> increases (10–20), the prompt dominates
+      and the Campanile is reinterpreted as a rocket body; this regime produces the most obvious semantic change,
+      but also exposes a key weakness of SDEdit-style editing: geometry is a soft constraint rather than a hard
+      invariant. Fine structure (brick texture, window regularity, straight lines) is frequently rewritten, and
+      the model may bend silhouettes or hallucinate implausible apertures when the prompt conflicts with the
+      original layout. The 64×64 resolution further amplifies this failure mode because small details are
+      underdetermined and are filled in by learned stylistic priors.
+    </p>
+  </div>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/a/orig.jpg"
-              alt="Original image for knight and dragon prompt">
-            <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
-          </figure>
+  <!-- Row 2: Web / photo image – knight and dragon prompt -->
+  <div class="iteration-belt__row">
+    <h3 class="iteration-belt__row-title">
+      Prompt: “a Renaissance painting of a knight and a dragon”
+    </h3>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start1.png">
-            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/txtCond_img2img/a/orig.jpg"
+            alt="Original image for knight and dragon prompt">
+          <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start3.png">
-            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start1.png">
+          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start5.png">
-            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start3.png">
+          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start7.png">
-            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start5.png">
+          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start10.png">
-            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start7.png">
+          <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+        </figure>
 
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start10.png">
+          <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start20.png">
-            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleA/i_start20.png">
+          <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+        </figure>
 
-        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Row 3: Web / photo image – celestial choir prompt -->
-    <div class="iteration-belt__row">
-      <h3 class="iteration-belt__row-title">
-        Prompt: “a Renaissance painting of a celestial choir of angels”
-      </h3>
-      <div class="iteration-belt__viewport">
-        <div class="iteration-belt__track">
+  <div class="iteration-belt__outro">
+    <p>
+      Text-conditional translation is most reliable when the prompt is structurally compatible with the input,
+      meaning that large regions of the image can be reinterpreted without requiring a complete rearrangement of
+      object layout. The knight-and-dragon prompt benefits from this property: mid-range noise often preserves the
+      global composition (horizon, main subject placement) while shifting texture, palette, and shading toward a
+      tempera-like Renaissance aesthetic. Two failure modes become visible at the extremes. At low noise, the model
+      frequently “paints over” photographic edges, producing double contours where prompt-imposed brushwork conflicts
+      with existing boundaries. At high noise, the original geometry is no longer anchoring the generation, so the
+      sampler may drift in object count and pose (extra figures, inconsistent anatomy, or viewpoint changes), which
+      indicates that prompt guidance is not sufficient to enforce precise scene structure under strong semantic
+      steering.
+    </p>
+  </div>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/txtCond_img2img/b/orig.jpg"
-              alt="Original image for celestial choir prompt">
-            <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
-          </figure>
+  <!-- Row 3: Web / photo image – celestial choir prompt -->
+  <div class="iteration-belt__row">
+    <h3 class="iteration-belt__row-title">
+      Prompt: “a Renaissance painting of a celestial choir of angels”
+    </h3>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start1.png">
-            <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/txtCond_img2img/b/orig.jpg"
+            alt="Original image for celestial choir prompt">
+          <figcaption class="iteration-belt__caption">Original input (64×64)</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start3.png">
-            <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start1.png">
+          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start5.png">
-            <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start3.png">
+          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start7.png">
-            <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start5.png">
+          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start10.png">
-            <figcaption class="iteration-belt__caption">noise level 10</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start7.png">
+          <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+        </figure>
 
-          <!-- <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start17.png">
-            <figcaption class="iteration-belt__caption">noise level 17</figcaption>
-          </figure> -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start10.png">
+          <figcaption class="iteration-belt__caption">noise level 10</figcaption>
+        </figure>
 
-          <figure class="iteration-belt__item">
-            <img class="iteration-belt__image" src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start20.png">
-            <figcaption class="iteration-belt__caption">noise level 20</figcaption>
-          </figure>
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image"
+            src="media/one/7_img2img-translation/3_txt-conditional/sampleB/i_start20.png">
+          <figcaption class="iteration-belt__caption">noise level 20</figcaption>
+        </figure>
 
-        </div>
       </div>
     </div>
+  </div>
 
-    <div class="iteration-belt__outro">
-      <p>
-        Increasing the noise level before denoising systematically trades fidelity to the original pixels
-        for stronger alignment with the text prompt. For the Campanile, low noise levels simply add
-        rocket-like exhaust and faint sky streaks to the existing tower, while higher levels let the model
-        bend the silhouette and sky into a clear launch scene. Under the knight-and-dragon prompt, fine
-        photographic detail is gradually overwritten by painterly armor, banners, and dragon forms, until
-        at the highest noise levels the image reads almost entirely as a Renaissance illustration. The
-        celestial-choir prompt shows a similar pattern: mild noise yields subtle halos and robes layered
-        over the original figures, whereas strong noise produces densely populated, golden-toned scenes
-        with increasingly distorted anatomy. Varying the noise-level parameter thus allows SDEdit to
-        interpolate between gentle stylistic editing and full semantic reinterpretation while remaining
-        anchored to the structure implied by the prompts.
-      </p>
-    </div>
-  </section>
+  <div class="iteration-belt__outro">
+    <p>
+      The celestial-choir prompt highlights a complementary strength/weakness profile. The model readily introduces
+      “iconographic” cues—wings, halos, gold-toned palettes, and ornamental background texture—so moderate noise can
+      yield convincing stylistic translation even when the original content is not explicitly religious. However, the
+      same prior-driven behavior degrades fine-scale structure quickly: faces, hands, and wing attachments tend to lose
+      coherence as <em>i_start</em> increases, and very high noise often produces crowding, repeated motifs, or mismatched
+      anatomy. Across all three prompts, performance is best when the desired edit can be expressed as a texture/palette
+      transformation plus a small number of new semantic motifs. Performance is worst when the prompt demands strict
+      geometric preservation, exact entity counts, or physically plausible anatomy under large semantic shifts.
+    </p>
+  </div>
+
+</section>
+
 
   <!-- ==================================================== 1.8 Visual Anagrams ====================================================== -->
   <section class="content gold-glass iteration-belt" aria-label="Visual anagrams with diffusion models">
