@@ -1168,203 +1168,218 @@
   </section>
 
 
-  <!-- ==================================================== 1.7.2 Inpainting ====================================================== -->
-  <section class="content gold-glass iteration-belt" aria-label="Inpainting the Campanile">
-    <h2 class="section-heading">1.7.2 Inpainting</h2>
+<!-- ==================================================== 1.7.2 Inpainting ====================================================== -->
+<section class="content gold-glass iteration-belt" aria-label="Inpainting">
+  <h2 class="section-heading">1.7.2 Inpainting</h2>
 
-    <div class="iteration-belt__intro">
-      <p>
-        Inpainting focuses on editing only a specified region of the image while preserving the
-        surrounding context. The 64×64 Campanile photograph is paired with a binary mask that marks
-        the section of the tower to be regenerated. Inside the mask, the image is diffused forward to
-        noise levels <em>i_start</em> ∈ {1, 2, 3, 4, 5, 7}, while pixels outside the mask remain fixed.
-        The reverse sampler, conditioned on “a high quality photo,” then reconstructs the masked region
-        so that it blends seamlessly with the unchanged background. The images below show the input,
-        mask, and inpainting trajectories for different noise entry points.
-      </p>
+  <div class="iteration-belt__intro">
+    <p>
+      Inpainting can be treated as conditional generation under hard constraints: pixels outside a binary mask are held
+      fixed, while the masked region is resynthesized by the diffusion prior. The forward process is applied only inside
+      the mask up to a chosen noise entry point <em>i_start</em>, and the reverse sampler (conditioned on “a high quality
+      photo”) fills the missing content so that it agrees with surrounding color, texture, and lighting. The belts below
+      compare outputs across different <em>i_start</em> values for a structured architectural scene (Campanile) and two
+      more challenging natural scenes (horses and waterfalls).
+    </p>
+  </div>
+
+  <div class="iteration-belt__header">
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+  </div>
+
+  <!-- Campanile -->
+  <div class="iteration-belt__viewport">
+    <h3 class="iteration-belt__row-title">Campanile – inpainting at different noise levels</h3>
+    <div class="iteration-belt__track">
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png" alt="Original Campanile image">
+        <figcaption class="iteration-belt__caption">Original input</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/camp_double_mask.png"
+          alt="Binary inpainting mask over the Campanile">
+        <figcaption class="iteration-belt__caption">Mask (edited region)</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/i_start1.gif" alt="Campanile inpaint at i_start 1">
+        <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/i_start2.gif" alt="Campanile inpaint at i_start 2">
+        <figcaption class="iteration-belt__caption">noise level 2</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/i_start3.gif" alt="Campanile inpaint at i_start 3">
+        <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/i_start4.gif" alt="Campanile inpaint at i_start 4">
+        <figcaption class="iteration-belt__caption">noise level 4</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/i_start5.gif" alt="Campanile inpaint at i_start 5">
+        <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/i_start7.gif" alt="Campanile inpaint at i_start 7">
+        <figcaption class="iteration-belt__caption">noise level 7</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpainting/campanile/inpaint_final.png" alt="Final inpainted Campanile image">
+        <figcaption class="iteration-belt__caption">Final inpainted result</figcaption>
+      </figure>
+
     </div>
+  </div>
 
-    <div class="iteration-belt__header">
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">
-        Pause
-      </button>
+  <div class="iteration-belt__outro">
+    <p>
+      The Campanile example shows where diffusion inpainting is strongest: the unmasked sky/trees and the tower outline
+      provide stable global cues, so the model can synthesize plausible brick-like texture and shading inside the mask
+      without rewriting the entire scene. The primary failure mode is boundary consistency rather than global content:
+      even when the fill looks realistic in isolation, small mismatches in edge alignment or texture frequency across the
+      mask boundary can reveal a seam. As <em>i_start</em> increases, the masked region becomes underconstrained and the
+      model’s learned prior begins to dominate; this often improves “creativity” (more detail), but it also increases the
+      chance of hallucinated windows, warped straight lines, or lighting that no longer matches the fixed context.
+    </p>
+  </div>
+
+  <!-- Sample A (Horses) -->
+  <div class="iteration-belt__viewport">
+    <h3 class="iteration-belt__row-title">Sample A (Horses) – inpainting at different noise levels</h3>
+    <div class="iteration-belt__track">
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpaint/a/orig.jpg" alt="Original horses image">
+        <figcaption class="iteration-belt__caption">Original input</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpaint/a/mask.png" alt="Binary inpainting mask for horses image">
+        <figcaption class="iteration-belt__caption">Mask</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleA/i_start1.png" alt="Horses inpaint at i_start 1">
+        <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleA/i_start2.png" alt="Horses inpaint at i_start 2">
+        <figcaption class="iteration-belt__caption">noise level 2</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleA/i_start3.png" alt="Horses inpaint at i_start 3">
+        <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleA/i_start4.png" alt="Horses inpaint at i_start 4">
+        <figcaption class="iteration-belt__caption">noise level 4</figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleA/i_start5.png" alt="Horses inpaint at i_start 5">
+        <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+      </figure>
+
     </div>
+  </div>
 
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Inpainting at different noise levels</h3>
-      <div class="iteration-belt__track">
+  <div class="iteration-belt__outro">
+    <p>
+      The horses example stresses a different limitation: the masked region intersects with semantically “committed”
+      content (animal bodies, legs, straps, and occlusion boundaries). In this regime, the task is not merely texture
+      continuation but structural reconstruction, and the model’s prior must infer coherent anatomy from weak local cues.
+      Low-noise entry points tend to preserve the surrounding pose and lighting, but they can leave behind remnants of
+      the original content (ghost edges) and produce local patching that fails to resolve global shape. As noise increases,
+      the fill becomes visually smoother and more decisive, yet the price is drift in object structure: limbs may merge,
+      silhouettes may bend, and the filled region may collapse into ambiguous “blob-like” forms when the context does not
+      uniquely determine what should exist inside the mask. This behavior follows directly from the conditioning setup:
+      outside-mask pixels constrain color and coarse geometry, but they do not enforce a hard 3D interpretation of the scene.
+    </p>
+  </div>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/orig.png" alt="Original Campanile image">
-          <figcaption class="iteration-belt__caption">Original input</figcaption>
-        </figure>
+  <!-- Sample B (Waterfalls) -->
+  <div class="iteration-belt__viewport">
+    <h3 class="iteration-belt__row-title">Sample B (Waterfalls) – inpainting at different noise levels</h3>
+    <div class="iteration-belt__track">
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/camp_double_mask.png"
-            alt="Binary inpainting mask over the Campanile">
-          <figcaption class="iteration-belt__caption">Mask (edited region)</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpaint/b/orig.jpg" alt="Original waterfalls image">
+        <figcaption class="iteration-belt__caption">Original input</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start1.gif"
-            alt="Inpainting trajectory with i_start = 1">
-          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/inpaint/b/mask.png" alt="Binary inpainting mask for waterfalls image">
+        <figcaption class="iteration-belt__caption">Mask</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start2.gif"
-            alt="Inpainting trajectory with i_start = 2">
-          <figcaption class="iteration-belt__caption">noise level 2</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleB/i_start1.png" alt="Waterfalls inpaint at i_start 1">
+        <figcaption class="iteration-belt__caption">noise level 1</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start3.gif"
-            alt="Inpainting trajectory with i_start = 3">
-          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleB/i_start2.png" alt="Waterfalls inpaint at i_start 2">
+        <figcaption class="iteration-belt__caption">noise level 2</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start4.gif"
-            alt="Inpainting trajectory with i_start = 4">
-          <figcaption class="iteration-belt__caption">noise level 4</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleB/i_start3.png" alt="Waterfalls inpaint at i_start 3">
+        <figcaption class="iteration-belt__caption">noise level 3</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start5.gif"
-            alt="Inpainting trajectory with i_start = 5">
-          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleB/i_start4.png" alt="Waterfalls inpaint at i_start 4">
+        <figcaption class="iteration-belt__caption">noise level 4</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/i_start7.gif"
-            alt="Inpainting trajectory with i_start = 7">
-          <figcaption class="iteration-belt__caption">noise level 7</figcaption>
-        </figure>
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image"
+          src="media/one/7_img2img-translation/2_inpainting/sampleB/i_start5.png" alt="Waterfalls inpaint at i_start 5">
+        <figcaption class="iteration-belt__caption">noise level 5</figcaption>
+      </figure>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpainting/campanile/inpaint_final.png"
-            alt="Final inpainted Campanile image">
-          <figcaption class="iteration-belt__caption">Final inpainted result</figcaption>
-        </figure>
-
-      </div>
     </div>
+  </div>
 
-    <div class="iteration-belt__outro">
-      <p>
-        The original image and mask at the beginning of the belt clarify which portion of the tower is
-        being regenerated. For the lowest noise levels, the inpainted region remains very close to the
-        original structure: the tower edges align across the mask boundary, and only subtle texture and
-        lighting changes appear. As <em>i_start</em> increases, the tower interior and base are redrawn
-        with more variation, and the model begins to hallucinate new details while still matching the
-        surrounding sky and trees in color and shading.
-      </p>
-    </div>
+  <div class="iteration-belt__outro">
+    <p>
+      The waterfalls example illustrates a case where inpainting can look plausible while still violating scene physics.
+      Water and mist are highly stochastic textures, so the model can often match the overall “long exposure” appearance
+      and color grading of the surrounding region. However, coherent flow is a global constraint: the direction and
+      continuity of streams must remain consistent across the mask boundary. When the mask crosses strong edges (rock
+      boundaries, waterfall lips, or high-contrast foam), the fill may introduce banding, abrupt intensity plateaus, or
+      smooth “sheet-like” water that does not align with the fixed upstream/downstream structure. Increasing <em>i_start</em>
+      typically improves local blending by letting the model repaint larger portions of the masked area, but this also
+      increases the chance of geometric drift (shifted ledges, softened rock corners, or mist that occludes too much of the
+      scene). Performance is therefore best when the masked region lies inside a texture field (spray, foam, sky) and worst
+      when it must reproduce sharp geometry or long-range dynamical structure.
+    </p>
+  </div>
 
+</section>
 
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Inpainting at different noise levels</h3>
-      <div class="iteration-belt__track">
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/orig.jpg">
-          <figcaption class="iteration-belt__caption">Original input</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/mask.png"
-            alt="Binary inpainting mask over the Campanile">
-          <figcaption class="iteration-belt__caption">Mask</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/i_start1.gif"
-            alt="Inpainting trajectory with i_start = 1">
-          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/i_start2.gif"
-            alt="Inpainting trajectory with i_start = 2">
-          <figcaption class="iteration-belt__caption">noise level 2</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/i_start3.gif"
-            alt="Inpainting trajectory with i_start = 3">
-          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/i_start4.gif"
-            alt="Inpainting trajectory with i_start = 4">
-          <figcaption class="iteration-belt__caption">noise level 4</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/a/i_start5.gif"
-            alt="Inpainting trajectory with i_start = 5">
-          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-        </figure>
-
-      </div>
-    </div>
-
-    <div class="iteration-belt__outro">
-      <p>
-        The end result demonstrates that
-        the diffusion model can fill in a missing region with a plausible, high-quality reconstruction
-        that respects both the global geometry of the scene and the local context provided by the
-        unmasked pixels.
-      </p>
-    </div>
-
-    <div class="iteration-belt__viewport">
-      <h3 class="iteration-belt__row-title">Inpainting at different noise levels</h3>
-      <div class="iteration-belt__track">
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/orig.jpg">
-          <figcaption class="iteration-belt__caption">Original input</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/mask.png"
-            alt="Binary inpainting mask over the Campanile">
-          <figcaption class="iteration-belt__caption">Mask</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/i_start1.gif"
-            alt="Inpainting trajectory with i_start = 1">
-          <figcaption class="iteration-belt__caption">noise level 1</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/i_start2.gif"
-            alt="Inpainting trajectory with i_start = 2 SEED = 20171341215">
-          <figcaption class="iteration-belt__caption">noise level 2</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/i_start3.gif" alt="SEED = 1005197012152000">
-          <figcaption class="iteration-belt__caption">noise level 3</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/i_start4.gif"
-            alt="Inpainting trajectory with i_start = 4">
-          <figcaption class="iteration-belt__caption">noise level 4</figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/inpaint/b/i_start5.gif"
-            alt="Inpainting trajectory with i_start = 5">
-          <figcaption class="iteration-belt__caption">noise level 5</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
 
 
   <!-- ==================================================== 1.7.3 Text-Conditional Image-to-image Translation ===================== -->
