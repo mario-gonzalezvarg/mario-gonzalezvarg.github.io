@@ -125,7 +125,7 @@
     const MAX_FPS = reducedMotion || lowPower ? 30 : 60;
     const FRAME_BUDGET = 1000 / MAX_FPS;
     const STAR_COUNT = lowPower ? 180 : 320;
-    const METEOR_BASE_SPEED = lowPower ? 700 : 950;
+    const METEOR_BASE_SPEED = lowPower ? 350 : 750;
 
     const state = {
       width: 0,
@@ -199,7 +199,7 @@
         this.vy = Math.sin(angle) * speed;
         this.life = 0;
         this.maxLife = maxLifeMs;
-        this.length = 220 * dpr;
+        this.length = 264 * dpr;
         this.h = 40 + Math.random() * 30;
         this.thickness = Math.max(1.5 * dpr, 2.0 * dpr);
       }
