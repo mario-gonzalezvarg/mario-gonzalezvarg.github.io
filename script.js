@@ -1,4 +1,5 @@
 (() => {
+  // root script.js
   const scrollEl = document.scrollingElement || document.documentElement;
 
   initProgressBar(scrollEl);
@@ -295,12 +296,10 @@
 
       const margin = 240 * state.dpr;
 
-      // Random direction
       const angle = Math.random() * Math.PI * 2;
       const dirX = Math.cos(angle);
       const dirY = Math.sin(angle);
 
-      // Expanded bounds so the tail fully leaves the screen
       const minX = -margin;
       const maxX = state.width + margin;
       const minY = -margin;
@@ -316,7 +315,7 @@
         dirY < 0 ? (minY - y) / dirY :
         Number.POSITIVE_INFINITY;
 
-      const distance = Math.max(200 * state.dpr, Math.min(tx, ty)); // keep it visible
+      const distance = Math.max(200 * state.dpr, Math.min(tx, ty)); 
 
       const speed = METEOR_BASE_SPEED * (0.8 + Math.random() * 0.6) * state.dpr;
       const lifeMs = (distance / speed) * 1000 + 200;
@@ -398,17 +397,11 @@
     requestAnimationFrame(frame);
   }
 
-  // ------------------------------
-  // Iteration belts (JS-driven conveyor)
-  // ------------------------------
   const beltTrackStates = [];
   const mod = (n, m) => ((n % m) + m) % m;
 
   document.querySelectorAll('.iteration-belt__track').forEach(track => {
-    // Turn off any CSS animation so JS fully controls movement
     track.style.animation = 'none';
-
-    // Only clone once, but always create a state
     let originalCount = parseInt(track.dataset.originalCount || '', 10);
     const alreadyCloned = track.dataset.cloned === 'true';
 
@@ -423,7 +416,7 @@
       const originals = Array.from(track.children).slice(0, originalCount);
       originals.forEach(item => {
         const clone = item.cloneNode(true);
-        clone.setAttribute('aria-hidden', 'true'); // don't double-announce
+        clone.setAttribute('aria-hidden', 'true');
         track.appendChild(clone);
       });
     }
@@ -431,9 +424,8 @@
     const firstClone = track.children[originalCount];
     const loopWidth = (firstClone && firstClone.offsetLeft) ? firstClone.offsetLeft : (track.scrollWidth / 2);
 
-    // Look up speed on the parent .iteration-belt (data-belt-speed)
     const belt = track.closest('.iteration-belt');
-    let speed = 16; // default px/s
+    let speed = 16;
 
     if (belt && belt.dataset.beltSpeed) {
       const parsed = parseFloat(belt.dataset.beltSpeed);
@@ -446,11 +438,11 @@
       track,
       originalCount,
       loopWidth,
-      x: 0,              // current offset in px
-      vBase: speed,      // base speed in px/s (configured per belt)
-      vCurrent: speed,   // eased speed in px/s (ramps in after holds)
-      running: true,     // controlled by Pause buttons
-      holdUntil: 0       // auto-move blocked until this timestamp (ms)
+      x: 0,             
+      vBase: speed,     
+      vCurrent: speed,  
+      running: true,   
+      holdUntil: 0.5 
     });
   });
 
@@ -466,17 +458,12 @@
     state.track.style.transform = `translate3d(${-state.x}px, 0, 0)`;
 
   }
-
-  // Keep the seam correct when layout changes (e.g., responsive breakpoints)
   window.addEventListener('resize', () => {
     beltTrackStates.forEach(recalcLoopWidth);
   });
 
 
-  // ------------------------------
-  // User scroll/scrub for belts + idle resume
-  // ------------------------------
-  const DEFAULT_BELT_IDLE_MS = 2000; // ms with no interaction before auto movement resumes
+  const DEFAULT_BELT_IDLE_MS = 2000;
 
   document.querySelectorAll('.iteration-belt').forEach(belt => {
     const beltStates = Array.from(belt.querySelectorAll('.iteration-belt__track'))
@@ -489,7 +476,7 @@
       const until = performance.now() + DEFAULT_BELT_IDLE_MS;
       beltStates.forEach(s => {
         s.holdUntil = until;
-        s.vCurrent = 0; // stop immediately while held
+        s.vCurrent = 0;
       });
     };
 
@@ -502,9 +489,8 @@
     };
 
     belt.querySelectorAll('.iteration-belt__viewport').forEach(viewport => {
-      // Wheel to scrub (horizontal only; vertical should scroll the page)
-      let wheelAxisLock = null; // null until decided for this wheel gesture
-      let wheelAxisLockUntil = 0;
+      let wheelAxisLock = null;
+      let wheelAxisLockUntil = 1;
       const WHEEL_LOCK_MS = 120;
 
       viewport.addEventListener(
@@ -616,24 +602,20 @@
   });
 
 
-  // 2) Hook up Pause/Play buttons per belt
   document.querySelectorAll('.iteration-belt').forEach(belt => {
     const toggle = belt.querySelector('.iteration-belt__toggle');
     if (!toggle) return;
-
-    // Init label / state
     toggle.textContent = 'Pause';
     toggle.setAttribute('aria-pressed', 'false');
 
     toggle.addEventListener('click', () => {
       const pressed = toggle.getAttribute('aria-pressed') === 'true';
-      const nowPressed = !pressed;          // true = user wants it paused
+      const nowPressed = !pressed;        
       toggle.setAttribute('aria-pressed', String(nowPressed));
       toggle.textContent = nowPressed ? 'Play' : 'Pause';
 
       const shouldRun = !nowPressed;
 
-      // Flip running flag for all tracks inside this belt
       belt.querySelectorAll('.iteration-belt__track').forEach(track => {
         const state = beltTrackStates.find(s => s.track === track);
         if (state) {
@@ -644,7 +626,6 @@
     });
   });
 
-  // 3) Global animation loop (smooth ramp-up on resume)
   let lastTime = performance.now();
 
   function step(now) {
@@ -658,12 +639,11 @@
       const target = (state.running && !held) ? state.vBase : 0;
 
       if (target === 0) {
-        state.vCurrent = 0; // stop immediately
+        state.vCurrent = 0;
         return;
       }
 
-      // Smooth ramp-up (only noticeable when resuming)
-      const RAMP = 10; // bigger = faster ramp
+      const RAMP = 10; 
       const t = 1 - Math.exp(-RAMP * dt);
       state.vCurrent += (target - state.vCurrent) * t;
 
@@ -673,38 +653,5 @@
 
     requestAnimationFrame(step);
   }
-
   requestAnimationFrame(step);
-
-  // ------------------------------
-  // Sync all GIFs inside iteration belts
-  // ------------------------------
-  function syncAllBeltGifs() {
-    // Every GIF inside any belt track (original + cloned items)
-    const gifs = document.querySelectorAll(
-      '.iteration-belt__track img.iteration-belt__image[src$=".gif"]'
-    );
-    if (!gifs.length) return;
-
-    // One shared timestamp so cache + restart time is identical
-    const stamp = Date.now();
-
-    gifs.forEach(img => {
-      // Remember the base src (without any old query string)
-      const base =
-        (img.dataset.baseSrc || img.src).split('?')[0];
-
-      img.dataset.baseSrc = base;
-      // Setting src with the same cache-buster on all of them
-      // forces them to restart from frame 0 together.
-      img.src = `${base}?t=${stamp}`;
-    });
-  }
-
-  // After all images + belts are ready, restart all GIFs in sync
-  window.addEventListener('load', () => {
-    beltTrackStates.forEach(recalcLoopWidth);
-    syncAllBeltGifs();
-  });
-
 })();

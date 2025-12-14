@@ -12,7 +12,6 @@
   --static-panel-width: 18rem;
   --static-panel-image-max: 36rem;
 
-  /* Header clearance (prevents hero title from sitting under fixed nav) */
   --hero-top-pad: 8rem;
   --hero-top-pad-mobile: 6rem;
 }
@@ -919,6 +918,8 @@ body.top-title {
 /* ------------------------------
    Motion reduction
 ------------------------------ */
+
+
 
 @media (prefers-reduced-motion: reduce) {
   #firefly-canvas {

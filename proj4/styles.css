@@ -1,685 +1,6 @@
-:root {
-  --bg: #04060d;
-  --bg-2: #070b16;
-  --ink: #eef1f6;
-  --muted: #b9c1d1;
-  --line: #182032;
-  --panel: rgba(12, 16, 28, .55);
-  --accent: #f1deaa;
-  --space: clamp(16px, 2.2vw, 28px);
-  --radius: 14px;
-  --shadow: 0 12px 30px rgba(0, 0, 0, .35);
-}
-
-* {
-  box-sizing: border-box
-}
-
-html {
-  scrollbar-gutter: stable both-edges;
-}
-
-/* avoid layout jump on scrollbars */
-html:focus-within {
-  scroll-behavior: smooth
-}
-
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(1200px 800px at 15% 10%, #0e1730 10%, rgba(16, 26, 51, 0) 60%),
-    radial-gradient(1000px 800px at 80% 15%, #12204a 8%, rgba(23, 34, 63, 0) 58%),
-    linear-gradient(var(--bg) 0%, var(--bg-2) 60%, #02040a 100%);
-  font: 16px/1.5 Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  -webkit-font-smoothing: antialiased;
-}
-
-.serif {
-  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block
-}
-
-a {
-  color: inherit;
-  text-decoration: none
-}
-
-.muted {
-  color: var(--muted)
-}
-
-.small {
-  font-size: 16px
-}
-
-/* Canvas backdrop stays behind content, above body bg */
-#sky {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-}
-
-header,
-main,
-footer {
-  position: relative;
-  z-index: 1;
-}
-
-/* Accessibility */
-.skip {
-  position: absolute;
-  left: -9999px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden
-}
-
-.skip:focus {
-  left: 12px;
-  top: 12px;
-  background: #000;
-  color: #fff;
-  padding: 8px 10px;
-  border-radius: 8px
-}
-
-/* Header */
-.progress {
-  position: absolute;
-  inset: 0 auto auto 0;
-  height: 3px;
-  width: 100%;
-  background: transparent;
-  overflow: hidden
-}
-
-.progress .bar {
-  display: block;
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, #fff, var(--accent));
-  transform-origin: left
-}
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 12px var(--space);
-  border-bottom: 1px solid var(--line);
-  background: rgba(6, 10, 20, .65);
-  backdrop-filter: saturate(140%) blur(8px);
-}
-
-html.scrolling .site-header {
-  /* reduce blur cost while scrolling */
-  backdrop-filter: none;
-  background: rgba(6, 10, 20, .80);
-}
-
-.brand {
-  font-weight: 600;
-  letter-spacing: .02em
-}
-
-.chip {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 8px 12px;
-  background: var(--panel);
-  color: var(--ink)
-}
-
-.nav {
-  display: flex;
-  gap: 18px
-}
-
-.nav a {
-  padding: 8px 10px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  transition: transform .2s ease
-}
-
-.nav a:hover,
-.nav a:focus-visible {
-  border-color: var(--line);
-  background: var(--panel);
-  transform: translateY(-1px)
-}
-
-@media (max-width:900px) {
-  #menu-btn {
-    display: inline-block
-  }
-
-  .nav {
-    position: fixed;
-    inset: 64px var(--space) auto var(--space);
-    display: grid;
-    gap: 8px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 12px;
-    transform: scale(.98);
-    opacity: 0;
-    pointer-events: none;
-    transition: .2s
-  }
-
-  .nav.open {
-    transform: none;
-    opacity: 1;
-    pointer-events: auto
-  }
-}
-
-/* Hero */
-.hero {
-  padding: 32px var(--space) 24px;
-  /* top, sides, bottom */
-  display: grid;
-  align-content: flex-start;
-  gap: 16px;
-  position: relative;
-  isolation: isolate;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: -20%;
-  z-index: -1;
-  filter: blur(60px) saturate(120%);
-  background:
-    radial-gradient(50% 50% at 20% 20%, rgba(241, 222, 170, .25), transparent 60%),
-    radial-gradient(40% 40% at 80% 30%, rgba(255, 255, 255, .12), transparent 60%),
-    radial-gradient(35% 35% at 60% 80%, rgba(241, 222, 170, .18), transparent 60%);
-  animation: aurora 18s linear infinite alternate;
-  opacity: .9;
-}
-
-@keyframes aurora {
-  0% {
-    transform: translate3d(-3%, -2%, 0) scale(1)
-  }
-
-  100% {
-    transform: translate3d(3%, 2%, 0) scale(1.04)
-  }
-}
-
-.title {
-  line-height: .9;
-  letter-spacing: -.015em;
-  font-size: clamp(48px, 14vw, 160px);
-  font-weight: 400
-}
-
-.lead {
-  max-width: 62ch;
-  color: var(--muted)
-}
-
-.cta {
-  display: flex;
-  gap: 12px;
-  align-items: center
-}
-
-/* Split chars */
-.title .char {
-  display: inline-block;
-  transform: translateY(.8em) rotate(6deg);
-  opacity: 0;
-  animation: rise .8s cubic-bezier(.2, .6, .2, 1) forwards;
-  animation-delay: calc(var(--i) * 22ms);
-  will-change: transform, opacity;
-}
-
-@keyframes rise {
-  to {
-    transform: none;
-    opacity: 1
-  }
-}
-
-/* Sections */
-.section {
-  padding: 40px var(--space)
-}
-
-.section.alt {
-  background: rgba(10, 14, 26, .35)
-}
-
-.section-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 16px
-}
-
-.section-header h2 {
-  margin: 0;
-  position: relative;
-  display: inline-block
-}
-
-.section-header h2::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6px;
-  height: 2px;
-  background: linear-gradient(90deg, #fff, var(--accent));
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform .6s cubic-bezier(.2, .6, .2, 1);
-}
-
-.section-header h2.in::after {
-  transform: scaleX(1)
-}
-
-.grid {
-  display: grid;
-  gap: clamp(12px, 1.8vw, 18px)
-}
-
-.grid-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr))
-}
-
-@media (max-width:900px) {
-  .grid-3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr))
-  }
-}
-
-@media (max-width:640px) {
-  .grid-3 {
-    grid-template-columns: 1fr
-  }
-}
-
-.card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-}
-
-.figure {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative
-}
-
-.placeholder {
-  aspect-ratio: 16/10;
-  background:
-    radial-gradient(120% 60% at 0% 0%, rgba(241, 222, 170, .15), transparent 60%),
-    linear-gradient(180deg, #0b1222, #0a0f1f);
-  border-bottom: 1px solid var(--line);
-}
-
-.figure figcaption {
-  padding: 10px 12px;
-  color: var(--muted)
-}
-
-/* Reveal */
-.reveal-wipe::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #0b0b0c;
-  transform-origin: left;
-  transform: scaleX(1);
-  transition: transform .8s cubic-bezier(.2, .6, .2, 1)
-}
-
-.reveal-wipe.in::before {
-  transform: scaleX(0)
-}
-
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity .6s, transform .6s
-}
-
-[data-reveal].in {
-  opacity: 1;
-  transform: none
-}
-
-/* Forms & buttons */
-.list {
-  display: grid;
-  gap: 8px;
-  padding-left: 18px
-}
-
-.list li {
-  margin-left: 8px
-}
-
-.form {
-  display: grid;
-  gap: 12px;
-  max-width: 560px
-}
-
-.form label {
-  display: grid;
-  gap: 6px
-}
-
-input,
-textarea {
-  width: 100%;
-  color: var(--ink);
-  background: rgba(14, 20, 34, .6);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  outline: none;
-}
-
-input:focus,
-textarea:focus {
-  border-color: #34456a;
-  box-shadow: 0 0 0 3px rgba(52, 69, 106, .25)
-}
-
-.btn {
-  display: inline-block;
-  background: linear-gradient(180deg, #f6e9bf, #e8d79d);
-  color: #1a2133;
-  font-weight: 600;
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 0;
-  cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .35)
-}
-
-.btn:hover {
-  transform: translateY(-1px)
-}
-
-/* Footer & horizon */
-.footer {
-  padding: 40px var(--space);
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  color: var(--muted)
-}
-
-.horizon {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 18svh;
-  z-index: -1;
-  opacity: .9
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .title .char {
-    animation: none;
-    transform: none;
-    opacity: 1
-  }
-
-  .hero::before {
-    animation: none
-  }
-
-  .nav a {
-    transition: none
-  }
-
-  .reveal-wipe::before {
-    transition: none;
-    transform: none
-  }
-
-  [data-reveal] {
-    transition: none;
-    opacity: 1;
-    transform: none
-  }
-}
-
-/* base glass card */
-.glass {
-  background: rgba(10, 12, 30, 0.72);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 20px 45px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
-  padding: 1.4rem 1.9rem;
-  margin: 1.3rem auto;
-  max-width: 250ch;
-}
-
-/* typography inside glass cards */
-.glass.readable {
-  font-family: "Cormorant Garamond", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 1.07rem;
-  line-height: 1.8;
-  color: rgba(245, 246, 255, 0.96);
-}
-
-/* subtle hierarchy and rhythm */
-.glass.readable strong {
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.glass.readable em {
-  font-style: italic;
-  color: rgba(252, 214, 171, 0.95);
-}
-
-/* soften edges between paragraphs inside one card */
-.glass.readable p+p {
-  margin-top: 0.8rem;
-}
-
-/* first line styling for a more “editorial” feel */
-.glass.readable::first-line {
-  font-variant-caps: small-caps;
-  letter-spacing: 0.08em;
-}
-
-/* hover accent to make the card feel interactive but not distracting */
-.glass.readable:hover {
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
-  transform: translateY(-1px);
-  transition:
-    box-shadow 220ms ease-out,
-    border-color 220ms ease-out,
-    transform 220ms ease-out;
-}
-
-
-/* Fallback if backdrop-filter isn’t supported */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass {
-    background: rgba(8, 12, 20, 0.78);
-  }
-}
-
-/* 2) Outline/glow around headings for readability without a box */
-.text-outline {
-  /* stroke for WebKit */
-  -webkit-text-stroke: 0.6px rgba(0, 0, 0, 0.55);
-  /* soft halo for all browsers */
-  text-shadow:
-    0 0 6px rgba(0, 0, 0, 0.65),
-    0 2px 12px rgba(0, 0, 0, 0.45);
-}
-
-/* 3) Mobile typography & layout tweaks */
-@media (max-width: 768px) {
-  :root {
-    --body-size: 16.5px;
-    --line: 1.6;
-  }
-
-  body {
-    font-size: var(--body-size);
-    line-height: var(--line);
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .section {
-    padding: 1.25rem;
-  }
-
-  .card {
-    padding: 1rem;
-    border-radius: 12px;
-  }
-
-  img,
-  video,
-  canvas {
-    max-width: 100%;
-    height: auto;
-  }
-}
-
-/* Optional: add a subtle dark edge behind ALL running text without boxes */
-.readable {
-  text-shadow:
-    0 0 3px rgba(0, 0, 0, 0.55),
-    0 0 12px rgba(0, 0, 0, 0.35);
-}
-
-/* =========================================
-   SHARED IMAGE / FIGURE LAYOUT
-   ========================================= */
-
-/* two-up image grid (used in text sections) */
-.grid-2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 2vw, 20px);
-  align-items: start;
-}
-
-@media (max-width: 720px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* generic figure block (non-PE cards) */
-.figure {
-  margin: 0;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-}
-
-.figure img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
-}
-
-.figure figcaption {
-  margin-top: 8px;
-  padding: 10px 12px;
-  font-size: 0.95rem;
-  color: var(--muted, #9aa3b2);
-}
-
-/* centered single media card (for GIFs / final renders) */
-.center-media {
-  display: flex;
-  justify-content: center;
-  margin: 2rem auto;
-}
-
-.center-media figure {
-  margin: 0;
-  max-width: 640px;
-  width: 100%;
-  background: var(--panel);
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
-  overflow: hidden;
-}
-
-.center-media img {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.center-media figcaption {
-  padding: 0.6rem 0.9rem;
-  font-size: 0.95rem;
-  color: var(--muted);
-  text-align: center;
-}
-
-
-/* =========================================
-   PE TABS (L / W / RUN SWITCHERS)
-   ========================================= */
+/* ============================
+   Project 4: PE tabs + panels
+   ============================ */
 
 /* tab container + hidden radios */
 .pe-tabs {
@@ -746,10 +67,9 @@ textarea:focus {
   color: #1a2133;
 }
 
-
-/* =========================================
-   PE PANELS & CARDS (3-UP GRIDS)
-   ========================================= */
+/* ============================
+   PE panels & cards
+   ============================ */
 
 .graph-belt img {
   width: clamp(120px, 16vw, 240px);
@@ -757,19 +77,16 @@ textarea:focus {
   box-shadow: 0 10px 26px rgba(0, 0, 0, .35);
 }
 
-/* generic panels wrapper for PE sections */
 .pe-panels {
   width: min(92vw, 1460px);
 }
 
-/* base panel layout: 3-up grid, hidden by default */
 .pe-panels .panel {
   display: none;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(10px, 1.6vw, 16px);
 }
 
-/* card used inside panels */
 .pe-card {
   margin: 0;
   background: var(--panel);
@@ -793,143 +110,93 @@ textarea:focus {
   text-align: center;
 }
 
-/* which panel is visible? (L-frequency tabs) */
+/* which panel is visible? */
 #L1:checked~.pe-panels [data-l="L1"],
 #L4:checked~.pe-panels [data-l="L4"],
 #L8:checked~.pe-panels [data-l="L8"],
 #L12:checked~.pe-panels [data-l="L12"],
 #L16:checked~.pe-panels [data-l="L16"],
-#L24:checked~.pe-panels [data-l="L24"] {
-  display: grid;
-}
+#L24:checked~.pe-panels [data-l="L24"] { display: grid; }
 
-/* width panels */
 #W64:checked~.pe-panels [data-w="W64"],
-#W256:checked~.pe-panels [data-w="W256"] {
-  display: grid;
-}
+#W256:checked~.pe-panels [data-w="W256"] { display: grid; }
 
-/* run-selection panels (my dataset) */
 #S5k:checked~.pe-panels [data-s="S5k"],
-#S10k:checked~.pe-panels [data-s="S10k"] {
-  display: grid;
-}
+#S10k:checked~.pe-panels [data-s="S10k"] { display: grid; }
 
-/* final-result panel */
-#RFINAL:checked~.pe-panels [data-r="RFINAL"] {
-  display: grid;
-}
+#RFINAL:checked~.pe-panels [data-r="RFINAL"] { display: grid; }
 
-/* responsive panel grid */
 @media (max-width: 900px) {
-  .pe-panels .panel {
-    grid-template-columns: 1fr 1fr;
-  }
+  .pe-panels .panel { grid-template-columns: 1fr 1fr; }
 }
-
 @media (max-width: 620px) {
-  .pe-panels .panel {
-    grid-template-columns: 1fr;
-  }
+  .pe-panels .panel { grid-template-columns: 1fr; }
 }
 
-/* make any graph-belt inside a panel span full width under the 3-up grid */
+/* belt inside a panel spans full width */
 .pe-panels .panel .graph-belt {
   grid-column: 1 / -1;
   margin-top: clamp(8px, 1.2vw, 14px);
 }
 
+/* ============================
+   Specialized always-on panel groups
+   ============================ */
 
-/* =========================================
-   SPECIALIZED PANEL GROUPS
-   ========================================= */
-
-/* final-result (Jupiter) panels: always on */
 .pe-panels.pe-panels-final {
   width: min(92vw, 1460px);
   margin: 1.5rem auto;
 }
-
 .pe-panels.pe-panels-final .panel {
   display: grid;
-  /* override display:none */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(10px, 1.6vw, 16px);
   justify-items: center;
 }
 
-/* static Lego 3-up + belts: always on */
 .pe-panels.pe-lego {
   width: min(92vw, 1460px);
   margin: 2rem auto;
 }
+.pe-panels.pe-lego .panel { display: grid; }
 
-.pe-panels.pe-lego .panel {
-  display: grid;
-  /* override display:none */
-}
-
-/* static rays three-panel block (pipeline section) */
 .pe-panels.pe-rays {
   width: min(92vw, 1460px);
   margin: 2rem auto;
 }
-
 .pe-panels.pe-rays .panel {
   display: grid;
-  /* override display:none */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(10px, 1.6vw, 16px);
 }
 
-/* custom-data (house) 3-up + belts: always on */
 .pe-panels.pe-mydata {
   width: min(92vw, 1460px);
   margin: 2rem auto;
 }
+.pe-panels.pe-mydata .graph-belt .belt + .belt { margin-top: 0.75rem; }
 
-/* optional: spacing between stacked belts in my-data section */
-.pe-panels.pe-mydata .graph-belt .belt+.belt {
-  margin-top: 0.75rem;
-}
+/* ============================
+   Graph belts (infinite conveyor)
+   ============================ */
 
+.graph-belt { overflow: hidden; }
 
-/* =========================================
-   INFINITE CONVEYOR BELTS (PROGRESSION)
-   ========================================= */
-
-.graph-belt {
-  overflow: hidden;
-}
-
-/* smoothed belt animation */
 .graph-belt .belt {
   display: flex;
   gap: clamp(12px, 1.8vw, 10px);
   width: max-content;
-
-  /* smoothness helpers */
   will-change: transform;
   transform: translate3d(0, 0, 0);
-
   animation: belt-scroll 90s linear infinite;
 }
 
-/* Pause belts on hover only for mouse/trackpad devices */
 @media (hover: hover) and (pointer: fine) {
-  .graph-belt:hover .belt {
-    animation-play-state: paused;
-  }
+  .graph-belt:hover .belt { animation-play-state: paused; }
 }
 
+.graph-belt .belt + .belt { margin-top: 0.75rem; }
 
-/* if multiple belts stacked (e.g., train + val), add spacing */
-.graph-belt .belt+.belt {
-  margin-top: 0.75rem;
-}
-
-
-/* belt items with captions */
 .graph-belt .belt-frame {
   display: flex;
   flex-direction: column;
@@ -950,49 +217,13 @@ textarea:focus {
   text-align: center;
 }
 
-/* shrink the fox width progression frames */
-#varying_width .graph-belt .belt-frame {
-  width: clamp(120px, 16vw, 640px);
-}
+#varying_width .graph-belt .belt-frame { width: clamp(120px, 16vw, 640px); }
+#final_result .graph-belt .belt-frame { width: clamp(120px, 16vw, 640px); }
 
-#final_result .graph-belt .belt-frame {
-  width: clamp(120px, 16vw, 640px);
-}
+#varying_width .graph-belt .belt { gap: clamp(4px, 0.8vw, 6px); }
+#max_encoding .graph-belt .belt { gap: 6px; }
 
-
-
-/* tighter spacing between fox width frames */
-#varying_width .graph-belt .belt {
-  gap: clamp(4px, 0.8vw, 6px);
-  /* or simply: gap: 6px; */
-}
-
-#max_encoding .graph-belt .belt {
-  gap: 6px;
-  /* or even 4px if you want them very tight */
-}
-
-/* #max_encoding .graph-belt .belt {
-  gap: clamp(4px, 0.8vw, 2px);  
-}
-
-#max_encoding .graph-belt .belt-frame {
-  width: clamp(120px, 16vw, 480px);
-} */
-
-
-/* keyframes for continuous scroll */
 @keyframes belt-scroll {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(-20%, 0, 0);
-  }
-}
-
-.pe-panels .panel .center-media {
-  grid-column: 1 / -1;
-  margin-top: 1rem;
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-20%, 0, 0); }
 }

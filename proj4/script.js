@@ -1,7 +1,7 @@
 
 (() => {
 
-  
+  // PROJECT
 
   // ---------- Basic UI ----------
   const canvas  = document.getElementById('sky');
