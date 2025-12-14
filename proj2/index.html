@@ -104,6 +104,86 @@
 
   </section>
 
+  <div class="code-snippets">
+  <h3 class="code-snippets__title">Convolution implementations (Python)</h3>
+
+  <!-- 1. pad_zero -->
+  <details class="code-snippet">
+    <summary>pad_zero</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code class="language-python">import numpy as np
+
+def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
+    """Zero-pad a 2D image by (pad_h, pad_w) on all sides."""
+    assert img.ndim == 2
+    H, W = img.shape
+    out = np.zeros((H + 2 * pad_h, W + 2 * pad_w), dtype=img.dtype)
+    out[pad_h: pad_h + H, pad_w: pad_w + W] = img
+    return out</code></pre>
+    </div>
+  </details>
+
+  <!-- 2. conv2d_four_loops -->
+  <details class="code-snippet">
+    <summary>conv2d_four_loops</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code class="language-python">def conv2d_four_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
+    """
+    Naive 2D convolution using 4 nested loops and zero padding.
+
+    img:    2D grayscale image
+    kernel: 2D filter kernel
+    """
+    assert img.ndim == 2
+    # flip kernel for convolution
+    k = np.flipud(np.fliplr(kernel))
+    kh, kw = k.shape
+    ph, pw = kh // 2, kw // 2
+
+    padded = pad_zero(img, ph, pw)
+    H, W = img.shape
+    out = np.zeros_like(img, dtype=np.float32)
+
+    for y in range(H):
+        for x in range(W):
+            acc = 0.0
+            for j in range(kh):
+                for i in range(kw):
+                    acc += padded[y + j, x + i] * k[j, i]
+            out[y, x] = acc
+    return out</code></pre>
+    </div>
+  </details>
+
+  <!-- 3. conv2d_two_loops -->
+  <details class="code-snippet">
+    <summary>conv2d_two_loops</summary>
+    <div class="code-snippet__body">
+      <pre class="code-block"><code class="language-python">def conv2d_two_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
+    """
+    More efficient convolution: 2 loops over pixels, inner sum done by NumPy.
+    """
+    assert img.ndim == 2
+    k = np.flipud(np.fliplr(kernel))
+    kh, kw = k.shape
+    ph, pw = kh // 2, kw // 2
+
+    padded = pad_zero(img, ph, pw)
+    H, W = img.shape
+    out = np.zeros_like(img, dtype=np.float32)
+
+    for y in range(H):
+        # slice the relevant "row band" once per y
+        row = padded[y: y + kh, :]
+        for x in range(W):
+            patch = row[:, x: x + kw]
+            out[y, x] = float(np.sum(patch * k))
+    return out</code></pre>
+    </div>
+  </details>
+</div>
+
+
 
   <!-- ============================================ 1.2 Finite Difference Operator ==================================== -->
   <section class="content gold-glass iteration-belt" id="part1-2">
@@ -205,6 +285,8 @@
       </p>
     </div>
   </section>
+
+  
 
 
   <!-- =============================== 1.3 Derivative of Gaussian Filter ================================= -->
