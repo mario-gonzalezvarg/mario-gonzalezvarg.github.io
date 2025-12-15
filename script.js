@@ -307,15 +307,15 @@
 
       const tx =
         dirX > 0 ? (maxX - x) / dirX :
-        dirX < 0 ? (minX - x) / dirX :
-        Number.POSITIVE_INFINITY;
+          dirX < 0 ? (minX - x) / dirX :
+            Number.POSITIVE_INFINITY;
 
       const ty =
         dirY > 0 ? (maxY - y) / dirY :
-        dirY < 0 ? (minY - y) / dirY :
-        Number.POSITIVE_INFINITY;
+          dirY < 0 ? (minY - y) / dirY :
+            Number.POSITIVE_INFINITY;
 
-      const distance = Math.max(200 * state.dpr, Math.min(tx, ty)); 
+      const distance = Math.max(200 * state.dpr, Math.min(tx, ty));
 
       const speed = METEOR_BASE_SPEED * (0.8 + Math.random() * 0.6) * state.dpr;
       const lifeMs = (distance / speed) * 1000 + 200;
@@ -438,11 +438,11 @@
       track,
       originalCount,
       loopWidth,
-      x: 0,             
-      vBase: speed,     
-      vCurrent: speed,  
-      running: true,   
-      holdUntil: 0.5 
+      x: 0,
+      vBase: speed,
+      vCurrent: speed,
+      running: true,
+      holdUntil: 0.5
     });
   });
 
@@ -491,7 +491,8 @@
     belt.querySelectorAll('.iteration-belt__viewport').forEach(viewport => {
       let wheelAxisLock = null;
       let wheelAxisLockUntil = 1;
-      const WHEEL_LOCK_MS = 120;
+      const WHEEL_LOCK_MS = 600;
+
 
       viewport.addEventListener(
         'wheel',
@@ -502,14 +503,14 @@
           const absX = Math.abs(e.deltaX);
           const absY = Math.abs(e.deltaY);
 
-          // Decide axis once per gesture to avoid diagonal/noisy trackpads
           if (wheelAxisLock === null) {
-            const MIN_PX = 3;    // ignore tiny deltaX noise
-            const RATIO = 1.35;  // must be clearly more horizontal than vertical
+            const MIN_PX = 0.5;
+            const RATIO = 1.05;
 
-            const shiftHorizontal = e.shiftKey && absY >= absX; // Shift+wheel => horizontal intent
+            const shiftHorizontal = e.shiftKey && absY >= absX;
             wheelAxisLock = shiftHorizontal || (absX > MIN_PX && absX > absY * RATIO);
           }
+
 
           wheelAxisLockUntil = now + WHEEL_LOCK_MS;
 
@@ -525,7 +526,7 @@
 
           if (!dx) return;
 
-          e.preventDefault();
+          if (e.cancelable) e.preventDefault();
           holdAutoMove();
           applyDeltaPx(dx);
         },
@@ -590,7 +591,7 @@
         lockedHorizontal = null;
 
         if (hasCapture) {
-          try { viewport.releasePointerCapture?.(e.pointerId); } catch {}
+          try { viewport.releasePointerCapture?.(e.pointerId); } catch { }
         }
         hasCapture = false;
       };
@@ -610,7 +611,7 @@
 
     toggle.addEventListener('click', () => {
       const pressed = toggle.getAttribute('aria-pressed') === 'true';
-      const nowPressed = !pressed;        
+      const nowPressed = !pressed;
       toggle.setAttribute('aria-pressed', String(nowPressed));
       toggle.textContent = nowPressed ? 'Play' : 'Pause';
 
@@ -643,7 +644,7 @@
         return;
       }
 
-      const RAMP = 10; 
+      const RAMP = 10;
       const t = 1 - Math.exp(-RAMP * dt);
       state.vCurrent += (target - state.vCurrent) * t;
 
