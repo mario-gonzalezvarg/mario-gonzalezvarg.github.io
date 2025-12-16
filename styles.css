@@ -28,10 +28,6 @@
   padding: 0;
 }
 
-html {
-  scrollbar-gutter: stable both-edges;
-}
-
 html:focus-within {
   scroll-behavior: smooth;
 }
