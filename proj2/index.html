@@ -682,7 +682,7 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
         <figure class="iteration-belt__item">
           <img class="iteration-belt__image" src="media/two/2_hybrid/demo/lowpass.png" alt="Low-pass filtered portrait">
           <figcaption class="iteration-belt__caption">
-            Low-pass portrait with <code>ksize = 53, sigma = 8.0</code>: the wide Gaussian blur
+            Low-pass portrait with <code>ksize = 77, sigma = 13.5</code>: the wide Gaussian blur
             produces a very smooth image where fine texture is almost completely removed but the
             coarse arrangement of facial features remains clearly visible.
           </figcaption>
@@ -703,7 +703,7 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
           <img class="iteration-belt__image" src="media/two/2_hybrid/demo/highpass.png"
             alt="High-pass filtered cat image">
           <figcaption class="iteration-belt__caption">
-            High-pass cat with <code>ksize = 27, sigma = 3.1</code>: subtracting the blurred cat
+            High-pass cat with <code>ksize = 31, sigma = 5.0</code>: subtracting the blurred cat
             isolates edges and mid–high-frequency texture, yielding an almost embossed appearance
             with strong responses on whiskers and fur.
           </figcaption>
