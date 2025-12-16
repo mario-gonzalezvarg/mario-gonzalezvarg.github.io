@@ -28,81 +28,130 @@
     <h1 class="title">Filters and Frequencies</h1>
   </div>
 
-  <!-- ============================================ 1.1 Convolutions from Scratch ===================================== -->
-  <section class="content gold-glass iteration-belt" id="part1.1">
-    <h2 class="section-heading">1.1 Convolutions from Scratch</h2>
+ <!-- ============================================ 1.1 Convolutions from Scratch ===================================== -->
+<section class="content gold-glass iteration-belt" id="part1.1">
+  <h2 class="section-heading">1.1 Convolutions from Scratch</h2>
 
-    <div class="iteration-belt__intro">
-      <p>
-        A discrete convolution applies a fixed kernel to every pixel location and replaces the
-        pixel by a weighted sum of its neighborhood, using zero-padding so that the output has the
-        same extent as the input. Because the same weights are used everywhere, the operation is
-        linear and shift-invariant; any change in behavior must come from the kernel rather than
-        from the particular implementation.
-      </p>
-      <p>
-        We apply the same operator in three ways: a direct four-loop version that
-        mirrors the mathematical definition, a two-loop NumPy version that vectorizes the inner
-        products over image patches, and SciPy’s optimized <code>convolve2d</code>. Each is applied
-        to a self-portrait using an identical 9×9 box kernel, so agreement or disagreement in the
-        results measures numerical consistency and computational efficiency rather than any
-        difference in the underlying filter.
-      </p>
+  <div class="iteration-belt__intro">
+    <p>
+      A discrete convolution applies a fixed kernel to every pixel location and replaces the
+      pixel by a weighted sum of its neighborhood, using zero-padding so that the output has the
+      same extent as the input. Because the same weights are used everywhere, the operation is
+      linear and shift-invariant; any change in behavior must come from the kernel rather than
+      from the particular implementation.
+    </p>
+    <p>
+      The same operator is applied in three ways: a direct four-loop version that mirrors the
+      mathematical definition, a two-loop NumPy version that vectorizes the inner products over
+      image patches, and SciPy’s optimized <code>convolve2d</code>. Each is applied to a self-portrait
+      using an identical 9×9 box kernel, and the same three implementations are then applied to the
+      finite-difference filters <code>Dx</code> and <code>Dy</code>.
+    </p>
+  </div>
+
+  <div class="iteration-belt__header">
+    <h3 class="iteration-belt__title">9×9 box filter and finite differences on self-portrait</h3>
+    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+  </div>
+
+  <div class="iteration-belt__viewport">
+    <div class="iteration-belt__track">
+      <!-- Box filter -->
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/conv_four_loops.png"
+          alt="Self-portrait blurred with four-loop convolution">
+        <figcaption class="iteration-belt__caption">
+          9×9 box filter — four-loop convolution (direct discrete implementation)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/conv_two_loops.png"
+          alt="Self-portrait blurred with two-loop convolution">
+        <figcaption class="iteration-belt__caption">
+          9×9 box filter — two-loop convolution (vectorized inner sum)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/conv_scipy.png"
+          alt="Self-portrait blurred with SciPy convolve2d">
+        <figcaption class="iteration-belt__caption">
+          9×9 box filter — SciPy <code>convolve2d</code> reference implementation
+        </figcaption>
+      </figure>
+
+      <!-- Finite differences (Dx, Dy) -->
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_four_loops.png"
+          alt="Dx response on self-portrait using four-loop convolution">
+        <figcaption class="iteration-belt__caption">
+          <code>Dx</code> response — four-loop implementation (normalized for display)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_four_loops.png"
+          alt="Dy response on self-portrait using four-loop convolution">
+        <figcaption class="iteration-belt__caption">
+          <code>Dy</code> response — four-loop implementation (normalized for display)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_two_loops.png"
+          alt="Dx response on self-portrait using two-loop convolution">
+        <figcaption class="iteration-belt__caption">
+          <code>Dx</code> response — two-loop implementation (normalized for display)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_two_loops.png"
+          alt="Dy response on self-portrait using two-loop convolution">
+        <figcaption class="iteration-belt__caption">
+          <code>Dy</code> response — two-loop implementation (normalized for display)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_scipy.png"
+          alt="Dx response on self-portrait using SciPy convolve2d">
+        <figcaption class="iteration-belt__caption">
+          <code>Dx</code> response — SciPy <code>convolve2d</code> (normalized for display)
+        </figcaption>
+      </figure>
+
+      <figure class="iteration-belt__item">
+        <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_scipy.png"
+          alt="Dy response on self-portrait using SciPy convolve2d">
+        <figcaption class="iteration-belt__caption">
+          <code>Dy</code> response — SciPy <code>convolve2d</code> (normalized for display)
+        </figcaption>
+      </figure>
     </div>
+  </div>
 
-    <div class="iteration-belt__header">
-      <h3 class="iteration-belt__title">9×9 box filter on self-portrait</h3>
-      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
-    </div>
+  <div class="iteration-belt__outro">
+    <p>
+      Benchmarking the 9×9 box filter on this image yields average runtimes of
+      14.990 s (four loops), 2.670 s (two loops), and 0.114 s (SciPy), implying roughly
+      5.6× speedup from vectorizing the inner sum and roughly 132× speedup from the SciPy
+      implementation over the naive baseline. The timing values in <code>conv_timings.csv</code>
+      are in seconds (as returned by the benchmark), while the command-line printout is in
+      milliseconds because it multiplies by 1000.
+    </p>
+    <p>
+      The box-filter outputs are visually indistinguishable across implementations, indicating
+      that the three methods realize the same linear operator with different constant factors.
+      The <code>Dx</code>/<code>Dy</code> visualizations likewise match after normalization; their
+      embossed appearance reflects that derivative responses are signed, so display normalization
+      maps near-zero regions toward mid-gray and assigns opposite contrast to opposite edge directions.
+    </p>
+  </div>
 
-    <div class="iteration-belt__viewport">
-      <div class="iteration-belt__track">
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_four_loops.png"
-            alt="Self-portrait blurred with four-loop convolution">
-          <figcaption class="iteration-belt__caption">
-            Four-loop convolution (direct discrete implementation)
-          </figcaption>
-        </figure>
+</section>
 
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_two_loops.png"
-            alt="Self-portrait blurred with two-loop convolution">
-          <figcaption class="iteration-belt__caption">
-            Two-loop convolution (window extraction + vectorized sum)
-          </figcaption>
-        </figure>
-
-        <figure class="iteration-belt__item">
-          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_scipy.png"
-            alt="Self-portrait blurred with SciPy convolve2d">
-          <figcaption class="iteration-belt__caption">
-            SciPy <code>convolve2d</code> reference implementation
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <div class="iteration-belt__outro">
-      <p>
-        Timing the 9×9 box filter shows the effect of how the computation is expressed: the
-        naïve four-loop code is slowest, the partially vectorized two-loop version is faster by
-        roughly one order of magnitude, and the SciPy routine is faster still by more than two
-        orders of magnitude. The difference arises from shifting work from Python loops to
-        contiguous array operations that can be optimized at a lower level; the mathematical
-        operator is the same in all three cases.
-      </p>
-      <p>
-        The three blurred selfies are visually indistinguishable: high-frequency structure in the
-        hair, pavement, and jacket is suppressed, while large-scale shape is preserved. Any
-        remaining discrepancies are at the level of rounding error. The comparison therefore
-        separates two questions: what the convolution does to the image, determined by the kernel,
-        and how efficiently the same operation can be realized in code, determined by the chosen
-        implementation strategy.
-      </p>
-    </div>
-
-  </section>
 
   <div class="code-snippets">
   <h3 class="code-snippets__title">Convolution implementations (Python)</h3>
