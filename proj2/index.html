@@ -28,139 +28,139 @@
     <h1 class="title">Filters and Frequencies</h1>
   </div>
 
- <!-- ============================================ 1.1 Convolutions from Scratch ===================================== -->
-<section class="content gold-glass iteration-belt" id="part1.1">
-  <h2 class="section-heading">1.1 Convolutions from Scratch</h2>
+  <!-- ============================================ 1.1 Convolutions from Scratch ===================================== -->
+  <section class="content gold-glass iteration-belt" id="part1.1">
+    <h2 class="section-heading">1.1 Convolutions from Scratch</h2>
 
-  <div class="iteration-belt__intro">
-    <p>
-      A discrete convolution applies a fixed kernel to every pixel location and replaces the
-      pixel by a weighted sum of its neighborhood, using zero-padding so that the output has the
-      same extent as the input. Because the same weights are used everywhere, the operation is
-      linear and shift-invariant; any change in behavior must come from the kernel rather than
-      from the particular implementation.
-    </p>
-    <p>
-      The same operator is applied in three ways: a direct four-loop version that mirrors the
-      mathematical definition, a two-loop NumPy version that vectorizes the inner products over
-      image patches, and SciPy’s optimized <code>convolve2d</code>. Each is applied to a self-portrait
-      using an identical 9×9 box kernel, and the same three implementations are then applied to the
-      finite-difference filters <code>Dx</code> and <code>Dy</code>.
-    </p>
-  </div>
-
-  <div class="iteration-belt__header">
-    <h3 class="iteration-belt__title">9×9 box filter and finite differences on self-portrait</h3>
-    <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
-  </div>
-
-  <div class="iteration-belt__viewport">
-    <div class="iteration-belt__track">
-      <!-- Box filter -->
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/conv_four_loops.png"
-          alt="Self-portrait blurred with four-loop convolution">
-        <figcaption class="iteration-belt__caption">
-          9×9 box filter — four-loop convolution (direct discrete implementation)
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/conv_two_loops.png"
-          alt="Self-portrait blurred with two-loop convolution">
-        <figcaption class="iteration-belt__caption">
-          9×9 box filter — two-loop convolution (vectorized inner sum)
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/conv_scipy.png"
-          alt="Self-portrait blurred with SciPy convolve2d">
-        <figcaption class="iteration-belt__caption">
-          9×9 box filter — SciPy <code>convolve2d</code> reference implementation
-        </figcaption>
-      </figure>
-
-      <!-- Finite differences (Dx, Dy) -->
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_four_loops.png"
-          alt="Dx response on self-portrait using four-loop convolution">
-        <figcaption class="iteration-belt__caption">
-          <code>Dx</code> response — four-loop implementation 
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_four_loops.png"
-          alt="Dy response on self-portrait using four-loop convolution">
-        <figcaption class="iteration-belt__caption">
-          <code>Dy</code> response — four-loop implementation 
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_two_loops.png"
-          alt="Dx response on self-portrait using two-loop convolution">
-        <figcaption class="iteration-belt__caption">
-          <code>Dx</code> response — two-loop implementation 
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_two_loops.png"
-          alt="Dy response on self-portrait using two-loop convolution">
-        <figcaption class="iteration-belt__caption">
-          <code>Dy</code> response — two-loop implementation 
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_scipy.png"
-          alt="Dx response on self-portrait using SciPy convolve2d">
-        <figcaption class="iteration-belt__caption">
-          <code>Dx</code> response — SciPy <code>convolve2d</code> 
-        </figcaption>
-      </figure>
-
-      <figure class="iteration-belt__item">
-        <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_scipy.png"
-          alt="Dy response on self-portrait using SciPy convolve2d">
-        <figcaption class="iteration-belt__caption">
-          <code>Dy</code> response — SciPy <code>convolve2d</code> 
-        </figcaption>
-      </figure>
+    <div class="iteration-belt__intro">
+      <p>
+        A discrete convolution applies a fixed kernel to every pixel location and replaces the
+        pixel by a weighted sum of its neighborhood, using zero-padding so that the output has the
+        same extent as the input. Because the same weights are used everywhere, the operation is
+        linear and shift-invariant; any change in behavior must come from the kernel rather than
+        from the particular implementation.
+      </p>
+      <p>
+        The same operator is applied in three ways: a direct four-loop version that mirrors the
+        mathematical definition, a two-loop NumPy version that vectorizes the inner products over
+        image patches, and SciPy’s optimized <code>convolve2d</code>. Each is applied to a self-portrait
+        using an identical 9×9 box kernel, and the same three implementations are then applied to the
+        finite-difference filters <code>Dx</code> and <code>Dy</code>.
+      </p>
     </div>
-  </div>
 
-  <div class="iteration-belt__outro">
-    <p>
-      Benchmarking the 9×9 box filter on this image yields average runtimes of
-      14.990 s (four loops), 2.670 s (two loops), and 0.114 s (SciPy), implying roughly
-      5.6× speedup from vectorizing the inner sum and roughly 132× speedup from the SciPy
-      implementation over the naive baseline. The timing values in <code>conv_timings.csv</code>
-      are in seconds (as returned by the benchmark), while the command-line printout is in
-      milliseconds because it multiplies by 1000.
-    </p>
-    <p>
-      The box-filter outputs are visually indistinguishable across implementations, indicating
-      that the three methods realize the same linear operator with different constant factors.
-      The <code>Dx</code>/<code>Dy</code> visualizations likewise match after normalization; their
-      embossed appearance reflects that derivative responses are signed, so display normalization
-      maps near-zero regions toward mid-gray and assigns opposite contrast to opposite edge directions.
-    </p>
-  </div>
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">9×9 box filter and finite differences on self-portrait</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
 
-</section>
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+        <!-- Box filter -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_four_loops.png"
+            alt="Self-portrait blurred with four-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            9×9 box filter — four-loop convolution (direct discrete implementation)
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_two_loops.png"
+            alt="Self-portrait blurred with two-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            9×9 box filter — two-loop convolution (vectorized inner sum)
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/conv_scipy.png"
+            alt="Self-portrait blurred with SciPy convolve2d">
+          <figcaption class="iteration-belt__caption">
+            9×9 box filter — SciPy <code>convolve2d</code> reference implementation
+          </figcaption>
+        </figure>
+
+        <!-- Finite differences (Dx, Dy) -->
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_four_loops.png"
+            alt="Dx response on self-portrait using four-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            <code>Dx</code> response — four-loop implementation
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_four_loops.png"
+            alt="Dy response on self-portrait using four-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            <code>Dy</code> response — four-loop implementation
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_two_loops.png"
+            alt="Dx response on self-portrait using two-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            <code>Dx</code> response — two-loop implementation
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_two_loops.png"
+            alt="Dy response on self-portrait using two-loop convolution">
+          <figcaption class="iteration-belt__caption">
+            <code>Dy</code> response — two-loop implementation
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/Dx_scipy.png"
+            alt="Dx response on self-portrait using SciPy convolve2d">
+          <figcaption class="iteration-belt__caption">
+            <code>Dx</code> response — SciPy <code>convolve2d</code>
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/one/1_convolutions/Dy_scipy.png"
+            alt="Dy response on self-portrait using SciPy convolve2d">
+          <figcaption class="iteration-belt__caption">
+            <code>Dy</code> response — SciPy <code>convolve2d</code>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="iteration-belt__outro">
+      <p>
+        Benchmarking the 9×9 box filter on this image yields average runtimes of
+        14.990 s (four loops), 2.670 s (two loops), and 0.114 s (SciPy), implying roughly
+        5.6× speedup from vectorizing the inner sum and roughly 132× speedup from the SciPy
+        implementation over the naive baseline. The timing values in <code>conv_timings.csv</code>
+        are in seconds (as returned by the benchmark), while the command-line printout is in
+        milliseconds because it multiplies by 1000.
+      </p>
+      <p>
+        The box-filter outputs are visually indistinguishable across implementations, indicating
+        that the three methods realize the same linear operator with different constant factors.
+        The <code>Dx</code>/<code>Dy</code> visualizations likewise match after normalization; their
+        embossed appearance reflects that derivative responses are signed, so display normalization
+        maps near-zero regions toward mid-gray and assigns opposite contrast to opposite edge directions.
+      </p>
+    </div>
+
+  </section>
 
 
   <div class="code-snippets">
-  <h3 class="code-snippets__title">Convolution implementations (Python)</h3>
+    <h3 class="code-snippets__title">Convolution implementations (Python)</h3>
 
-  <!-- 1. pad_zero -->
-  <details class="code-snippet">
-    <summary>pad_zero</summary>
-    <div class="code-snippet__body">
-      <pre class="code-block"><code class="language-python">import numpy as np
+    <!-- 1. pad_zero -->
+    <details class="code-snippet">
+      <summary>pad_zero</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code class="language-python">import numpy as np
 
 def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     """Zero-pad a 2D image by (pad_h, pad_w) on all sides."""
@@ -169,14 +169,14 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     out = np.zeros((H + 2 * pad_h, W + 2 * pad_w), dtype=img.dtype)
     out[pad_h: pad_h + H, pad_w: pad_w + W] = img
     return out</code></pre>
-    </div>
-  </details>
+      </div>
+    </details>
 
-  <!-- 2. conv2d_four_loops -->
-  <details class="code-snippet">
-    <summary>conv2d_four_loops</summary>
-    <div class="code-snippet__body">
-      <pre class="code-block"><code class="language-python">def conv2d_four_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
+    <!-- 2. conv2d_four_loops -->
+    <details class="code-snippet">
+      <summary>conv2d_four_loops</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code class="language-python">def conv2d_four_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
     """
     Naive 2D convolution using 4 nested loops and zero padding.
 
@@ -201,14 +201,14 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
                     acc += padded[y + j, x + i] * k[j, i]
             out[y, x] = acc
     return out</code></pre>
-    </div>
-  </details>
+      </div>
+    </details>
 
-  <!-- 3. conv2d_two_loops -->
-  <details class="code-snippet">
-    <summary>conv2d_two_loops</summary>
-    <div class="code-snippet__body">
-      <pre class="code-block"><code class="language-python">def conv2d_two_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
+    <!-- 3. conv2d_two_loops -->
+    <details class="code-snippet">
+      <summary>conv2d_two_loops</summary>
+      <div class="code-snippet__body">
+        <pre class="code-block"><code class="language-python">def conv2d_two_loops(img: np.ndarray, kernel: np.ndarray) -&gt; np.ndarray:
     """
     More efficient convolution: 2 loops over pixels, inner sum done by NumPy.
     """
@@ -228,9 +228,9 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
             patch = row[:, x: x + kw]
             out[y, x] = float(np.sum(patch * k))
     return out</code></pre>
-    </div>
-  </details>
-</div>
+      </div>
+    </details>
+  </div>
 
 
 
@@ -335,7 +335,7 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
     </div>
   </section>
 
-  
+
 
 
   <!-- =============================== 1.3 Derivative of Gaussian Filter ================================= -->
@@ -767,7 +767,7 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
 
   <!-- ============================================ 2.2.1 Hybrid Images ================================================ -->
 
-  <section class="content gold-glass" id="part2-2-extra">
+  <section class="content gold-glass iteration-belt"  id="part2-2-extra">
     <h2 class="section-heading">2.2 Hybrid Images – Additional Examples</h2>
 
     <div class="writing-section">
@@ -827,6 +827,8 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
         </figure>
       </div>
 
+
+
       <!-- MRI hybrid ---------------------------------------------------------->
       <h3 class="iteration-belt__title">
         Brain MRI – low-pass anatomy + high-pass edge enhancement
@@ -870,9 +872,86 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
           </figcaption>
         </figure>
       </div>
-
     </div>
+
+    <div class="iteration-belt__header">
+      <h3 class="iteration-belt__title">Low-pass Jolie + high-pass Obama</h3>
+      <button type="button" class="iteration-belt__toggle" aria-pressed="false">Pause</button>
+    </div>
+
+    <div class="iteration-belt__viewport">
+      <div class="iteration-belt__track">
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/A_stage1_aligned_cropped.png"
+            alt="Aligned Jolie image used for low-pass component">
+          <figcaption class="iteration-belt__caption">
+            Aligned Jolie (image A): source for the low-frequency structure of the hybrid.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/B_stage1_aligned_cropped.png"
+            alt="Aligned Obama image used for high-pass component">
+          <figcaption class="iteration-belt__caption">
+            Aligned Obama (image B): source for high-frequency detail in the hybrid.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/lowpass.png"
+            alt="Low-pass filtered Jolie image">
+          <figcaption class="iteration-belt__caption">
+            Low-pass Jolie with <code>low_ksize = 35</code>, <code>low_sigma = 9.5</code>.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/lowpass_fft.png"
+            alt="Log-magnitude Fourier spectrum of low-pass Jolie image">
+          <figcaption class="iteration-belt__caption">
+            Low-pass Fourier magnitude: energy concentrated near the origin.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/highpass.png"
+            alt="High-pass filtered Obama image">
+          <figcaption class="iteration-belt__caption">
+            High-pass Obama with <code>high_ksize = 71</code>, <code>high_sigma = 12.5</code>.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/highpass_fft.png"
+            alt="Log-magnitude Fourier spectrum of high-pass Obama image">
+          <figcaption class="iteration-belt__caption">
+            High-pass Fourier magnitude: suppressed center with energy in outer frequencies.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/hybrid.png"
+            alt="Hybrid image combining low-pass Jolie and high-pass Obama">
+          <figcaption class="iteration-belt__caption">
+            Hybrid image: low-pass Jolie + high-pass Obama.
+          </figcaption>
+        </figure>
+
+        <figure class="iteration-belt__item">
+          <img class="iteration-belt__image" src="media/two/2_hybrid/obama/hybrid_fft.png"
+            alt="Log-magnitude Fourier spectrum of the Jolie-Obama hybrid image">
+          <figcaption class="iteration-belt__caption">
+            Hybrid Fourier magnitude: superposition of low- and high-frequency bands.
+          </figcaption>
+        </figure>
+
+      </div>
+    </div>
+
+    
   </section>
+
 
 
   <!-- ============================================ 2.3 Gaussian and Laplacian Stacks ================================ -->
@@ -1734,16 +1813,16 @@ def pad_zero(img: np.ndarray, pad_h: int, pad_w: int) -&gt; np.ndarray:
         <div class="viz-pair__title">Final Blend</div>
         <img class="viz-pair__image" src="media/two/4_blend/moon/blend_result.png">
         <div class="iteration-belt__caption">
-        Left: Charon Right: Earth’s Moon
-      </div>
+          Left: Charon Right: Earth’s Moon
+        </div>
       </figure>
 
       <figure class="viz-pair__panel">
         <div class="viz-pair__title">Reverse Blend</div>
         <img class="viz-pair__image" src="media/two/4_blend/moon/blend_result_reverse.png">
         <div class="iteration-belt__caption">
-        Left: Earth’s Moon Right: Charon
-      </div>
+          Left: Earth’s Moon Right: Charon
+        </div>
       </figure>
     </div>
 
